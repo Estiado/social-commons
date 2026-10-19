@@ -70,7 +70,17 @@ export default function QuotesPage() {
               </div>
             </div>
 
-            {current.context && (
+            {current.commentary && (
+              <div className="mt-8 border-l-2 border-accent/30 pl-4 relative z-10 max-w-2xl">
+                <p className="text-sm text-foreground/80 leading-relaxed mb-3">
+                  {current.commentary.text}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  —— {current.commentary.commentator}
+                </p>
+              </div>
+            )}
+            {current.context && !current.commentary && (
               <p className="mt-8 text-sm text-muted-foreground leading-relaxed border-l-2 border-accent/30 pl-4 relative z-10 max-w-xl">
                 {current.context}
               </p>

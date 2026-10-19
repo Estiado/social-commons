@@ -1,5 +1,5 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { ArrowLeft, Download, FileText, User, Calendar, MapPin, BookOpen, Quote, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Download, FileText, User, Calendar, MapPin, BookOpen, Quote, ExternalLink, Search, GraduationCap } from 'lucide-react';
 import { getEventById } from '@/data/events';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -129,27 +129,70 @@ export default function EventDetailPage() {
                     <span className="italic">{paper.venue}</span>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">{paper.abstract}</p>
-                </div>
-                <div className="flex flex-col gap-2 shrink-0">
-                  {paper.downloadUrl ? (
+
+                  {/* 多渠道获取入口 */}
+                  <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-border/40">
+                    {paper.downloadUrl && (
+                      <a
+                        href={paper.downloadUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-accent/10 text-accent rounded-sm hover:bg-accent/20 transition-colors"
+                      >
+                        <Download className="h-3 w-3" />
+                        开放获取PDF
+                      </a>
+                    )}
+                    {paper.pdfDownloadable && (
+                      <button
+                        onClick={() => handleDownload(paper.id)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-accent/10 text-accent rounded-sm hover:bg-accent/20 transition-colors"
+                      >
+                        <Download className="h-3 w-3" />
+                        百晓语料库下载
+                      </button>
+                    )}
+                    {paper.publisherUrl && (
+                      <a
+                        href={paper.publisherUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-border text-muted-foreground rounded-sm hover:border-accent/50 hover:text-accent transition-colors"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        出版社官网
+                      </a>
+                    )}
+                    {paper.doi && (
+                      <a
+                        href={`https://doi.org/${paper.doi}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-border text-muted-foreground rounded-sm hover:border-accent/50 hover:text-accent transition-colors"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        DOI: {paper.doi}
+                      </a>
+                    )}
                     <a
-                      href={paper.downloadUrl}
+                      href={`https://kns.cnki.net/kns8s/defaultresult/index?kw=${encodeURIComponent(paper.title)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-accent/10 text-accent rounded-sm hover:bg-accent/20 transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-border text-muted-foreground rounded-sm hover:border-accent/50 hover:text-accent transition-colors"
                     >
-                      <ExternalLink className="h-3 w-3" />
-                      原文链接
+                      <Search className="h-3 w-3" />
+                      知网检索
                     </a>
-                  ) : paper.pdfDownloadable ? (
-                    <button
-                      onClick={() => handleDownload(paper.id)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-accent/10 text-accent rounded-sm hover:bg-accent/20 transition-colors"
+                    <a
+                      href={`https://scholar.google.com/scholar?q=${encodeURIComponent(paper.title)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-border text-muted-foreground rounded-sm hover:border-accent/50 hover:text-accent transition-colors"
                     >
-                      <Download className="h-3 w-3" />
-                      获取PDF
-                    </button>
-                  ) : null}
+                      <GraduationCap className="h-3 w-3" />
+                      Google Scholar
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -159,11 +202,11 @@ export default function EventDetailPage() {
         {/* 下载说明 */}
         <div className="mt-6 p-4 bg-muted/40 border border-border/40 rounded-sm">
           <p className="text-xs text-muted-foreground leading-relaxed">
-            <strong className="text-foreground">文献下载说明：</strong>
-            标注"获取PDF"的文献可通过百晓智能学术检索平台下载公开全文；
-            标注"原文链接"的文献指向出版社或开放获取平台。
-            版权受限的文献请通过所在机构图书馆或出版社正式渠道获取。
-            所有引用文献的题录信息均来自百晓智能语料库，引用请注明原始出处。
+            <strong className="text-foreground">文献获取说明：</strong>
+            每篇文献提供多种获取渠道——"开放获取PDF"指向出版社或学术机构的免费全文；
+            "百晓语料库下载"通过百晓智能获取公开文献；"出版社官网"和"DOI"指向原始出版平台；
+            "知网检索"和"Google Scholar"可查找中文及英文文献的更多版本。
+            版权受限的文献请通过所在机构图书馆或出版社正式渠道获取。所有引用请注明原始出处。
           </p>
         </div>
       </section>

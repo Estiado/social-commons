@@ -22,6 +22,10 @@ export interface IAcademicPaper {
   downloadUrl?: string;
   externalId?: string;
   pdfDownloadable?: boolean;
+  doi?: string;
+  publisherUrl?: string;
+  cnkiUrl?: string;
+  openAccessUrl?: string;
 }
 
 export interface IEvent {
@@ -52,4 +56,23 @@ export interface IQuote {
   author: string;
   source: string;
   context?: string;
+  commentary?: {
+    text: string;
+    commentator: string;
+    commentatorSource: string;
+  };
+}
+
+export interface IEssayMaterial {
+  id: string;
+  concept: string;
+  category: string;
+  description: string;
+  applicableTopics: string[];
+  materials: {
+    title: string;
+    content: string;
+    source: string;
+    usageHint?: string;
+  }[];
 }

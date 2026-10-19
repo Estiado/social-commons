@@ -5,6 +5,7 @@ import DailyPage from '@/pages/DailyPage/DailyPage';
 import EventsPage from '@/pages/EventsPage/EventsPage';
 import EventDetailPage from '@/pages/EventDetailPage/EventDetailPage';
 import QuotesPage from '@/pages/QuotesPage/QuotesPage';
+import EssayPage from '@/pages/EssayPage/EssayPage';
 import NotFoundPage from '@/pages/NotFoundPage/NotFoundPage';
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="events" element={<EventsPage />} />
         <Route path="events/:id" element={<EventDetailPage />} />
         <Route path="quotes" element={<QuotesPage />} />
+        <Route path="essay" element={<EssayPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

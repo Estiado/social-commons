@@ -1,4 +1,8 @@
 {
+  "app": {
+    "id": "app_17gc0vsawux",
+    "online_url": "https://scns9z1clvkk.doubao.link/app/app_17gc0vsawux"
+  },
   "build": {
     "command": [
       "npm",
