@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { BookOpen, Calendar, Landmark, Feather, PenTool } from 'lucide-react';
+import { BookOpen, Calendar, Landmark, Feather, PenTool, Waves } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { path: '/events', label: '群鉴', icon: Landmark },
   { path: '/quotes', label: '撷英', icon: Feather },
   { path: '/essay', label: '议论文素材', icon: PenTool },
+  { path: '/guanlan', label: '观澜', icon: Waves },
 ];
 
 export const Layout = () => {
