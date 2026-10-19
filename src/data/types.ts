@@ -40,6 +40,14 @@ export interface IEvent {
   references: { title: string; url?: string }[];
 }
 
+export interface IMediaReference {
+  title: string;
+  source: string;
+  excerpt: string;
+  url?: string;
+  date?: string;
+}
+
 export interface IDailyKnowledge {
   id: string;
   date: string;
@@ -48,6 +56,7 @@ export interface IDailyKnowledge {
   summary: string;
   content: string;
   source: string;
+  mediaReferences?: IMediaReference[];
 }
 
 export interface IQuote {
