@@ -1,41 +1,328 @@
-import { useState } from 'react';
-import { PenTool, Tag, Lightbulb, BookOpen, ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import {
+  PenTool,
+  Tag,
+  Lightbulb,
+  BookOpen,
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  Search,
+  Plus,
+  X,
+  Trash2,
+} from 'lucide-react';
 import { ESSAY_MATERIALS, getEssayCategories } from '@/data/essay';
+import type { IEssayMaterial } from '@/data/types';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 export default function EssayPage() {
-  const [activeCategory, setActiveCategory] = useState('全部');
+  const [activePrimary, setActivePrimary] = useState<string>('全部');
+  const [activeSub, setActiveSub] = useState<string>('全部');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [showTagForm, setShowTagForm] = useState(false);
 
-  const categories = getEssayCategories();
-  const filtered =
-    activeCategory === '全部'
-      ? ESSAY_MATERIALS
-      : ESSAY_MATERIALS.filter((m) => m.category.startsWith(activeCategory));
+  // 用户自定义词条和标签（存在localStorage）
+  const [customMaterials, setCustomMaterials] = useLocalStorage<IEssayMaterial[]>('custom-essay-materials', []);
+  const [customCategories, setCustomCategories] = useLocalStorage<string[]>('custom-categories', []);
+
+  // 新词条表单状态
+  const [newConcept, setNewConcept] = useState('');
+  const [newCategory, setNewCategory] = useState('');
+  const [newDescription, setNewDescription] = useState('');
+  const [newTopics, setNewTopics] = useState('');
+  const [newMaterialTitle, setNewMaterialTitle] = useState('');
+  const [newMaterialContent, setNewMaterialContent] = useState('');
+  const [newMaterialSource, setNewMaterialSource] = useState('');
+
+  // 新标签表单状态
+  const [newTag, setNewTag] = useState('');
+
+  // 合并内置+自定义词条
+  const allMaterials = useMemo(() => [...ESSAY_MATERIALS, ...customMaterials], [customMaterials]);
+
+  // 一级分类
+  const primaryCategories = useMemo(() => {
+    const primaries = new Set<string>();
+    allMaterials.forEach((m) => primaries.add(m.category.split(' · ')[0]));
+    customCategories.forEach((c) => primaries.add(c.split(' · ')[0]));
+    return ['全部', ...Array.from(primaries)];
+  }, [allMaterials, customCategories]);
+
+  // 二级分类
+  const subCategories = useMemo(() => {
+    if (activePrimary === '全部') return [];
+    const subs = new Set<string>();
+    allMaterials
+      .filter((m) => m.category.startsWith(activePrimary))
+      .forEach((m) => {
+        const parts = m.category.split(' · ');
+        if (parts[1]) subs.add(parts[1]);
+      });
+    customCategories
+      .filter((c) => c.startsWith(activePrimary))
+      .forEach((c) => {
+        const parts = c.split(' · ');
+        if (parts[1]) subs.add(parts[1]);
+      });
+    return ['全部', ...Array.from(subs)];
+  }, [activePrimary, allMaterials, customCategories]);
+
+  // 筛选+搜索
+  const filtered = useMemo(() => {
+    return allMaterials.filter((m) => {
+      // 分类筛选
+      if (activePrimary !== '全部') {
+        if (!m.category.startsWith(activePrimary)) return false;
+        if (activeSub !== '全部' && m.category !== `${activePrimary} · ${activeSub}`) return false;
+      }
+      // 搜索
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const searchable = [
+          m.concept,
+          m.description,
+          m.category,
+          ...m.applicableTopics,
+          ...m.materials.map((mat) => `${mat.title} ${mat.content} ${mat.source}`),
+        ]
+          .join(' ')
+          .toLowerCase();
+        if (!searchable.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [allMaterials, activePrimary, activeSub, searchQuery]);
+
+  const handlePrimaryChange = (cat: string) => {
+    setActivePrimary(cat);
+    setActiveSub('全部');
+  };
+
+  const handleAddMaterial = () => {
+    if (!newConcept.trim() || !newCategory.trim()) return;
+    const newMaterial: IEssayMaterial = {
+      id: `custom-${Date.now()}`,
+      concept: newConcept.trim(),
+      category: newCategory.trim(),
+      description: newDescription.trim() || '（用户自定义词条，待补充描述）',
+      applicableTopics: newTopics
+        .split(/[,，、]/)
+        .map((t) => t.trim())
+        .filter(Boolean),
+      materials: newMaterialContent.trim()
+        ? [
+            {
+              title: newMaterialTitle.trim() || '素材1',
+              content: newMaterialContent.trim(),
+              source: newMaterialSource.trim() || '用户整理',
+            },
+          ]
+        : [],
+    };
+    setCustomMaterials((prev) => [...prev, newMaterial]);
+    // 重置表单
+    setNewConcept('');
+    setNewCategory('');
+    setNewDescription('');
+    setNewTopics('');
+    setNewMaterialTitle('');
+    setNewMaterialContent('');
+    setNewMaterialSource('');
+    setShowAddForm(false);
+  };
+
+  const handleAddTag = () => {
+    if (!newTag.trim()) return;
+    if (!customCategories.includes(newTag.trim())) {
+      setCustomCategories((prev) => [...prev, newTag.trim()]);
+    }
+    setNewTag('');
+    setShowTagForm(false);
+  };
+
+  const handleDeleteCustom = (id: string) => {
+    setCustomMaterials((prev) => prev.filter((m) => m.id !== id));
+  };
+
+  const isCustom = (id: string) => id.startsWith('custom-');
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       {/* 页头 */}
-      <div className="mb-10">
+      <div className="mb-8">
         <div className="flex items-center gap-2 mb-3">
           <PenTool className="h-4 w-4 text-accent" />
           <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Essay · 议论文素材</span>
         </div>
         <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">高考议论文素材库</h1>
         <p className="text-muted-foreground max-w-2xl leading-relaxed">
-          每个通识概念都可以成为议论文的优质素材。这里整理了概念的适用话题和素材框架，
-          你可以从网上摘抄优秀文段填入，积累属于自己的素材库。
+          每个通识概念都可以成为议论文的优质素材。你可以从网上摘抄优秀文段填入，也可以添加自己的词条和分类，积累属于自己的素材库。
         </p>
       </div>
 
-      {/* 分类筛选 */}
-      <div className="flex flex-wrap gap-2 mb-10">
-        {categories.map((cat) => (
+      {/* 搜索 + 操作按钮 */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="搜索概念、素材、适用话题..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setShowAddForm(!showAddForm);
+            setShowTagForm(false);
+          }}
+          className="gap-2"
+        >
+          <Plus className="h-4 w-4" />
+          添加词条
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setShowTagForm(!showTagForm);
+            setShowAddForm(false);
+          }}
+          className="gap-2"
+        >
+          <Tag className="h-4 w-4" />
+          添加标签
+        </Button>
+      </div>
+
+      {/* 添加词条表单 */}
+      {showAddForm && (
+        <div className="mb-6 p-5 border border-accent/30 bg-accent/5 rounded-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-serif text-lg font-semibold">添加自定义词条</h3>
+            <button onClick={() => setShowAddForm(false)} className="text-muted-foreground hover:text-foreground">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-xs mb-1 block">概念名称 *</Label>
+              <Input placeholder="如：沉默的螺旋" value={newConcept} onChange={(e) => setNewConcept(e.target.value)} />
+            </div>
+            <div>
+              <Label className="text-xs mb-1 block">分类 *（格式：一级 · 二级，如"传播学 · 舆论学"）</Label>
+              <Input placeholder="传播学 · 舆论学" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
+            </div>
+          </div>
+          <div className="mt-4">
+            <Label className="text-xs mb-1 block">概念描述</Label>
+            <Textarea
+              placeholder="简要说明这个概念的含义和适用场景..."
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
+              rows={2}
+            />
+          </div>
+          <div className="mt-4">
+            <Label className="text-xs mb-1 block">适用话题（用逗号分隔）</Label>
+            <Input
+              placeholder="如：舆论力量, 群体心理, 独立思考"
+              value={newTopics}
+              onChange={(e) => setNewTopics(e.target.value)}
+            />
+          </div>
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-xs mb-1 block">素材标题</Label>
+              <Input
+                placeholder="如：示例：某事件中的沉默螺旋"
+                value={newMaterialTitle}
+                onChange={(e) => setNewMaterialTitle(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label className="text-xs mb-1 block">素材来源</Label>
+              <Input
+                placeholder="如：人民日报评论"
+                value={newMaterialSource}
+                onChange={(e) => setNewMaterialSource(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="mt-4">
+            <Label className="text-xs mb-1 block">素材正文（可从网上摘抄优秀文段）</Label>
+            <Textarea
+              placeholder="粘贴你摘抄的文段..."
+              value={newMaterialContent}
+              onChange={(e) => setNewMaterialContent(e.target.value)}
+              rows={4}
+            />
+          </div>
+          <div className="mt-4 flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setShowAddForm(false)}>
+              取消
+            </Button>
+            <Button onClick={handleAddMaterial} disabled={!newConcept.trim() || !newCategory.trim()}>
+              保存词条
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* 添加标签表单 */}
+      {showTagForm && (
+        <div className="mb-6 p-5 border border-accent/30 bg-accent/5 rounded-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-serif text-lg font-semibold">添加自定义分类标签</h3>
+            <button onClick={() => setShowTagForm(false)} className="text-muted-foreground hover:text-foreground">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="flex gap-3">
+            <Input
+              placeholder="格式：一级 · 二级，如：传播学 · 舆论学"
+              value={newTag}
+              onChange={(e) => setNewTag(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAddTag()}
+            />
+            <Button onClick={handleAddTag} disabled={!newTag.trim()}>
+              添加
+            </Button>
+          </div>
+          {customCategories.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {customCategories.map((cat) => (
+                <span key={cat} className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-muted/60 rounded-sm">
+                  {cat}
+                  <button
+                    onClick={() => setCustomCategories((prev) => prev.filter((c) => c !== cat))}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 一级分类筛选 */}
+      <div className="flex flex-wrap gap-2 mb-3">
+        {primaryCategories.map((cat) => (
           <button
             key={cat}
-            onClick={() => setActiveCategory(cat)}
+            onClick={() => handlePrimaryChange(cat)}
             className={`px-4 py-1.5 text-sm rounded-sm transition-colors ${
-              activeCategory === cat
+              activePrimary === cat
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
             }`}
@@ -45,7 +332,28 @@ export default function EssayPage() {
         ))}
       </div>
 
-      {/* 概念列表 */}
+      {/* 二级分类筛选 */}
+      {subCategories.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 mb-8 pl-2 border-l-2 border-accent/20">
+          <span className="text-xs text-muted-foreground mr-1">细分：</span>
+          {subCategories.map((sub) => (
+            <button
+              key={sub}
+              onClick={() => setActiveSub(sub)}
+              className={`px-3 py-1 text-xs rounded-sm transition-colors ${
+                activeSub === sub
+                  ? 'bg-accent/15 text-accent border border-accent/30'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+              }`}
+            >
+              {sub}
+            </button>
+          ))}
+        </div>
+      )}
+      {subCategories.length === 0 && <div className="mb-8" />}
+
+      {/* 词条列表 */}
       <div className="space-y-4">
         {filtered.map((item) => {
           const isExpanded = expandedId === item.id;
@@ -65,9 +373,10 @@ export default function EssayPage() {
                         <Tag className="h-3 w-3 mr-1" />
                         {item.category}
                       </Badge>
-                      <span className="text-xs text-muted-foreground">
-                        {item.materials.length} 条素材
-                      </span>
+                      <span className="text-xs text-muted-foreground">{item.materials.length} 条素材</span>
+                      {isCustom(item.id) && (
+                        <span className="text-xs px-1.5 py-0.5 bg-accent/10 text-accent rounded-sm">自定义</span>
+                      )}
                     </div>
                     <h2 className="font-serif text-xl font-semibold mb-2">{item.concept}</h2>
                     <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
@@ -83,7 +392,19 @@ export default function EssayPage() {
                       ))}
                     </div>
                   </div>
-                  <div className="shrink-0 mt-1">
+                  <div className="flex items-center gap-2 shrink-0 mt-1">
+                    {isCustom(item.id) && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteCustom(item.id);
+                        }}
+                        className="p-1 text-muted-foreground hover:text-destructive transition-colors"
+                        title="删除此词条"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
                     {isExpanded ? (
                       <ChevronUp className="h-5 w-5 text-muted-foreground" />
                     ) : (
@@ -100,41 +421,40 @@ export default function EssayPage() {
                     <FileText className="h-4 w-4 text-accent" />
                     <span className="text-sm font-medium">素材列表</span>
                   </div>
-                  <div className="space-y-4">
-                    {item.materials.map((material, idx) => (
-                      <div
-                        key={idx}
-                        className="border border-border/40 bg-muted/20 rounded-sm p-5"
-                      >
-                        <h3 className="font-serif text-base font-semibold mb-3">
-                          {material.title}
-                        </h3>
-                        <p className="text-sm text-foreground/80 leading-relaxed mb-3 whitespace-pre-line">
-                          {material.content}
-                        </p>
-                        <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <BookOpen className="h-3 w-3" />
-                            来源：{material.source}
-                          </span>
-                          {material.usageHint && (
-                            <span className="flex items-center gap-1 text-accent/80">
-                              <Lightbulb className="h-3 w-3" />
-                              {material.usageHint}
+                  {item.materials.length > 0 ? (
+                    <div className="space-y-4">
+                      {item.materials.map((material, idx) => (
+                        <div key={idx} className="border border-border/40 bg-muted/20 rounded-sm p-5">
+                          <h3 className="font-serif text-base font-semibold mb-3">{material.title}</h3>
+                          <p className="text-sm text-foreground/80 leading-relaxed mb-3 whitespace-pre-line">
+                            {material.content}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <BookOpen className="h-3 w-3" />
+                              来源：{material.source}
                             </span>
-                          )}
+                            {material.usageHint && (
+                              <span className="flex items-center gap-1 text-accent/80">
+                                <Lightbulb className="h-3 w-3" />
+                                {material.usageHint}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground italic">暂无素材，可在数据文件中添加或后续补充。</p>
+                  )}
 
                   {/* 添加素材提示 */}
                   <div className="mt-5 p-4 border border-dashed border-border/60 rounded-sm">
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      <strong className="text-foreground">添加素材：</strong>
+                      <strong className="text-foreground">添加更多素材：</strong>
                       在 <code className="bg-muted px-1.5 py-0.5 rounded text-xs">src/data/essay.ts</code> 中
                       找到对应概念，在 <code className="bg-muted px-1.5 py-0.5 rounded text-xs">materials</code> 数组里
-                      添加新对象即可。格式：<code className="bg-muted px-1.5 py-0.5 rounded text-xs">{'{ title, content, source, usageHint }'}</code>
+                      添加新对象即可。格式：<code className="bg-muted px-1.5 py-0.5 rounded text-xs">{'{ title, content, source, usageHint? }'}</code>
                     </p>
                   </div>
                 </div>
@@ -147,9 +467,18 @@ export default function EssayPage() {
       {filtered.length === 0 && (
         <div className="text-center py-20 text-muted-foreground">
           <PenTool className="h-12 w-12 mx-auto mb-4 opacity-30" />
-          <p>该分类下暂无素材</p>
+          <p>没有找到匹配的词条</p>
+          <p className="text-xs mt-1">试试其他关键词，或点击"添加词条"创建新的素材</p>
         </div>
       )}
+
+      {/* 底部说明 */}
+      <div className="mt-12 p-6 bg-muted/30 border border-border/40 rounded-sm">
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          自定义词条和标签保存在当前浏览器中（localStorage），换设备或清除浏览器数据会丢失。
+          建议重要素材同时备份到 <code className="bg-muted px-1 py-0.5 rounded">src/data/essay.ts</code> 文件中。
+        </p>
+      </div>
     </div>
   );
 }

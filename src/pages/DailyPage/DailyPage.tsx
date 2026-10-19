@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { Calendar, BookOpen, ChevronDown, ChevronUp, Tag, Clock, Newspaper, ExternalLink } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Calendar, BookOpen, ChevronDown, ChevronUp, Tag, Clock, Newspaper, ExternalLink, Search } from 'lucide-react';
 import { DAILY_KNOWLEDGE } from '@/data/daily';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 
 export default function DailyPage() {
   const [expandedId, setExpandedId] = useState<string | null>(DAILY_KNOWLEDGE[0]?.id || null);
   const [activePrimary, setActivePrimary] = useState<string>('全部');
   const [activeSub, setActiveSub] = useState<string>('全部');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // 提取一级分类
   const primaryCategories = ['全部', ...Array.from(new Set(DAILY_KNOWLEDGE.map((d) => d.category.split(' · ')[0])))];
@@ -17,13 +19,23 @@ export default function DailyPage() {
       ? []
       : ['全部', ...Array.from(new Set(DAILY_KNOWLEDGE.filter((d) => d.category.startsWith(activePrimary)).map((d) => d.category.split(' · ')[1] || d.category)))];
 
-  // 筛选逻辑
-  const filtered = DAILY_KNOWLEDGE.filter((d) => {
-    if (activePrimary === '全部') return true;
-    if (!d.category.startsWith(activePrimary)) return false;
-    if (activeSub === '全部') return true;
-    return d.category === `${activePrimary} · ${activeSub}`;
-  });
+  // 筛选+搜索
+  const filtered = useMemo(() => {
+    return DAILY_KNOWLEDGE.filter((d) => {
+      // 分类筛选
+      if (activePrimary !== '全部') {
+        if (!d.category.startsWith(activePrimary)) return false;
+        if (activeSub !== '全部' && d.category !== `${activePrimary} · ${activeSub}`) return false;
+      }
+      // 搜索
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const searchable = [d.title, d.summary, d.content, d.category, d.source].join(' ').toLowerCase();
+        if (!searchable.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [activePrimary, activeSub, searchQuery]);
 
   const handlePrimaryChange = (cat: string) => {
     setActivePrimary(cat);
@@ -42,6 +54,17 @@ export default function DailyPage() {
         <p className="text-muted-foreground max-w-2xl leading-relaxed">
           每天一个知识点，覆盖哲学、历史、经济、社会学、文学等领域。积跬步以至千里，每天拓宽一点点认知的边界。
         </p>
+      </div>
+
+      {/* 搜索框 */}
+      <div className="relative mb-6">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="搜索概念、内容、来源..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9"
+        />
       </div>
 
       {/* 一级分类筛选 */}
