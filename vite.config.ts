@@ -20,6 +20,8 @@ function miaodaOutputPlugin(): Plugin {
     apply: 'build',
     // closeBundle 在 vite 全部写盘后执行，此时可安全整理并清理中间产物
     closeBundle() {
+      // 仅在妙搭部署环境下执行产物分层整理；Vercel/Netlify等通用平台直接用 dist/client
+      if (!process.env.MIAODA_CLIENT_BASE_PATH) return;
       const dist = path.resolve(import.meta.dirname, 'dist');
       const client = path.join(dist, 'client');
       const output = path.join(dist, 'output');
