@@ -48,11 +48,11 @@ export default function DailyPage() {
       <div className="mb-10">
         <div className="flex items-center gap-2 mb-3">
           <Calendar className="h-4 w-4 text-accent" />
-          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Daily · 每日通识</span>
+          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Daily · 日新</span>
         </div>
-        <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">每日知识</h1>
+        <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">日新</h1>
         <p className="text-muted-foreground max-w-2xl leading-relaxed">
-          每天一个知识点，覆盖哲学、历史、经济、社会学、文学等领域。积跬步以至千里，每天拓宽一点点认知的边界。
+          苟日新，日日新，又日新。每天一个知识点，覆盖哲学、历史、经济、社会学、文学等领域，积跬步以至千里。
         </p>
       </div>
 
@@ -207,7 +207,7 @@ export default function DailyPage() {
       {/* 底部说明 */}
       <div className="mt-12 p-6 bg-muted/30 border border-border/40 rounded-sm">
         <p className="text-xs text-muted-foreground leading-relaxed">
-          每日通识内容基于学术文献、权威著作和可靠资料整理。媒体评论栏目收录人民日报、南方周末等主流媒体的相关论述，供多视角参考。
+          日新栏目内容基于学术文献、权威著作和可靠资料整理。媒体评论栏目收录人民日报、南方周末等主流媒体的相关论述，供多视角参考。
           如需深入研究，建议查阅原始来源。内容持续更新中，更多学科领域的知识正在路上。
         </p>
       </div>

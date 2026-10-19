@@ -34,11 +34,11 @@ export default function QuotesPage() {
       <div className="mb-10 text-center">
         <div className="flex items-center justify-center gap-2 mb-3">
           <Feather className="h-4 w-4 text-accent" />
-          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Quote of the Day · 每日一句</span>
+          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Quote of the Day · 撷英</span>
         </div>
-        <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">句读</h1>
+        <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">撷英</h1>
         <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-          一句话，一个世界。在文字的微光里，感受文学的温度与思想的重量。
+          含英咀华。一句话，一个世界。在文字的微光里，感受文学的温度与思想的重量。
         </p>
       </div>
 

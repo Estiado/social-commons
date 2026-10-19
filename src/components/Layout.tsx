@@ -4,9 +4,9 @@ import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
   { path: '/', label: '首页', icon: BookOpen, end: true },
-  { path: '/daily', label: '每日通识', icon: Calendar },
-  { path: '/events', label: '事件精读', icon: Landmark },
-  { path: '/quotes', label: '每日一句', icon: Feather },
+  { path: '/daily', label: '日新', icon: Calendar },
+  { path: '/events', label: '群鉴', icon: Landmark },
+  { path: '/quotes', label: '撷英', icon: Feather },
   { path: '/essay', label: '议论文素材', icon: PenTool },
 ];
 

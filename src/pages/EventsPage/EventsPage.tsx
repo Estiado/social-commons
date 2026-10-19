@@ -19,11 +19,11 @@ export default function EventsPage() {
       <div className="mb-10">
         <div className="flex items-center gap-2 mb-3">
           <Landmark className="h-4 w-4 text-accent" />
-          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Events · 事件精读</span>
+          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Events · 群鉴</span>
         </div>
-        <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">多视角读史</h1>
+        <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">群鉴</h1>
         <p className="text-muted-foreground max-w-2xl leading-relaxed">
-          每一个历史事件都不止一种叙述。这里汇集各方史料记载、原住民口述传统、后世学者研究，
+          以史为鉴，可以知兴替。每一个历史事件都不止一种叙述。这里汇集各方史料记载、原住民口述传统、后世学者研究，
           让你在比较中理解历史的复杂性。
         </p>
       </div>

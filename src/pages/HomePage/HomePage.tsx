@@ -17,7 +17,7 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero 区 - 每日一句 */}
+      {/* Hero 区 - 撷英 */}
       <section className="relative overflow-hidden">
         {/* 宣纸纹理背景 */}
         <div
@@ -61,9 +61,9 @@ export default function HomePage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Today · 每日通识</span>
+              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Today · 日新</span>
             </div>
-            <h2 className="font-serif text-2xl md:text-3xl font-semibold">今日知识</h2>
+            <h2 className="font-serif text-2xl md:text-3xl font-semibold">今日日新</h2>
           </div>
           <Link
             to="/daily"
@@ -96,9 +96,9 @@ export default function HomePage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Landmark className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Featured · 事件精读</span>
+              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Featured · 群鉴</span>
             </div>
-            <h2 className="font-serif text-2xl md:text-3xl font-semibold">多视角读史</h2>
+            <h2 className="font-serif text-2xl md:text-3xl font-semibold">群鉴</h2>
           </div>
           <Link
             to="/events"
@@ -163,14 +163,14 @@ export default function HomePage() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-sm text-sm font-medium hover:bg-accent transition-colors"
               >
                 <Landmark className="h-4 w-4" />
-                开始事件精读
+                进入群鉴
               </Link>
               <Link
                 to="/quotes"
                 className="inline-flex items-center gap-2 px-6 py-3 border border-border rounded-sm text-sm font-medium hover:border-accent hover:text-accent transition-colors"
               >
                 <Feather className="h-4 w-4" />
-                浏览每日一句
+                浏览撷英
               </Link>
             </div>
           </div>
