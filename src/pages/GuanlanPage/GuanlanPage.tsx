@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TOPICS } from '@/data/topics';
+import { PRESET_ARTICLES } from '@/data/presetArticles';
 
 interface Article {
   id: string;
@@ -17,6 +18,7 @@ interface Article {
   excerpt: string | null;
   tags: string[];
   created_at: string;
+  is_preset?: boolean;
 }
 
 export default function GuanlanPage() {
@@ -34,31 +36,68 @@ export default function GuanlanPage() {
     return topicParam || '全部';
   });
 
-  // 获取文章列表（纯函数，不包含setState）
+  // 获取文章列表（合并预置文章和用户提交的文章）
   const fetchArticles = useCallback(
     async (query: string, source: string, topic: string): Promise<Article[]> => {
-      if (!supabase) return [];
-      let dbQuery = supabase
-        .from('articles')
-        .select('id, url, title, author, source, published_at, excerpt, tags, created_at')
-        .eq('is_public', true)
-        .order('created_at', { ascending: false });
+      let dbArticles: Article[] = [];
 
-      if (query.trim()) {
-        dbQuery = dbQuery.or(`title.ilike.%${query}%,excerpt.ilike.%${query}%,tags.cs.{${query}}`);
+      if (supabase) {
+        let dbQuery = supabase
+          .from('articles')
+          .select('id, url, title, author, source, published_at, excerpt, tags, created_at')
+          .eq('is_public', true)
+          .order('created_at', { ascending: false });
+
+        if (query.trim()) {
+          dbQuery = dbQuery.or(`title.ilike.%${query}%,excerpt.ilike.%${query}%,tags.cs.{${query}}`);
+        }
+
+        if (source !== '全部') {
+          dbQuery = dbQuery.eq('source', source);
+        }
+
+        if (topic !== '全部') {
+          dbQuery = dbQuery.contains('tags', [topic]);
+        }
+
+        const { data, error } = await dbQuery.limit(50);
+        if (error) throw error;
+        dbArticles = data || [];
       }
 
-      if (source !== '全部') {
-        dbQuery = dbQuery.eq('source', source);
-      }
+      // 筛选预置文章
+      const lowerQuery = query.trim().toLowerCase();
+      const presetArticles: Article[] = PRESET_ARTICLES.filter((a) => {
+        if (source !== '全部' && a.source !== source) return false;
+        if (topic !== '全部' && !a.tags.includes(topic)) return false;
+        if (lowerQuery) {
+          const searchText = `${a.title} ${a.author} ${a.source} ${a.excerpt} ${a.tags.join(' ')}`.toLowerCase();
+          if (!searchText.includes(lowerQuery)) return false;
+        }
+        return true;
+      }).map((a) => ({
+        id: a.id,
+        url: a.url,
+        title: a.title,
+        author: a.author,
+        source: a.source,
+        published_at: a.published_at,
+        excerpt: a.excerpt,
+        tags: a.tags,
+        created_at: a.published_at,
+        is_preset: true,
+      }));
 
-      if (topic !== '全部') {
-        dbQuery = dbQuery.contains('tags', [topic]);
-      }
+      // 合并并按时间排序（预置文章在前，因为是经典内容）
+      const allArticles = [...presetArticles, ...dbArticles];
+      allArticles.sort((a, b) => {
+        // 预置文章优先
+        if (a.is_preset && !b.is_preset) return -1;
+        if (!a.is_preset && b.is_preset) return 1;
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
 
-      const { data, error } = await dbQuery.limit(50);
-      if (error) throw error;
-      return data || [];
+      return allArticles.slice(0, 60);
     },
     [],
   );
@@ -271,12 +310,15 @@ export default function GuanlanPage() {
           {articles.map((article) => (
             <Link
               key={article.id}
-              to={`/guanlan/${article.id}`}
+              to={article.is_preset ? `/guanlan/preset/${article.id}` : `/guanlan/${article.id}`}
               className="block border border-border/60 bg-card rounded-sm p-6 hover:border-accent/30 hover:shadow-md transition-all duration-300 group"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-3 mb-2">
+                    {article.is_preset && (
+                      <Badge className="bg-amber-100 text-amber-800 border-amber-200">经典</Badge>
+                    )}
                     {article.source && (
                       <Badge variant="outline" className="border-accent/30 text-accent">
                         {article.source}

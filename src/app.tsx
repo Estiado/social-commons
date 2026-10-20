@@ -8,6 +8,7 @@ import QuotesPage from '@/pages/QuotesPage/QuotesPage';
 import EssayPage from '@/pages/EssayPage/EssayPage';
 import GuanlanPage from '@/pages/GuanlanPage/GuanlanPage';
 import ArticleDetailPage from '@/pages/ArticleDetailPage/ArticleDetailPage';
+import PresetArticleDetailPage from '@/pages/PresetArticleDetailPage/PresetArticleDetailPage';
 import ParagraphsPage from '@/pages/ParagraphsPage/ParagraphsPage';
 import CollectionsPage from '@/pages/CollectionsPage/CollectionsPage';
 import CollectionDetailPage from '@/pages/CollectionDetailPage/CollectionDetailPage';
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="quotes" element={<QuotesPage />} />
         <Route path="essay" element={<EssayPage />} />
         <Route path="guanlan" element={<GuanlanPage />} />
+        <Route path="guanlan/preset/:id" element={<PresetArticleDetailPage />} />
         <Route path="guanlan/:id" element={<ArticleDetailPage />} />
         <Route path="paragraphs" element={<ParagraphsPage />} />
         <Route path="collections" element={<CollectionsPage />} />
