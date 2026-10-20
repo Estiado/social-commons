@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
 const STORAGE_KEY = 'social-commons:user-id';
 
 /**
  * 生成一个简单的唯一ID（UUID v4格式的简化版）
- * 原理：利用随机数和时间戳生成几乎不可能重复的字符串
+ * 用于Supabase未配置时的降级方案
  */
-function generateId(): string {
+function generateLocalId(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
@@ -15,32 +16,79 @@ function generateId(): string {
 }
 
 /**
- * useUserId — 匿名用户标识hook
+ * useUserId — 用户标识hook
  *
  * 工作原理：
- * 1. 组件挂载时，从localStorage读取已有的用户ID
- * 2. 如果没有（第一次访问），生成一个新ID并存入localStorage
- * 3. 返回这个ID，所有收藏/素材包操作都带上它
+ * 1. 如果配置了Supabase，调用匿名登录(signInAnonymously)获取auth.uid()
+ *    - 匿名用户会获得authenticated角色，RLS策略中auth.uid()能正常匹配
+ *    - session存在浏览器localStorage，刷新不丢失
+ *    - 以后可以升级为正式账号（邮箱/手机号登录），数据会保留
+ * 2. 如果未配置Supabase，降级为本地生成UUID存在localStorage
  *
- * 注意：这是匿名标识，不是真正的用户账号。
- * 换浏览器、清除缓存会丢失。第三期会接入真正的注册登录。
+ * 注意：匿名登录需要在Supabase控制台启用
+ * Authentication → Sign In / Providers → Allow anonymous sign-ins
  */
 export function useUserId(): string {
   const [userId, setUserId] = useState<string>('');
 
   useEffect(() => {
-    try {
-      let id = localStorage.getItem(STORAGE_KEY);
-      if (!id) {
-        id = generateId();
-        localStorage.setItem(STORAGE_KEY, id);
+    let cancelled = false;
+
+    async function initUser() {
+      // 方案一：Supabase匿名登录
+      if (supabase) {
+        try {
+          // 先检查是否已有session
+          const { data: { session } } = await supabase.auth.getSession();
+
+          if (session?.user?.id) {
+            if (!cancelled) setUserId(session.user.id);
+            return;
+          }
+
+          // 没有session，发起匿名登录
+          const { data, error } = await supabase.auth.signInAnonymously();
+          if (error) throw error;
+          if (data.user?.id && !cancelled) {
+            setUserId(data.user.id);
+          }
+        } catch (err) {
+          console.warn('Supabase匿名登录失败，降级为本地ID:', err);
+          // 降级到本地方案
+          fallbackToLocal();
+        }
+      } else {
+        // 方案二：本地生成ID（Supabase未配置时）
+        fallbackToLocal();
       }
-      setUserId(id);
-    } catch (error) {
-      // localStorage不可用时，用内存中的临时ID
-      console.warn('localStorage不可用，使用临时用户ID');
-      setUserId(generateId());
     }
+
+    function fallbackToLocal() {
+      try {
+        let id = localStorage.getItem(STORAGE_KEY);
+        if (!id) {
+          id = generateLocalId();
+          localStorage.setItem(STORAGE_KEY, id);
+        }
+        if (!cancelled) setUserId(id);
+      } catch {
+        if (!cancelled) setUserId(generateLocalId());
+      }
+    }
+
+    initUser();
+
+    // 监听auth状态变化
+    const { data: authListener } = supabase?.auth.onAuthStateChange((_event, session) => {
+      if (session?.user?.id && !cancelled) {
+        setUserId(session.user.id);
+      }
+    }) || { data: null };
+
+    return () => {
+      cancelled = true;
+      authListener?.subscription?.unsubscribe();
+    };
   }, []);
 
   return userId;
