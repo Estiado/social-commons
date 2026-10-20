@@ -57,6 +57,7 @@ export default function ArticleDetailPage() {
   const [toolbarPos, setToolbarPos] = useState<{ x: number; y: number } | null>(null);
   const [savingHighlight, setSavingHighlight] = useState(false);
   const [highlightSaved, setHighlightSaved] = useState(false);
+  const [relatedArticles, setRelatedArticles] = useState<Array<{ id: string; title: string; source: string | null }>>([]);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // 获取文章详情和段落
@@ -85,6 +86,23 @@ export default function ArticleDetailPage() {
       setArticle(articleRes.data);
       setParagraphs(paragraphsRes.data || []);
       setSavedParagraphIds(new Set((savedRes.data || []).map((s: { paragraph_id: string }) => s.paragraph_id)));
+
+      // 查询相关文章（基于话题标签）
+      const tags = articleRes.data?.tags || [];
+      if (tags.length > 0 && supabase) {
+        // 用第一个话题标签查询相关文章
+        const { data: relatedData } = await supabase
+          .from('articles')
+          .select('id, title, source')
+          .eq('is_public', true)
+          .neq('id', id)
+          .contains('tags', [tags[0]])
+          .order('created_at', { ascending: false })
+          .limit(5);
+        setRelatedArticles(relatedData || []);
+      } else {
+        setRelatedArticles([]);
+      }
     } catch (err) {
       console.error('获取文章失败:', err);
       setError(err instanceof Error ? err.message : '加载失败');
@@ -351,6 +369,36 @@ export default function ArticleDetailPage() {
           <FileText className="h-10 w-10 mx-auto mb-3 opacity-30" />
           <p className="text-sm">该文章暂无分段内容</p>
           <p className="text-xs mt-1">可能是提取时未获取到正文，可点击上方"阅读原文"查看</p>
+        </div>
+      )}
+
+      {/* 相关文章推荐 */}
+      {relatedArticles.length > 0 && (
+        <div className="mt-12 pt-8 border-t border-border/40">
+          <h3 className="font-serif text-lg font-semibold mb-4 flex items-center gap-2">
+            <FileText className="h-4 w-4 text-accent" />
+            同话题推荐
+          </h3>
+          <div className="space-y-3">
+            {relatedArticles.map((ra) => (
+              <Link
+                key={ra.id}
+                to={`/guanlan/${ra.id}`}
+                className="block p-4 border border-border/40 rounded-sm hover:border-accent/30 hover:bg-accent/5 transition-all group"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium group-hover:text-accent transition-colors line-clamp-1">
+                    {ra.title}
+                  </p>
+                  {ra.source && (
+                    <Badge variant="outline" className="border-accent/20 text-accent text-xs shrink-0">
+                      {ra.source}
+                    </Badge>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       )}
 
