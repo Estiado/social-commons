@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useLocation, Link } from 'react-router-dom';
-import { BookOpen, Calendar, Landmark, Feather, PenTool, Waves, User, Bookmark, FolderOpen, ChevronDown } from 'lucide-react';
+import { BookOpen, Calendar, Landmark, Feather, PenTool, Waves, User, Bookmark, FolderOpen, ChevronDown, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { path: '/daily', label: '日新', icon: Calendar },
   { path: '/events', label: '群鉴', icon: Landmark },
   { path: '/quotes', label: '撷英', icon: Feather },
+  { path: '/topics', label: '专题', icon: Sparkles },
   { path: '/essay', label: '议论文素材', icon: PenTool },
   { path: '/guanlan', label: '观澜', icon: Waves },
 ];
