@@ -93,12 +93,16 @@ export default function ParagraphsPage() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      // Supabase关联查询返回数组，这里取第一个元素（一对一关系）
+      // Supabase关联查询可能返回数组或对象，兼容两种情况
       setParagraphs(
-        (data || []).map((item: any) => ({
-          ...item,
-          article_paragraphs: item.article_paragraphs?.[0] || null,
-        })) as unknown as SavedParagraph[],
+        (data || [])
+          .map((item: any) => {
+            const para = Array.isArray(item.article_paragraphs)
+              ? item.article_paragraphs[0]
+              : item.article_paragraphs;
+            return { ...item, article_paragraphs: para || null };
+          })
+          .filter((item: any) => item.article_paragraphs) as unknown as SavedParagraph[],
       );
     } catch (err) {
       console.error('获取收藏段落失败:', err);

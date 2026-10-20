@@ -98,12 +98,16 @@ export default function CollectionDetailPage() {
         .order('sort_order', { ascending: true });
 
       if (paraError) throw paraError;
-      // Supabase关联查询返回数组，这里取第一个元素（一对一关系）
+      // Supabase关联查询可能返回数组或对象，兼容两种情况
       setParagraphs(
-        (paraData || []).map((item: any) => ({
-          ...item,
-          article_paragraphs: item.article_paragraphs?.[0] || null,
-        })) as unknown as CollectionParagraph[],
+        (paraData || [])
+          .map((item: any) => {
+            const para = Array.isArray(item.article_paragraphs)
+              ? item.article_paragraphs[0]
+              : item.article_paragraphs;
+            return { ...item, article_paragraphs: para || null };
+          })
+          .filter((item: any) => item.article_paragraphs) as unknown as CollectionParagraph[],
       );
     } catch (err) {
       console.error('获取素材包详情失败:', err);
