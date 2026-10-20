@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Waves, Search, Link2, ExternalLink, Tag, Clock, User, Loader2, AlertCircle, Newspaper } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Input } from '@/components/ui/input';
@@ -20,6 +20,7 @@ interface Article {
 }
 
 export default function GuanlanPage() {
+  const [searchParams] = useSearchParams();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -27,7 +28,11 @@ export default function GuanlanPage() {
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSource, setActiveSource] = useState<string>('全部');
-  const [activeTopic, setActiveTopic] = useState<string>('全部');
+  const [activeTopic, setActiveTopic] = useState<string>(() => {
+    // 从URL参数读取初始话题
+    const topicParam = searchParams.get('topic');
+    return topicParam || '全部';
+  });
 
   // 获取文章列表（纯函数，不包含setState）
   const fetchArticles = useCallback(
