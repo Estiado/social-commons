@@ -17,12 +17,16 @@ import {
   Highlighter,
   Quote,
   Bookmark,
+  Lightbulb,
+  RefreshCw,
 } from 'lucide-react';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { supabase } from '@/lib/supabase';
 import { useUserId } from '@/hooks/useUserId';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { DAILY_KNOWLEDGE } from '@/data/daily';
+import { QUOTES } from '@/data/quotes';
 
 interface CollectionParagraph {
   collection_id: string;
@@ -80,6 +84,18 @@ export default function CollectionDetailPage() {
   const [actionId, setActionId] = useState<string | null>(null);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [exporting, setExporting] = useState<string | null>(null);
+  const [inspiration, setInspiration] = useState<{ daily: typeof DAILY_KNOWLEDGE[0]; quote: typeof QUOTES[0] } | null>(null);
+
+  // 随机获取写作灵感
+  const refreshInspiration = useCallback(() => {
+    const randomDaily = DAILY_KNOWLEDGE[Math.floor(Math.random() * DAILY_KNOWLEDGE.length)];
+    const randomQuote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+    setInspiration({ daily: randomDaily, quote: randomQuote });
+  }, []);
+
+  useEffect(() => {
+    refreshInspiration();
+  }, [refreshInspiration]);
 
   // 获取素材包和段落
   const fetchData = useCallback(async () => {
@@ -708,6 +724,56 @@ export default function CollectionDetailPage() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* 写作灵感 */}
+      {inspiration && (
+        <div className="mt-12 p-6 bg-gradient-to-br from-amber-50/50 to-orange-50/50 border border-amber-200/40 rounded-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-serif text-lg font-semibold flex items-center gap-2 text-amber-800">
+              <Lightbulb className="h-5 w-5" />
+              写作灵感
+            </h3>
+            <button
+              onClick={refreshInspiration}
+              className="flex items-center gap-1.5 text-xs text-amber-700 hover:text-amber-900 transition-colors px-3 py-1.5 rounded-sm hover:bg-amber-100/50"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              换一批
+            </button>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* 通识概念 */}
+            <Link
+              to="/daily"
+              className="block p-4 bg-white/60 border border-amber-200/30 rounded-sm hover:border-amber-400/40 transition-all group"
+            >
+              <p className="text-[10px] text-amber-600 tracking-wider mb-2">通识概念</p>
+              <p className="text-sm font-medium text-amber-900 group-hover:text-amber-700 transition-colors line-clamp-1">
+                {inspiration.daily.title}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2">
+                {inspiration.daily.summary}
+              </p>
+            </Link>
+            {/* 名句 */}
+            <Link
+              to="/quotes"
+              className="block p-4 bg-white/60 border border-amber-200/30 rounded-sm hover:border-amber-400/40 transition-all group"
+            >
+              <p className="text-[10px] text-amber-600 tracking-wider mb-2">名家名句</p>
+              <p className="text-sm font-serif text-amber-900 group-hover:text-amber-700 transition-colors line-clamp-2">
+                「{inspiration.quote.text}」
+              </p>
+              <p className="text-xs text-muted-foreground mt-1.5">
+                —— {inspiration.quote.author}《{inspiration.quote.source}》
+              </p>
+            </Link>
+          </div>
+          <p className="text-[11px] text-amber-700/70 mt-4 text-center">
+            随机抽取全站通识与名句，为你的写作提供新的角度和灵感
+          </p>
         </div>
       )}
 

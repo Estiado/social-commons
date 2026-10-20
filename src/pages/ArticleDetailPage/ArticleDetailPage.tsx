@@ -13,11 +13,15 @@ import {
   FileText,
   Highlighter,
   Check,
+  Calendar,
+  Feather,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useUserId } from '@/hooks/useUserId';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { DAILY_KNOWLEDGE } from '@/data/daily';
+import { QUOTES } from '@/data/quotes';
 
 interface Article {
   id: string;
@@ -58,6 +62,8 @@ export default function ArticleDetailPage() {
   const [savingHighlight, setSavingHighlight] = useState(false);
   const [highlightSaved, setHighlightSaved] = useState(false);
   const [relatedArticles, setRelatedArticles] = useState<Array<{ id: string; title: string; source: string | null }>>([]);
+  const [relatedDaily, setRelatedDaily] = useState<typeof DAILY_KNOWLEDGE>([]);
+  const [relatedQuotes, setRelatedQuotes] = useState<typeof QUOTES>([]);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // 获取文章详情和段落
@@ -103,6 +109,22 @@ export default function ArticleDetailPage() {
       } else {
         setRelatedArticles([]);
       }
+
+      // 匹配相关日新通识和名句
+      const articleText = `${articleRes.data?.title || ''} ${articleRes.data?.excerpt || ''} ${tags.join(' ')}`.toLowerCase();
+      const matchedDaily = DAILY_KNOWLEDGE.filter((d) => {
+        const dText = `${d.title} ${d.category} ${d.summary} ${d.content}`.toLowerCase();
+        return tags.some((tag) => dText.includes(tag.toLowerCase())) ||
+          d.title.split('：')[0].split('——')[0].split(' ').some((word) => word.length >= 2 && articleText.includes(word.toLowerCase()));
+      }).slice(0, 3);
+      setRelatedDaily(matchedDaily);
+
+      const matchedQuotes = QUOTES.filter((q) => {
+        const qText = `${q.text} ${q.author} ${q.source} ${q.commentary?.text || ''}`.toLowerCase();
+        return tags.some((tag) => qText.includes(tag.toLowerCase())) ||
+          (q.author && articleText.includes(q.author.toLowerCase()));
+      }).slice(0, 3);
+      setRelatedQuotes(matchedQuotes);
     } catch (err) {
       console.error('获取文章失败:', err);
       setError(err instanceof Error ? err.message : '加载失败');
@@ -396,6 +418,54 @@ export default function ArticleDetailPage() {
                     </Badge>
                   )}
                 </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 相关日新通识 */}
+      {relatedDaily.length > 0 && (
+        <div className="mt-12 pt-8 border-t border-border/40">
+          <h3 className="font-serif text-lg font-semibold mb-4 flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-blue-500" />
+            相关通识概念
+          </h3>
+          <div className="space-y-3">
+            {relatedDaily.map((d) => (
+              <Link
+                key={d.id}
+                to="/daily"
+                className="block p-4 border border-border/40 rounded-sm hover:border-blue-500/30 hover:bg-blue-500/5 transition-all group"
+              >
+                <p className="text-sm font-medium group-hover:text-blue-600 transition-colors line-clamp-1">
+                  {d.title}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{d.summary}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 相关名句 */}
+      {relatedQuotes.length > 0 && (
+        <div className="mt-12 pt-8 border-t border-border/40">
+          <h3 className="font-serif text-lg font-semibold mb-4 flex items-center gap-2">
+            <Feather className="h-4 w-4 text-amber-500" />
+            相关名句
+          </h3>
+          <div className="space-y-3">
+            {relatedQuotes.map((q) => (
+              <Link
+                key={q.id}
+                to="/quotes"
+                className="block p-4 border border-border/40 rounded-sm hover:border-amber-500/30 hover:bg-amber-500/5 transition-all group"
+              >
+                <p className="text-sm font-serif font-medium group-hover:text-amber-700 transition-colors line-clamp-2">
+                  「{q.text}」
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">—— {q.author}《{q.source}》</p>
               </Link>
             ))}
           </div>

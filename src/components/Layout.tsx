@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, NavLink, useLocation, Link } from 'react-router-dom';
-import { BookOpen, Calendar, Landmark, Feather, PenTool, Waves, User, Bookmark, FolderOpen, ChevronDown, Sparkles } from 'lucide-react';
+import { BookOpen, Calendar, Landmark, Feather, PenTool, Waves, User, Bookmark, FolderOpen, ChevronDown, Sparkles, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { GlobalSearch } from './GlobalSearch';
 
 const NAV_ITEMS = [
   { path: '/', label: '首页', icon: BookOpen, end: true },
@@ -16,7 +17,20 @@ const NAV_ITEMS = [
 export const Layout = () => {
   const location = useLocation();
   const [myMenuOpen, setMyMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const isMyActive = location.pathname.startsWith('/paragraphs') || location.pathname.startsWith('/collections');
+
+  // 快捷键：Ctrl+K / Cmd+K 打开搜索
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -59,6 +73,17 @@ export const Layout = () => {
                   </NavLink>
                 );
               })}
+              {/* 搜索按钮 */}
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-sm transition-all duration-200"
+              >
+                <Search className="h-4 w-4" />
+                <span className="hidden lg:inline">搜索</span>
+                <kbd className="hidden lg:inline-flex items-center gap-0.5 rounded border border-border/60 bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                  ⌘K
+                </kbd>
+              </button>
               {/* 我的 - 下拉菜单 */}
               <div className="relative">
                 <button
@@ -164,6 +189,9 @@ export const Layout = () => {
           </div>
         </div>
       </footer>
+
+      {/* 全站搜索 */}
+      <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
     </div>
   );
 };
