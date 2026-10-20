@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { Waves, Search, Link2, ExternalLink, Tag, Clock, User, Loader2, AlertCircle, Newspaper } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Input } from '@/components/ui/input';
@@ -224,11 +225,9 @@ export default function GuanlanPage() {
       ) : (
         <div className="space-y-4">
           {articles.map((article) => (
-            <a
+            <Link
               key={article.id}
-              href={article.url}
-              target="_blank"
-              rel="noopener noreferrer"
+              to={`/guanlan/${article.id}`}
               className="block border border-border/60 bg-card rounded-sm p-6 hover:border-accent/30 hover:shadow-md transition-all duration-300 group"
             >
               <div className="flex items-start justify-between gap-4">
@@ -276,7 +275,7 @@ export default function GuanlanPage() {
                 </div>
                 <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0 mt-1 group-hover:text-accent transition-colors" />
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       )}
@@ -284,7 +283,7 @@ export default function GuanlanPage() {
       {/* 底部说明 */}
       <div className="mt-12 p-6 bg-muted/30 border border-border/40 rounded-sm">
         <p className="text-xs text-muted-foreground leading-relaxed">
-          观澜仅聚合文章元数据（标题、摘要、来源、链接），不存储全文。点击文章卡片跳转到原文阅读。
+          观澜聚合时评文章元数据。点击卡片进入文章详情，可逐段阅读并收藏精彩段落。原文链接在详情页顶部，点击跳转原文阅读。
           内容版权归原作者和原媒体所有，本站仅作学习交流用途。
         </p>
       </div>

@@ -7,6 +7,10 @@ import EventDetailPage from '@/pages/EventDetailPage/EventDetailPage';
 import QuotesPage from '@/pages/QuotesPage/QuotesPage';
 import EssayPage from '@/pages/EssayPage/EssayPage';
 import GuanlanPage from '@/pages/GuanlanPage/GuanlanPage';
+import ArticleDetailPage from '@/pages/ArticleDetailPage/ArticleDetailPage';
+import ParagraphsPage from '@/pages/ParagraphsPage/ParagraphsPage';
+import CollectionsPage from '@/pages/CollectionsPage/CollectionsPage';
+import CollectionDetailPage from '@/pages/CollectionDetailPage/CollectionDetailPage';
 import NotFoundPage from '@/pages/NotFoundPage/NotFoundPage';
 
 export default function App() {
@@ -20,6 +24,10 @@ export default function App() {
         <Route path="quotes" element={<QuotesPage />} />
         <Route path="essay" element={<EssayPage />} />
         <Route path="guanlan" element={<GuanlanPage />} />
+        <Route path="guanlan/:id" element={<ArticleDetailPage />} />
+        <Route path="paragraphs" element={<ParagraphsPage />} />
+        <Route path="collections" element={<CollectionsPage />} />
+        <Route path="collections/:id" element={<CollectionDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

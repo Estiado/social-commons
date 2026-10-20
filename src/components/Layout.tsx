@@ -1,5 +1,6 @@
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { BookOpen, Calendar, Landmark, Feather, PenTool, Waves } from 'lucide-react';
+import { useState } from 'react';
+import { Outlet, NavLink, useLocation, Link } from 'react-router-dom';
+import { BookOpen, Calendar, Landmark, Feather, PenTool, Waves, User, Bookmark, FolderOpen, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
@@ -13,6 +14,8 @@ const NAV_ITEMS = [
 
 export const Layout = () => {
   const location = useLocation();
+  const [myMenuOpen, setMyMenuOpen] = useState(false);
+  const isMyActive = location.pathname.startsWith('/paragraphs') || location.pathname.startsWith('/collections');
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -55,10 +58,46 @@ export const Layout = () => {
                   </NavLink>
                 );
               })}
+              {/* 我的 - 下拉菜单 */}
+              <div className="relative">
+                <button
+                  onClick={() => setMyMenuOpen(!myMenuOpen)}
+                  className={cn(
+                    'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-sm transition-all duration-200',
+                    isMyActive
+                      ? 'text-accent bg-accent/5 border-b-2 border-accent'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  )}
+                >
+                  <User className="h-4 w-4" />
+                  我的
+                  <ChevronDown className={cn('h-3 w-3 transition-transform', myMenuOpen && 'rotate-180')} />
+                </button>
+                {myMenuOpen && (
+                  <div className="absolute right-0 top-full mt-1 w-44 bg-card border border-border/60 rounded-sm shadow-lg z-50 py-1">
+                    <Link
+                      to="/paragraphs"
+                      onClick={() => setMyMenuOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                    >
+                      <Bookmark className="h-4 w-4" />
+                      段落库
+                    </Link>
+                    <Link
+                      to="/collections"
+                      onClick={() => setMyMenuOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                    >
+                      <FolderOpen className="h-4 w-4" />
+                      素材包
+                    </Link>
+                  </div>
+                )}
+              </div>
             </nav>
 
             {/* 移动端菜单按钮 - 简化版 */}
-            <nav className="flex md:hidden items-center gap-2">
+            <nav className="flex md:hidden items-center gap-1">
               {NAV_ITEMS.map((item) => {
                 const Icon = item.icon;
                 const isActive = item.end
@@ -78,6 +117,24 @@ export const Layout = () => {
                   </NavLink>
                 );
               })}
+              <NavLink
+                to="/paragraphs"
+                className={cn(
+                  'p-2 rounded-sm transition-colors',
+                  location.pathname.startsWith('/paragraphs') ? 'text-accent bg-accent/5' : 'text-muted-foreground'
+                )}
+              >
+                <Bookmark className="h-5 w-5" />
+              </NavLink>
+              <NavLink
+                to="/collections"
+                className={cn(
+                  'p-2 rounded-sm transition-colors',
+                  location.pathname.startsWith('/collections') ? 'text-accent bg-accent/5' : 'text-muted-foreground'
+                )}
+              >
+                <FolderOpen className="h-5 w-5" />
+              </NavLink>
             </nav>
           </div>
         </div>
