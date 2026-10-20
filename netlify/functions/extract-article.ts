@@ -217,21 +217,31 @@ export const handler: Handler = async (event) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // 检查是否已存在
+    // 检查是否已存在（缓存命中：直接返回已有文章，不重新爬取）
     const { data: existing } = await supabase
       .from('articles')
-      .select('id')
+      .select('id, title, author, source, published_at, excerpt, tags, created_at')
       .eq('url', url)
       .single();
 
     if (existing) {
+      // 统计段落数
+      const { count: paragraphCount } = await supabase
+        .from('article_paragraphs')
+        .select('*', { count: 'exact', head: true })
+        .eq('article_id', existing.id);
+
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
           success: true,
-          message: '文章已存在',
-          articleId: existing.id,
+          message: '文章已存在（缓存命中）',
+          cached: true,
+          article: {
+            ...existing,
+            paragraphCount: paragraphCount || 0,
+          },
         }),
       };
     }
