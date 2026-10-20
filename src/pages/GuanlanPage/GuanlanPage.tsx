@@ -301,13 +301,19 @@ export default function GuanlanPage() {
                   {article.tags && article.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {article.tags.slice(0, 5).map((tag) => (
-                        <span
+                        <button
                           key={tag}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-muted/60 text-muted-foreground rounded-sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setActiveTopic(tag);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-muted/60 text-muted-foreground rounded-sm hover:bg-accent/10 hover:text-accent transition-colors"
                         >
                           <Tag className="h-3 w-3" />
                           {tag}
-                        </span>
+                        </button>
                       ))}
                     </div>
                   )}
