@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -11,6 +11,8 @@ import {
   Loader2,
   AlertCircle,
   FileText,
+  Highlighter,
+  Check,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useUserId } from '@/hooks/useUserId';
@@ -48,6 +50,14 @@ export default function ArticleDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
+
+  // 划线收藏相关状态
+  const [selectedText, setSelectedText] = useState<string>('');
+  const [selectedParagraphId, setSelectedParagraphId] = useState<string>('');
+  const [toolbarPos, setToolbarPos] = useState<{ x: number; y: number } | null>(null);
+  const [savingHighlight, setSavingHighlight] = useState(false);
+  const [highlightSaved, setHighlightSaved] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // 获取文章详情和段落
   const fetchArticle = useCallback(async () => {
@@ -118,6 +128,92 @@ export default function ArticleDetailPage() {
       setSavingId(null);
     }
   };
+
+  // 监听鼠标选中文字
+  const handleMouseUp = useCallback(() => {
+    setTimeout(() => {
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed || selection.toString().trim().length < 2) {
+        setToolbarPos(null);
+        setSelectedText('');
+        return;
+      }
+
+      const text = selection.toString().trim();
+      // 检查选中是否在段落内容区域内
+      const anchorNode = selection.anchorNode;
+      if (!anchorNode || !contentRef.current?.contains(anchorNode)) {
+        setToolbarPos(null);
+        return;
+      }
+
+      // 找到所属段落
+      let paragraphEl: HTMLElement | null = null;
+      let el: HTMLElement | null = anchorNode.parentElement;
+      while (el && contentRef.current.contains(el)) {
+        if (el.dataset && el.dataset.paragraphId) {
+          paragraphEl = el;
+          break;
+        }
+        el = el.parentElement;
+      }
+
+      if (!paragraphEl) {
+        setToolbarPos(null);
+        return;
+      }
+
+      // 获取选区位置，显示浮动工具栏
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      setSelectedText(text);
+      setSelectedParagraphId(paragraphEl.dataset.paragraphId || '');
+      setToolbarPos({
+        x: rect.left + rect.width / 2,
+        y: rect.top + window.scrollY - 10,
+      });
+      setHighlightSaved(false);
+    }, 10);
+  }, []);
+
+  // 保存划线收藏
+  const saveHighlight = async () => {
+    if (!supabase || !userId || !selectedText || !id) return;
+    setSavingHighlight(true);
+    try {
+      await supabase.from('saved_highlights').insert({
+        user_id: userId,
+        article_id: id,
+        paragraph_id: selectedParagraphId || null,
+        selected_text: selectedText,
+      });
+      setHighlightSaved(true);
+      setTimeout(() => {
+        setToolbarPos(null);
+        setSelectedText('');
+      }, 1500);
+    } catch (err: any) {
+      if (err?.code === '23505') {
+        // 唯一约束冲突，说明已经收藏过
+        setHighlightSaved(true);
+        setTimeout(() => {
+          setToolbarPos(null);
+          setSelectedText('');
+        }, 1500);
+      } else {
+        console.error('保存划线失败:', err);
+        alert('保存失败，请重试');
+      }
+    } finally {
+      setSavingHighlight(false);
+    }
+  };
+
+  // 点击其他地方隐藏工具栏
+  useEffect(() => {
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => document.removeEventListener('mouseup', handleMouseUp);
+  }, [handleMouseUp]);
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return '';
@@ -211,10 +307,10 @@ export default function ArticleDetailPage() {
 
       {/* 段落列表 */}
       {paragraphs.length > 0 ? (
-        <div className="space-y-1">
+        <div className="space-y-1" ref={contentRef}>
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-6">
             <FileText className="h-3.5 w-3.5" />
-            <span>共 {paragraphs.length} 段，悬停段落可收藏</span>
+            <span>共 {paragraphs.length} 段，悬停段落可收藏整段，选中文字可收藏划线</span>
           </div>
           {paragraphs.map((para) => {
             const isSaved = savedParagraphIds.has(para.id);
@@ -222,11 +318,12 @@ export default function ArticleDetailPage() {
             return (
               <div
                 key={para.id}
+                data-paragraph-id={para.id}
                 className={`group relative px-4 py-3 rounded-sm transition-all duration-200 ${
                   isSaved ? 'bg-accent/5 border-l-2 border-accent' : 'hover:bg-muted/30 border-l-2 border-transparent'
                 }`}
               >
-                <p className="text-foreground/85 leading-relaxed pr-12">{para.content}</p>
+                <p className="text-foreground/85 leading-relaxed pr-12 select-text">{para.content}</p>
                 <button
                   onClick={() => toggleSave(para.id)}
                   disabled={isSaving}
@@ -260,10 +357,42 @@ export default function ArticleDetailPage() {
       {/* 底部提示 */}
       <div className="mt-12 p-5 bg-muted/30 border border-border/40 rounded-sm">
         <p className="text-xs text-muted-foreground leading-relaxed">
-          收藏的段落会进入"我的段落库"，可以在那里按话题筛选、创建素材包、导出使用。
+          收藏的段落和划线会进入"我的段落库"，可以在那里按话题筛选、创建素材包、导出使用。
           每段都保留原文出处，引用时请注明来源。
         </p>
       </div>
+
+      {/* 划线收藏浮动工具栏 */}
+      {toolbarPos && (
+        <div
+          className="fixed z-50 flex items-center gap-1 bg-card border border-border/60 rounded-sm shadow-lg px-2 py-1.5"
+          style={{
+            left: toolbarPos.x,
+            top: toolbarPos.y,
+            transform: 'translate(-50%, -100%)',
+          }}
+        >
+          {highlightSaved ? (
+            <span className="flex items-center gap-1 text-xs text-green-600 px-2 py-1">
+              <Check className="h-3.5 w-3.5" />
+              已收藏
+            </span>
+          ) : (
+            <button
+              onClick={saveHighlight}
+              disabled={savingHighlight}
+              className="flex items-center gap-1 text-xs text-foreground hover:text-accent px-2 py-1 transition-colors"
+            >
+              {savingHighlight ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Highlighter className="h-3.5 w-3.5" />
+              )}
+              收藏划线
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

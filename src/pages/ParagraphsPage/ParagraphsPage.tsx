@@ -12,6 +12,8 @@ import {
   Clock,
   FolderPlus,
   Check,
+  Highlighter,
+  Quote,
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useUserId } from '@/hooks/useUserId';
@@ -36,9 +38,24 @@ interface SavedParagraph {
   };
 }
 
+interface SavedHighlight {
+  id: string;
+  selected_text: string;
+  created_at: string;
+  articles: {
+    id: string;
+    title: string;
+    source: string | null;
+    author: string | null;
+    url: string;
+  };
+}
+
 export default function ParagraphsPage() {
   const userId = useUserId();
   const [paragraphs, setParagraphs] = useState<SavedParagraph[]>([]);
+  const [highlights, setHighlights] = useState<SavedHighlight[]>([]);
+  const [activeTab, setActiveTab] = useState<'paragraphs' | 'highlights'>('paragraphs');
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSource, setActiveSource] = useState<string>('全部');
@@ -111,10 +128,63 @@ export default function ParagraphsPage() {
     }
   }, [userId]);
 
+  // 获取划线收藏
+  const fetchHighlights = useCallback(async () => {
+    if (!supabase || !userId) return;
+    try {
+      const { data, error } = await supabase
+        .from('saved_highlights')
+        .select(
+          `
+          id,
+          selected_text,
+          created_at,
+          articles (
+            id,
+            title,
+            source,
+            author,
+            url
+          )
+        `,
+        )
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setHighlights(
+        (data || [])
+          .map((item: any) => {
+            const article = Array.isArray(item.articles) ? item.articles[0] : item.articles;
+            return { ...item, articles: article || null };
+          })
+          .filter((item: any) => item.articles) as unknown as SavedHighlight[],
+      );
+    } catch (err) {
+      console.error('获取划线收藏失败:', err);
+    }
+  }, [userId]);
+
+  // 删除划线收藏
+  const deleteHighlight = async (highlightId: string) => {
+    if (!supabase || !userId) return;
+    if (!confirm('删除这条划线收藏？')) return;
+    setDeletingId(highlightId);
+    try {
+      await supabase.from('saved_highlights').delete().eq('id', highlightId).eq('user_id', userId);
+      setHighlights((prev) => prev.filter((h) => h.id !== highlightId));
+    } catch (err) {
+      console.error('删除划线失败:', err);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   useEffect(() => {
     fetchParagraphs();
+    fetchHighlights();
     fetchCollections();
-  }, [fetchParagraphs, fetchCollections]);
+  }, [fetchParagraphs, fetchHighlights, fetchCollections]);
 
   // 加入素材包
   const addToCollection = async (paragraphId: string, collectionId: string) => {
@@ -158,7 +228,7 @@ export default function ParagraphsPage() {
     }
   };
 
-  // 搜索和筛选
+  // 搜索和筛选（段落）
   const filtered = paragraphs.filter((p) => {
     if (activeSource !== '全部') {
       if (p.article_paragraphs?.articles?.source !== activeSource) return false;
@@ -172,16 +242,29 @@ export default function ParagraphsPage() {
     return true;
   });
 
-  // 所有来源媒体
+  // 搜索和筛选（划线）
+  const filteredHighlights = highlights.filter((h) => {
+    if (activeSource !== '全部') {
+      if (h.articles?.source !== activeSource) return false;
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const content = h.selected_text?.toLowerCase() || '';
+      const title = h.articles?.title?.toLowerCase() || '';
+      if (!content.includes(q) && !title.includes(q)) return false;
+    }
+    return true;
+  });
+
+  // 所有来源媒体（合并段落和划线）
   const sources = [
     '全部',
     ...Array.from(
-      new Set(
-        paragraphs
-          .map((p) => p.article_paragraphs?.articles?.source)
-          .filter(Boolean) as string[],
-      ),
-    ),
+      new Set([
+        ...paragraphs.map((p) => p.article_paragraphs?.articles?.source).filter(Boolean),
+        ...highlights.map((h) => h.articles?.source).filter(Boolean),
+      ]),
+    ) as string[],
   ];
 
   const formatDate = (dateStr: string) => {
@@ -224,12 +307,40 @@ export default function ParagraphsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="搜索段落内容、文章标题..."
+            placeholder="搜索内容、文章标题..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
           />
         </div>
+      </div>
+
+      {/* 标签切换 */}
+      <div className="flex gap-2 mb-6 border-b border-border/40">
+        <button
+          onClick={() => setActiveTab('paragraphs')}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === 'paragraphs'
+              ? 'text-accent border-accent'
+              : 'text-muted-foreground border-transparent hover:text-foreground'
+          }`}
+        >
+          <Bookmark className="h-4 w-4" />
+          段落收藏
+          <span className="text-xs bg-muted/60 px-1.5 py-0.5 rounded-sm">{paragraphs.length}</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('highlights')}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === 'highlights'
+              ? 'text-accent border-accent'
+              : 'text-muted-foreground border-transparent hover:text-foreground'
+          }`}
+        >
+          <Highlighter className="h-4 w-4" />
+          划线收藏
+          <span className="text-xs bg-muted/60 px-1.5 py-0.5 rounded-sm">{highlights.length}</span>
+        </button>
       </div>
 
       {sources.length > 1 && (
@@ -254,112 +365,189 @@ export default function ParagraphsPage() {
       <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
         <span className="flex items-center gap-1">
           <FileText className="h-4 w-4" />
-          共 {filtered.length} 段收藏
+          {activeTab === 'paragraphs' ? `共 ${filtered.length} 段收藏` : `共 ${filteredHighlights.length} 条划线`}
         </span>
       </div>
 
-      {/* 段落列表 */}
+      {/* 列表区域 */}
       {loading ? (
         <div className="text-center py-20">
           <Loader2 className="h-8 w-8 mx-auto mb-4 animate-spin text-muted-foreground" />
           <p className="text-muted-foreground">加载中...</p>
         </div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-20 text-muted-foreground">
-          <Bookmark className="h-12 w-12 mx-auto mb-4 opacity-30" />
-          <p className="mb-2">{paragraphs.length === 0 ? '还没有收藏任何段落' : '没有匹配的段落'}</p>
-          <p className="text-xs">
-            {paragraphs.length === 0 ? (
-              <>
-                去<Link to="/guanlan" className="text-accent hover:underline">观澜</Link>
-                打开一篇文章，悬停段落点击收藏
-              </>
-            ) : (
-              '试试其他关键词或来源'
-            )}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {filtered.map((saved) => {
-            const para = saved.article_paragraphs;
-            const article = para?.articles;
-            if (!para || !article) return null;
-            return (
-              <div
-                key={saved.id}
-                className="group border border-border/60 bg-card rounded-sm p-6 hover:border-accent/20 transition-all"
-              >
-                <p className="text-foreground/85 leading-relaxed mb-4">{para.content}</p>
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                    {article.source && (
-                      <Badge variant="outline" className="border-accent/30 text-accent">
-                        {article.source}
-                      </Badge>
-                    )}
-                    <Link
-                      to={`/guanlan/${article.id}`}
-                      className="hover:text-accent transition-colors flex items-center gap-1"
-                    >
-                      <FileText className="h-3 w-3" />
-                      {article.title}
-                    </Link>
-                    <a
-                      href={article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-accent transition-colors flex items-center gap-1"
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                      原文
-                    </a>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      收藏于 {formatDate(saved.created_at)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1 relative">
-                    {/* 加入素材包 */}
-                    <button
-                      onClick={() => setShowMenuFor(showMenuFor === saved.id ? null : saved.id)}
-                      className="p-1.5 text-muted-foreground hover:text-accent transition-colors opacity-0 group-hover:opacity-100"
-                      title="加入素材包"
-                    >
-                      {addingToId === para.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <FolderPlus className="h-4 w-4" />
+      ) : activeTab === 'paragraphs' ? (
+        // 段落收藏列表
+        filtered.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground">
+            <Bookmark className="h-12 w-12 mx-auto mb-4 opacity-30" />
+            <p className="mb-2">{paragraphs.length === 0 ? '还没有收藏任何段落' : '没有匹配的段落'}</p>
+            <p className="text-xs">
+              {paragraphs.length === 0 ? (
+                <>
+                  去<Link to="/guanlan" className="text-accent hover:underline">观澜</Link>
+                  打开一篇文章，悬停段落点击收藏
+                </>
+              ) : (
+                '试试其他关键词或来源'
+              )}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filtered.map((saved) => {
+              const para = saved.article_paragraphs;
+              const article = para?.articles;
+              if (!para || !article) return null;
+              return (
+                <div
+                  key={saved.id}
+                  className="group border border-border/60 bg-card rounded-sm p-6 hover:border-accent/20 transition-all"
+                >
+                  <p className="text-foreground/85 leading-relaxed mb-4">{para.content}</p>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      {article.source && (
+                        <Badge variant="outline" className="border-accent/30 text-accent">
+                          {article.source}
+                        </Badge>
                       )}
-                    </button>
-                    {/* 素材包下拉菜单 */}
-                    {showMenuFor === saved.id && (
-                      <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-border/60 rounded-sm shadow-lg z-10 py-1">
-                        {collections.length === 0 ? (
-                          <p className="px-3 py-2 text-xs text-muted-foreground">
-                            暂无素材包，<Link to="/collections" className="text-accent hover:underline">去创建</Link>
-                          </p>
+                      <Link
+                        to={`/guanlan/${article.id}`}
+                        className="hover:text-accent transition-colors flex items-center gap-1"
+                      >
+                        <FileText className="h-3 w-3" />
+                        {article.title}
+                      </Link>
+                      <a
+                        href={article.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-accent transition-colors flex items-center gap-1"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        原文
+                      </a>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        收藏于 {formatDate(saved.created_at)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 relative">
+                      <button
+                        onClick={() => setShowMenuFor(showMenuFor === saved.id ? null : saved.id)}
+                        className="p-1.5 text-muted-foreground hover:text-accent transition-colors opacity-0 group-hover:opacity-100"
+                        title="加入素材包"
+                      >
+                        {addingToId === para.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
-                          collections.map((col) => (
-                            <button
-                              key={col.id}
-                              onClick={() => addToCollection(para.id, col.id)}
-                              className="w-full text-left px-3 py-2 text-xs hover:bg-muted/50 transition-colors"
-                            >
-                              {col.name}
-                            </button>
-                          ))
+                          <FolderPlus className="h-4 w-4" />
                         )}
-                      </div>
-                    )}
-                    {/* 取消收藏 */}
+                      </button>
+                      {showMenuFor === saved.id && (
+                        <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-border/60 rounded-sm shadow-lg z-10 py-1">
+                          {collections.length === 0 ? (
+                            <p className="px-3 py-2 text-xs text-muted-foreground">
+                              暂无素材包，<Link to="/collections" className="text-accent hover:underline">去创建</Link>
+                            </p>
+                          ) : (
+                            collections.map((col) => (
+                              <button
+                                key={col.id}
+                                onClick={() => addToCollection(para.id, col.id)}
+                                className="w-full text-left px-3 py-2 text-xs hover:bg-muted/50 transition-colors"
+                              >
+                                {col.name}
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      )}
+                      <button
+                        onClick={() => handleDelete(saved.id)}
+                        disabled={deletingId === saved.id}
+                        className="p-1.5 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+                        title="取消收藏"
+                      >
+                        {deletingId === saved.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
+      ) : (
+        // 划线收藏列表
+        filteredHighlights.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground">
+            <Highlighter className="h-12 w-12 mx-auto mb-4 opacity-30" />
+            <p className="mb-2">{highlights.length === 0 ? '还没有收藏任何划线' : '没有匹配的划线'}</p>
+            <p className="text-xs">
+              {highlights.length === 0 ? (
+                <>
+                  去<Link to="/guanlan" className="text-accent hover:underline">观澜</Link>
+                  打开文章，选中文字点击"收藏划线"
+                </>
+              ) : (
+                '试试其他关键词或来源'
+              )}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredHighlights.map((highlight) => {
+              const article = highlight.articles;
+              if (!article) return null;
+              return (
+                <div
+                  key={highlight.id}
+                  className="group border border-border/60 bg-card rounded-sm p-6 hover:border-accent/20 transition-all"
+                >
+                  <div className="flex gap-3 mb-4">
+                    <Quote className="h-5 w-5 text-accent/40 shrink-0 mt-1" />
+                    <p className="text-foreground/85 leading-relaxed italic">{highlight.selected_text}</p>
+                  </div>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      {article.source && (
+                        <Badge variant="outline" className="border-accent/30 text-accent">
+                          {article.source}
+                        </Badge>
+                      )}
+                      <Link
+                        to={`/guanlan/${article.id}`}
+                        className="hover:text-accent transition-colors flex items-center gap-1"
+                      >
+                        <FileText className="h-3 w-3" />
+                        {article.title}
+                      </Link>
+                      <a
+                        href={article.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-accent transition-colors flex items-center gap-1"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        原文
+                      </a>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        收藏于 {formatDate(highlight.created_at)}
+                      </span>
+                    </div>
                     <button
-                      onClick={() => handleDelete(saved.id)}
-                      disabled={deletingId === saved.id}
+                      onClick={() => deleteHighlight(highlight.id)}
+                      disabled={deletingId === highlight.id}
                       className="p-1.5 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
-                      title="取消收藏"
+                      title="删除划线"
                     >
-                      {deletingId === saved.id ? (
+                      {deletingId === highlight.id ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
                         <Trash2 className="h-4 w-4" />
@@ -367,10 +555,10 @@ export default function ParagraphsPage() {
                     </button>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )
       )}
 
       {/* 底部说明 */}

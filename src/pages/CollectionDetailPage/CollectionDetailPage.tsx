@@ -5,14 +5,17 @@ import {
   ChevronUp,
   ChevronDown,
   Trash2,
-  Copy,
+  Download,
   Check,
   Loader2,
   AlertCircle,
   FileText,
   ExternalLink,
   Clock,
+  ChevronDown as ChevronDownIcon,
+  FileDown,
 } from 'lucide-react';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { supabase } from '@/lib/supabase';
 import { useUserId } from '@/hooks/useUserId';
 import { Button } from '@/components/ui/button';
@@ -53,6 +56,8 @@ export default function CollectionDetailPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [actionId, setActionId] = useState<string | null>(null);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [exporting, setExporting] = useState<string | null>(null);
 
   // 获取素材包和段落
   const fetchData = useCallback(async () => {
@@ -174,30 +179,187 @@ export default function CollectionDetailPage() {
     }
   };
 
-  // 导出素材包（复制到剪贴板）
-  const handleExport = async () => {
+  // 生成导出内容的通用数据
+  const getExportData = () => {
+    return paragraphs.map((p, i) => {
+      const para = p.article_paragraphs;
+      const article = para?.articles;
+      return {
+        index: i + 1,
+        content: para?.content || '',
+        title: article?.title || '未知文章',
+        source: article?.source || '未知来源',
+        author: article?.author || '',
+        url: article?.url || '',
+      };
+    });
+  };
+
+  // 通用下载函数
+  const downloadBlob = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // 导出TXT
+  const exportTxt = () => {
     if (paragraphs.length === 0) return;
-
-    const exportText = paragraphs
-      .map((p, i) => {
-        const para = p.article_paragraphs;
-        const article = para?.articles;
-        const source = article?.source || '未知来源';
-        const title = article?.title || '未知文章';
-        return `${i + 1}. ${para?.content || ''}\n   —— 摘自《${title}》（${source}）`;
-      })
+    setExporting('txt');
+    const data = getExportData();
+    const content = data
+      .map((d) => `${d.index}. ${d.content}\n   —— 摘自《${d.title}》（${d.source}）`)
       .join('\n\n');
+    const fullText = `【${collection?.name || '素材包'}】\n\n${content}\n\n—— 由社科通识·素材包导出`;
+    const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+    downloadBlob(blob, `${collection?.name || '素材包'}.txt`);
+    setExporting(null);
+    setShowExportMenu(false);
+  };
 
-    const fullText = `【${collection?.name || '素材包'}】\n\n${exportText}\n\n—— 由社科通识·素材包导出`;
+  // 导出Markdown
+  const exportMarkdown = () => {
+    if (paragraphs.length === 0) return;
+    setExporting('md');
+    const data = getExportData();
+    const content = data
+      .map((d) => `### ${d.index}. ${d.content}\n\n> 摘自《${d.title}》（${d.source}）${d.author ? ` · ${d.author}` : ''}\n\n[原文链接](${d.url})`)
+      .join('\n\n---\n\n');
+    const fullText = `# ${collection?.name || '素材包'}\n\n${collection?.description ? `> ${collection.description}\n\n` : ''}${content}\n\n---\n\n*由社科通识·素材包导出*`;
+    const blob = new Blob([fullText], { type: 'text/markdown;charset=utf-8' });
+    downloadBlob(blob, `${collection?.name || '素材包'}.md`);
+    setExporting(null);
+    setShowExportMenu(false);
+  };
 
+  // 导出DOCX
+  const exportDocx = async () => {
+    if (paragraphs.length === 0) return;
+    setExporting('docx');
     try {
-      await navigator.clipboard.writeText(fullText);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 3000);
+      const data = getExportData();
+      const children: Paragraph[] = [];
+
+      // 标题
+      children.push(
+        new Paragraph({
+          text: collection?.name || '素材包',
+          heading: HeadingLevel.HEADING_1,
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 200 },
+        }),
+      );
+
+      // 描述
+      if (collection?.description) {
+        children.push(
+          new Paragraph({
+            children: [new TextRun({ text: collection.description, italics: true, color: '666666' })],
+            spacing: { after: 300 },
+          }),
+        );
+      }
+
+      // 段落内容
+      data.forEach((d) => {
+        children.push(
+          new Paragraph({
+            text: `${d.index}. ${d.content}`,
+            spacing: { before: 200, after: 100 },
+          }),
+        );
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `—— 摘自《${d.title}》（${d.source}）${d.author ? ` · ${d.author}` : ''}`,
+                size: 20,
+                color: '888888',
+              }),
+            ],
+            spacing: { after: 200 },
+          }),
+        );
+      });
+
+      // 页脚
+      children.push(
+        new Paragraph({
+          children: [new TextRun({ text: '由社科通识·素材包导出', size: 18, color: 'AAAAAA' })],
+          alignment: AlignmentType.CENTER,
+          spacing: { before: 400 },
+        }),
+      );
+
+      const doc = new Document({
+        sections: [{ properties: {}, children }],
+      });
+
+      const blob = await Packer.toBlob(doc);
+      downloadBlob(blob, `${collection?.name || '素材包'}.docx`);
     } catch (err) {
-      console.error('复制失败:', err);
-      alert('复制失败，请手动选择文本复制');
+      console.error('导出DOCX失败:', err);
+      alert('导出失败，请重试');
+    } finally {
+      setExporting(null);
+      setShowExportMenu(false);
     }
+  };
+
+  // 导出PDF（通过浏览器打印功能）
+  const exportPdf = () => {
+    if (paragraphs.length === 0) return;
+    setExporting('pdf');
+    const data = getExportData();
+    const content = data
+      .map(
+        (d) => `
+        <div style="margin-bottom: 24px;">
+          <p style="font-size: 14px; line-height: 1.8; margin: 0 0 8px 0;">${d.index}. ${d.content}</p>
+          <p style="font-size: 12px; color: #666; margin: 0;">—— 摘自《${d.title}》（${d.source}）${d.author ? ` · ${d.author}` : ''}</p>
+        </div>
+      `,
+      )
+      .join('');
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('请允许弹出窗口以导出PDF');
+      setExporting(null);
+      return;
+    }
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>${collection?.name || '素材包'}</title>
+        <style>
+          body { font-family: 'Noto Serif SC', 'SimSun', serif; max-width: 700px; margin: 40px auto; padding: 0 20px; color: #333; }
+          h1 { text-align: center; font-size: 24px; margin-bottom: 8px; }
+          .desc { text-align: center; color: #666; font-size: 14px; margin-bottom: 32px; font-style: italic; }
+          .footer { text-align: center; color: #999; font-size: 12px; margin-top: 40px; border-top: 1px solid #eee; padding-top: 16px; }
+          @media print { body { margin: 20px; } }
+        </style>
+      </head>
+      <body>
+        <h1>${collection?.name || '素材包'}</h1>
+        ${collection?.description ? `<p class="desc">${collection.description}</p>` : ''}
+        ${content}
+        <div class="footer">由社科通识·素材包导出</div>
+        <script>window.onload = function() { window.print(); }</script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+    setExporting(null);
+    setShowExportMenu(false);
   };
 
   if (loading) {
@@ -244,16 +406,56 @@ export default function CollectionDetailPage() {
             <FileText className="h-4 w-4" />
             {paragraphs.length} 段素材
           </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleExport}
-            disabled={paragraphs.length === 0}
-            className="gap-2"
-          >
-            {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
-            {copied ? '已复制' : '导出素材包'}
-          </Button>
+          {/* 导出下拉菜单 */}
+          <div className="relative">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowExportMenu(!showExportMenu)}
+              disabled={paragraphs.length === 0}
+              className="gap-2"
+            >
+              <Download className="h-4 w-4" />
+              导出素材包
+              <ChevronDownIcon className={`h-3 w-3 transition-transform ${showExportMenu ? 'rotate-180' : ''}`} />
+            </Button>
+            {showExportMenu && (
+              <div className="absolute right-0 top-full mt-1 w-44 bg-card border border-border/60 rounded-sm shadow-lg z-50 py-1">
+                <button
+                  onClick={exportTxt}
+                  disabled={exporting === 'txt'}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  <FileText className="h-4 w-4" />
+                  {exporting === 'txt' ? '导出中...' : 'TXT 纯文本'}
+                </button>
+                <button
+                  onClick={exportMarkdown}
+                  disabled={exporting === 'md'}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  <FileDown className="h-4 w-4" />
+                  {exporting === 'md' ? '导出中...' : 'Markdown'}
+                </button>
+                <button
+                  onClick={exportDocx}
+                  disabled={exporting === 'docx'}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  <FileText className="h-4 w-4" />
+                  {exporting === 'docx' ? '导出中...' : 'Word 文档'}
+                </button>
+                <button
+                  onClick={exportPdf}
+                  disabled={exporting === 'pdf'}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  <FileDown className="h-4 w-4" />
+                  {exporting === 'pdf' ? '导出中...' : 'PDF（打印）'}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
