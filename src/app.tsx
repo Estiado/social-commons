@@ -13,6 +13,7 @@ import CollectionsPage from '@/pages/CollectionsPage/CollectionsPage';
 import CollectionDetailPage from '@/pages/CollectionDetailPage/CollectionDetailPage';
 import TopicsPage from '@/pages/TopicsPage/TopicsPage';
 import TopicDetailPage from '@/pages/TopicDetailPage/TopicDetailPage';
+import AdminArticlesPage from '@/pages/AdminArticlesPage/AdminArticlesPage';
 import NotFoundPage from '@/pages/NotFoundPage/NotFoundPage';
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="collections/:id" element={<CollectionDetailPage />} />
         <Route path="topics" element={<TopicsPage />} />
         <Route path="topics/:id" element={<TopicDetailPage />} />
+        <Route path="admin/articles" element={<AdminArticlesPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
