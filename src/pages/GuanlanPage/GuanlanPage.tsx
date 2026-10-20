@@ -5,6 +5,7 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { TOPICS } from '@/data/topics';
 
 interface Article {
   id: string;
@@ -26,10 +27,11 @@ export default function GuanlanPage() {
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSource, setActiveSource] = useState<string>('全部');
+  const [activeTopic, setActiveTopic] = useState<string>('全部');
 
   // 获取文章列表（纯函数，不包含setState）
   const fetchArticles = useCallback(
-    async (query: string, source: string): Promise<Article[]> => {
+    async (query: string, source: string, topic: string): Promise<Article[]> => {
       if (!supabase) return [];
       let dbQuery = supabase
         .from('articles')
@@ -45,6 +47,10 @@ export default function GuanlanPage() {
         dbQuery = dbQuery.eq('source', source);
       }
 
+      if (topic !== '全部') {
+        dbQuery = dbQuery.contains('tags', [topic]);
+      }
+
       const { data, error } = await dbQuery.limit(50);
       if (error) throw error;
       return data || [];
@@ -56,7 +62,7 @@ export default function GuanlanPage() {
     let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
-    fetchArticles(searchQuery, activeSource)
+    fetchArticles(searchQuery, activeSource, activeTopic)
       .then((data) => {
         if (!cancelled) setArticles(data);
       })
@@ -67,7 +73,7 @@ export default function GuanlanPage() {
     return () => {
       cancelled = true;
     };
-  }, [fetchArticles, searchQuery, activeSource]);
+  }, [fetchArticles, searchQuery, activeSource, activeTopic]);
 
   // 提交链接
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,7 +96,7 @@ export default function GuanlanPage() {
         setSubmitMessage({ type: 'success', text: result.message || '提取成功！' });
         setSubmitUrl('');
         // 刷新列表
-        const data = await fetchArticles(searchQuery, activeSource);
+        const data = await fetchArticles(searchQuery, activeSource, activeTopic);
         setArticles(data);
       } else {
         setSubmitMessage({ type: 'error', text: result.error || '提取失败，请检查链接是否正确' });
@@ -189,6 +195,39 @@ export default function GuanlanPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
           />
+        </div>
+      </div>
+
+      {/* 话题筛选 */}
+      <div className="mb-4">
+        <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+          <Tag className="h-3 w-3" />
+          按话题筛选
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setActiveTopic('全部')}
+            className={`px-3 py-1 text-xs rounded-sm transition-colors ${
+              activeTopic === '全部'
+                ? 'bg-accent/15 text-accent border border-accent/30'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+            }`}
+          >
+            全部话题
+          </button>
+          {TOPICS.map((topic) => (
+            <button
+              key={topic.id}
+              onClick={() => setActiveTopic(topic.name)}
+              className={`px-3 py-1 text-xs rounded-sm transition-colors ${
+                activeTopic === topic.name
+                  ? 'bg-accent/15 text-accent border border-accent/30'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+              }`}
+            >
+              {topic.name}
+            </button>
+          ))}
         </div>
       </div>
 

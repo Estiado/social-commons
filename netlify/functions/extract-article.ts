@@ -1,6 +1,7 @@
 import type { Handler } from '@netlify/functions';
 import * as cheerio from 'cheerio';
 import { createClient } from '@supabase/supabase-js';
+import { matchTopics } from './topics';
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -135,6 +136,13 @@ async function extractArticle(url: string): Promise<ExtractedArticle> {
   if (excerpt) excerpt = excerpt.trim().slice(0, 500);
   if (content) content = content.trim();
 
+  // 自动匹配话题标签（基于标题+摘要+正文前500字）
+  const topicText = `${title} ${excerpt || ''} ${content?.slice(0, 500) || ''}`;
+  const autoTopics = matchTopics(topicText);
+
+  // 合并网页提取的标签和自动话题标签
+  const allTags = [...new Set([...tags, ...autoTopics])].slice(0, 10);
+
   return {
     url,
     title: title || '未命名文章',
@@ -143,7 +151,7 @@ async function extractArticle(url: string): Promise<ExtractedArticle> {
     published_at: publishedAt || null,
     excerpt: excerpt || null,
     content: content || null,
-    tags: [...new Set(tags)].slice(0, 10),
+    tags: allTags,
   };
 }
 
