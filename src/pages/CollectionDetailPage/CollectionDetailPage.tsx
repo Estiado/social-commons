@@ -14,6 +14,9 @@ import {
   Clock,
   ChevronDown as ChevronDownIcon,
   FileDown,
+  Highlighter,
+  Quote,
+  Bookmark,
 } from 'lucide-react';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { supabase } from '@/lib/supabase';
@@ -40,6 +43,24 @@ interface CollectionParagraph {
   };
 }
 
+interface CollectionHighlight {
+  collection_id: string;
+  highlight_id: string;
+  sort_order: number;
+  note: string | null;
+  saved_highlights: {
+    id: string;
+    selected_text: string;
+    articles: {
+      id: string;
+      title: string;
+      source: string | null;
+      author: string | null;
+      url: string;
+    };
+  };
+}
+
 interface Collection {
   id: string;
   name: string;
@@ -53,6 +74,7 @@ export default function CollectionDetailPage() {
 
   const [collection, setCollection] = useState<Collection | null>(null);
   const [paragraphs, setParagraphs] = useState<CollectionParagraph[]>([]);
+  const [highlights, setHighlights] = useState<CollectionHighlight[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [actionId, setActionId] = useState<string | null>(null);
@@ -113,6 +135,43 @@ export default function CollectionDetailPage() {
             return { ...item, article_paragraphs: para || null };
           })
           .filter((item: any) => item.article_paragraphs) as unknown as CollectionParagraph[],
+      );
+
+      // 获取素材包中的划线（按sort_order排序）
+      const { data: highlightData, error: highlightError } = await supabase
+        .from('collection_highlights')
+        .select(
+          `
+          collection_id,
+          highlight_id,
+          sort_order,
+          note,
+          saved_highlights (
+            id,
+            selected_text,
+            articles (
+              id,
+              title,
+              source,
+              author,
+              url
+            )
+          )
+        `,
+        )
+        .eq('collection_id', id)
+        .order('sort_order', { ascending: true });
+
+      if (highlightError) throw highlightError;
+      setHighlights(
+        (highlightData || [])
+          .map((item: any) => {
+            const hl = Array.isArray(item.saved_highlights)
+              ? item.saved_highlights[0]
+              : item.saved_highlights;
+            return { ...item, saved_highlights: hl || null };
+          })
+          .filter((item: any) => item.saved_highlights) as unknown as CollectionHighlight[],
       );
     } catch (err) {
       console.error('获取素材包详情失败:', err);
@@ -179,13 +238,32 @@ export default function CollectionDetailPage() {
     }
   };
 
-  // 生成导出内容的通用数据
+  const removeHighlight = async (highlightId: string) => {
+    if (!supabase || !id) return;
+    if (!confirm('从素材包中移除这条划线？')) return;
+    setActionId(highlightId);
+    try {
+      await supabase
+        .from('collection_highlights')
+        .delete()
+        .eq('collection_id', id)
+        .eq('highlight_id', highlightId);
+      setHighlights((prev) => prev.filter((h) => h.highlight_id !== highlightId));
+    } catch (err) {
+      console.error('移除划线失败:', err);
+    } finally {
+      setActionId(null);
+    }
+  };
+
+  // 生成导出内容的通用数据（段落+划线合并）
   const getExportData = () => {
-    return paragraphs.map((p, i) => {
+    const paragraphItems = paragraphs.map((p, i) => {
       const para = p.article_paragraphs;
       const article = para?.articles;
       return {
         index: i + 1,
+        type: '段落' as const,
         content: para?.content || '',
         title: article?.title || '未知文章',
         source: article?.source || '未知来源',
@@ -193,6 +271,20 @@ export default function CollectionDetailPage() {
         url: article?.url || '',
       };
     });
+    const highlightItems = highlights.map((h, i) => {
+      const hl = h.saved_highlights;
+      const article = hl?.articles;
+      return {
+        index: paragraphs.length + i + 1,
+        type: '划线' as const,
+        content: hl?.selected_text || '',
+        title: article?.title || '未知文章',
+        source: article?.source || '未知来源',
+        author: article?.author || '',
+        url: article?.url || '',
+      };
+    });
+    return [...paragraphItems, ...highlightItems];
   };
 
   // 通用下载函数
@@ -459,23 +551,31 @@ export default function CollectionDetailPage() {
         </div>
       </header>
 
-      {/* 段落列表 */}
-      {paragraphs.length === 0 ? (
+      {/* 内容列表 */}
+      {paragraphs.length === 0 && highlights.length === 0 ? (
         <div className="text-center py-20 text-muted-foreground">
           <FileText className="h-12 w-12 mx-auto mb-4 opacity-30" />
           <p className="mb-2">素材包还是空的</p>
           <p className="text-xs">
             去<Link to="/paragraphs" className="text-accent hover:underline">段落库</Link>
-            把收藏的段落加入这个素材包
+            把收藏的段落或划线加入这个素材包
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {paragraphs.map((cp, index) => {
-            const para = cp.article_paragraphs;
-            const article = para?.articles;
-            if (!para || !article) return null;
-            const isAction = actionId === cp.paragraph_id;
+        <div className="space-y-6">
+          {/* 段落列表 */}
+          {paragraphs.length > 0 && (
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+                <Bookmark className="h-4 w-4" />
+                段落收藏（{paragraphs.length}）
+              </h3>
+              <div className="space-y-4">
+                {paragraphs.map((cp, index) => {
+                  const para = cp.article_paragraphs;
+                  const article = para?.articles;
+                  if (!para || !article) return null;
+                  const isAction = actionId === cp.paragraph_id;
             return (
               <div
                 key={cp.paragraph_id}
@@ -544,6 +644,70 @@ export default function CollectionDetailPage() {
               </div>
             );
           })}
+              </div>
+            </div>
+          )}
+
+          {/* 划线列表 */}
+          {highlights.length > 0 && (
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+                <Highlighter className="h-4 w-4" />
+                划线收藏（{highlights.length}）
+              </h3>
+              <div className="space-y-4">
+                {highlights.map((ch) => {
+                  const hl = ch.saved_highlights;
+                  const article = hl?.articles;
+                  if (!hl || !article) return null;
+                  const isAction = actionId === ch.highlight_id;
+                  return (
+                    <div key={ch.highlight_id} className="group flex gap-4 border border-border/60 bg-card rounded-sm p-5">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex gap-2 mb-3">
+                          <Quote className="h-4 w-4 text-accent/40 shrink-0 mt-1" />
+                          <p className="text-foreground/85 leading-relaxed italic">{hl.selected_text}</p>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                          {article.source && (
+                            <Badge variant="outline" className="border-accent/30 text-accent">
+                              {article.source}
+                            </Badge>
+                          )}
+                          <Link
+                            to={`/guanlan/${article.id}`}
+                            className="hover:text-accent transition-colors flex items-center gap-1"
+                          >
+                            <FileText className="h-3 w-3" />
+                            {article.title}
+                          </Link>
+                          <a
+                            href={article.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-accent transition-colors flex items-center gap-1"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                            原文
+                          </a>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => removeHighlight(ch.highlight_id)}
+                          disabled={isAction}
+                          className="p-1 text-muted-foreground hover:text-destructive transition-colors"
+                          title="移除"
+                        >
+                          {isAction ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

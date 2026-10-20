@@ -62,6 +62,7 @@ export default function ParagraphsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [collections, setCollections] = useState<{ id: string; name: string }[]>([]);
   const [showMenuFor, setShowMenuFor] = useState<string | null>(null);
+  const [showHighlightMenuFor, setShowHighlightMenuFor] = useState<string | null>(null);
   const [addingToId, setAddingToId] = useState<string | null>(null);
 
   // 获取用户的素材包列表
@@ -177,6 +178,33 @@ export default function ParagraphsPage() {
       console.error('删除划线失败:', err);
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  // 划线加入素材包
+  const addHighlightToCollection = async (highlightId: string, collectionId: string) => {
+    if (!supabase || !userId) return;
+    setAddingToId(highlightId);
+    try {
+      const { data: existing } = await supabase
+        .from('collection_highlights')
+        .select('sort_order')
+        .eq('collection_id', collectionId)
+        .order('sort_order', { ascending: false })
+        .limit(1);
+      const nextOrder = (existing?.[0]?.sort_order || 0) + 1;
+
+      await supabase.from('collection_highlights').insert({
+        collection_id: collectionId,
+        highlight_id: highlightId,
+        sort_order: nextOrder,
+      });
+      setShowHighlightMenuFor(null);
+    } catch (err) {
+      console.error('加入素材包失败:', err);
+      alert('该划线可能已在素材包中');
+    } finally {
+      setAddingToId(null);
     }
   };
 
@@ -541,18 +569,50 @@ export default function ParagraphsPage() {
                         收藏于 {formatDate(highlight.created_at)}
                       </span>
                     </div>
-                    <button
-                      onClick={() => deleteHighlight(highlight.id)}
-                      disabled={deletingId === highlight.id}
-                      className="p-1.5 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
-                      title="删除划线"
-                    >
-                      {deletingId === highlight.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-4 w-4" />
+                    <div className="flex items-center gap-1 relative">
+                      <button
+                        onClick={() => setShowHighlightMenuFor(showHighlightMenuFor === highlight.id ? null : highlight.id)}
+                        className="p-1.5 text-muted-foreground hover:text-accent transition-colors opacity-0 group-hover:opacity-100"
+                        title="加入素材包"
+                      >
+                        {addingToId === highlight.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <FolderPlus className="h-4 w-4" />
+                        )}
+                      </button>
+                      {showHighlightMenuFor === highlight.id && (
+                        <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-border/60 rounded-sm shadow-lg z-10 py-1">
+                          {collections.length === 0 ? (
+                            <p className="px-3 py-2 text-xs text-muted-foreground">
+                              暂无素材包，<Link to="/collections" className="text-accent hover:underline">去创建</Link>
+                            </p>
+                          ) : (
+                            collections.map((col) => (
+                              <button
+                                key={col.id}
+                                onClick={() => addHighlightToCollection(highlight.id, col.id)}
+                                className="w-full text-left px-3 py-2 text-xs hover:bg-muted/50 transition-colors"
+                              >
+                                {col.name}
+                              </button>
+                            ))
+                          )}
+                        </div>
                       )}
-                    </button>
+                      <button
+                        onClick={() => deleteHighlight(highlight.id)}
+                        disabled={deletingId === highlight.id}
+                        className="p-1.5 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+                        title="删除划线"
+                      >
+                        {deletingId === highlight.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
