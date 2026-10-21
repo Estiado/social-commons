@@ -1,6 +1,6 @@
 # 接手记录
 
-更新：2026-10-20。仓库 `Estiado/social-commons`，生产分支 `main`，部署在 Cloudflare Pages。
+更新：2026-10-21。仓库 `Estiado/social-commons`，生产分支 `main`，部署在 Cloudflare Pages。
 
 ## 当前目标
 
@@ -25,6 +25,7 @@
 
 ## 仍需后续解决
 
+0. 代码提交 `b460595` 已同步 GitHub，Cloudflare 构建发布成功，线上搜索和 API 路由已确认。文章提取仍缺运行期 Supabase 配置，先补齐服务端 `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` 再验收；见 `VERIFICATION.md` 的真实响应。
 1. 内容与作者解读逐条核验、重复条目处理，见产品蓝图。
 2. 实际 Supabase RLS 与服务端配额审计；本轮没有执行线上 SQL 或改 Secret。
 3. 跨设备正式身份与自定义条目备份。

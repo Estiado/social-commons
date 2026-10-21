@@ -1,4 +1,4 @@
-# 验证记录 · 2026-10-20
+# 验证记录 · 2026-10-20—21
 
 ## 自动检查
 
@@ -32,4 +32,13 @@
 
 本轮不修改 Cloudflare Secret、不操作线上数据库、不向线上库插入测试文章，也没有实际删除任何线上文章。云端收藏/匿名登录、Word/PDF 下载的完整设备交互、RLS 权限与多用户并发事务仍需要配置环境后的专项验收。
 
-提交和部署后的确认写入后续小节，不能把本地通过写成云端已成功。
+## GitHub 与 Cloudflare 发布确认
+
+- 代码提交 `b460595ffe6930c1d54f59d09d3c6d71d0fb545e` 已推送至 GitHub `main`，使用 `git ls-remote` 核对远端提交一致。
+- GitHub 的 `Cloudflare Pages` check 返回 `completed / success`，对应预览部署 `https://017f9894.social-commons.pages.dev`。
+- 生产站 `https://social-commons.pages.dev/` 返回 HTTP 200，页面标题已更新，入口脚本从 `index-DUNnMuc4.js` 变为 `index-DpcsVvgI.js`。
+- 在真实生产站打开搜索，输入“修昔底德”，成功看到“日新 · 通识”和“议论文素材”两类结果。截图在 D 盘 `.artifacts/search-live.jpg`。
+- `GET /api/extract-article` 返回 **405 application/json**，已不再误返回 SPA HTML，确认 Pages Functions 实际生效。
+- 不携带登录凭证的诊断 POST 返回 **500 / 服务器未配置 Supabase，请联系管理员**。这表示运行期 `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` 至少一项缺失，不能据此声称文章提取已可用。维护者需在 Cloudflare 运行期补齐配置后重新部署；Secret 不应粘贴进聊天、源码或 `VITE_*`。
+
+生产站已验证前端与 API 路由发布成功；真实用户的提取、收藏、导出链路仍受云端配置与权限专项验收限制。
