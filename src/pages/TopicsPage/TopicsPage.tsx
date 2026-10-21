@@ -55,7 +55,7 @@ export default function TopicsPage() {
       <div className="mt-16 p-6 bg-muted/30 border border-border/40 rounded-sm">
         <p className="text-xs text-muted-foreground leading-relaxed">
           专题内容持续更新中。相关时评文章来自观澜库，通识知识来自日新，名句来自撷英。
-          如需新增专题或调整内容，可在本地数据文件 <code className="bg-muted px-1.5 py-0.5 rounded">src/data/topicSpecials.ts</code> 中配置。
+          选择一个感兴趣的专题，从不同来源寻找论据，再整理到自己的素材包中。
         </p>
       </div>
     </div>

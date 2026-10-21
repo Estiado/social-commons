@@ -1,10 +1,14 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Feather, RefreshCw, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 import { QUOTES } from '@/data/quotes';
 import type { IQuote } from '@/data/types';
 
 export default function QuotesPage() {
+  const [searchParams] = useSearchParams();
   const [currentIndex, setCurrentIndex] = useState(() => {
+    const match = QUOTES.findIndex((quote) => quote.id === searchParams.get('id'));
+    if (match >= 0) return match;
     const dayOfYear = Math.floor(
       (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
     );

@@ -115,8 +115,13 @@ export const HOT_TOPICS: HotTopic[] = [
 // 根据文章标签匹配热点话题
 export function matchHotTopic(tags: string[]): HotTopic | null {
   if (!tags || tags.length === 0) return null;
+  // 手动归类写入话题全名，优先于交叉关键词，避免“科技伦理”被 AI 话题抢走。
+  for (const tag of tags) {
+    const explicit = HOT_TOPICS.find((topic) => topic.name === tag);
+    if (explicit) return explicit;
+  }
   for (const topic of HOT_TOPICS) {
-    if (tags.some((tag) => topic.keywords.some((kw) => tag.includes(kw) || kw.includes(tag)))) {
+    if (tags.some((tag) => tag && topic.keywords.some((kw) => tag.toLowerCase().includes(kw.toLowerCase()) || kw.toLowerCase().includes(tag.toLowerCase())))) {
       return topic;
     }
   }

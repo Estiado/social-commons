@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useLoadEffect } from '@/hooks/useLoadEffect';
+import { useState, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -6,12 +7,10 @@ import {
   ChevronDown,
   Trash2,
   Download,
-  Check,
   Loader2,
   AlertCircle,
   FileText,
   ExternalLink,
-  Clock,
   ChevronDown as ChevronDownIcon,
   FileDown,
   Highlighter,
@@ -20,9 +19,11 @@ import {
   Lightbulb,
   RefreshCw,
 } from 'lucide-react';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
+import { exportCollection, type ExportFormat } from '@/lib/collectionExport';
+import { requireSuccess, errorMessage } from '@/lib/database';
 import { supabase } from '@/lib/supabase';
-import { useUserId } from '@/hooks/useUserId';
+import { useUserSession } from '@/hooks/useUserId';
+import { DatabaseNotice } from '@/components/DatabaseNotice';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DAILY_KNOWLEDGE } from '@/data/daily';
@@ -74,17 +75,17 @@ interface Collection {
 export default function CollectionDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const userId = useUserId();
+  const { userId, loading: userLoading, error: authError } = useUserSession();
 
   const [collection, setCollection] = useState<Collection | null>(null);
   const [paragraphs, setParagraphs] = useState<CollectionParagraph[]>([]);
   const [highlights, setHighlights] = useState<CollectionHighlight[]>([]);
   const [loading, setLoading] = useState(true);
-  const [copied, setCopied] = useState(false);
+  const [loadError, setLoadError] = useState('');
   const [actionId, setActionId] = useState<string | null>(null);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [exporting, setExporting] = useState<string | null>(null);
-  const [inspiration, setInspiration] = useState<{ daily: typeof DAILY_KNOWLEDGE[0]; quote: typeof QUOTES[0] } | null>(null);
+  const [inspiration, setInspiration] = useState(() => ({ daily: DAILY_KNOWLEDGE[Math.floor(Math.random() * DAILY_KNOWLEDGE.length)], quote: QUOTES[Math.floor(Math.random() * QUOTES.length)] }));
 
   // 随机获取写作灵感
   const refreshInspiration = useCallback(() => {
@@ -93,29 +94,23 @@ export default function CollectionDetailPage() {
     setInspiration({ daily: randomDaily, quote: randomQuote });
   }, []);
 
-  useEffect(() => {
-    refreshInspiration();
-  }, [refreshInspiration]);
 
   // 获取素材包和段落
   const fetchData = useCallback(async () => {
     if (!supabase || !id || !userId) return;
     try {
-      setLoading(true);
 
       // 获取素材包信息
-      const { data: colData, error: colError } = await supabase
+      const collectionRequest = supabase
         .from('collections')
         .select('id, name, description')
         .eq('id', id)
         .eq('user_id', userId)
         .single();
 
-      if (colError) throw colError;
-      setCollection(colData);
 
       // 获取素材包中的段落（按sort_order排序）
-      const { data: paraData, error: paraError } = await supabase
+      const paragraphRequest = supabase
         .from('collection_paragraphs')
         .select(
           `
@@ -140,21 +135,8 @@ export default function CollectionDetailPage() {
         .eq('collection_id', id)
         .order('sort_order', { ascending: true });
 
-      if (paraError) throw paraError;
-      // Supabase关联查询可能返回数组或对象，兼容两种情况
-      setParagraphs(
-        (paraData || [])
-          .map((item: any) => {
-            const para = Array.isArray(item.article_paragraphs)
-              ? item.article_paragraphs[0]
-              : item.article_paragraphs;
-            return { ...item, article_paragraphs: para || null };
-          })
-          .filter((item: any) => item.article_paragraphs) as unknown as CollectionParagraph[],
-      );
-
       // 获取素材包中的划线（按sort_order排序）
-      const { data: highlightData, error: highlightError } = await supabase
+      const highlightRequest = supabase
         .from('collection_highlights')
         .select(
           `
@@ -178,7 +160,27 @@ export default function CollectionDetailPage() {
         .eq('collection_id', id)
         .order('sort_order', { ascending: true });
 
+      const [collectionResult, paragraphResult, highlightResult] = await Promise.all([collectionRequest, paragraphRequest, highlightRequest]);
+      const { data: colData, error: colError } = collectionResult;
+      const { data: paraData, error: paraError } = paragraphResult;
+      const { data: highlightData, error: highlightError } = highlightResult;
+      if (colError) throw colError;
       if (highlightError) throw highlightError;
+      setCollection(colData);
+      if (paraError) throw paraError;
+      // Supabase关联查询可能返回数组或对象，兼容两种情况
+      setParagraphs(
+        (paraData || [])
+          .map((item: any) => {
+            const para = Array.isArray(item.article_paragraphs)
+              ? item.article_paragraphs[0]
+              : item.article_paragraphs;
+            return { ...item, article_paragraphs: para || null };
+          })
+          .filter((item: any) => item.article_paragraphs) as unknown as CollectionParagraph[],
+      );
+
+
       setHighlights(
         (highlightData || [])
           .map((item: any) => {
@@ -191,14 +193,13 @@ export default function CollectionDetailPage() {
       );
     } catch (err) {
       console.error('获取素材包详情失败:', err);
+      setLoadError(errorMessage(err, '素材包加载失败'));
     } finally {
       setLoading(false);
     }
   }, [id, userId]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  useLoadEffect(fetchData);
 
   // 移动段落（上移/下移）
   const moveParagraph = async (index: number, direction: 'up' | 'down') => {
@@ -212,24 +213,27 @@ export default function CollectionDetailPage() {
     setActionId(current.paragraph_id);
     try {
       // 交换sort_order
-      await supabase
+      await requireSuccess(supabase
         .from('collection_paragraphs')
         .update({ sort_order: target.sort_order })
         .eq('collection_id', id)
-        .eq('paragraph_id', current.paragraph_id);
+        .eq('paragraph_id', current.paragraph_id));
 
-      await supabase
+      await requireSuccess(supabase
         .from('collection_paragraphs')
         .update({ sort_order: current.sort_order })
         .eq('collection_id', id)
-        .eq('paragraph_id', target.paragraph_id);
+        .eq('paragraph_id', target.paragraph_id));
 
       // 本地更新顺序
       const newParagraphs = [...paragraphs];
-      [newParagraphs[index], newParagraphs[targetIndex]] = [newParagraphs[targetIndex], newParagraphs[index]];
+      newParagraphs[index] = { ...target, sort_order: current.sort_order };
+      newParagraphs[targetIndex] = { ...current, sort_order: target.sort_order };
       setParagraphs(newParagraphs);
     } catch (err) {
       console.error('移动段落失败:', err);
+      await fetchData();
+      alert('排序未完成，已重新加载保存的顺序');
     } finally {
       setActionId(null);
     }
@@ -241,11 +245,11 @@ export default function CollectionDetailPage() {
     if (!confirm('从素材包中移除这段？')) return;
     setActionId(paragraphId);
     try {
-      await supabase
+      await requireSuccess(supabase
         .from('collection_paragraphs')
         .delete()
         .eq('collection_id', id)
-        .eq('paragraph_id', paragraphId);
+        .eq('paragraph_id', paragraphId));
       setParagraphs((prev) => prev.filter((p) => p.paragraph_id !== paragraphId));
     } catch (err) {
       console.error('移除段落失败:', err);
@@ -259,11 +263,11 @@ export default function CollectionDetailPage() {
     if (!confirm('从素材包中移除这条划线？')) return;
     setActionId(highlightId);
     try {
-      await supabase
+      await requireSuccess(supabase
         .from('collection_highlights')
         .delete()
         .eq('collection_id', id)
-        .eq('highlight_id', highlightId);
+        .eq('highlight_id', highlightId));
       setHighlights((prev) => prev.filter((h) => h.highlight_id !== highlightId));
     } catch (err) {
       console.error('移除划线失败:', err);
@@ -303,172 +307,27 @@ export default function CollectionDetailPage() {
     return [...paragraphItems, ...highlightItems];
   };
 
-  // 通用下载函数
-  const downloadBlob = (blob: Blob, filename: string) => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  // 导出TXT
-  const exportTxt = () => {
-    if (paragraphs.length === 0) return;
-    setExporting('txt');
-    const data = getExportData();
-    const content = data
-      .map((d) => `${d.index}. ${d.content}\n   —— 摘自《${d.title}》（${d.source}）`)
-      .join('\n\n');
-    const fullText = `【${collection?.name || '素材包'}】\n\n${content}\n\n—— 由社科通识·素材包导出`;
-    const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
-    downloadBlob(blob, `${collection?.name || '素材包'}.txt`);
-    setExporting(null);
-    setShowExportMenu(false);
-  };
-
-  // 导出Markdown
-  const exportMarkdown = () => {
-    if (paragraphs.length === 0) return;
-    setExporting('md');
-    const data = getExportData();
-    const content = data
-      .map((d) => `### ${d.index}. ${d.content}\n\n> 摘自《${d.title}》（${d.source}）${d.author ? ` · ${d.author}` : ''}\n\n[原文链接](${d.url})`)
-      .join('\n\n---\n\n');
-    const fullText = `# ${collection?.name || '素材包'}\n\n${collection?.description ? `> ${collection.description}\n\n` : ''}${content}\n\n---\n\n*由社科通识·素材包导出*`;
-    const blob = new Blob([fullText], { type: 'text/markdown;charset=utf-8' });
-    downloadBlob(blob, `${collection?.name || '素材包'}.md`);
-    setExporting(null);
-    setShowExportMenu(false);
-  };
-
-  // 导出DOCX
-  const exportDocx = async () => {
-    if (paragraphs.length === 0) return;
-    setExporting('docx');
+  // UI 只管理导出状态，格式生成和下载交给独立模块。
+  const handleExport = async (format: ExportFormat) => {
+    if (!collection) return;
+    setExporting(format);
     try {
-      const data = getExportData();
-      const children: Paragraph[] = [];
-
-      // 标题
-      children.push(
-        new Paragraph({
-          text: collection?.name || '素材包',
-          heading: HeadingLevel.HEADING_1,
-          alignment: AlignmentType.CENTER,
-          spacing: { after: 200 },
-        }),
-      );
-
-      // 描述
-      if (collection?.description) {
-        children.push(
-          new Paragraph({
-            children: [new TextRun({ text: collection.description, italics: true, color: '666666' })],
-            spacing: { after: 300 },
-          }),
-        );
-      }
-
-      // 段落内容
-      data.forEach((d) => {
-        children.push(
-          new Paragraph({
-            text: `${d.index}. ${d.content}`,
-            spacing: { before: 200, after: 100 },
-          }),
-        );
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: `—— 摘自《${d.title}》（${d.source}）${d.author ? ` · ${d.author}` : ''}`,
-                size: 20,
-                color: '888888',
-              }),
-            ],
-            spacing: { after: 200 },
-          }),
-        );
-      });
-
-      // 页脚
-      children.push(
-        new Paragraph({
-          children: [new TextRun({ text: '由社科通识·素材包导出', size: 18, color: 'AAAAAA' })],
-          alignment: AlignmentType.CENTER,
-          spacing: { before: 400 },
-        }),
-      );
-
-      const doc = new Document({
-        sections: [{ properties: {}, children }],
-      });
-
-      const blob = await Packer.toBlob(doc);
-      downloadBlob(blob, `${collection?.name || '素材包'}.docx`);
-    } catch (err) {
-      console.error('导出DOCX失败:', err);
-      alert('导出失败，请重试');
+      await exportCollection(format, collection, getExportData());
+    } catch (error) {
+      alert(errorMessage(error, '导出失败，请重试'));
     } finally {
       setExporting(null);
       setShowExportMenu(false);
     }
   };
+  const exportTxt = () => handleExport('txt');
+  const exportMarkdown = () => handleExport('md');
+  const exportDocx = () => handleExport('docx');
+  const exportPdf = () => handleExport('pdf');
 
-  // 导出PDF（通过浏览器打印功能）
-  const exportPdf = () => {
-    if (paragraphs.length === 0) return;
-    setExporting('pdf');
-    const data = getExportData();
-    const content = data
-      .map(
-        (d) => `
-        <div style="margin-bottom: 24px;">
-          <p style="font-size: 14px; line-height: 1.8; margin: 0 0 8px 0;">${d.index}. ${d.content}</p>
-          <p style="font-size: 12px; color: #666; margin: 0;">—— 摘自《${d.title}》（${d.source}）${d.author ? ` · ${d.author}` : ''}</p>
-        </div>
-      `,
-      )
-      .join('');
-
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      alert('请允许弹出窗口以导出PDF');
-      setExporting(null);
-      return;
-    }
-
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <title>${collection?.name || '素材包'}</title>
-        <style>
-          body { font-family: 'Noto Serif SC', 'SimSun', serif; max-width: 700px; margin: 40px auto; padding: 0 20px; color: #333; }
-          h1 { text-align: center; font-size: 24px; margin-bottom: 8px; }
-          .desc { text-align: center; color: #666; font-size: 14px; margin-bottom: 32px; font-style: italic; }
-          .footer { text-align: center; color: #999; font-size: 12px; margin-top: 40px; border-top: 1px solid #eee; padding-top: 16px; }
-          @media print { body { margin: 20px; } }
-        </style>
-      </head>
-      <body>
-        <h1>${collection?.name || '素材包'}</h1>
-        ${collection?.description ? `<p class="desc">${collection.description}</p>` : ''}
-        ${content}
-        <div class="footer">由社科通识·素材包导出</div>
-        <script>window.onload = function() { window.print(); }</script>
-      </body>
-      </html>
-    `);
-    printWindow.document.close();
-    setExporting(null);
-    setShowExportMenu(false);
-  };
+  if (!supabase || userLoading || authError || loadError) {
+    return <DatabaseNotice loading={userLoading} error={authError || loadError} />;
+  }
 
   if (loading) {
     return (
@@ -520,7 +379,7 @@ export default function CollectionDetailPage() {
               variant="outline"
               size="sm"
               onClick={() => setShowExportMenu(!showExportMenu)}
-              disabled={paragraphs.length === 0}
+              disabled={paragraphs.length + highlights.length === 0 || exporting !== null}
               className="gap-2"
             >
               <Download className="h-4 w-4" />

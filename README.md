@@ -1,105 +1,64 @@
-# 项目技术规范
+# 社科通识 · Social Commons
 
-## 技术栈
+通过通识、多视角历史、名句和时评阅读，积累有出处的议论文素材。
 
-- 前端: React 19 + TypeScript
-- 样式: Tailwind CSS v4
-- UI 组件: shadcn/ui `import { Button } from "@/components/ui/button";`
-- 图标: lucide-react `import { SearchIcon } from "lucide-react";`
-- 图表: echarts-for-react `import ReactECharts from "echarts-for-react";`
-- 动画: framer-motion `import { motion } from "framer-motion";`
-- 路由: react-router-dom `import { Link, useNavigate } from "react-router-dom";`
+- 网站：https://social-commons.pages.dev/
+- 仓库：https://github.com/Estiado/social-commons
+- 技术：React 19、TypeScript、Vite、Tailwind CSS 4、shadcn/ui、Supabase、Cloudflare Pages。
 
----
+## 从这里接手
 
-## 目录结构
+1. 阅读 [交接记录](docs/HANDOFF.md)，了解已完成工作与验证边界。
+2. 阅读 [架构说明](docs/ARCHITECTURE.md)，按模块查代码。
+3. 阅读 [产品蓝图](docs/PRODUCT_BLUEPRINT.md)，区分已实现功能与下一步建议。
+4. 阅读 [验证记录](docs/VERIFICATION.md)，复核构建和行为。
 
-```
-src/
-├── index.tsx            # 入口（勿修改）
-├── app.tsx              # 路由配置（仅在 <Routes> 内增删 <Route>）
-├── index.css            # 全局样式 + 主题变量
-├── components/          # 基础 UI 组件（禁止存放业务组件）
-│   ├── layout.tsx       # 全局布局容器（含 <Outlet />）
-│   └── ui/              # shadcn/ui 内置组件（勿修改）
-├── pages/               # 页面模块（每个页面一个目录）
-│   ├── <PageName>/      # 页面目录示例
-│   │   ├── PageName.tsx        # 页面入口文件与目录同名
-│   │   └── components/         # 页面专属组件
-│   └── NotFoundPage/
-│       └── NotFoundPage.tsx
-├── hooks/               # 自定义 Hooks
-└── lib/                 # 工具函数（cn() 等）
+## 本地开发（Windows，文件留在 D 盘）
 
-public/                  # 静态资源（dev server 原样服务；构建后随 dist/output 同源部署）
+建议 Node.js 22.18 以上。保留现有 D 盘项目根目录。首次安装依赖时使用 D 盘缓存：
+
+```powershell
+$env:npm_config_cache = 'D:\CodexData\temp\social-commons\npm-cache'
+npm ci
+Copy-Item .env.example .env.local
+.\scripts\dev.ps1 dev
 ```
 
----
+不配置 Supabase 也可以阅读所有内置内容。云端收藏、素材包和文章提取需要真实配置及数据库初始化。
 
-## 模板初始状态
-
-- `app.tsx` 首页路由指向 `pages/HomePage`（占位欢迎页）
-- 开发时将 `HomePage` 替换为业务首页，或在 `pages/` 下创建新页面并调整 `index` 路由
-- `layout.tsx` 为空壳容器（仅 `<Outlet />`），需根据需求实现导航和布局
-
----
-
-## 禁止修改的文件
-
-| 文件 | 原因 |
-|------|------|
-| `src/index.tsx` | Provider 层级 + 样式引入，由模板管理 |
-| `src/components/ui/*` | shadcn/ui 内置组件，版本锁定 |
-
----
-
-## 文件放置规则
-
-| 内容类型 | 放置位置 |
-|---------|---------|
-| 新页面 | `src/pages/<PageName>/PageName.tsx` |
-| 页面专属组件 | `src/pages/<PageName>/components/` |
-| 自定义 Hooks | `src/hooks/` |
-| 工具函数 | `src/lib/` |
-| 静态数据文件 | `public/data/` |
-| 静态图片 | `public/images/` |
-
----
-
-## 导入路径
-
-```typescript
-// @/ 别名 → src/
-import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
-
-// public/ 下的静态资源通过 URL 引用（dev 与线上同源）
-// <img src="/images/hero.png" />  fetch("/data/config.json")
+```powershell
+.\scripts\dev.ps1 check      # 类型、lint、回归测试、前端构建、函数打包
+.\scripts\dev.ps1 build      # 输出到 dist/client
+.\scripts\dev.ps1 preview    # 预览生产构建
 ```
 
----
+脚本仅修改当前进程的 TEMP/TMP/npm 缓存路径，使用 `D:\CodexData\temp\social-commons`，不修改系统隔离设置。构建、测试截图、函数验证产物在项目的 `dist/`、`.artifacts/`，不提交 Git。已安装的 Node 可继续使用，无需迁移系统程序。
 
-## 路由配置
+## Cloudflare Pages
 
-- 新增页面需在 `src/app.tsx` 的 `<Routes>` 内注册 `<Route>`
-- `BrowserRouter` 已在 `index.tsx` 中配置，`app.tsx` 中**禁止**再包裹 Router
+GitHub 生产分支为 `main`。构建命令 `npm run build`，输出目录 **`dist/client`**，Node 建议 22.18 以上。
 
----
+| 配置 | 用途 | 放置位置 |
+| --- | --- | --- |
+| `VITE_SUPABASE_URL` | Supabase 项目地址 | Pages 构建环境变量 |
+| `VITE_SUPABASE_ANON_KEY` | 浏览器公开客户端密钥 | Pages 构建环境变量 |
+| `SUPABASE_URL` | 后端项目地址 | Pages Functions 运行期变量 |
+| `SUPABASE_SERVICE_ROLE_KEY` | 服务端写入权限 | Pages 运行期 Secret，禁止 `VITE_` 前缀 |
+| `ARTICLE_ALLOWED_HOSTS` | 可选，英文逗号分隔的来源域名 | Functions 运行期变量 |
 
-## 主题变量
+`functions/api/extract-article.ts` 提供 `POST /api/extract-article`；`public/_routes.json` 让 Functions 只接管 API，静态阅读走静态资源。接口需要 Supabase 登录令牌。必须在 Supabase 启用匿名登录，并依次执行 `supabase/init.sql`、`highlights-migration.sql`、`preset-articles-migration.sql`（对已有数据库先核实迁移状态，切勿盲目重跑初始化）。
 
-主题色定义在 `src/index.css`，通过 `:root` CSS 变量 + `@theme inline` 注册到 Tailwind。
+本轮没有更改线上 Secret 或执行数据库 SQL。`supabase/init.sql` 的宽松文章写入策略仍需专项收紧，详见蓝图。`npm run dev` 只提供前端，不模拟 Pages Functions；`npm run check:functions` 校验函数打包，完整接口联调应使用配置好 Secret 的 Cloudflare 预览部署。
 
-| 用途 | Tailwind 类 | CSS 变量 |
-|------|------------|----------|
-| 页面背景 | `bg-background` | `--background` |
-| 主文本 | `text-foreground` | `--foreground` |
-| 卡片背景 | `bg-card` | `--card` |
-| 次要文本 | `text-muted-foreground` | `--muted-foreground` |
-| 主色 | `bg-primary` / `text-primary` | `--primary` |
-| 强调色 | `bg-accent` | `--accent` |
-| 边框 | `border-border` | `--border` |
-| 危险色 | `text-destructive` | `--destructive` |
-| 图表色 | `bg-chart-1` ~ `bg-chart-5` | `--chart-1` ~ `--chart-5` |
+[Cloudflare 官方 Functions 文档](https://developers.cloudflare.com/pages/functions/)；[路由文档](https://developers.cloudflare.com/pages/functions/routing/)。原 Netlify 适配层保留，并把 `/api/extract-article` 重写到旧函数。
 
-HSL 格式使用**空格分隔**：`--primary: hsl(150 60% 40%);`
+## 修改约定
+
+- 页面与页面专属 UI 放在 `src/pages/<PageName>/`；通用 UI 放在 `src/components/`。
+- 独立逻辑放在 `src/lib/`，外部系统同步逻辑放在 hooks 或 `server/`。
+- `src/index.tsx` 和 `src/components/ui/*` 为模板边界，本轮保持原样。
+- 数据库写入必须检查 Supabase 返回的 `error`，成功后再更新界面。
+- 不能把本地 UUID 当作已通过 Supabase 登录的身份。
+- 不在产品页面放文件路径或开发操作说明。
+- 新内容必须注明原文、作者、出处和核验状态；生成解读不可冒充作者原文。
+- 提交前运行 `npm run check`，并记录实际完成的浏览器与云端验证。

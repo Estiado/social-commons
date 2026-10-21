@@ -21,7 +21,7 @@ export default function TopicDetailPage() {
   const topic = TOPIC_SPECIALS.find((t) => t.id === id);
 
   const [articles, setArticles] = useState<RelatedArticle[]>([]);
-  const [articlesLoading, setArticlesLoading] = useState(true);
+  const [articlesLoading, setArticlesLoading] = useState(Boolean(supabase));
 
   // 查找相关的日新通识
   const relatedDaily = DAILY_KNOWLEDGE.filter((d) => topic?.relatedDailyIds.includes(d.id));
@@ -32,7 +32,6 @@ export default function TopicDetailPage() {
   // 查询相关话题标签的文章
   useEffect(() => {
     if (!supabase || !isSupabaseConfigured || !topic) {
-      setArticlesLoading(false);
       return;
     }
 

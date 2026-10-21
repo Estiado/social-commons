@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useLoadEffect } from '@/hooks/useLoadEffect';
+import { requireSuccess } from '@/lib/database';
+import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FolderOpen,
@@ -10,7 +12,8 @@ import {
   X,
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import { useUserId } from '@/hooks/useUserId';
+import { useUserSession } from '@/hooks/useUserId';
+import { DatabaseNotice } from '@/components/DatabaseNotice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -26,7 +29,7 @@ interface Collection {
 }
 
 export default function CollectionsPage() {
-  const userId = useUserId();
+  const { userId, loading: userLoading, error: authError } = useUserSession();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -39,10 +42,9 @@ export default function CollectionsPage() {
   const fetchCollections = useCallback(async () => {
     if (!supabase || !userId) return;
     try {
-      setLoading(true);
       const { data, error } = await supabase
         .from('collections')
-        .select('*, collection_paragraphs(count)')
+        .select('*, collection_paragraphs(count), collection_highlights(count)')
         .eq('user_id', userId)
         .order('updated_at', { ascending: false });
 
@@ -50,7 +52,7 @@ export default function CollectionsPage() {
       setCollections(
         (data || []).map((c: any) => ({
           ...c,
-          paragraph_count: c.collection_paragraphs?.[0]?.count || 0,
+          paragraph_count: (c.collection_paragraphs?.[0]?.count || 0) + (c.collection_highlights?.[0]?.count || 0),
         })),
       );
     } catch (err) {
@@ -60,9 +62,7 @@ export default function CollectionsPage() {
     }
   }, [userId]);
 
-  useEffect(() => {
-    fetchCollections();
-  }, [fetchCollections]);
+  useLoadEffect(fetchCollections);
 
   // 创建素材包
   const handleCreate = async (e: React.FormEvent) => {
@@ -93,7 +93,7 @@ export default function CollectionsPage() {
     if (!confirm('确定删除这个素材包吗？里面的段落关联也会被删除。')) return;
     setDeletingId(id);
     try {
-      await supabase.from('collections').delete().eq('id', id).eq('user_id', userId);
+      await requireSuccess(supabase.from('collections').delete().eq('id', id).eq('user_id', userId));
       setCollections((prev) => prev.filter((c) => c.id !== id));
     } catch (err) {
       console.error('删除素材包失败:', err);
@@ -113,6 +113,10 @@ export default function CollectionsPage() {
       return '';
     }
   };
+
+  if (!supabase || userLoading || authError) {
+    return <DatabaseNotice loading={userLoading} error={authError} />;
+  }
 
   if (!isSupabaseConfigured) {
     return (
@@ -221,7 +225,7 @@ export default function CollectionsPage() {
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <FileText className="h-3 w-3" />
-                      {col.paragraph_count} 段素材
+                      {col.paragraph_count} 条素材
                     </span>
                     <span>更新于 {formatDate(col.updated_at)}</span>
                   </div>

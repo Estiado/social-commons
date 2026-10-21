@@ -26,12 +26,11 @@ export default function HomePage() {
     return QUOTES[dayOfYear % QUOTES.length];
   });
   const [latestArticles, setLatestArticles] = useState<LatestArticle[]>([]);
-  const [articlesLoading, setArticlesLoading] = useState(true);
+  const [articlesLoading, setArticlesLoading] = useState(Boolean(supabase));
 
   // 获取最新观澜文章
   useEffect(() => {
     if (!supabase || !isSupabaseConfigured) {
-      setArticlesLoading(false);
       return;
     }
     const fetchLatest = async () => {

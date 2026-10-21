@@ -116,5 +116,16 @@ export default defineConfig(({ command }) => ({
   },
   build: {
     outDir: 'dist/client',
+    // 单独缓存稳定的框架/数据库 SDK，不把按需导出的依赖合并回首屏。
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'react-vendor', test: /node_modules[\\/](?:react|react-dom|react-router|react-router-dom|scheduler)[\\/]/ },
+            { name: 'supabase', test: /node_modules[\\/]@supabase[\\/]/ },
+          ],
+        },
+      },
+    },
   },
 }));

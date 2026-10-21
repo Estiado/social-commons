@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useLoadEffect } from '@/hooks/useLoadEffect';
+import { requireSuccess } from '@/lib/database';
+import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Bookmark,
@@ -8,15 +10,14 @@ import {
   Loader2,
   AlertCircle,
   FileText,
-  Tag,
   Clock,
   FolderPlus,
-  Check,
   Highlighter,
   Quote,
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import { useUserId } from '@/hooks/useUserId';
+import { useUserSession } from '@/hooks/useUserId';
+import { DatabaseNotice } from '@/components/DatabaseNotice';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 
@@ -52,7 +53,7 @@ interface SavedHighlight {
 }
 
 export default function ParagraphsPage() {
-  const userId = useUserId();
+  const { userId, loading: userLoading, error: authError } = useUserSession();
   const [paragraphs, setParagraphs] = useState<SavedParagraph[]>([]);
   const [highlights, setHighlights] = useState<SavedHighlight[]>([]);
   const [activeTab, setActiveTab] = useState<'paragraphs' | 'highlights'>('paragraphs');
@@ -85,7 +86,6 @@ export default function ParagraphsPage() {
   const fetchParagraphs = useCallback(async () => {
     if (!supabase || !userId) return;
     try {
-      setLoading(true);
       const { data, error } = await supabase
         .from('saved_paragraphs')
         .select(
@@ -172,7 +172,7 @@ export default function ParagraphsPage() {
     if (!confirm('删除这条划线收藏？')) return;
     setDeletingId(highlightId);
     try {
-      await supabase.from('saved_highlights').delete().eq('id', highlightId).eq('user_id', userId);
+      await requireSuccess(supabase.from('saved_highlights').delete().eq('id', highlightId).eq('user_id', userId));
       setHighlights((prev) => prev.filter((h) => h.id !== highlightId));
     } catch (err) {
       console.error('删除划线失败:', err);
@@ -194,11 +194,11 @@ export default function ParagraphsPage() {
         .limit(1);
       const nextOrder = (existing?.[0]?.sort_order || 0) + 1;
 
-      await supabase.from('collection_highlights').insert({
+      await requireSuccess(supabase.from('collection_highlights').insert({
         collection_id: collectionId,
         highlight_id: highlightId,
         sort_order: nextOrder,
-      });
+      }));
       setShowHighlightMenuFor(null);
     } catch (err) {
       console.error('加入素材包失败:', err);
@@ -208,11 +208,9 @@ export default function ParagraphsPage() {
     }
   };
 
-  useEffect(() => {
-    fetchParagraphs();
-    fetchHighlights();
-    fetchCollections();
-  }, [fetchParagraphs, fetchHighlights, fetchCollections]);
+  useLoadEffect(fetchParagraphs);
+  useLoadEffect(fetchHighlights);
+  useLoadEffect(fetchCollections);
 
   // 加入素材包
   const addToCollection = async (paragraphId: string, collectionId: string) => {
@@ -228,11 +226,11 @@ export default function ParagraphsPage() {
         .limit(1);
       const nextOrder = (existing?.[0]?.sort_order || 0) + 1;
 
-      await supabase.from('collection_paragraphs').insert({
+      await requireSuccess(supabase.from('collection_paragraphs').insert({
         collection_id: collectionId,
         paragraph_id: paragraphId,
         sort_order: nextOrder,
-      });
+      }));
       setShowMenuFor(null);
     } catch (err) {
       console.error('加入素材包失败:', err);
@@ -247,7 +245,7 @@ export default function ParagraphsPage() {
     if (!supabase || !userId) return;
     setDeletingId(savedId);
     try {
-      await supabase.from('saved_paragraphs').delete().eq('id', savedId).eq('user_id', userId);
+      await requireSuccess(supabase.from('saved_paragraphs').delete().eq('id', savedId).eq('user_id', userId));
       setParagraphs((prev) => prev.filter((p) => p.id !== savedId));
     } catch (err) {
       console.error('取消收藏失败:', err);
@@ -306,6 +304,10 @@ export default function ParagraphsPage() {
       return '';
     }
   };
+
+  if (!supabase || userLoading || authError) {
+    return <DatabaseNotice loading={userLoading} error={authError} />;
+  }
 
   if (!isSupabaseConfigured) {
     return (

@@ -1,11 +1,15 @@
 import { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useItemLocation } from '@/hooks/useItemLocation';
 import { Calendar, BookOpen, ChevronDown, ChevronUp, Tag, Clock, Newspaper, ExternalLink, Search } from 'lucide-react';
 import { DAILY_KNOWLEDGE } from '@/data/daily';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 
 export default function DailyPage() {
-  const [expandedId, setExpandedId] = useState<string | null>(DAILY_KNOWLEDGE[0]?.id || null);
+  const [searchParams] = useSearchParams();
+  useItemLocation(searchParams.get('id'), 'daily');
+  const [expandedId, setExpandedId] = useState<string | null>(searchParams.get('id') || DAILY_KNOWLEDGE[0]?.id || null);
   const [activePrimary, setActivePrimary] = useState<string>('全部');
   const [activeSub, setActiveSub] = useState<string>('全部');
   const [searchQuery, setSearchQuery] = useState('');
@@ -113,9 +117,11 @@ export default function DailyPage() {
           return (
             <article
               key={item.id}
-              className="border border-border/60 bg-card rounded-sm overflow-hidden transition-all duration-300"
+              id={`daily-${item.id}`}
+              className="scroll-mt-24 border border-border/60 bg-card rounded-sm overflow-hidden transition-all duration-300"
             >
               <button
+                aria-expanded={isExpanded}
                 onClick={() => setExpandedId(isExpanded ? null : item.id)}
                 className="w-full text-left p-6 hover:bg-muted/20 transition-colors"
               >

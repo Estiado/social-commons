@@ -1,26 +1,25 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   ExternalLink,
   User,
-  Clock,
   Tag,
   Bookmark,
   BookmarkCheck,
-  FileText,
   Calendar,
   Feather,
-  BookOpen,
   Sparkles,
 } from 'lucide-react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { useUserId } from '@/hooks/useUserId';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PRESET_ARTICLES, getPresetParagraphs } from '@/data/presetArticles';
 import { DAILY_KNOWLEDGE } from '@/data/daily';
 import { QUOTES } from '@/data/quotes';
+import { syncPresetArticle } from '@/lib/presetArticleSync';
+import { requireSuccess, setParagraphSaved, errorMessage } from '@/lib/database';
 
 export default function PresetArticleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -28,117 +27,50 @@ export default function PresetArticleDetailPage() {
   const userId = useUserId();
 
   const article = PRESET_ARTICLES.find((a) => a.id === id);
-  const paragraphs = article ? getPresetParagraphs(article.id) : [];
+  const paragraphs = useMemo(() => article ? getPresetParagraphs(article.id) : [], [article]);
+  const [paragraphIds, setParagraphIds] = useState<Record<number, string>>({});
 
   const [savedParagraphs, setSavedParagraphs] = useState<Set<string>>(new Set());
   const [syncingId, setSyncingId] = useState<string | null>(null);
 
-  // 加载已收藏的段落
+  // 展示使用本地段落 ID；收藏操作必须使用云端 UUID，按段落序号建立映射。
   useEffect(() => {
     if (!supabase || !userId || !article) return;
-    const fetchSaved = async () => {
-      const { data } = await supabase
-        .from('saved_paragraphs')
-        .select('paragraph_id')
-        .eq('user_id', userId);
-      if (data) {
-        setSavedParagraphs(new Set(data.map((d) => d.paragraph_id)));
+    let cancelled = false;
+    const loadSaved = async () => {
+      const [saved, remote] = await Promise.all([
+        requireSuccess(supabase.from('saved_paragraphs').select('paragraph_id, article_paragraphs!inner(articles!inner(url))').eq('user_id', userId).eq('article_paragraphs.articles.url', article.url)),
+        requireSuccess(supabase.from('article_paragraphs').select('id, paragraph_index, articles!inner(url)').eq('articles.url', article.url)),
+      ]);
+      if (!cancelled) {
+        setSavedParagraphs(new Set((saved.data || []).map((row) => row.paragraph_id)));
+        setParagraphIds(Object.fromEntries((remote.data || []).map((row) => [row.paragraph_index, row.id])));
       }
     };
-    fetchSaved();
+    loadSaved().catch((error) => console.error('加载收藏失败:', error));
+    return () => { cancelled = true; };
   }, [userId, article]);
 
-  // 将预置文章同步到Supabase
-  const syncArticleToSupabase = useCallback(async () => {
-    if (!supabase || !article) return null;
-
-    // 检查文章是否已存在
-    const { data: existing } = await supabase
-      .from('articles')
-      .select('id')
-      .eq('url', article.url)
-      .single();
-
-    if (existing) return existing.id;
-
-    // 创建文章
-    const { data: newArticle, error: articleError } = await supabase
-      .from('articles')
-      .insert({
-        url: article.url,
-        title: article.title,
-        author: article.author,
-        source: article.source,
-        published_at: article.published_at,
-        excerpt: article.excerpt,
-        tags: article.tags,
-        is_public: true,
-        is_preset: true,
-      })
-      .select('id')
-      .single();
-
-    if (articleError || !newArticle) return null;
-
-    // 创建段落
-    const paraData = paragraphs.map((p, i) => ({
-      article_id: newArticle.id,
-      paragraph_index: i,
-      content: p.content,
-    }));
-
-    await supabase.from('article_paragraphs').insert(paraData);
-
-    return newArticle.id;
-  }, [article, paragraphs]);
-
-  // 收藏/取消收藏段落
   const toggleParagraphSave = async (paragraphIndex: number) => {
     if (!supabase || !userId || !article) {
-      alert('需要配置数据库才能使用收藏功能');
+      alert('请先连接数据库并完成登录，再使用收藏功能');
       return;
     }
-
-    setSyncingId(`p${paragraphIndex}`);
+    setSyncingId('p' + paragraphIndex);
     try {
-      // 先同步文章到Supabase
-      const articleId = await syncArticleToSupabase();
-      if (!articleId) {
-        alert('同步文章失败');
-        return;
-      }
-
-      // 获取段落ID
-      const { data: paraData } = await supabase
-        .from('article_paragraphs')
-        .select('id')
-        .eq('article_id', articleId)
-        .eq('paragraph_index', paragraphIndex)
-        .single();
-
-      if (!paraData) return;
-
-      const paraId = paraData.id;
-      const isSaved = savedParagraphs.has(paraId);
-
-      if (isSaved) {
-        await supabase
-          .from('saved_paragraphs')
-          .delete()
-          .eq('user_id', userId)
-          .eq('paragraph_id', paraId);
-        setSavedParagraphs((prev) => {
-          const next = new Set(prev);
-          next.delete(paraId);
-          return next;
-        });
-      } else {
-        await supabase.from('saved_paragraphs').insert({
-          user_id: userId,
-          paragraph_id: paraId,
-        });
-        setSavedParagraphs((prev) => new Set(prev).add(paraId));
-      }
+      const ids = paragraphIds[paragraphIndex] ? paragraphIds : await syncPresetArticle(article);
+      setParagraphIds(ids);
+      const paragraphId = ids[paragraphIndex];
+      if (!paragraphId) throw new Error('文章段落尚未同步');
+      const saved = savedParagraphs.has(paragraphId);
+      await setParagraphSaved(userId, paragraphId, !saved);
+      setSavedParagraphs((previous) => {
+        const next = new Set(previous);
+        if (saved) next.delete(paragraphId); else next.add(paragraphId);
+        return next;
+      });
+    } catch (error) {
+      alert(errorMessage(error, '收藏失败，请重试'));
     } finally {
       setSyncingId(null);
     }
@@ -239,7 +171,7 @@ export default function PresetArticleDetailPage() {
       {/* 正文段落 */}
       <article className="space-y-6 mb-16">
         {paragraphs.map((para, index) => {
-          const isSaved = savedParagraphs.has(para.id);
+          const isSaved = savedParagraphs.has(paragraphIds[index]);
           const isSyncing = syncingId === `p${index}`;
           return (
             <div
@@ -251,7 +183,7 @@ export default function PresetArticleDetailPage() {
               </p>
               <button
                 onClick={() => toggleParagraphSave(index)}
-                disabled={isSyncing}
+                disabled={syncingId !== null}
                 className={`absolute -left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-sm transition-all opacity-0 group-hover:opacity-100 ${
                   isSaved
                     ? 'opacity-100 text-accent bg-accent/10'

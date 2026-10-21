@@ -65,11 +65,17 @@ export function matchTopics(text: string): string[] {
   for (const topic of TOPICS) {
     let score = 0;
     for (const keyword of topic.keywords) {
-      const regex = new RegExp(keyword.toLowerCase(), 'g');
-      const matches = lowerText.match(regex);
-      if (matches) {
-        score += matches.length;
+      const normalized = keyword.toLowerCase();
+      if (!normalized) continue;
+      let offset = 0;
+      while (score < 2) {
+        const match = lowerText.indexOf(normalized, offset);
+        if (match < 0) break;
+        score++;
+        offset = match + normalized.length;
       }
+      // 只需要判断阈值，不创建整段文本的匹配数组，也不再扫描剩余关键词。
+      if (score >= 2) break;
     }
     // 匹配到至少2个关键词或1个关键词出现多次才算
     if (score >= 2) {

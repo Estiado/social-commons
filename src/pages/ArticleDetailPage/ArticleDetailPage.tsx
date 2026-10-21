@@ -1,3 +1,5 @@
+import { useLoadEffect } from '@/hooks/useLoadEffect';
+import { requireSuccess, setParagraphSaved } from '@/lib/database';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
@@ -17,7 +19,8 @@ import {
   Feather,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import { useUserId } from '@/hooks/useUserId';
+import { useUserSession } from '@/hooks/useUserId';
+import { DatabaseNotice } from '@/components/DatabaseNotice';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DAILY_KNOWLEDGE } from '@/data/daily';
@@ -46,7 +49,7 @@ interface Paragraph {
 export default function ArticleDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const userId = useUserId();
+  const { userId, loading: userLoading, error: authError } = useUserSession();
 
   const [article, setArticle] = useState<Article | null>(null);
   const [paragraphs, setParagraphs] = useState<Paragraph[]>([]);
@@ -68,10 +71,8 @@ export default function ArticleDetailPage() {
 
   // 获取文章详情和段落
   const fetchArticle = useCallback(async () => {
-    if (!supabase || !id) return;
+    if (!supabase || !id || !userId) return;
     try {
-      setLoading(true);
-      setError(null);
 
       // 同时查询文章、段落、用户收藏
       const [articleRes, paragraphsRes, savedRes] = await Promise.all([
@@ -82,12 +83,13 @@ export default function ArticleDetailPage() {
           .eq('article_id', id)
           .order('paragraph_index', { ascending: true }),
         userId
-          ? supabase.from('saved_paragraphs').select('paragraph_id').eq('user_id', userId)
+          ? supabase.from('saved_paragraphs').select('paragraph_id, article_paragraphs!inner(article_id)').eq('user_id', userId).eq('article_paragraphs.article_id', id)
           : Promise.resolve({ data: [], error: null }),
       ]);
 
       if (articleRes.error) throw articleRes.error;
       if (paragraphsRes.error) throw paragraphsRes.error;
+      if (savedRes.error) throw savedRes.error;
 
       setArticle(articleRes.data);
       setParagraphs(paragraphsRes.data || []);
@@ -133,9 +135,7 @@ export default function ArticleDetailPage() {
     }
   }, [id, userId]);
 
-  useEffect(() => {
-    fetchArticle();
-  }, [fetchArticle]);
+  useLoadEffect(fetchArticle);
 
   // 收藏/取消收藏段落
   const toggleSave = async (paragraphId: string) => {
@@ -145,25 +145,15 @@ export default function ArticleDetailPage() {
     try {
       const isSaved = savedParagraphIds.has(paragraphId);
 
-      if (isSaved) {
-        // 取消收藏
-        await supabase
-          .from('saved_paragraphs')
-          .delete()
-          .eq('user_id', userId)
-          .eq('paragraph_id', paragraphId);
-        setSavedParagraphIds((prev) => {
-          const next = new Set(prev);
-          next.delete(paragraphId);
-          return next;
-        });
-      } else {
-        // 收藏
-        await supabase.from('saved_paragraphs').insert({ user_id: userId, paragraph_id: paragraphId });
-        setSavedParagraphIds((prev) => new Set(prev).add(paragraphId));
-      }
+      await setParagraphSaved(userId, paragraphId, !isSaved);
+      setSavedParagraphIds((previous) => {
+        const next = new Set(previous);
+        if (isSaved) next.delete(paragraphId); else next.add(paragraphId);
+        return next;
+      });
     } catch (err) {
       console.error('收藏操作失败:', err);
+      alert('收藏未保存，请检查网络后重试');
     } finally {
       setSavingId(null);
     }
@@ -221,12 +211,12 @@ export default function ArticleDetailPage() {
     if (!supabase || !userId || !selectedText || !id) return;
     setSavingHighlight(true);
     try {
-      await supabase.from('saved_highlights').insert({
+      await requireSuccess(supabase.from('saved_highlights').insert({
         user_id: userId,
         article_id: id,
         paragraph_id: selectedParagraphId || null,
         selected_text: selectedText,
-      });
+      }));
       setHighlightSaved(true);
       setTimeout(() => {
         setToolbarPos(null);
@@ -263,6 +253,10 @@ export default function ArticleDetailPage() {
       return '';
     }
   };
+
+  if (!supabase || userLoading || authError) {
+    return <DatabaseNotice loading={userLoading} error={authError} />;
+  }
 
   if (loading) {
     return (

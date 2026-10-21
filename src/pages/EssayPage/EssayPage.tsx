@@ -1,4 +1,6 @@
 import { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useItemLocation } from '@/hooks/useItemLocation';
 import {
   PenTool,
   Tag,
@@ -12,7 +14,7 @@ import {
   X,
   Trash2,
 } from 'lucide-react';
-import { ESSAY_MATERIALS, getEssayCategories } from '@/data/essay';
+import { ESSAY_MATERIALS } from '@/data/essay';
 import type { IEssayMaterial } from '@/data/types';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { Badge } from '@/components/ui/badge';
@@ -24,7 +26,9 @@ import { Label } from '@/components/ui/label';
 export default function EssayPage() {
   const [activePrimary, setActivePrimary] = useState<string>('全部');
   const [activeSub, setActiveSub] = useState<string>('全部');
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  useItemLocation(searchParams.get('id'), 'essay');
+  const [expandedId, setExpandedId] = useState<string | null>(searchParams.get('id'));
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [showTagForm, setShowTagForm] = useState(false);
@@ -127,7 +131,8 @@ export default function EssayPage() {
           ]
         : [],
     };
-    setCustomMaterials((prev) => [...prev, newMaterial]);
+    try { setCustomMaterials((prev) => [...prev, newMaterial]); }
+    catch { alert('浏览器存储不可用或空间不足，词条未保存。请先备份现有内容。'); return; }
     // 重置表单
     setNewConcept('');
     setNewCategory('');
@@ -142,14 +147,16 @@ export default function EssayPage() {
   const handleAddTag = () => {
     if (!newTag.trim()) return;
     if (!customCategories.includes(newTag.trim())) {
-      setCustomCategories((prev) => [...prev, newTag.trim()]);
+      try { setCustomCategories((prev) => [...prev, newTag.trim()]); }
+      catch { alert('浏览器存储不可用，标签未保存'); return; }
     }
     setNewTag('');
     setShowTagForm(false);
   };
 
   const handleDeleteCustom = (id: string) => {
-    setCustomMaterials((prev) => prev.filter((m) => m.id !== id));
+    try { setCustomMaterials((prev) => prev.filter((m) => m.id !== id)); }
+    catch { alert('浏览器存储不可用，删除未保存'); }
   };
 
   const isCustom = (id: string) => id.startsWith('custom-');
@@ -360,9 +367,11 @@ export default function EssayPage() {
           return (
             <article
               key={item.id}
-              className="border border-border/60 bg-card rounded-sm overflow-hidden"
+              id={`essay-${item.id}`}
+              className="scroll-mt-24 border border-border/60 bg-card rounded-sm overflow-hidden"
             >
               <button
+                aria-expanded={isExpanded}
                 onClick={() => setExpandedId(isExpanded ? null : item.id)}
                 className="w-full text-left p-6 hover:bg-muted/20 transition-colors"
               >

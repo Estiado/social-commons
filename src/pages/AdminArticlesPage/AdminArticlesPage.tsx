@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Search, Trash2, Loader2, AlertCircle, Newspaper, ExternalLink, Clock, User, Eye } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
 interface AdminArticle {
@@ -50,7 +49,8 @@ export default function AdminArticlesPage() {
   }, []);
 
   useEffect(() => {
-    fetchArticles(searchQuery);
+    const timer = setTimeout(() => { void fetchArticles(searchQuery); }, 250);
+    return () => clearTimeout(timer);
   }, [fetchArticles, searchQuery]);
 
   // 删除文章（级联删除段落、收藏，手动删除划线）
@@ -60,11 +60,8 @@ export default function AdminArticlesPage() {
 
     setDeletingId(articleId);
     try {
-      // 先删除相关的划线收藏
-      await supabase.from('saved_highlights').delete().eq('article_id', articleId);
-
-      // 删除文章（级联删除段落和收藏）
-      const { error } = await supabase.from('articles').delete().eq('id', articleId);
+      // 外键负责级联；返回实际删除行，RLS 拒绝时不能假装成功。
+      const { error } = await supabase.from('articles').delete().eq('id', articleId).select('id').single();
       if (error) throw error;
 
       setArticles((prev) => prev.filter((a) => a.id !== articleId));

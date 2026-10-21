@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { Outlet, NavLink, useLocation, Link } from 'react-router-dom';
 import { BookOpen, Calendar, Landmark, Feather, PenTool, Waves, User, Bookmark, FolderOpen, ChevronDown, Sparkles, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { GlobalSearch } from './GlobalSearch';
+const GlobalSearch = lazy(() => import('./GlobalSearch').then((module) => ({ default: module.GlobalSearch })));
 
 const NAV_ITEMS = [
   { path: '/', label: '首页', icon: BookOpen, end: true },
@@ -123,7 +123,10 @@ export const Layout = () => {
             </nav>
 
             {/* 移动端菜单按钮 - 简化版 */}
-            <nav className="flex md:hidden items-center gap-1">
+            <nav aria-label="移动端导航" className="flex md:hidden items-center gap-1 max-w-[55vw] overflow-x-auto">
+              <button aria-label="搜索全站" onClick={() => setSearchOpen(true)} className="shrink-0 p-2 text-muted-foreground">
+                <Search className="h-5 w-5" />
+              </button>
               {NAV_ITEMS.map((item) => {
                 const Icon = item.icon;
                 const isActive = item.end
@@ -134,6 +137,7 @@ export const Layout = () => {
                     key={item.path}
                     to={item.path}
                     end={item.end}
+                    aria-label={item.label}
                     className={cn(
                       'p-2 rounded-sm transition-colors',
                       isActive ? 'text-accent bg-accent/5' : 'text-muted-foreground'
@@ -145,6 +149,7 @@ export const Layout = () => {
               })}
               <NavLink
                 to="/paragraphs"
+                aria-label="段落库"
                 className={cn(
                   'p-2 rounded-sm transition-colors',
                   location.pathname.startsWith('/paragraphs') ? 'text-accent bg-accent/5' : 'text-muted-foreground'
@@ -154,6 +159,7 @@ export const Layout = () => {
               </NavLink>
               <NavLink
                 to="/collections"
+                aria-label="素材包"
                 className={cn(
                   'p-2 rounded-sm transition-colors',
                   location.pathname.startsWith('/collections') ? 'text-accent bg-accent/5' : 'text-muted-foreground'
@@ -168,7 +174,9 @@ export const Layout = () => {
 
       {/* 主内容区 */}
       <main className="flex-1">
-        <Outlet />
+        <Suspense fallback={<p role="status" className="p-12 text-center text-muted-foreground">正在加载页面…</p>}>
+          <Outlet key={location.pathname + location.search} />
+        </Suspense>
       </main>
 
       {/* 底部 */}
@@ -191,7 +199,11 @@ export const Layout = () => {
       </footer>
 
       {/* 全站搜索 */}
-      <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
+      {searchOpen && (
+        <Suspense fallback={<p role="status" className="fixed bottom-4 right-4 rounded bg-card p-3 shadow">正在加载搜索…</p>}>
+          <GlobalSearch open onOpenChange={setSearchOpen} />
+        </Suspense>
+      )}
     </div>
   );
 };

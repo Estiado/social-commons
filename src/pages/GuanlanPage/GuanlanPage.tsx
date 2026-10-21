@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useUserSession } from '@/hooks/useUserId';
+import { errorMessage } from '@/lib/database';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   Waves,
@@ -9,7 +11,6 @@ import {
   Clock,
   User,
   Loader2,
-  AlertCircle,
   Newspaper,
   ChevronRight,
   LayoutGrid,
@@ -22,148 +23,53 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PRESET_ARTICLES } from '@/data/presetArticles';
 import { EXTERNAL_ARTICLES } from '@/data/externalArticles';
-import { HOT_TOPICS, matchHotTopic, type HotTopic } from '@/data/hotTopics';
+import { HOT_TOPICS, matchHotTopic } from '@/data/hotTopics';
 
-interface Article {
-  id: string;
-  url: string;
-  title: string;
-  author: string | null;
-  source: string | null;
-  published_at: string | null;
-  excerpt: string | null;
-  tags: string[];
-  created_at: string;
-  is_preset?: boolean;
-  is_external?: boolean;
-  hot_topic?: string; // 所属热点话题ID
-}
+import { mergeArticles, filterArticles, countArticlesByTopic, type ArticleListItem as Article } from '@/lib/articleCatalog';
+
+// 固定内容在模块加载时转换一次，不在每次搜索/切换话题时重复分配。
+const STATIC_ARTICLES: Article[] = [...PRESET_ARTICLES.map((article) => ({ ...article, created_at: article.published_at })),
+  ...EXTERNAL_ARTICLES.map((article) => ({ ...article, created_at: article.published_at, is_external: true }))]
+  .map((article) => ({ ...article, hot_topic: ('hot_topic' in article && article.hot_topic) || matchHotTopic(article.tags)?.id }));
 
 export default function GuanlanPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [articles, setArticles] = useState<Article[]>([]);
+  const { userId, error: authError, loading: authLoading } = useUserSession();
+  const [catalog, setCatalog] = useState<Article[]>(() => mergeArticles(STATIC_ARTICLES));
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitUrl, setSubmitUrl] = useState('');
   const [submitTopic, setSubmitTopic] = useState<string>('');
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeHotTopic, setActiveHotTopic] = useState<string>(() => {
-    return searchParams.get('hotTopic') || '';
-  });
-  const [viewMode, setViewMode] = useState<'topics' | 'list'>('topics');
+  const activeHotTopic = searchParams.get('hotTopic') || '';
+  const activeTag = searchParams.get('topic') || '';
+  const [viewMode, setViewMode] = useState<'topics' | 'list'>(() => activeHotTopic || activeTag ? 'list' : 'topics');
+  const [loadError, setLoadError] = useState('');
+  const articles = useMemo(() => filterArticles(catalog, searchQuery, activeHotTopic, activeTag), [catalog, searchQuery, activeHotTopic, activeTag]);
+  const topicCounts = useMemo(() => countArticlesByTopic(catalog), [catalog]);
 
-  // 获取文章列表（合并预置文章和用户提交的文章）
-  const fetchArticles = useCallback(
-    async (query: string, hotTopicId: string): Promise<Article[]> => {
-      let dbArticles: Article[] = [];
-
-      if (supabase) {
-        let dbQuery = supabase
-          .from('articles')
-          .select('id, url, title, author, source, published_at, excerpt, tags, created_at')
-          .eq('is_public', true)
-          .order('created_at', { ascending: false });
-
-        if (query.trim()) {
-          dbQuery = dbQuery.or(`title.ilike.%${query}%,excerpt.ilike.%${query}%,tags.cs.{${query}}`);
-        }
-
-        const { data, error } = await dbQuery.limit(100);
-        if (error) throw error;
-        dbArticles = data || [];
-      }
-
-      // 转换预置文章
-      const presetArticles: Article[] = PRESET_ARTICLES.map((a) => ({
-        id: a.id,
-        url: a.url,
-        title: a.title,
-        author: a.author,
-        source: a.source,
-        published_at: a.published_at,
-        excerpt: a.excerpt,
-        tags: a.tags,
-        created_at: a.published_at,
-        is_preset: true,
-      }));
-
-      // 转换外链时评
-      const externalArticles: Article[] = EXTERNAL_ARTICLES.map((a) => ({
-        id: a.id,
-        url: a.url,
-        title: a.title,
-        author: a.author,
-        source: a.source,
-        published_at: a.published_at,
-        excerpt: a.excerpt,
-        tags: a.tags,
-        created_at: a.published_at,
-        is_external: true,
-        hot_topic: a.hot_topic,
-      }));
-
-      // 合并所有文章
-      const allArticles = [...presetArticles, ...externalArticles, ...dbArticles];
-
-      // 为每篇文章匹配热点话题
-      const articlesWithTopic = allArticles.map((a) => {
-        const matched = matchHotTopic(a.tags || []);
-        return { ...a, hot_topic: matched?.id };
-      });
-
-      // 按热点话题筛选
-      let filtered = articlesWithTopic;
-      if (hotTopicId) {
-        filtered = filtered.filter((a) => a.hot_topic === hotTopicId);
-      }
-
-      // 按搜索词筛选
-      const lowerQuery = query.trim().toLowerCase();
-      if (lowerQuery) {
-        filtered = filtered.filter((a) => {
-          const searchText = `${a.title} ${a.author || ''} ${a.source || ''} ${a.excerpt || ''} ${(a.tags || []).join(' ')}`.toLowerCase();
-          return searchText.includes(lowerQuery);
-        });
-      }
-
-      // 排序：预置文章在前，然后按时间
-      filtered.sort((a, b) => {
-        if (a.is_preset && !b.is_preset) return -1;
-        if (!a.is_preset && b.is_preset) return 1;
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      });
-
-      return filtered.slice(0, 60);
-    },
-    [],
-  );
-
+  // 最近 100 篇云端文章只读取一次；输入搜索词和切换话题均在内存筛选。
+  const loadCatalog = async () => {
+    if (!supabase) return mergeArticles(STATIC_ARTICLES);
+    const { data, error } = await supabase.from('articles')
+      .select('id, url, title, author, source, published_at, excerpt, tags, created_at')
+      .eq('is_public', true).order('created_at', { ascending: false }).limit(100);
+    if (error) throw error;
+    const remote = (data || []).map((article) => ({ ...article, hot_topic: matchHotTopic(article.tags)?.id }));
+    return mergeArticles(STATIC_ARTICLES, remote);
+  };
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    fetchArticles(searchQuery, activeHotTopic)
-      .then((data) => {
-        if (!cancelled) setArticles(data);
-      })
-      .catch((err) => console.error('获取文章失败:', err))
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [fetchArticles, searchQuery, activeHotTopic]);
+    loadCatalog().then((data) => { if (!cancelled) setCatalog(data); })
+      .catch(() => { if (!cancelled) setLoadError('云端文章暂时无法加载，仍可阅读内置内容。'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
 
-  // 切换热点话题
   const selectHotTopic = (topicId: string) => {
-    setActiveHotTopic(topicId);
     setViewMode('list');
-    if (topicId) {
-      setSearchParams({ hotTopic: topicId });
-    } else {
-      setSearchParams({});
-    }
+    setSearchParams(topicId ? { hotTopic: topicId } : {});
   };
 
   // 提交链接
@@ -175,37 +81,31 @@ export default function GuanlanPage() {
     setSubmitMessage(null);
 
     try {
-      const response = await fetch('/.netlify/functions/extract-article', {
+      if (!supabase) throw new Error('素材库尚未配置');
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) throw new Error('请刷新页面，重新连接素材库后再提交');
+      const response = await fetch(import.meta.env.VITE_ARTICLE_API_PATH || '/api/extract-article', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: submitUrl.trim() }),
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ url: submitUrl.trim(), topicId: submitTopic }),
+        signal: AbortSignal.timeout(25_000),
       });
 
+      if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('文章提取接口尚未部署，请联系维护者');
       const result = await response.json();
 
       if (response.ok && result.success) {
-        // 如果选择了热点话题，将话题关键词添加到文章标签中
-        if (submitTopic) {
-          const topic = HOT_TOPICS.find((t) => t.id === submitTopic);
-          if (topic && result.article_id) {
-            // 更新文章标签，添加话题关键词
-            await supabase
-              .from('articles')
-              .update({ tags: [...(result.tags || []), topic.name, ...topic.keywords.slice(0, 2)] })
-              .eq('id', result.article_id);
-          }
-        }
         setSubmitMessage({ type: 'success', text: result.message || '提取成功！已归类到对应话题' });
         setSubmitUrl('');
         setSubmitTopic('');
         // 刷新列表
-        const data = await fetchArticles(searchQuery, activeHotTopic);
-        setArticles(data);
+        const data = await loadCatalog();
+        setCatalog(data);
       } else {
         setSubmitMessage({ type: 'error', text: result.error || '提取失败，请检查链接是否正确' });
       }
-    } catch {
-      setSubmitMessage({ type: 'error', text: '网络错误，请稍后重试' });
+    } catch (error) {
+      setSubmitMessage({ type: 'error', text: errorMessage(error, '网络错误，请稍后重试') });
     } finally {
       setSubmitting(false);
     }
@@ -213,7 +113,7 @@ export default function GuanlanPage() {
 
   // 计算每个话题下的文章数量
   const getTopicArticleCount = (topicId: string): number => {
-    return articles.filter((a) => a.hot_topic === topicId).length;
+    return topicCounts[topicId] || 0;
   };
 
   const formatDate = (dateStr: string | null) => {
@@ -241,6 +141,7 @@ export default function GuanlanPage() {
         </p>
       </div>
 
+      {loadError && <p role="alert" className="mb-6 text-sm text-amber-700">{loadError}</p>}
       {/* 提交链接表单 */}
       {isSupabaseConfigured && (
         <div className="mb-8 p-5 border border-accent/30 bg-accent/5 rounded-sm">
@@ -248,6 +149,7 @@ export default function GuanlanPage() {
             <Link2 className="h-4 w-4 text-accent" />
             提交时评链接
           </h3>
+          {authError && <p role="alert" className="mb-3 text-sm text-red-600">连接素材库失败：{authError}</p>}
           <form onSubmit={handleSubmit} className="space-y-3">
             <div className="flex flex-col sm:flex-row gap-3">
               <Input
@@ -258,7 +160,7 @@ export default function GuanlanPage() {
                 className="flex-1"
                 disabled={submitting}
               />
-              <Button type="submit" disabled={submitting || !submitUrl.trim()} className="gap-2">
+              <Button type="submit" disabled={submitting || authLoading || !userId || !submitUrl.trim()} className="gap-2">
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Newspaper className="h-4 w-4" />}
                 提取文章
               </Button>
