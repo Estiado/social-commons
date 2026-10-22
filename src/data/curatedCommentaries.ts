@@ -1,3 +1,5 @@
+import { AUTUMN_COMMENTARIES } from './commentaries/autumn.ts';
+
 export interface CuratedCommentary {
   id: string;
   title: string;
@@ -16,6 +18,7 @@ export interface CuratedCommentary {
 // Public metadata only. Recommendations and teaching tags are editorial notes,
 // not quotations attributed to the publisher. Full text belongs to its importer.
 export const CURATED_COMMENTARIES: CuratedCommentary[] = [
+  ...AUTUMN_COMMENTARIES,
   {
     id: 'southern-343016',
     title: '对奇葩投诉说“不”',

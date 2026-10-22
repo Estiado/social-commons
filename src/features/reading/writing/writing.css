@@ -2,7 +2,7 @@
   min-height: 60vh;
   outline: none;
   overflow-wrap: anywhere;
-  line-height: 1.9;
+  line-height: inherit;
 }
 .writing-editor .tiptap p {
   margin: 0.65em 0;

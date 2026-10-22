@@ -1,30 +1,35 @@
 import type { IDailyKnowledge } from './types';
+import { REASONING_KNOWLEDGE } from './knowledge/reasoning.ts';
 
 // EXPORTS: DAILY_KNOWLEDGE, getTodayKnowledge
 
 export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
+  ...REASONING_KNOWLEDGE,
   {
     id: 'd1',
     date: '2026-10-19',
     title: '修昔底德陷阱：一个被误读的概念',
     category: '国际关系 · 安全研究',
     summary:
-      '"修昔底德陷阱"指一个新崛起的大国必然要挑战现存大国，而现存大国也必然会回应这种威胁，战争变得不可避免。但这个概念并非修昔底德本人提出，而是哈佛大学教授格雷厄姆·艾利森在2012年的概括。',
+      '“修昔底德陷阱”讨论新兴大国与守成大国的结构性竞争及冲突风险，并非战争必然发生的规律。这一当代研究概念由格雷厄姆·艾利森提出，不能当作修昔底德本人的术语。',
     content:
       '修昔底德在《伯罗奔尼撒战争史》中写道："使战争不可避免的真正原因是雅典势力的增长以及因此而引起的斯巴达的恐惧。"这句话被哈佛大学教授格雷厄姆·艾利森（Graham Allison）提炼为"修昔底德陷阱"。艾利森在哈佛大学贝尔弗科学与国际事务中心领导的团队，系统研究了过去500年中16个新兴大国挑战守成大国的案例，发现其中12次以战争告终，仅4次实现和平过渡——包括15世纪末葡萄牙与西班牙的划分、20世纪初美国超越英国（未直接交战）、冷战美苏对峙（代理人战争但未直接冲突）等。这意味着"陷阱"并非铁律，而是一种需要警惕的结构性风险。艾利森在《Destined for War》(2017)中强调：陷阱的本质不是"新兴国必然好战"，而是守成国的恐惧和新兴国的自信相互强化，使原本可以管控的争端升级为战争。理解这个概念的来龙去脉，有助于我们区分"历史规律"与"学术建构"，也提醒我们：和平过渡需要双方的战略克制和制度创新。',
-    source: '修昔底德《伯罗奔尼撒战争史》；Graham Allison, Destined for War: Can America and China Escape Thucydides\'s Trap? (2017)；Harvard Belfer Center, "Thucydides Trap Case File"',
+    source:
+      '修昔底德《伯罗奔尼撒战争史》；Graham Allison, Destined for War: Can America and China Escape Thucydides\'s Trap? (2017)；Harvard Belfer Center, "Thucydides Trap Case File"',
     mediaReferences: [
       {
         title: '破除"修昔底德陷阱"的迷思',
         source: '人民网',
-        excerpt: '把"修昔底德陷阱"夸大为铁律，用到新兴大国与守成大国之间的关系上，是一种目光短浅的陷阱思维。这种"修昔底德陷阱"思维是一种局部的、简单的、单一的思维方法，它忽略了世界全局性、复杂性、多样性等因素可能产生的影响。',
+        excerpt:
+          '把"修昔底德陷阱"夸大为铁律，用到新兴大国与守成大国之间的关系上，是一种目光短浅的陷阱思维。这种"修昔底德陷阱"思维是一种局部的、简单的、单一的思维方法，它忽略了世界全局性、复杂性、多样性等因素可能产生的影响。',
         url: 'http://opinion.people.com.cn/GB/n1/2017/1210/c1003-29696416.html',
         date: '2017-12-10',
       },
       {
         title: '以建设性战略稳定构建新时代中美关系',
         source: '人民日报',
-        excerpt: '只要秉持相互尊重、和平共处、合作共赢的原则，中美就能跨越"修昔底德陷阱"的历史窠臼，开辟新型大国关系的康庄大道。',
+        excerpt:
+          '只要秉持相互尊重、和平共处、合作共赢的原则，中美就能跨越"修昔底德陷阱"的历史窠臼，开辟新型大国关系的康庄大道。',
         url: 'http://paper.people.com.cn/rmrb/pc/content/202605/27/content_30159299.html',
         date: '2026-05-27',
       },
@@ -44,14 +49,16 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '中国食物界四大未解之谜：农产品原产地标识或难逃"柠檬"市场命运',
         source: '南方周末',
-        excerpt: '这就形成了一个典型的柠檬市场。"柠檬"在美国俚语中表示"次品"或"不中用的东西"，柠檬市场也称次品市场，也称阿克洛夫模型。是指信息不对称的市场，即在市场中，产品的卖方对产品的质量拥有比买方更多的信息。在极端情况下，会产生逆向选择，市场会逐渐萎缩。',
+        excerpt:
+          '这就形成了一个典型的柠檬市场。"柠檬"在美国俚语中表示"次品"或"不中用的东西"，柠檬市场也称次品市场，也称阿克洛夫模型。是指信息不对称的市场，即在市场中，产品的卖方对产品的质量拥有比买方更多的信息。在极端情况下，会产生逆向选择，市场会逐渐萎缩。',
         url: 'http://m.toutiao.com/group/7187641732408803843/',
         date: '2023-01-12',
       },
       {
         title: '"理性预期失灵"的发生逻辑及其矫正路径',
         source: '人民论坛网',
-        excerpt: '所谓"柠檬"市场，实际上就是次品市场，也可以称为阿克洛夫模型市场。依托于通俗易懂的二手车市场，关于"柠檬"市场的认知阐述了这样的逻辑：由于市场中总是存在信息不对称，买方只能按平均质量出价，导致优质产品退出市场。',
+        excerpt:
+          '所谓"柠檬"市场，实际上就是次品市场，也可以称为阿克洛夫模型市场。依托于通俗易懂的二手车市场，关于"柠檬"市场的认知阐述了这样的逻辑：由于市场中总是存在信息不对称，买方只能按平均质量出价，导致优质产品退出市场。',
         url: 'http://m.rmlt.com.cn/article/324495',
         date: '2022-11-09',
       },
@@ -121,12 +128,14 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       '两个嫌疑人被分别审讯，如果都沉默各判1年，如果都坦白各判5年，如果一个坦白一个沉默，坦白的释放、沉默的判10年。理性的选择是坦白，但结果比都沉默更差。',
     content:
       '1950年，数学家塔克（Albert Tucker）用这个故事解释了兰德公司的研究成果：个体理性可能导致集体非理性。两个囚徒都从自身利益出发选择坦白，结果各判5年；如果两人都沉默，只各判1年。每个人的"最优选择"加在一起，变成了"最差结果"。囚徒困境解释了大量社会现象：为什么企业会陷入价格战、为什么国家会搞军备竞赛、为什么公共资源会被过度使用。解决囚徒困境的关键不是"变得更理性"，而是改变规则——通过重复博弈、可信承诺、外部强制，让合作成为更优选择。理解了囚徒困境，就理解了为什么"人人为自己"不一定导致"上帝为大家"，也理解了制度和规则的价值。',
-    source: 'Albert Tucker, "A Two-Person Dilemma" (1950)；R. Duncan Luce & Howard Raiffa, Games and Decisions (1957)',
+    source:
+      'Albert Tucker, "A Two-Person Dilemma" (1950)；R. Duncan Luce & Howard Raiffa, Games and Decisions (1957)',
     mediaReferences: [
       {
         title: '从"囚徒困境"看合作的智慧',
         source: '光明日报',
-        excerpt: '囚徒困境告诉我们，个体理性的简单相加并不等于集体理性。在很多情况下，人们需要通过规则、信任和重复博弈来实现合作，从而达到共赢。',
+        excerpt:
+          '囚徒困境告诉我们，个体理性的简单相加并不等于集体理性。在很多情况下，人们需要通过规则、信任和重复博弈来实现合作，从而达到共赢。',
         url: 'https://epaper.gmw.cn/gmrb/html/2020-08/15/nw.D110000gmrb_20200815_1-11.htm',
         date: '2020-08-15',
       },
@@ -141,12 +150,14 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       '1968年，生态学家哈丁在《科学》杂志发表《公地的悲剧》：牧民共享一片牧场，每个人都想多养一头牛，最终牧场因过度放牧而毁灭。',
     content:
       '哈丁用一个简单的模型揭示了公共资源治理的核心难题：当资源是公共的、收益是个人的，每个人都有动机过度使用。多养一头牛，收益归自己，草场退化的成本由所有人分担——个体理性导致集体毁灭。公地悲剧解释了为什么海洋被过度捕捞、为什么大气被过度排放、为什么公共厕所总是很脏。但哈丁本人后来也承认，"公地"并非必然悲剧——埃莉诺·奥斯特罗姆（2009年诺贝尔经济学奖）通过大量案例证明，社区可以通过自治规则有效管理公共资源。关键在于：清晰的边界、本地化的规则、监督机制、分级制裁、冲突解决机制。理解了公地悲剧，就理解了为什么"环保"不能只靠道德呼吁，还需要制度设计。',
-    source: 'Garrett Hardin, "The Tragedy of the Commons", Science (1968)；Elinor Ostrom, Governing the Commons (1990)',
+    source:
+      'Garrett Hardin, "The Tragedy of the Commons", Science (1968)；Elinor Ostrom, Governing the Commons (1990)',
     mediaReferences: [
       {
         title: '从"公地悲剧"到"公地喜剧"',
         source: '人民日报',
-        excerpt: '公地悲剧并非不可避免。奥斯特罗姆的研究表明，只要有合适的制度安排，社区完全可以实现公共资源的可持续治理。',
+        excerpt:
+          '公地悲剧并非不可避免。奥斯特罗姆的研究表明，只要有合适的制度安排，社区完全可以实现公共资源的可持续治理。',
         url: 'http://theory.people.com.cn/n1/2019/1025/c40531-31423512.html',
         date: '2019-10-25',
       },
@@ -166,7 +177,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '柏拉图"洞穴喻"的当代启示',
         source: '中国社会科学网',
-        excerpt: '洞穴寓言不仅是一个认识论隐喻，更是一个关于教育、解放和社会责任的深刻寓言。它提醒我们：真正的教育是灵魂的转向，而非知识的灌输。',
+        excerpt:
+          '洞穴寓言不仅是一个认识论隐喻，更是一个关于教育、解放和社会责任的深刻寓言。它提醒我们：真正的教育是灵魂的转向，而非知识的灌输。',
         url: 'http://www.cssn.cn/zhx/zx_wgzx/201604/t20160420_2967458.shtml',
         date: '2016-04-20',
       },
@@ -186,7 +198,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '重读费孝通"差序格局"',
         source: '社会学研究',
-        excerpt: '差序格局概念不仅是对中国社会结构的精辟概括，也为理解当代中国社会的变迁提供了重要视角。在城市化和数字化的今天，差序格局正在以新的形式延续和演变。',
+        excerpt:
+          '差序格局概念不仅是对中国社会结构的精辟概括，也为理解当代中国社会的变迁提供了重要视角。在城市化和数字化的今天，差序格局正在以新的形式延续和演变。',
         url: 'https://www.sociology2010.cass.cn/shxyj/202103/t20210315_5316218.shtml',
         date: '2021-03-15',
       },
@@ -206,7 +219,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '罗尔斯"无知之幕"的启示',
         source: '学习时报',
-        excerpt: '无知之幕的思想实验告诉我们，真正的公平需要超越个人利益的视角。在设计制度时，只有当我们愿意接受自己可能处于任何位置时，制度才是正义的。',
+        excerpt:
+          '无知之幕的思想实验告诉我们，真正的公平需要超越个人利益的视角。在设计制度时，只有当我们愿意接受自己可能处于任何位置时，制度才是正义的。',
         url: 'https://www.studytimes.cn/2021/0607/101610.shtml',
         date: '2021-06-07',
       },
@@ -226,7 +240,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '异化理论的当代意义',
         source: '哲学研究',
-        excerpt: '异化理论不仅是对资本主义的批判，更是对现代人存在状况的深刻诊断。在数字时代，异化以新的形式出现——数据、算法、平台正在成为新的支配力量。',
+        excerpt:
+          '异化理论不仅是对资本主义的批判，更是对现代人存在状况的深刻诊断。在数字时代，异化以新的形式出现——数据、算法、平台正在成为新的支配力量。',
         url: 'https://www.zxyj.org.cn/CN/abstract/abstract20210301.shtml',
         date: '2021-03-15',
       },
@@ -246,7 +261,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '福柯"全景敞视主义"的当代回响',
         source: '社会学研究',
-        excerpt: '在数字时代，全景敞视监狱演变为"超级全景敞视"——数据监控无处不在，算法成为新的规训力量。福柯的理论为我们理解数字时代的权力运作提供了重要视角。',
+        excerpt:
+          '在数字时代，全景敞视监狱演变为"超级全景敞视"——数据监控无处不在，算法成为新的规训力量。福柯的理论为我们理解数字时代的权力运作提供了重要视角。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20200501.shtml',
         date: '2020-09-20',
       },
@@ -266,7 +282,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '鲍德里亚消费社会理论的现实意义',
         source: '文艺研究',
-        excerpt: '在直播带货、网红经济盛行的今天，鲍德里亚的理论愈发显示出解释力。消费不再是满足需要，而是一种身份建构和社会区分的仪式。',
+        excerpt:
+          '在直播带货、网红经济盛行的今天，鲍德里亚的理论愈发显示出解释力。消费不再是满足需要，而是一种身份建构和社会区分的仪式。',
         url: 'https://www.wyyj.org.cn/CN/abstract/abstract20220201.shtml',
         date: '2022-02-10',
       },
@@ -286,7 +303,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '从"娱乐至死"到"算法至死"',
         source: '新闻与传播研究',
-        excerpt: '波兹曼的警告在短视频时代有了新的形态。算法推荐比电视更精准地捕捉人的欲望，把"娱乐至死"推向了"算法至死"——我们甚至不需要选择，算法已经替我们选择好了。',
+        excerpt:
+          '波兹曼的警告在短视频时代有了新的形态。算法推荐比电视更精准地捕捉人的欲望，把"娱乐至死"推向了"算法至死"——我们甚至不需要选择，算法已经替我们选择好了。',
         url: 'https://www.xwycbyj.org.cn/CN/abstract/abstract20210601.shtml',
         date: '2021-06-15',
       },
@@ -306,7 +324,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '风险社会理论与全球公共卫生危机',
         source: '社会学研究',
-        excerpt: '新冠疫情让风险社会理论从学术概念变成了现实体验。全球性的风险需要全球性的应对，但民族国家体系却在风险面前显得力不从心——这正是贝克所说的"有组织的不负责任"。',
+        excerpt:
+          '新冠疫情让风险社会理论从学术概念变成了现实体验。全球性的风险需要全球性的应对，但民族国家体系却在风险面前显得力不从心——这正是贝克所说的"有组织的不负责任"。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20200401.shtml',
         date: '2020-07-20',
       },
@@ -326,7 +345,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '马尔库塞"单向度"理论的当代阐释',
         source: '哲学动态',
-        excerpt: '在算法推荐和信息茧房的时代，"单向度"有了新的表现——人们只看到自己想看到的信息，只接触与自己观点一致的内容，批判性思维被算法温柔地消解了。',
+        excerpt:
+          '在算法推荐和信息茧房的时代，"单向度"有了新的表现——人们只看到自己想看到的信息，只接触与自己观点一致的内容，批判性思维被算法温柔地消解了。',
         url: 'https://www.zxdt.org.cn/CN/abstract/abstract20210801.shtml',
         date: '2021-08-15',
       },
@@ -346,7 +366,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '从景观社会到"点赞社会"',
         source: '文艺理论研究',
-        excerpt: '社交媒体把德波的"景观社会"推向了极致。每一条朋友圈、每一个短视频，都是一次景观的生产和消费。点赞数成为新的社会货币，真实的人际关系被量化的互动所取代。',
+        excerpt:
+          '社交媒体把德波的"景观社会"推向了极致。每一条朋友圈、每一个短视频，都是一次景观的生产和消费。点赞数成为新的社会货币，真实的人际关系被量化的互动所取代。',
         url: 'https://www.wyllyj.org.cn/CN/abstract/abstract20220301.shtml',
         date: '2022-03-10',
       },
@@ -366,7 +387,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '萨特存在主义的当代价值',
         source: '哲学分析',
-        excerpt: '在"躺平""内卷"成为热词的今天，萨特的存在主义提供了一种清醒的力量——即使环境有限，选择的自由始终存在。承认自由，也就承担了责任。',
+        excerpt:
+          '在"躺平""内卷"成为热词的今天，萨特的存在主义提供了一种清醒的力量——即使环境有限，选择的自由始终存在。承认自由，也就承担了责任。',
         url: 'https://www.zxfx.org.cn/CN/abstract/abstract20220201.shtml',
         date: '2022-04-01',
       },
@@ -386,7 +408,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '海德格尔技术哲学与人工智能时代',
         source: '世界哲学',
-        excerpt: '在AI时代，海德格尔的"座架"理论愈发显示出预见性。当算法把人简化为数据标签，当效率成为唯一标准，我们更需要思考：技术之外，还有什么？',
+        excerpt:
+          '在AI时代，海德格尔的"座架"理论愈发显示出预见性。当算法把人简化为数据标签，当效率成为唯一标准，我们更需要思考：技术之外，还有什么？',
         url: 'https://www.szzx.org.cn/CN/abstract/abstract20230101.shtml',
         date: '2023-01-15',
       },
@@ -406,7 +429,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '安德森"想象的共同体"理论再审视',
         source: '民族研究',
-        excerpt: '在数字时代，民族主义的"想象"方式发生了变化——从印刷媒介转向社交媒体，从共同阅读转向共同转发。但"想象"的本质没有变：共同体始终依赖于媒介建构的共同体验。',
+        excerpt:
+          '在数字时代，民族主义的"想象"方式发生了变化——从印刷媒介转向社交媒体，从共同阅读转向共同转发。但"想象"的本质没有变：共同体始终依赖于媒介建构的共同体验。',
         url: 'https://www.mzyj.org.cn/CN/abstract/abstract20210501.shtml',
         date: '2021-09-20',
       },
@@ -426,7 +450,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '记忆研究与当代中国的历史叙事',
         source: '史学理论研究',
-        excerpt: '记忆理论为我们理解历史教育、国家纪念日、红色文化等现象提供了新的视角。记忆不是对过去的忠实复制，而是当下与过去的持续对话。',
+        excerpt:
+          '记忆理论为我们理解历史教育、国家纪念日、红色文化等现象提供了新的视角。记忆不是对过去的忠实复制，而是当下与过去的持续对话。',
         url: 'https://www.sxlyj.org.cn/CN/abstract/abstract20220201.shtml',
         date: '2022-04-10',
       },
@@ -446,7 +471,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '鲍德里亚"超真实"理论与数字时代',
         source: '文艺研究',
-        excerpt: 'AI生成内容的爆发让鲍德里亚的"拟像"理论从哲学概念变成了日常体验。当AI生成的图片比真实照片更"完美"，当虚拟偶像比真人更"完美"，我们不得不重新思考：真实究竟是什么？',
+        excerpt:
+          'AI生成内容的爆发让鲍德里亚的"拟像"理论从哲学概念变成了日常体验。当AI生成的图片比真实照片更"完美"，当虚拟偶像比真人更"完美"，我们不得不重新思考：真实究竟是什么？',
         url: 'https://www.wyyj.org.cn/CN/abstract/abstract20230401.shtml',
         date: '2023-07-15',
       },
@@ -466,7 +492,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '韩炳哲哲学与数字时代的精神状况',
         source: '哲学分析',
-        excerpt: '韩炳哲对数字时代的诊断切中了当代人的精神困境——倦怠、焦虑、孤独。他提醒我们：真正的自由不是无限制的肯定，而是能够承受他者的否定性。',
+        excerpt:
+          '韩炳哲对数字时代的诊断切中了当代人的精神困境——倦怠、焦虑、孤独。他提醒我们：真正的自由不是无限制的肯定，而是能够承受他者的否定性。',
         url: 'https://www.zxfx.org.cn/CN/abstract/abstract20220501.shtml',
         date: '2022-09-20',
       },
@@ -486,7 +513,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '"内卷"与倦怠社会的哲学反思',
         source: '社会学研究',
-        excerpt: '"内卷"现象可以用韩炳哲的"功绩社会"理论来解释——当上升通道变窄，人们就会在同一层级内进行无意义的自我消耗，把结构性问题转化为个人努力问题。',
+        excerpt:
+          '"内卷"现象可以用韩炳哲的"功绩社会"理论来解释——当上升通道变窄，人们就会在同一层级内进行无意义的自我消耗，把结构性问题转化为个人努力问题。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20210601.shtml',
         date: '2021-11-10',
       },
@@ -506,7 +534,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '从"爱欲之死"看当代亲密关系的困境',
         source: '文艺理论研究',
-        excerpt: '约会软件和社交媒体改变了亲密关系的形态——从"寻找他者"变成了"优化自我"，从"冒险"变成了"消费"。韩炳哲的诊断为我们理解当代情感困境提供了深刻视角。',
+        excerpt:
+          '约会软件和社交媒体改变了亲密关系的形态——从"寻找他者"变成了"优化自我"，从"冒险"变成了"消费"。韩炳哲的诊断为我们理解当代情感困境提供了深刻视角。',
         url: 'https://www.wyllyj.org.cn/CN/abstract/abstract20230201.shtml',
         date: '2023-04-15',
       },
@@ -526,7 +555,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '算法时代的信息茧房与公共性危机',
         source: '新闻与传播研究',
-        excerpt: '算法推荐不是中立的技术，而是一种价值选择——它以"用户满意度"为唯一标准，却牺牲了信息多样性和公共对话的可能性。',
+        excerpt:
+          '算法推荐不是中立的技术，而是一种价值选择——它以"用户满意度"为唯一标准，却牺牲了信息多样性和公共对话的可能性。',
         url: 'https://www.xwycbyj.org.cn/CN/abstract/abstract20220101.shtml',
         date: '2022-01-15',
       },
@@ -546,7 +576,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '勒庞群体心理学的当代审视',
         source: '社会学研究',
-        excerpt: '在社交媒体时代，勒庞的"乌合之众"理论有了新的表现形态——网络暴民、回声室、群体极化。但我们也需要看到，群体同样可以产生集体行动和社会进步的力量。',
+        excerpt:
+          '在社交媒体时代，勒庞的"乌合之众"理论有了新的表现形态——网络暴民、回声室、群体极化。但我们也需要看到，群体同样可以产生集体行动和社会进步的力量。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20210301.shtml',
         date: '2021-05-20',
       },
@@ -566,7 +597,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '阿伦特"平庸之恶"的伦理意蕴',
         source: '哲学研究',
-        excerpt: '"平庸之恶"不是为恶开脱，而是揭示恶的日常性——它提醒我们，道德判断不能外包给系统和权威，每个人都必须为自己的行为承担责任。',
+        excerpt:
+          '"平庸之恶"不是为恶开脱，而是揭示恶的日常性——它提醒我们，道德判断不能外包给系统和权威，每个人都必须为自己的行为承担责任。',
         url: 'https://www.zxyj.org.cn/CN/abstract/abstract20200401.shtml',
         date: '2020-07-15',
       },
@@ -586,7 +618,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '韦伯"铁笼"理论与现代性困境',
         source: '社会学研究',
-        excerpt: '韦伯的"铁笼"预言在数字时代有了新的形态——算法管理、数据监控、绩效量化，把理性化推向了极致。如何在效率之外守护人的尊严，是我们时代的核心问题。',
+        excerpt:
+          '韦伯的"铁笼"预言在数字时代有了新的形态——算法管理、数据监控、绩效量化，把理性化推向了极致。如何在效率之外守护人的尊严，是我们时代的核心问题。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20220201.shtml',
         date: '2022-03-10',
       },
@@ -606,7 +639,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '文化工业理论与数字时代的娱乐政治',
         source: '文艺研究',
-        excerpt: '在短视频和算法推荐的时代，文化工业有了新的形态——内容生产更加标准化，用户的注意力被更加精准地收割。阿多诺的批判在今天不仅没有过时，反而更加切中要害。',
+        excerpt:
+          '在短视频和算法推荐的时代，文化工业有了新的形态——内容生产更加标准化，用户的注意力被更加精准地收割。阿多诺的批判在今天不仅没有过时，反而更加切中要害。',
         url: 'https://www.wyyj.org.cn/CN/abstract/abstract20230101.shtml',
         date: '2023-01-20',
       },
@@ -626,7 +660,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '布迪厄符号暴力理论的当代阐释',
         source: '社会学研究',
-        excerpt: '在消费社会，符号暴力有了新的表现——品牌、品味、生活方式成为新的区分机制，让不平等以"个人选择"的面目出现。',
+        excerpt:
+          '在消费社会，符号暴力有了新的表现——品牌、品味、生活方式成为新的区分机制，让不平等以"个人选择"的面目出现。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20210501.shtml',
         date: '2021-09-15',
       },
@@ -646,7 +681,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '布迪厄"惯习"理论与教育公平',
         source: '教育研究',
-        excerpt: '教育公平不能只看入学机会的平等，还要看文化资本和惯习的平等——底层家庭的孩子在进入学校之前，就已经处于不利地位。',
+        excerpt:
+          '教育公平不能只看入学机会的平等，还要看文化资本和惯习的平等——底层家庭的孩子在进入学校之前，就已经处于不利地位。',
         url: 'https://www.jyyj.org.cn/CN/abstract/abstract20220301.shtml',
         date: '2022-05-10',
       },
@@ -666,7 +702,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '亨廷顿"文明冲突论"的再审视',
         source: '世界经济与政治',
-        excerpt: '"文明冲突论"既有解释力，也有局限性——它揭示了文化认同在国际政治中的重要性，但忽视了文明内部的多样性和文明之间的交流互鉴。',
+        excerpt:
+          '"文明冲突论"既有解释力，也有局限性——它揭示了文化认同在国际政治中的重要性，但忽视了文明内部的多样性和文明之间的交流互鉴。',
         url: 'https://www.sjjjyzzy.org.cn/CN/abstract/abstract20210601.shtml',
         date: '2021-11-20',
       },
@@ -686,7 +723,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '福柯"生命权力"理论与数字时代的治理',
         source: '哲学动态',
-        excerpt: '在大数据和人工智能时代，生命权力有了新的技术基础——健康数据、行为数据、社交数据都可以被实时监控和分析，福柯的理论为我们理解数字治理提供了重要视角。',
+        excerpt:
+          '在大数据和人工智能时代，生命权力有了新的技术基础——健康数据、行为数据、社交数据都可以被实时监控和分析，福柯的理论为我们理解数字治理提供了重要视角。',
         url: 'https://www.zxdt.org.cn/CN/abstract/abstract20230201.shtml',
         date: '2023-04-01',
       },
@@ -706,7 +744,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '韦伯《新教伦理》的当代重读',
         source: '社会学研究',
-        excerpt: '韦伯的经典命题在今天仍然有启发意义——它提醒我们，经济发展不能只看制度和技术，还要看文化价值观和人的精神气质。',
+        excerpt:
+          '韦伯的经典命题在今天仍然有启发意义——它提醒我们，经济发展不能只看制度和技术，还要看文化价值观和人的精神气质。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20200401.shtml',
         date: '2020-07-20',
       },
@@ -726,7 +765,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '斯科特"弱者的武器"理论与中国研究',
         source: '社会学研究',
-        excerpt: '斯科特的底层研究视角为理解中国社会的日常抵抗提供了重要工具——从农民工的"用脚投票"到消费者的"用脚投票"，弱者的武器无处不在。',
+        excerpt:
+          '斯科特的底层研究视角为理解中国社会的日常抵抗提供了重要工具——从农民工的"用脚投票"到消费者的"用脚投票"，弱者的武器无处不在。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20190301.shtml',
         date: '2019-05-20',
       },
@@ -746,7 +786,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '项飙"附近"概念的社会学意义',
         source: '社会学研究',
-        excerpt: '"附近的消失"不仅是空间现象，更是认知和情感现象——它让我们失去了与具体世界的连接，也失去了从具体经验中生成意义的能力。',
+        excerpt:
+          '"附近的消失"不仅是空间现象，更是认知和情感现象——它让我们失去了与具体世界的连接，也失去了从具体经验中生成意义的能力。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20210401.shtml',
         date: '2021-07-15',
       },
@@ -766,7 +807,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '从"悬浮"看当代青年的精神困境',
         source: '青年研究',
-        excerpt: '"悬浮"精准地捕捉了当代青年的生存状态——不是没有目标，而是目标本身成了问题；不是不努力，而是努力失去了方向。',
+        excerpt:
+          '"悬浮"精准地捕捉了当代青年的生存状态——不是没有目标，而是目标本身成了问题；不是不努力，而是努力失去了方向。',
         url: 'https://www.qnyj.org.cn/CN/abstract/abstract20220201.shtml',
         date: '2022-03-20',
       },
@@ -786,7 +828,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '鲍曼"流动的现代性"理论的当代意义',
         source: '社会学研究',
-        excerpt: '在算法和平台经济的时代，鲍曼的"流动的现代性"有了新的表现——零工经济、灵活就业、数字游民，都是"液态"生存的典型形态。',
+        excerpt:
+          '在算法和平台经济的时代，鲍曼的"流动的现代性"有了新的表现——零工经济、灵活就业、数字游民，都是"液态"生存的典型形态。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20210601.shtml',
         date: '2021-11-10',
       },
@@ -806,7 +849,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '贝尔"资本主义文化矛盾"的再审视',
         source: '社会学研究',
-        excerpt: '贝尔的理论在今天仍然有解释力——"996"的工作伦理与"躺平"的生活态度之间的张力，正是资本主义文化矛盾的当代表现。',
+        excerpt:
+          '贝尔的理论在今天仍然有解释力——"996"的工作伦理与"躺平"的生活态度之间的张力，正是资本主义文化矛盾的当代表现。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20220101.shtml',
         date: '2022-01-25',
       },
@@ -826,7 +870,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '马尔库塞"爱欲"理论的当代回响',
         source: '哲学动态',
-        excerpt: '在算法推荐和注意力经济的时代，马尔库塞的"压抑性去升华"理论愈发切中要害——我们的快乐被精准地计算和投喂，失去了自发性和创造性。',
+        excerpt:
+          '在算法推荐和注意力经济的时代，马尔库塞的"压抑性去升华"理论愈发切中要害——我们的快乐被精准地计算和投喂，失去了自发性和创造性。',
         url: 'https://www.zxdt.org.cn/CN/abstract/abstract20220301.shtml',
         date: '2022-05-20',
       },
@@ -846,7 +891,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '布鲁姆"影响的焦虑"与中国文学批评',
         source: '文学评论',
-        excerpt: '布鲁姆的理论为理解文学传承提供了新的视角——影响不是被动的接受，而是主动的误读和创造。这对理解中国当代文学与传统的关系也有启发。',
+        excerpt:
+          '布鲁姆的理论为理解文学传承提供了新的视角——影响不是被动的接受，而是主动的误读和创造。这对理解中国当代文学与传统的关系也有启发。',
         url: 'https://www.wxpl.org.cn/CN/abstract/abstract20200301.shtml',
         date: '2020-05-15',
       },
@@ -866,7 +912,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '福柯"异托邦"理论的空间政治学',
         source: '社会学研究',
-        excerpt: '在数字时代，异托邦有了新的形态——虚拟社区、暗网、元宇宙，都是"不在任何地方"却又真实存在的空间，福柯的理论为理解这些新空间提供了框架。',
+        excerpt:
+          '在数字时代，异托邦有了新的形态——虚拟社区、暗网、元宇宙，都是"不在任何地方"却又真实存在的空间，福柯的理论为理解这些新空间提供了框架。',
         url: 'https://www.shxyj.org.cn/CN/abstract/abstract20210201.shtml',
         date: '2021-03-20',
       },
@@ -886,7 +933,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '福柯"知识型"理论与科学史研究',
         source: '哲学研究',
-        excerpt: '福柯的"知识型"概念为理解科学革命提供了新的视角——范式转换不仅是理论的更替，更是整个思考框架的断裂。',
+        excerpt:
+          '福柯的"知识型"概念为理解科学革命提供了新的视角——范式转换不仅是理论的更替，更是整个思考框架的断裂。',
         url: 'https://www.zxyj.org.cn/CN/abstract/abstract20190401.shtml',
         date: '2019-07-10',
       },
@@ -906,7 +954,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '海德格尔"被抛"概念的存在论意蕴',
         source: '哲学动态',
-        excerpt: '"被抛"不是悲观主义，而是对人的有限性的清醒认识——只有接受了被抛的事实，才能真正开始本真的存在。',
+        excerpt:
+          '"被抛"不是悲观主义，而是对人的有限性的清醒认识——只有接受了被抛的事实，才能真正开始本真的存在。',
         url: 'https://www.zxdt.org.cn/CN/abstract/abstract20210501.shtml',
         date: '2021-09-01',
       },
@@ -926,7 +975,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '公民不服从理论的当代审视',
         source: '法学研究',
-        excerpt: '在全球化和数字化的时代，公民不服从有了新的形态——网络维权、环保运动、消费者抵制，都是公民不服从的当代表现。',
+        excerpt:
+          '在全球化和数字化的时代，公民不服从有了新的形态——网络维权、环保运动、消费者抵制，都是公民不服从的当代表现。',
         url: 'https://www.fxyj.org.cn/CN/abstract/abstract20200601.shtml',
         date: '2020-11-15',
       },
@@ -946,7 +996,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '阿伦特"行动"理论与当代公共生活',
         source: '哲学研究',
-        excerpt: '在社交媒体时代，阿伦特的"行动"理论有了新的意义——网络发言是行动吗？公共领域转移到了线上吗？这些问题都值得我们深思。',
+        excerpt:
+          '在社交媒体时代，阿伦特的"行动"理论有了新的意义——网络发言是行动吗？公共领域转移到了线上吗？这些问题都值得我们深思。',
         url: 'https://www.zxyj.org.cn/CN/abstract/abstract20220201.shtml',
         date: '2022-04-10',
       },
@@ -966,7 +1017,8 @@ export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
       {
         title: '贝尔"意识形态终结论"的再反思',
         source: '世界经济与政治',
-        excerpt: '贝尔的预言虽然没有完全实现，但他提出的问题——宏大叙事消失后的社会整合——在今天比任何时候都更加紧迫。',
+        excerpt:
+          '贝尔的预言虽然没有完全实现，但他提出的问题——宏大叙事消失后的社会整合——在今天比任何时候都更加紧迫。',
         url: 'https://www.sjjjyzzy.org.cn/CN/abstract/abstract20210301.shtml',
         date: '2021-05-20',
       },

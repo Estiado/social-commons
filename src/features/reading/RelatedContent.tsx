@@ -38,7 +38,12 @@ export function RelatedContent({ tags }: { tags: string[] }) {
               className="mb-3 block rounded-sm border p-4 hover:border-accent"
               to={`/quotes/${item.id}`}
             >
-              {item.text} — {item.author}
+              <span className="block font-serif">
+                {item.source} · {item.author}
+              </span>
+              <span className="mt-2 line-clamp-3 whitespace-pre-line text-sm text-muted-foreground">
+                {item.text}
+              </span>
             </Link>
           ))}
         </section>

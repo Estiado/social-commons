@@ -29,6 +29,7 @@ const article = parseArticleHtml(
 article.author = '测试作者';
 article.source = '本地合成验收文章';
 article.publishedAt = '2026-10-21';
+article.typography = { font: 'yahei', size: 14, lineHeight: 2 };
 article.blocks.unshift({
   id: 'rich-format',
   type: 'paragraph',
@@ -39,11 +40,27 @@ article.blocks.unshift({
     { start: 6, end: 11, italic: true, strike: true, href: 'https://example.com/source' },
   ],
 });
-const { buildArticlePdf, wrapPdfText } = await import('../.artifacts/reading-export-build/pdf.mjs');
+const { buildArticlePdf, wrapPdfText, wrapStyledPdfText } = await import(
+  '../.artifacts/reading-export-build/pdf.mjs'
+);
 assert.deepEqual(
   wrapPdfText('甲乙丙\n丁', 2, () => 1),
   ['甲乙', '丙', '丁'],
 );
+assert.deepEqual(
+  wrapPdfText('甲乙。丙丁', 2, () => 1),
+  ['甲', '乙。', '丙丁'],
+);
+const styledLines = wrapStyledPdfText(
+  [{ text: '甲乙' }, { text: '。', bold: true }, { text: '丙' }],
+  2,
+  () => 1,
+);
+assert.deepEqual(
+  styledLines.map((line) => line.runs.map((run) => run.text).join('')),
+  ['甲', '乙。', '丙'],
+);
+assert.equal(styledLines[1].runs.at(-1).bold, true);
 const font = new Uint8Array(await readFile('public/fonts/NotoSansSC-Regular.ttf'));
 const pdf = await buildArticlePdf(article, font);
 const parsed = await PDFDocument.load(pdf.bytes);
@@ -55,6 +72,10 @@ const word = await buildArticleDocx(article);
 const wordBytes = new Uint8Array(await word.blob.arrayBuffer());
 const parts = unzipSync(wordBytes);
 const xml = strFromU8(parts['word/document.xml']);
+const stylesXml = strFromU8(parts['word/styles.xml']);
+assert.ok(stylesXml.includes('微软雅黑'));
+assert.ok(stylesXml.includes('w:sz w:val="28"'));
+assert.ok(xml.includes('w:line="480"'));
 for (const expected of [
   '加粗下划线',
   '编辑后文字',

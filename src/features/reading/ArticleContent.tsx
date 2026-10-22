@@ -3,6 +3,7 @@ import { Bookmark, BookmarkCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createAnnotation, type ArticleAnnotation, type ArticleDocument } from './model';
 import { articleImageUrl } from './export/assets';
+import { DOCUMENT_FONTS } from './typography';
 
 function linkedText(text: string): ReactNode[] {
   const pieces: ReactNode[] = [];
@@ -179,7 +180,19 @@ export function ArticleContent({
   }, [article, onSave]);
   return (
     <>
-      <div ref={root} className="font-serif text-[17px] leading-[1.95] break-words">
+      <div
+        ref={root}
+        className="font-serif text-[17px] leading-[1.95] break-words"
+        style={
+          article.typography
+            ? {
+                fontFamily: DOCUMENT_FONTS[article.typography.font].css,
+                fontSize: `${article.typography.size}pt`,
+                lineHeight: article.typography.lineHeight,
+              }
+            : undefined
+        }
+      >
         {article.blocks.map((block) => {
           if (block.type === 'image') return <ArticleFigure key={block.id} {...block} />;
           const saved = annotationsByBlock.get(block.id) || [];

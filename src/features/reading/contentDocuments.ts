@@ -40,6 +40,7 @@ export async function versionContentDocument(document: ArticleDocument): Promise
     source: document.source,
     tags: document.tags,
     blocks: document.blocks,
+    typography: document.typography,
   });
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(content));
   const signature = Array.from(new Uint8Array(digest), (byte) =>
@@ -109,10 +110,11 @@ export function dailyDocument(item: IDailyKnowledge): ArticleDocument {
 }
 export function quoteDocument(item: IQuote): ArticleDocument {
   const blocks: Omit<Extract<ArticleBlock, { text: string }>, 'id'>[] = [
-    { type: 'quote' as const, text: item.text },
+    ...item.text.split(/\n\s*\n/u).map((text) => ({ type: 'quote' as const, text })),
     paragraph(`${item.author} · ${item.source}`),
   ];
-  if (item.sourceNote) blocks.push(paragraph(`出处核验提示：${item.sourceNote}`));
+  if (item.sourceUrl) blocks.push(paragraph(`作品与版本资料：${item.sourceUrl}`));
+  if (item.sourceNote) blocks.push(paragraph(`出处说明：${item.sourceNote}`));
   if (item.context) blocks.push(paragraph(item.context));
   if (item.commentary) {
     const note = item.commentary;
@@ -124,9 +126,9 @@ export function quoteDocument(item: IQuote): ArticleDocument {
       paragraph(`评析原文：${note.url}`),
       paragraph(`核验日期：${note.checkedAt}。资料观点不等于唯一解释。`),
     );
-  } else blocks.push(paragraph('评析待核验。暂不展示未能对应到具体出版物或公开页面的旧评述。'));
+  }
   return createContentDocument(
-    item.text,
+    `${item.author} · ${item.title || item.source}`,
     item.source,
     contentUrl('quote', item.id),
     blocks,
@@ -147,8 +149,14 @@ export function eventDocument(item: IEvent): ArticleDocument {
         ...(view.quote ? [{ type: 'quote' as const, text: view.quote }] : []),
         paragraph(`来源：${view.source} · ${view.sourceType}`),
       ]),
-      heading('学术文献目录'),
-      paragraph('以下为站内整理的文献条目与摘要，非论文全文；书目信息和引述需对照原始出版物核验。'),
+      ...(item.academicPapers.length
+        ? [
+            heading('学术文献目录'),
+            paragraph(
+              '以下为站内整理的文献条目与摘要，非论文全文；书目信息和引述需对照原始出版物核验。',
+            ),
+          ]
+        : []),
       ...item.academicPapers.flatMap((paper) => [
         heading(paper.title),
         paragraph(`${paper.authors.join('、')} · ${paper.year} · ${paper.venue}`),
@@ -193,6 +201,9 @@ export function essayDocument(item: IEssayMaterial): ArticleDocument {
     [
       paragraph(item.description),
       paragraph(`适用话题：${item.applicableTopics.join('、')}`),
+      ...(item.references || []).map((reference) =>
+        paragraph(`参考资料：${reference.title} ${reference.url}`),
+      ),
       ...item.materials.flatMap((material) => [
         heading(material.title),
         paragraph(material.content),

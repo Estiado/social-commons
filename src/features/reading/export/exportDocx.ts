@@ -11,11 +11,13 @@ import {
 import type { ArticleDocument } from '../model';
 import { loadExportImage } from './assets';
 import { styledRuns } from '../writing/model';
+import { DEFAULT_TYPOGRAPHY, DOCUMENT_FONTS } from '../typography';
 
 export async function buildArticleDocx(
   article: ArticleDocument,
 ): Promise<{ blob: Blob; warnings: string[] }> {
   const warnings: string[] = [];
+  const typography = article.typography || DEFAULT_TYPOGRAPHY;
   const children: Paragraph[] = [
     new Paragraph({
       text: article.title,
@@ -119,7 +121,7 @@ export async function buildArticleDocx(
               ][Math.max(0, (block.level || 2) - 1)]
             : undefined,
         indent: block.type === 'quote' ? { left: 360 } : undefined,
-        spacing: { after: 160, line: 360 },
+        spacing: { after: 160, line: Math.round(typography.lineHeight * 240) },
       }),
     );
   }
@@ -127,7 +129,30 @@ export async function buildArticleDocx(
   const document = new Document({
     creator: '社科通识',
     title: article.title,
-    styles: { default: { document: { run: { font: '宋体', size: 24 } } } },
+    styles: {
+      default: {
+        document: {
+          run: { font: DOCUMENT_FONTS[typography.font].word, size: typography.size * 2 },
+        },
+      },
+      paragraphStyles: [
+        {
+          id: 'Title',
+          name: 'Title',
+          basedOn: 'Normal',
+          run: { font: '黑体', size: 40, color: '222222', bold: true },
+          paragraph: { spacing: { after: 240 } },
+        },
+        ...[32, 28, 26, 24].map((size, index) => ({
+          id: `Heading${index + 1}`,
+          name: `heading ${index + 1}`,
+          basedOn: 'Normal',
+          next: 'Normal',
+          run: { font: '黑体', size, color: '222222', bold: true },
+          paragraph: { keepNext: true, spacing: { before: 240, after: 120 } },
+        })),
+      ],
+    },
     sections: [
       {
         properties: { page: { margin: { top: 1134, bottom: 1134, left: 1134, right: 1134 } } },

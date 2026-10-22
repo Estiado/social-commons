@@ -65,7 +65,11 @@ export interface IQuote {
   author: string;
   source: string;
   context?: string;
+  title?: string;
   sourceNote?: string;
+  sourceUrl?: string;
+  /** Catalogue aliases preserve old deep links without repeating a work. */
+  canonicalId?: string;
   commentary?: {
     text: string;
     commentator: string;
@@ -82,6 +86,7 @@ export interface IEssayMaterial {
   category: string;
   description: string;
   applicableTopics: string[];
+  references?: { title: string; url: string }[];
   materials: {
     title: string;
     content: string;

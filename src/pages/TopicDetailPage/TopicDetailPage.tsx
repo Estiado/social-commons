@@ -55,7 +55,7 @@ export default function TopicDetailPage() {
               to={'/quotes/' + item.id}
               className="block rounded-sm border bg-card p-5 hover:border-accent"
             >
-              <blockquote className="mb-3 font-serif text-lg leading-relaxed">
+              <blockquote className="mb-3 line-clamp-3 whitespace-pre-line font-serif text-lg leading-relaxed">
                 {item.text}
               </blockquote>
               <p className="text-sm text-muted-foreground">

@@ -4,6 +4,8 @@ import type { ArticleDocument } from '../model';
 import { loadExportImage } from './assets';
 import { styledRuns, type StyledRun } from '../writing/model';
 
+const CLOSING_PUNCTUATION = /^[，。！？；：、）】》」』,.!?;:%％]$/u;
+
 export function wrapStyledPdfText(
   runs: StyledRun[],
   width: number,
@@ -15,28 +17,41 @@ export function wrapStyledPdfText(
     lines.push(current);
     current = { runs: [], width: 0 };
   };
+  let segment: StyledRun | undefined;
+  let segmentSource: StyledRun | undefined;
+  let pendingCharacter: string | undefined;
+  let pendingRun: StyledRun | undefined;
+  const append = (character: string, run: StyledRun, nextCharacter = '') => {
+    if (character === '\n') {
+      finish();
+      segment = undefined;
+      return;
+    }
+    const size = measure(character);
+    // A one-character lookahead keeps a full stop/comma with the preceding
+    // character, even when a formatting mark changes at that boundary.
+    const punctuationWidth = CLOSING_PUNCTUATION.test(nextCharacter) ? measure(nextCharacter) : 0;
+    if (current.width && current.width + size + punctuationWidth > width) {
+      finish();
+      segment = undefined;
+    }
+    if (!segment || segmentSource !== run) {
+      segment = { ...run, text: '' };
+      segmentSource = run;
+      current.runs.push(segment);
+    }
+    segment.text += character;
+    current.width += size;
+  };
   for (const run of runs) {
-    let segment: StyledRun | undefined;
     for (const character of run.text.replace(/\r/g, '')) {
-      if (character === '\n') {
-        finish();
-        segment = undefined;
-        continue;
-      }
-      if (character.charCodeAt(0) < 32) continue;
-      const size = measure(character);
-      if (current.width && current.width + size > width) {
-        finish();
-        segment = undefined;
-      }
-      if (!segment) {
-        segment = { ...run, text: '' };
-        current.runs.push(segment);
-      }
-      segment.text += character;
-      current.width += size;
+      if (character !== '\n' && character.charCodeAt(0) < 32) continue;
+      if (pendingCharacter !== undefined) append(pendingCharacter, pendingRun!, character);
+      pendingCharacter = character;
+      pendingRun = run;
     }
   }
+  if (pendingCharacter !== undefined) append(pendingCharacter, pendingRun!);
   if (current.runs.length) lines.push(current);
   return lines;
 }
@@ -48,27 +63,9 @@ export function wrapPdfText(
   width: number,
   measure: (character: string) => number,
 ): string[] {
-  const lines: string[] = [];
-  let line = '';
-  let used = 0;
-  for (const character of text.replace(/\r/g, '')) {
-    if (character === '\n') {
-      lines.push(line);
-      line = '';
-      used = 0;
-      continue;
-    }
-    const size = measure(character);
-    if (line && used + size > width) {
-      lines.push(line);
-      line = '';
-      used = 0;
-    }
-    line += character;
-    used += size;
-  }
-  if (line) lines.push(line);
-  return lines;
+  return wrapStyledPdfText([{ text }], width, measure).map((line) =>
+    line.runs.map((run) => run.text).join(''),
+  );
 }
 
 export async function buildArticlePdf(
@@ -129,9 +126,10 @@ export async function buildArticlePdf(
     y -= 7;
   };
   const drawStyled = (runs: StyledRun[], size: number, indent: number, alignment?: string) => {
+    const lineAdvance = size * (article.typography?.lineHeight || 1.75);
     const advance = measure(font, size);
     for (const line of wrapStyledPdfText(runs, width - indent - 3, advance)) {
-      space(size * 1.75);
+      space(lineAdvance);
       let x =
         PAGE.margin +
         indent +
@@ -163,7 +161,7 @@ export async function buildArticlePdf(
             });
         x += length;
       }
-      y -= size * 1.75;
+      y -= lineAdvance;
     }
     y -= 7;
   };
@@ -205,7 +203,9 @@ export async function buildArticlePdf(
             : []),
           ...styledRuns(block),
         ],
-        block.type === 'heading' ? Math.max(12, 18 - (block.level || 2)) : 11,
+        block.type === 'heading'
+          ? Math.max(12, 18 - (block.level || 2))
+          : article.typography?.size || 11,
         block.type === 'quote' ? 18 : 0,
         block.alignment,
       );

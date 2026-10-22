@@ -42,7 +42,13 @@ test('所有日新、名句、历史条目均可转换为同一阅读模型，�
   }
   for (const item of QUOTES) {
     const document = quoteDocument(item);
-    assert.ok(document.blocks.some((block) => 'text' in block && block.text === item.text));
+    assert.equal(
+      document.blocks
+        .filter((block) => block.type === 'quote')
+        .map((block) => block.text)
+        .join('\n\n'),
+      item.text,
+    );
     if (item.commentary) assert.ok(JSON.stringify(document).includes(item.commentary.url));
   }
   for (const item of EVENTS) {

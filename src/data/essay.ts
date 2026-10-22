@@ -1,8 +1,10 @@
 import type { IEssayMaterial } from './types';
+import { REASONING_ESSAYS } from './essay/reasoning.ts';
 
 // 内置概念目录。读者素材在本浏览器保存，站方示例独立维护于 essayExamples.ts。
 
 export const ESSAY_MATERIALS: IEssayMaterial[] = [
+  ...REASONING_ESSAYS,
   {
     id: 'e1',
     concept: '修昔底德陷阱',
