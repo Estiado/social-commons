@@ -1,7 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Newspaper, Calendar, Feather, ChevronRight, Loader2, AlertCircle, Tag } from 'lucide-react';
+import {
+  ArrowLeft,
+  Newspaper,
+  Calendar,
+  Feather,
+  ChevronRight,
+  Loader2,
+  AlertCircle,
+  Tag,
+} from 'lucide-react';
 import { TOPIC_SPECIALS } from '@/data/topicSpecials';
+import { ContentReader } from '@/features/reading/ContentReader';
 import { DAILY_KNOWLEDGE } from '@/data/daily';
 import { QUOTES } from '@/data/quotes';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
@@ -83,7 +93,9 @@ export default function TopicDetailPage() {
       </Link>
 
       {/* 专题头部 */}
-      <header className={`mb-12 p-8 md:p-10 border border-border/60 rounded-sm bg-gradient-to-br ${topic.color}`}>
+      <header
+        className={`mb-12 p-8 md:p-10 border border-border/60 rounded-sm bg-gradient-to-br ${topic.color}`}
+      >
         <div className="flex items-center gap-2 mb-4">
           {topic.relatedTags.map((tag) => (
             <Badge key={tag} variant="outline" className="border-accent/30 text-accent">
@@ -93,8 +105,7 @@ export default function TopicDetailPage() {
           ))}
         </div>
         <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">{topic.name}</h1>
-        <p className="text-lg text-muted-foreground mb-4">{topic.subtitle}</p>
-        <p className="text-muted-foreground leading-relaxed max-w-2xl">{topic.description}</p>
+        <ContentReader kind="topic" id={topic.id} />
       </header>
 
       {/* 相关时评 */}
@@ -103,7 +114,9 @@ export default function TopicDetailPage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Newspaper className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">时评素材</span>
+              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                时评素材
+              </span>
             </div>
             <h2 className="font-serif text-2xl font-semibold">相关时评</h2>
           </div>
@@ -143,14 +156,19 @@ export default function TopicDetailPage() {
                     </span>
                   )}
                   <span className="text-xs text-muted-foreground">
-                    {new Date(article.created_at).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+                    {new Date(article.created_at).toLocaleDateString('zh-CN', {
+                      month: 'short',
+                      day: 'numeric',
+                    })}
                   </span>
                 </div>
                 <h3 className="font-serif text-base font-semibold group-hover:text-accent transition-colors line-clamp-2">
                   {article.title}
                 </h3>
                 {article.excerpt && (
-                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{article.excerpt}</p>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                    {article.excerpt}
+                  </p>
                 )}
               </Link>
             ))}
@@ -163,7 +181,9 @@ export default function TopicDetailPage() {
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-6">
             <Calendar className="h-4 w-4 text-accent" />
-            <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">通识素材</span>
+            <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+              通识素材
+            </span>
           </div>
           <h2 className="font-serif text-2xl font-semibold mb-6">相关通识</h2>
           <div className="space-y-4">
@@ -174,13 +194,17 @@ export default function TopicDetailPage() {
                 className="group block border border-border/60 bg-card p-6 rounded-sm hover:border-accent/30 transition-all"
               >
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs px-2 py-0.5 bg-accent/10 text-accent rounded-sm">{d.category}</span>
+                  <span className="text-xs px-2 py-0.5 bg-accent/10 text-accent rounded-sm">
+                    {d.category}
+                  </span>
                   <span className="text-xs text-muted-foreground">{d.date}</span>
                 </div>
                 <h3 className="font-serif text-lg font-semibold group-hover:text-accent transition-colors mb-2">
                   {d.title}
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{d.summary}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                  {d.summary}
+                </p>
               </Link>
             ))}
           </div>
@@ -192,7 +216,9 @@ export default function TopicDetailPage() {
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-6">
             <Feather className="h-4 w-4 text-accent" />
-            <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">名句素材</span>
+            <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+              名句素材
+            </span>
           </div>
           <h2 className="font-serif text-2xl font-semibold mb-6">相关名句</h2>
           <div className="space-y-4">

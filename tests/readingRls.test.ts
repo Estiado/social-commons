@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
-import { parsePlainArticle } from '../src/features/articles/parseArticle.ts';
+import { parsePlainArticle } from '../src/features/reading/parseArticle.ts';
 
 test('在独立 PostgreSQL 测试运行时执行迁移，验证两个账号、匿名账号和未登录角色的隔离', async () => {
   const database = new PGlite();

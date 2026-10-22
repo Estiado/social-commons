@@ -1,5 +1,5 @@
 import { fetchArticleHtml, validateArticleUrl, DEFAULT_ARTICLE_HOSTS, RequestError } from './articleFetch.ts';
-import { parseArticleHtml } from '../src/features/articles/parseArticle.ts';
+import { parseArticleHtml } from '../src/features/reading/parseArticle.ts';
 import { matchTopics } from './topics.ts';
 
 export interface ExtractEnvironment {

@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { errorMessage } from '@/lib/database';
+import { errorMessage } from '@/lib/errors';
 
 export function EmailLoginDialog({
   open,

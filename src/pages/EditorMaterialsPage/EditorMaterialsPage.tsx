@@ -5,7 +5,7 @@ import { useAccount } from '@/features/auth/useAccount';
 import { EmailLoginDialog } from '@/features/auth/EmailLoginDialog';
 import { RecommendedMaterials } from '@/features/essay/RecommendedMaterials';
 import { Button } from '@/components/ui/button';
-import { READING_CLOUD_ENABLED } from '@/features/articles/config';
+import { READING_CLOUD_ENABLED } from '@/features/reading/config';
 
 export default function EditorMaterialsPage() {
   const { account, loading } = useAccount();

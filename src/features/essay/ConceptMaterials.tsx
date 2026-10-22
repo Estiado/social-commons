@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { downloadArticleFile } from '@/features/articles/export/assets';
+import { downloadArticleFile } from '@/features/reading/export/assets';
 import {
   materialBackupSchema,
   localMaterialsSchema,

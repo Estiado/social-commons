@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
-import { READING_CLOUD_ENABLED } from '@/features/articles/config';
+import { READING_CLOUD_ENABLED } from '@/features/reading/config';
 
 const accountEnabled = READING_CLOUD_ENABLED && Boolean(supabase);
 

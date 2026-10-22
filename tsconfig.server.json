@@ -10,5 +10,5 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": ["server", "functions", "netlify/functions"]
+  "include": ["server", "functions", "config/netlify/functions"]
 }

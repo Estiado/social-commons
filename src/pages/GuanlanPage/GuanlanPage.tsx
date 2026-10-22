@@ -21,7 +21,7 @@ import { Badge } from '@/components/ui/badge';
 import { PRESET_ARTICLES } from '@/data/presetArticles';
 import { EXTERNAL_ARTICLES } from '@/data/externalArticles';
 import { HOT_TOPICS, matchHotTopic } from '@/data/hotTopics';
-import { RecentCommentaries } from '@/features/articles/RecentCommentaries';
+import { RecentCommentaries } from '@/features/reading/RecentCommentaries';
 
 import { mergeArticles, filterArticles, countArticlesByTopic, type ArticleListItem as Article } from '@/lib/articleCatalog';
 

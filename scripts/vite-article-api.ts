@@ -9,6 +9,12 @@ export function articleApiPlugin(): Plugin {
     configureServer(server) {
       server.middlewares.use('/api', async (request, response, next) => {
         const route = request.url?.split('?')[0];
+        if (route === '/local-status') {
+          response.setHeader('Content-Type', 'application/json');
+          response.setHeader('Cache-Control', 'no-store');
+          response.end(JSON.stringify({ application: 'social-commons' }));
+          return;
+        }
         if (!['/extract-article', '/article-image'].includes(route || '')) return next();
         try {
           const headers = new Headers();

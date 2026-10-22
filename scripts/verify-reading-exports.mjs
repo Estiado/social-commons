@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { build } from 'vite';
-import { parseArticleHtml } from '../src/features/articles/parseArticle.ts';
+import { parseArticleHtml } from '../src/features/reading/parseArticle.ts';
 import { PDFDocument } from 'pdf-lib';
 
 await build({ configFile: false, publicDir: false, build: {
-  lib: { entry: { pdf: 'src/features/articles/export/exportPdf.ts', word: 'src/features/articles/export/exportDocx.ts' }, formats: ['es'], fileName: (_format, name) => `${name}.mjs` },
+  lib: { entry: { pdf: 'src/features/reading/export/exportPdf.ts', word: 'src/features/reading/export/exportDocx.ts' }, formats: ['es'], fileName: (_format, name) => `${name}.mjs` },
   outDir: '.artifacts/reading-export-build', emptyOutDir: true, minify: true,
 } });
 const article = parseArticleHtml(`<article><h1>中文导出验收：标题与出处</h1><h2>第一节：段落与分页</h2>${Array.from({ length: 45 }, (_, index) => `<p>第${index + 1}段：这是用于验证中文字体、段落顺序、自动换行与跨页排版的测试文字。${'需要保证导出的文字可以选择和复制。'.repeat(6)}</p>`).join('')}</article>`, 'https://thepaper.cn/verification');

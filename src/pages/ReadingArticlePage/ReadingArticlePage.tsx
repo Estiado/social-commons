@@ -1,30 +1,32 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useItemLocation } from '@/hooks/useItemLocation';
 import { ArrowLeft, Download, CloudUpload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ArticleContent } from '@/features/articles/ArticleContent';
+import { ArticleContent } from '@/features/reading/ArticleContent';
 import {
   addAnnotation,
   isExpired,
   isPartialArticle,
   type ArticleAnnotation,
   type ReadingRecord,
-} from '@/features/articles/model';
+} from '@/features/reading/model';
 import {
   getGuestArticle,
   removeGuestArticle,
   saveLocalReading,
-} from '@/features/articles/guestRepository';
-import { getCloudArticle, saveCloudArticle } from '@/features/articles/cloudRepository';
+} from '@/features/reading/guestRepository';
+import { getCloudArticle, saveCloudArticle } from '@/features/reading/cloudRepository';
 import { useAccount } from '@/features/auth/useAccount';
 import { EmailLoginDialog } from '@/features/auth/EmailLoginDialog';
-import { errorMessage } from '@/lib/database';
+import { errorMessage } from '@/lib/errors';
 import { supabase } from '@/lib/supabase';
-import { READING_CLOUD_ENABLED } from '@/features/articles/config';
+import { READING_CLOUD_ENABLED } from '@/features/reading/config';
 
 export default function ReadingArticlePage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { account, loading: accountLoading } = useAccount();
   const [record, setRecord] = useState<ReadingRecord | null>(null);
   const [loadedOwner, setLoadedOwner] = useState('');
@@ -37,6 +39,10 @@ export default function ReadingArticlePage() {
   const pending = useRef<ArticleAnnotation[]>([]);
   const loginAction = useRef<'save' | 'suggest'>('save');
   const accountId = account?.id;
+  useItemLocation(
+    !loading && loadedId === id && record ? location.hash.replace(/^#reading-/, '') : null,
+    'reading',
+  );
 
   useEffect(() => {
     if (accountLoading) return;
@@ -167,7 +173,7 @@ export default function ReadingArticlePage() {
     setNotice(format === 'pdf' ? '正在准备 PDF，首次导出需要加载中文字体…' : '正在准备 Word…');
     try {
       if (isExpired(record)) throw new Error('临时文章已到期，请重新导入');
-      const { exportArticle } = await import('@/features/articles/export/articleExport');
+      const { exportArticle } = await import('@/features/reading/export/articleExport');
       const article = excerpts
         ? {
             ...record.document,
@@ -203,14 +209,12 @@ export default function ReadingArticlePage() {
     setBusy(true);
     setError('');
     try {
-      const { error } = await supabase
-        .from('reading_submissions')
-        .insert({
-          owner_id: verifiedOwnerId,
-          title: record.document.title,
-          url: record.document.url,
-          source: record.document.source,
-        });
+      const { error } = await supabase.from('reading_submissions').insert({
+        owner_id: verifiedOwnerId,
+        title: record.document.title,
+        url: record.document.url,
+        source: record.document.source,
+      });
       if (error?.code === '23505') setNotice('这篇文章已经提交，等待维护者审核');
       else if (error) throw error;
       else setNotice('已提交标题和原文链接供审核；个人正文和收藏不会公开');
