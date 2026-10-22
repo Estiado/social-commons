@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import 'fake-indexeddb/auto';
 import { deleteDB } from 'idb';
-import { parseArticleHtml, parsePlainArticle } from '../src/features/articles/parseArticle.ts';
-import { addAnnotation, createAnnotation, canonicalArticleUrl, GUEST_RETENTION_MS, isPartialArticle, prepareArticleExport } from '../src/features/articles/model.ts';
-import { getGuestArticle, listGuestArticles, saveGuestArticle, saveLocalReading } from '../src/features/articles/guestRepository.ts';
+import { parseArticleHtml, parsePlainArticle } from '../src/features/reading/parseArticle.ts';
+import { addAnnotation, createAnnotation, canonicalArticleUrl, GUEST_RETENTION_MS, isPartialArticle, prepareArticleExport } from '../src/features/reading/model.ts';
+import { getGuestArticle, listGuestArticles, saveGuestArticle, saveLocalReading } from '../src/features/reading/guestRepository.ts';
 
 test('富文本保留短段落、标题、图片和图注的顺序，并去除执行内容', () => {
   const article = parseArticleHtml('<h1>完整标题 - 保留副标题</h1><article><h2>第一节</h2><p>短句。</p><p>前文<img src="/photo.png" onerror="alert(1)">后文</p><figure><img src="/figure.png"><figcaption>这是真实图注</figcaption></figure><script>bad()</script><p>最后一段需要保留完整顺序，不能因为正文较短就丢掉。</p></article>', 'https://thepaper.cn/article');

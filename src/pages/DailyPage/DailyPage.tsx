@@ -1,225 +1,85 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
-import { useItemLocation } from '@/hooks/useItemLocation';
-import { Calendar, BookOpen, ChevronDown, ChevronUp, Tag, Clock, Newspaper, ExternalLink, Search } from 'lucide-react';
 import { DAILY_KNOWLEDGE } from '@/data/daily';
-import { Badge } from '@/components/ui/badge';
+import { ContentReader } from '@/features/reading/ContentReader';
 import { Input } from '@/components/ui/input';
 
+// Catalogue text is normalized once. Keystrokes only filter small descriptors.
+const catalogue = DAILY_KNOWLEDGE.map((item) => ({
+  item,
+  primary: item.category.split(' · ')[0],
+  search: [item.title, item.summary, item.content, item.category, item.source]
+    .join(' ')
+    .toLocaleLowerCase(),
+}));
+const categories = ['全部', ...new Set(catalogue.map((entry) => entry.primary))];
 export default function DailyPage() {
-  const [searchParams] = useSearchParams();
-  useItemLocation(searchParams.get('id'), 'daily');
-  const [expandedId, setExpandedId] = useState<string | null>(searchParams.get('id') || DAILY_KNOWLEDGE[0]?.id || null);
-  const [activePrimary, setActivePrimary] = useState<string>('全部');
-  const [activeSub, setActiveSub] = useState<string>('全部');
-  const [searchQuery, setSearchQuery] = useState('');
-
-  // 提取一级分类
-  const primaryCategories = ['全部', ...Array.from(new Set(DAILY_KNOWLEDGE.map((d) => d.category.split(' · ')[0])))];
-
-  // 提取当前一级分类下的二级标签
-  const subCategories =
-    activePrimary === '全部'
-      ? []
-      : ['全部', ...Array.from(new Set(DAILY_KNOWLEDGE.filter((d) => d.category.startsWith(activePrimary)).map((d) => d.category.split(' · ')[1] || d.category)))];
-
-  // 筛选+搜索
+  const [params] = useSearchParams();
+  const [category, setCategory] = useState('全部');
+  const [search, setSearch] = useState('');
+  const [expanded, setExpanded] = useState(DAILY_KNOWLEDGE[0]?.id || '');
   const filtered = useMemo(() => {
-    return DAILY_KNOWLEDGE.filter((d) => {
-      // 分类筛选
-      if (activePrimary !== '全部') {
-        if (!d.category.startsWith(activePrimary)) return false;
-        if (activeSub !== '全部' && d.category !== `${activePrimary} · ${activeSub}`) return false;
-      }
-      // 搜索
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const searchable = [d.title, d.summary, d.content, d.category, d.source].join(' ').toLowerCase();
-        if (!searchable.includes(q)) return false;
-      }
-      return true;
-    });
-  }, [activePrimary, activeSub, searchQuery]);
-
-  const handlePrimaryChange = (cat: string) => {
-    setActivePrimary(cat);
-    setActiveSub('全部');
-  };
-
-  if (searchParams.get('id')) return <Navigate to={`/daily/${encodeURIComponent(searchParams.get('id')!)}`} replace />;
-
+    const query = search.trim().toLocaleLowerCase();
+    return catalogue.filter(
+      (entry) =>
+        (category === '全部' || entry.primary === category) && entry.search.includes(query),
+    );
+  }, [category, search]);
+  if (params.get('id'))
+    return <Navigate to={`/daily/${encodeURIComponent(params.get('id')!)}`} replace />;
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
-      {/* 页头 */}
-      <div className="mb-10">
-        <div className="flex items-center gap-2 mb-3">
-          <Calendar className="h-4 w-4 text-accent" />
-          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Daily · 日新</span>
-        </div>
-        <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">日新</h1>
-        <p className="text-muted-foreground max-w-2xl leading-relaxed">
-          苟日新，日日新，又日新。每天一个知识点，覆盖哲学、历史、经济、社会学、文学等领域，积跬步以至千里。
-        </p>
-      </div>
-
-      {/* 搜索框 */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="搜索概念、内容、来源..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9"
-        />
-      </div>
-
-      {/* 一级分类筛选 */}
-      <div className="flex flex-wrap gap-2 mb-3">
-        {primaryCategories.map((cat) => (
+      <p className="mb-3 text-xs tracking-widest text-accent">DAILY KNOWLEDGE</p>
+      <h1 className="mb-4 font-serif text-3xl font-semibold">日新</h1>
+      <p className="mb-7 leading-relaxed text-muted-foreground">
+        每天一个知识点，在阅读中积累理解。正文可以收藏段落、划线，并加入自己的阅读空间。
+      </p>
+      <Input
+        aria-label="搜索通识"
+        placeholder="搜索概念、内容、来源…"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+      />
+      <div className="my-5 flex flex-wrap gap-2">
+        {categories.map((name) => (
           <button
-            key={cat}
-            onClick={() => handlePrimaryChange(cat)}
-            className={`px-4 py-1.5 text-sm rounded-sm transition-colors ${
-              activePrimary === cat
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
-            }`}
+            key={name}
+            onClick={() => setCategory(name)}
+            className={`rounded-sm border px-3 py-1.5 text-sm ${category === name ? 'border-accent text-accent' : 'text-muted-foreground'}`}
           >
-            {cat}
+            {name}
           </button>
         ))}
       </div>
-
-      {/* 二级分类筛选（仅当选中一级分类时显示） */}
-      {subCategories.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 mb-10 pl-2 border-l-2 border-accent/20">
-          <span className="text-xs text-muted-foreground mr-1">细分：</span>
-          {subCategories.map((sub) => (
+      <div className="space-y-5">
+        {filtered.map(({ item }) => (
+          <article key={item.id} className="rounded-sm border bg-card">
             <button
-              key={sub}
-              onClick={() => setActiveSub(sub)}
-              className={`px-3 py-1 text-xs rounded-sm transition-colors ${
-                activeSub === sub
-                  ? 'bg-accent/15 text-accent border border-accent/30'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-              }`}
+              aria-expanded={expanded === item.id}
+              className="block w-full p-6 text-left"
+              onClick={() => setExpanded(expanded === item.id ? '' : item.id)}
             >
-              {sub}
+              <span className="text-xs text-accent">{item.category}</span>
+              <h2 className="my-3 font-serif text-xl font-semibold">{item.title}</h2>
+              <p className="text-sm leading-relaxed text-muted-foreground">{item.summary}</p>
             </button>
-          ))}
-        </div>
-      )}
-
-      {subCategories.length === 0 && <div className="mb-10" />}
-
-      {/* 知识卡片列表 */}
-      <div className="space-y-4">
-        {filtered.map((item) => {
-          const isExpanded = expandedId === item.id;
-          return (
-            <article
-              key={item.id}
-              id={`daily-${item.id}`}
-              className="scroll-mt-24 border border-border/60 bg-card rounded-sm overflow-hidden transition-all duration-300"
-            >
-              <button
-                aria-expanded={isExpanded}
-                onClick={() => setExpandedId(isExpanded ? null : item.id)}
-                className="w-full text-left p-6 hover:bg-muted/20 transition-colors"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <Badge variant="outline" className="border-accent/30 text-accent">
-                        <Tag className="h-3 w-3 mr-1" />
-                        {item.category}
-                      </Badge>
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        {item.date}
-                      </span>
-                    </div>
-                    <h2 className="font-serif text-xl font-semibold mb-2">{item.title}</h2>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.summary}</p>
-                  </div>
-                  <div className="shrink-0 mt-1">
-                    {isExpanded ? (
-                      <ChevronUp className="h-5 w-5 text-muted-foreground" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                    )}
-                  </div>
-                </div>
-              </button>
-
-              {/* 展开内容 */}
-              {isExpanded && (
-                <div className="px-6 pb-6 border-t border-border/40 pt-5">
-                  <Link to={`/daily/${item.id}`} className="mb-5 inline-block text-sm text-accent underline">打开这个词条的独立页面</Link>
-                  <div className="prose prose-sm max-w-none">
-                    <p className="text-foreground/85 leading-relaxed whitespace-pre-line">
-                      {item.content}
-                    </p>
-                  </div>
-
-                  {/* 媒体引用栏目 */}
-                  {item.mediaReferences && item.mediaReferences.length > 0 && (
-                    <div className="mt-6 pt-5 border-t border-border/40">
-                      <div className="flex items-center gap-2 mb-4">
-                        <Newspaper className="h-4 w-4 text-accent" />
-                        <span className="text-sm font-medium">主流媒体评论</span>
-                        <span className="text-xs text-muted-foreground">（{item.mediaReferences.length} 条）</span>
-                      </div>
-                      <div className="space-y-3">
-                        {item.mediaReferences.map((ref, idx) => (
-                          <div key={idx} className="border border-border/40 bg-muted/20 rounded-sm p-4">
-                            <div className="flex items-center justify-between gap-2 mb-2">
-                              <span className="text-xs font-medium text-accent">{ref.source}</span>
-                              {ref.date && <span className="text-xs text-muted-foreground">{ref.date}</span>}
-                            </div>
-                            <h4 className="text-sm font-medium mb-2">{ref.title}</h4>
-                            <p className="text-xs text-foreground/75 leading-relaxed mb-2">{ref.excerpt}</p>
-                            {ref.url && (
-                              <a
-                                href={ref.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-xs text-accent hover:underline"
-                              >
-                                阅读原文 <ExternalLink className="h-3 w-3" />
-                              </a>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="mt-5 pt-4 border-t border-border/40 flex items-center gap-2 text-xs text-muted-foreground">
-                    <BookOpen className="h-3.5 w-3.5" />
-                    <span>来源：{item.source}</span>
-                  </div>
-                </div>
-              )}
-            </article>
-          );
-        })}
+            {expanded === item.id && (
+              <div className="border-t px-6 py-5">
+                <Link
+                  className="mb-5 inline-block text-sm text-accent underline"
+                  to={`/daily/${item.id}`}
+                >
+                  打开独立页面
+                </Link>
+                <ContentReader kind="daily" id={item.id} />
+              </div>
+            )}
+          </article>
+        ))}
       </div>
-
-      {filtered.length === 0 && (
-        <div className="text-center py-20 text-muted-foreground">
-          <Calendar className="h-12 w-12 mx-auto mb-4 opacity-30" />
-          <p>该分类下暂无内容</p>
-        </div>
+      {!filtered.length && (
+        <p className="py-12 text-center text-muted-foreground">没有找到对应内容。</p>
       )}
-
-      {/* 底部说明 */}
-      <div className="mt-12 p-6 bg-muted/30 border border-border/40 rounded-sm">
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          日新栏目内容基于学术文献、权威著作和可靠资料整理。媒体评论栏目收录人民日报、南方周末等主流媒体的相关论述，供多视角参考。
-          如需深入研究，建议查阅原始来源。内容持续更新中，更多学科领域的知识正在路上。
-        </p>
-      </div>
     </div>
   );
 }

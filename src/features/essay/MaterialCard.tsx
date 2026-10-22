@@ -1,18 +1,46 @@
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import type { MaterialFields } from './materials';
+import { ContentReader } from '@/features/reading/ContentReader';
+import { createContentDocument, SITE_ORIGIN } from '@/features/reading/contentDocuments';
 
 export function MaterialCard({
   material,
   children,
+  readingKey,
 }: {
-  material: MaterialFields;
+  material: MaterialFields & { id?: string };
+  readingKey?: string;
   children?: ReactNode;
 }) {
+  const id = material.id || readingKey || material.title;
+  const document = useMemo(
+    () =>
+      createContentDocument(
+        material.title,
+        material.source,
+        `${SITE_ORIGIN}/essay#material-${encodeURIComponent(id)}`,
+        [
+          { type: 'heading', level: 2, text: material.title },
+          { type: 'paragraph', text: material.content },
+          {
+            type: 'paragraph',
+            text: `来源：${material.source}${material.sourceUrl ? `\n原始来源：${material.sourceUrl}` : ''}`,
+          },
+          ...(material.usageHint
+            ? [
+                {
+                  type: 'paragraph' as const,
+                  text: `使用提示（整理者观点）：${material.usageHint}`,
+                },
+              ]
+            : []),
+        ],
+      ),
+    [id, material.title, material.source, material.content, material.sourceUrl, material.usageHint],
+  );
   return (
     <article className="rounded-sm border bg-muted/20 p-5">
-      <h4 className="mb-3 font-serif text-lg font-semibold">{material.title}</h4>
-      <p className="whitespace-pre-line text-sm leading-relaxed">{material.content}</p>
-      <p className="mt-3 text-xs text-muted-foreground">来源：{material.source}</p>
+      <ContentReader kind="essay" id={`material-${id}`} document={document} />
       {material.sourceUrl && (
         <a
           href={material.sourceUrl}

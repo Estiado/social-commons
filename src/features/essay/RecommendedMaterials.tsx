@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { MaterialForm } from './MaterialForm';
 import { MaterialCard } from './MaterialCard';
 import { materialFieldsSchema, type MaterialFields } from './materials';
-import { READING_CLOUD_ENABLED } from '@/features/articles/config';
+import { READING_CLOUD_ENABLED } from '@/features/reading/config';
 
 interface ExampleRow {
   id: string;

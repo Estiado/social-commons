@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { getQuoteById } from '@/data/quotes';
-import { QuoteCommentary } from '@/features/quotes/QuoteCommentary';
+import { ContentReader } from '@/features/reading/ContentReader';
 
 export default function QuoteDetailPage() {
   const { id = '' } = useParams();
@@ -13,12 +13,7 @@ export default function QuoteDetailPage() {
       {quote ? (
         <>
           <h1 className="font-serif text-3xl font-semibold leading-relaxed">{quote.text}</h1>
-          <p className="mt-6 text-lg">{quote.author}</p>
-          <p className="mt-2 text-sm text-muted-foreground">{quote.source}</p>
-          {quote.sourceNote && (
-            <p className="mt-3 text-sm text-amber-800">出处核验提示：{quote.sourceNote}</p>
-          )}
-          <QuoteCommentary quote={quote} />
+          <ContentReader kind="quote" id={quote.id} />
         </>
       ) : (
         <h1 className="font-serif text-2xl">未找到这条名句</h1>

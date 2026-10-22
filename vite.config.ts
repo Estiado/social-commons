@@ -73,7 +73,7 @@ function sparkJsonPlugin(): Plugin {
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Cache-Control', 'no-store');
         res.end(
-          fs.readFileSync(path.resolve(import.meta.dirname, 'spark.json')),
+          fs.readFileSync(path.resolve(import.meta.dirname, 'config/miaoda/spark.json')),
         );
       });
     },
@@ -116,6 +116,7 @@ export default defineConfig(({ command }) => ({
     },
   },
   // Stable origin keeps local reading data visible across restarts.
+  optimizeDeps: { include: ['@radix-ui/react-tabs', '@radix-ui/react-dialog'] },
   server: { host: '127.0.0.1', port: 5180, strictPort: true, watch: { ignored: ['**/.artifacts/**', '**/dist/**'] } },
   build: {
     outDir: 'dist/client',

@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { ESSAY_MATERIALS } from '@/data/essay';
 import { ConceptMaterials } from '@/features/essay/ConceptMaterials';
+import { ContentReader } from '@/features/reading/ContentReader';
+import { essayDocument } from '@/features/reading/contentDocuments';
 import type { IEssayMaterial } from '@/data/types';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { Badge } from '@/components/ui/badge';
@@ -33,8 +35,14 @@ export default function EssayPage() {
   const [showTagForm, setShowTagForm] = useState(false);
 
   // 用户自定义词条和标签（存在localStorage）
-  const [customMaterials, setCustomMaterials] = useLocalStorage<IEssayMaterial[]>('custom-essay-materials', []);
-  const [customCategories, setCustomCategories] = useLocalStorage<string[]>('custom-categories', []);
+  const [customMaterials, setCustomMaterials] = useLocalStorage<IEssayMaterial[]>(
+    'custom-essay-materials',
+    [],
+  );
+  const [customCategories, setCustomCategories] = useLocalStorage<string[]>(
+    'custom-categories',
+    [],
+  );
 
   // 新词条表单状态
   const [newConcept, setNewConcept] = useState('');
@@ -130,8 +138,12 @@ export default function EssayPage() {
           ]
         : [],
     };
-    try { setCustomMaterials((prev) => [...prev, newMaterial]); }
-    catch { alert('浏览器存储不可用或空间不足，词条未保存。请先备份现有内容。'); return; }
+    try {
+      setCustomMaterials((prev) => [...prev, newMaterial]);
+    } catch {
+      alert('浏览器存储不可用或空间不足，词条未保存。请先备份现有内容。');
+      return;
+    }
     // 重置表单
     setNewConcept('');
     setNewCategory('');
@@ -146,16 +158,23 @@ export default function EssayPage() {
   const handleAddTag = () => {
     if (!newTag.trim()) return;
     if (!customCategories.includes(newTag.trim())) {
-      try { setCustomCategories((prev) => [...prev, newTag.trim()]); }
-      catch { alert('浏览器存储不可用，标签未保存'); return; }
+      try {
+        setCustomCategories((prev) => [...prev, newTag.trim()]);
+      } catch {
+        alert('浏览器存储不可用，标签未保存');
+        return;
+      }
     }
     setNewTag('');
     setShowTagForm(false);
   };
 
   const handleDeleteCustom = (id: string) => {
-    try { setCustomMaterials((prev) => prev.filter((m) => m.id !== id)); }
-    catch { alert('浏览器存储不可用，删除未保存'); }
+    try {
+      setCustomMaterials((prev) => prev.filter((m) => m.id !== id));
+    } catch {
+      alert('浏览器存储不可用，删除未保存');
+    }
   };
 
   const isCustom = (id: string) => id.startsWith('custom-');
@@ -166,7 +185,9 @@ export default function EssayPage() {
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-3">
           <PenTool className="h-4 w-4 text-accent" />
-          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Essay · 议论文素材</span>
+          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+            Essay · 议论文素材
+          </span>
         </div>
         <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">高考议论文素材库</h1>
         <p className="text-muted-foreground max-w-2xl leading-relaxed">
@@ -214,18 +235,31 @@ export default function EssayPage() {
         <div className="mb-6 p-5 border border-accent/30 bg-accent/5 rounded-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-serif text-lg font-semibold">添加自定义词条</h3>
-            <button onClick={() => setShowAddForm(false)} className="text-muted-foreground hover:text-foreground">
+            <button
+              onClick={() => setShowAddForm(false)}
+              className="text-muted-foreground hover:text-foreground"
+            >
               <X className="h-4 w-4" />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label className="text-xs mb-1 block">概念名称 *</Label>
-              <Input placeholder="如：沉默的螺旋" value={newConcept} onChange={(e) => setNewConcept(e.target.value)} />
+              <Input
+                placeholder="如：沉默的螺旋"
+                value={newConcept}
+                onChange={(e) => setNewConcept(e.target.value)}
+              />
             </div>
             <div>
-              <Label className="text-xs mb-1 block">分类 *（格式：一级 · 二级，如"传播学 · 舆论学"）</Label>
-              <Input placeholder="传播学 · 舆论学" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
+              <Label className="text-xs mb-1 block">
+                分类 *（格式：一级 · 二级，如"传播学 · 舆论学"）
+              </Label>
+              <Input
+                placeholder="传播学 · 舆论学"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+              />
             </div>
           </div>
           <div className="mt-4">
@@ -276,7 +310,10 @@ export default function EssayPage() {
             <Button variant="ghost" onClick={() => setShowAddForm(false)}>
               取消
             </Button>
-            <Button onClick={handleAddMaterial} disabled={!newConcept.trim() || !newCategory.trim()}>
+            <Button
+              onClick={handleAddMaterial}
+              disabled={!newConcept.trim() || !newCategory.trim()}
+            >
               保存词条
             </Button>
           </div>
@@ -288,7 +325,10 @@ export default function EssayPage() {
         <div className="mb-6 p-5 border border-accent/30 bg-accent/5 rounded-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-serif text-lg font-semibold">添加自定义分类标签</h3>
-            <button onClick={() => setShowTagForm(false)} className="text-muted-foreground hover:text-foreground">
+            <button
+              onClick={() => setShowTagForm(false)}
+              className="text-muted-foreground hover:text-foreground"
+            >
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -306,7 +346,10 @@ export default function EssayPage() {
           {customCategories.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
               {customCategories.map((cat) => (
-                <span key={cat} className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-muted/60 rounded-sm">
+                <span
+                  key={cat}
+                  className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-muted/60 rounded-sm"
+                >
                   {cat}
                   <button
                     onClick={() => setCustomCategories((prev) => prev.filter((c) => c !== cat))}
@@ -383,11 +426,15 @@ export default function EssayPage() {
                       </Badge>
                       <span className="text-xs text-muted-foreground">可添加个人素材</span>
                       {isCustom(item.id) && (
-                        <span className="text-xs px-1.5 py-0.5 bg-accent/10 text-accent rounded-sm">自定义</span>
+                        <span className="text-xs px-1.5 py-0.5 bg-accent/10 text-accent rounded-sm">
+                          自定义
+                        </span>
                       )}
                     </div>
                     <h2 className="font-serif text-xl font-semibold mb-2">{item.concept}</h2>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {item.description}
+                    </p>
                     <div className="flex flex-wrap gap-2 mt-3">
                       {item.applicableTopics.map((topic) => (
                         <span
@@ -425,7 +472,19 @@ export default function EssayPage() {
               {/* 展开的素材列表 */}
               {isExpanded && (
                 <div className="px-6 pb-6 border-t border-border/40 pt-5">
-                  <ConceptMaterials conceptId={item.id} legacy={item.id.startsWith('custom-') ? item.materials.map((material) => ({ ...material, sourceUrl: '', usageHint: material.usageHint || '' })) : []} />
+                  <EssayReading item={item} />
+                  <ConceptMaterials
+                    conceptId={item.id}
+                    legacy={
+                      item.id.startsWith('custom-')
+                        ? item.materials.map((material) => ({
+                            ...material,
+                            sourceUrl: '',
+                            usageHint: material.usageHint || '',
+                          }))
+                        : []
+                    }
+                  />
                 </div>
               )}
             </article>
@@ -446,9 +505,20 @@ export default function EssayPage() {
         <p className="text-xs text-muted-foreground leading-relaxed">
           自定义词条、素材和标签保存在当前浏览器中，换设备或清除浏览器数据会丢失。
           请在素材区使用“备份我的全部素材”保存个人摘录。站方推荐由具有编辑权限的账号维护。
-          <Link className="ml-2 text-accent underline" to="/editor/materials">站方推荐管理</Link>
+          <Link className="ml-2 text-accent underline" to="/editor/materials">
+            站方推荐管理
+          </Link>
         </p>
       </div>
+    </div>
+  );
+}
+
+function EssayReading({ item }: { item: IEssayMaterial }) {
+  const document = useMemo(() => essayDocument(item), [item]);
+  return (
+    <div className="mb-8">
+      <ContentReader kind="essay" id={item.id} document={document} />
     </div>
   );
 }

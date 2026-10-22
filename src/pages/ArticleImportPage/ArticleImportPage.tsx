@@ -9,11 +9,11 @@ import {
   canonicalArticleUrl,
   isPartialArticle,
   type ArticleDocument,
-} from '@/features/articles/model';
-import { saveGuestArticle } from '@/features/articles/guestRepository';
-import { ArticleContent } from '@/features/articles/ArticleContent';
-import { errorMessage } from '@/lib/database';
-import { getCloudArticle, saveCloudArticle } from '@/features/articles/cloudRepository';
+} from '@/features/reading/model';
+import { saveGuestArticle } from '@/features/reading/guestRepository';
+import { ArticleContent } from '@/features/reading/ArticleContent';
+import { errorMessage } from '@/lib/errors';
+import { getCloudArticle, saveCloudArticle } from '@/features/reading/cloudRepository';
 
 export default function ArticleImportPage() {
   const [parameters] = useSearchParams();
@@ -36,7 +36,7 @@ export default function ArticleImportPage() {
     setComplete(false);
     try {
       if (mode === 'paste') {
-        const parser = await import('@/features/articles/parseArticle');
+        const parser = await import('@/features/reading/parseArticle');
         const result = richHtml
           ? parser.parseArticleHtml(richHtml, url ? canonicalArticleUrl(url) : '')
           : parser.parsePlainArticle(text);

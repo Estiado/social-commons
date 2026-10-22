@@ -1,0 +1,23 @@
+name: 页面或功能报错
+description: 记录可复现的问题，方便维护者定位
+title: "[问题] "
+body:
+  - type: input
+    id: url
+    attributes:
+      label: 出问题的页面网址
+      placeholder: https://social-commons.pages.dev/...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 操作步骤与实际结果
+      description: 可以附截图，以及你原本期待的结果。
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: 设备与浏览器
+      placeholder: Windows / Edge，或 iPhone / Safari

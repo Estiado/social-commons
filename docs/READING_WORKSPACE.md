@@ -4,11 +4,17 @@
 
 ## 工程约定
 
+### 2026-10-22 统一入口调整
+
+日新、名句、历史、经典时评、专题和素材正文共用阅读模型与选区组件；文章、全局摘录和素材包统一到 `/reading`。旧路径重定向，旧云端原件不删除。IndexedDB V2 游标补齐摘录索引，保留 V1 文章和收藏；文档、摘要和索引同事务更新。素材编辑后以正文摘要生成独立阅读版本，不覆盖旧划线。旧资料导入只用当前已有身份，分页读取且核对每个错误；重复导入保留本机名称、顺序和备注，并保留新追加条目的原备注。
+
+日常入口是 Cloudflare 正式网站。“保存在当前浏览器”不要求运行开发服务器。旧根目录 CMD 已归到开发工具目录，维护者预览与正式站的浏览器存储隔离。
+
 ### 2026-10-22 本机内测调整（优先于原上线方案）
 
 用户暂缓邮件系统。`VITE_READING_CLOUD_ENABLED` 默认 false：免登录提取、阅读、段落/跨段划线收藏、全文及整库导出均可用。导入先保留七天；点击“保存到本机”或收藏后，IndexedDB 的 expiresAt 置空，在当前浏览器长期保留。localRevision 在事务内检查，防止陈旧标签页覆盖摘录。清理浏览器数据仍会移除文章，需另行备份。
 
-本机固定 `http://127.0.0.1:5180`，双击根目录 `启动本机内测.cmd` 或执行 `scripts/dev.ps1 dev`。不同域名/端口使用不同浏览器存储。脚本使用已有 Node，临时文件和缓存位于 D 盘，不搬浏览器配置或修改系统隔离。
+日常使用正式网站，无需启动 CMD。维护者开发预览固定 `http://127.0.0.1:5180`，可用 `scripts/windows/开发预览.cmd` 或 `scripts/dev.ps1 dev`；重复启动会复用本站现有服务，不结束其他进程。正式网站与开发预览使用不同浏览器存储。脚本使用已有 Node，临时文件和缓存位于 D 盘，不搬浏览器配置或修改系统隔离。
 
 访问受限媒体标为 partial，预览只允许粘贴完整正文或显式保存可见节选；阅读及导出均标节选。导入者核对完整后可替换本机旧节选；云端替换还须确认旧版本摘录清除，并检查 revision。提取成功不等于全文完整。
 
@@ -31,15 +37,15 @@
 
 | 入口 | 职责 |
 | --- | --- |
-| `src/features/articles/model.ts` | 文章合同、大小限制、URL 归一化、划线锚点与幂等合并 |
-| `src/features/articles/parseArticle.ts` | 媒体容器、署名日期、富文本与纯文本解析 |
+| `src/features/reading/model.ts` | 文章合同、大小限制、URL 归一化、划线锚点与幂等合并 |
+| `src/features/reading/parseArticle.ts` | 媒体容器、署名日期、富文本与纯文本解析 |
 | `server/articleFetch.ts` | HTML 抓取、可信来源、重定向、超时、流大小限制 |
 | `server/extractArticle.ts` | 无状态提取接口，不读写 Supabase |
 | `functions/api/article-image.ts` | 有来源限制的图片读取，拒绝 SVG，限制流大小 |
-| `src/features/articles/guestRepository.ts` | IndexedDB 正文与摘要、浏览器内 URL 索引、七天过期清理 |
-| `src/features/articles/cloudRepository.ts` | 用户身份、私有正文与摘录原子保存、版本冲突检查 |
-| `src/features/articles/ArticleContent.tsx` | 正文统一渲染、图片状态、段落及跨段划线收藏 |
-| `src/features/articles/export/` | Word 与 PDF，图片转换、文件下载与中文字体 |
+| `src/features/reading/guestRepository.ts` | IndexedDB 正文与摘要、浏览器内 URL 索引、七天过期清理 |
+| `src/features/reading/cloudRepository.ts` | 用户身份、私有正文与摘录原子保存、版本冲突检查 |
+| `src/features/reading/ArticleContent.tsx` | 正文统一渲染、图片状态、段落及跨段划线收藏 |
+| `src/features/reading/export/` | Word 与 PDF，图片转换、文件下载与中文字体 |
 | `src/features/auth/` | 邮箱验证码、正式账号状态、旧匿名身份升级 |
 | `src/pages/ArticleImportPage/` | 导入方式、可修正的来源信息、正文预览 |
 | `src/pages/ReadingArticlePage/` | 阅读、保存、摘录、导出、推荐审核 |

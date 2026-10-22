@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { DAILY_KNOWLEDGE } from '@/data/daily';
-import { DailyContent } from '@/features/knowledge/DailyContent';
+import { ContentReader } from '@/features/reading/ContentReader';
 
 export default function DailyDetailPage() {
   const { id } = useParams();
@@ -14,8 +14,7 @@ export default function DailyDetailPage() {
         <>
           <p className="mb-3 text-sm text-muted-foreground">{item.category}</p>
           <h1 className="mb-5 font-serif text-3xl font-semibold leading-relaxed">{item.title}</h1>
-          <p className="mb-8 border-b pb-6 leading-relaxed text-muted-foreground">{item.summary}</p>
-          <DailyContent item={item} />
+          <ContentReader kind="daily" id={item.id} />
         </>
       ) : (
         <h1 className="font-serif text-2xl">未找到这个通识词条</h1>

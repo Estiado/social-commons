@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import HomePage from '@/pages/HomePage/HomePage';
 
@@ -14,10 +14,9 @@ const EssayPage = lazy(() => import('@/pages/EssayPage/EssayPage'));
 const EditorMaterialsPage = lazy(() => import('@/pages/EditorMaterialsPage/EditorMaterialsPage'));
 const GuanlanPage = lazy(() => import('@/pages/GuanlanPage/GuanlanPage'));
 const ArticleDetailPage = lazy(() => import('@/pages/ArticleDetailPage/ArticleDetailPage'));
-const PresetArticleDetailPage = lazy(() => import('@/pages/PresetArticleDetailPage/PresetArticleDetailPage'));
-const ParagraphsPage = lazy(() => import('@/pages/ParagraphsPage/ParagraphsPage'));
-const CollectionsPage = lazy(() => import('@/pages/CollectionsPage/CollectionsPage'));
-const CollectionDetailPage = lazy(() => import('@/pages/CollectionDetailPage/CollectionDetailPage'));
+const PresetArticleDetailPage = lazy(
+  () => import('@/pages/PresetArticleDetailPage/PresetArticleDetailPage'),
+);
 const TopicsPage = lazy(() => import('@/pages/TopicsPage/TopicsPage'));
 const TopicDetailPage = lazy(() => import('@/pages/TopicDetailPage/TopicDetailPage'));
 const AdminArticlesPage = lazy(() => import('@/pages/AdminArticlesPage/AdminArticlesPage'));
@@ -45,9 +44,9 @@ export default function App() {
         <Route path="reading" element={<ReadingLibraryPage />} />
         <Route path="reading/import" element={<ArticleImportPage />} />
         <Route path="reading/:id" element={<ReadingArticlePage />} />
-        <Route path="paragraphs" element={<ParagraphsPage />} />
-        <Route path="collections" element={<CollectionsPage />} />
-        <Route path="collections/:id" element={<CollectionDetailPage />} />
+        <Route path="paragraphs" element={<Navigate to="/reading?tab=excerpts" replace />} />
+        <Route path="collections" element={<Navigate to="/reading?tab=collections" replace />} />
+        <Route path="collections/:id" element={<Navigate to="/reading?tab=legacy" replace />} />
         <Route path="topics" element={<TopicsPage />} />
         <Route path="topics/:id" element={<TopicDetailPage />} />
         <Route path="admin/articles" element={<AdminArticlesPage />} />

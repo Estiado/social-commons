@@ -1,19 +1,24 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import { ReadingOrganiser } from '@/features/reading/ReadingOrganiser';
 import { BookOpen, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAccount } from '@/features/auth/useAccount';
 import { EmailLoginDialog } from '@/features/auth/EmailLoginDialog';
-import { listGuestArticles } from '@/features/articles/guestRepository';
-import { listCloudArticles } from '@/features/articles/cloudRepository';
-import type { ReadingSummary } from '@/features/articles/model';
+import { listGuestArticles } from '@/features/reading/guestRepository';
+import { listCloudArticles } from '@/features/reading/cloudRepository';
+import type { ReadingSummary } from '@/features/reading/model';
 import { supabase } from '@/lib/supabase';
-import { errorMessage } from '@/lib/database';
-import { BatchExportControls } from '@/features/articles/BatchExportControls';
-import { READING_CLOUD_ENABLED } from '@/features/articles/config';
+import { errorMessage } from '@/lib/errors';
+import { BatchExportControls } from '@/features/reading/BatchExportControls';
+import { READING_CLOUD_ENABLED } from '@/features/reading/config';
 
 export default function ReadingLibraryPage() {
+  const [params] = useSearchParams();
+  const tab = ['excerpts', 'collections', 'legacy'].includes(params.get('tab') || '')
+    ? params.get('tab')!
+    : 'articles';
   const { account, loading: authLoading } = useAccount();
   const [guest, setGuest] = useState<ReadingSummary[]>([]);
   const [cloud, setCloud] = useState<ReadingSummary[]>([]);
@@ -72,7 +77,7 @@ export default function ReadingLibraryPage() {
       <p className="text-sm leading-relaxed text-muted-foreground">
         文章导入后临时保留 7
         天。点击“保存到本机”或收藏即可在本浏览器长期保留，无需登录；清理浏览器数据前请先备份导出。
-        {!READING_CLOUD_ENABLED && '当前为本机内测，邮箱登录与跨设备同步暂未开放。'}
+        {!READING_CLOUD_ENABLED && '直接在网页使用即可；邮箱登录与跨设备同步将于后续开放。'}
       </p>
       <div className="my-6 flex flex-wrap items-center gap-3 text-sm">
         {READING_CLOUD_ENABLED &&
@@ -95,60 +100,82 @@ export default function ReadingLibraryPage() {
               邮箱验证码登录
             </Button>
           ))}
-        <Link className="text-accent underline" to="/paragraphs">
-          段落库与素材整理
-        </Link>
+        <nav aria-label="阅读空间栏目" className="flex flex-wrap gap-3">
+          {[
+            ['articles', '文章'],
+            ['excerpts', '摘录'],
+            ['collections', '素材包'],
+            ['legacy', '旧资料导入'],
+          ].map(([key, label]) => (
+            <Link
+              key={key}
+              to={key === 'articles' ? '/reading' : `/reading?tab=${key}`}
+              aria-current={tab === key ? 'page' : undefined}
+              className={`rounded-sm border px-4 py-2 ${tab === key ? 'border-accent text-accent' : 'text-muted-foreground'}`}
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
       </div>
       {error && (
         <p role="alert" className="mb-5 rounded-sm border border-amber-300 p-4 text-sm">
           {error}
         </p>
       )}
-      <BatchExportControls ownerId={READING_CLOUD_ENABLED ? account?.id : undefined} />
-      <Input
-        aria-label="搜索我的文章"
-        placeholder="搜索标题、来源…"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-      />
-      {loading ? (
-        <p role="status" className="py-12">
-          正在读取文章…
-        </p>
-      ) : !articles.length ? (
-        <div className="my-10 rounded-sm border border-dashed p-10 text-center">
-          <BookOpen className="mx-auto mb-3 text-accent" />
-          <p>还没有文章，先导入一篇开始阅读。</p>
-        </div>
+      {tab === 'articles' ? (
+        <>
+          <BatchExportControls ownerId={READING_CLOUD_ENABLED ? account?.id : undefined} />
+          <Input
+            aria-label="搜索我的文章"
+            placeholder="搜索标题、来源…"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+          {loading ? (
+            <p role="status" className="py-12">
+              正在读取文章…
+            </p>
+          ) : !articles.length ? (
+            <div className="my-10 rounded-sm border border-dashed p-10 text-center">
+              <BookOpen className="mx-auto mb-3 text-accent" />
+              <p>还没有文章，先导入一篇开始阅读。</p>
+            </div>
+          ) : (
+            <div className="mt-6 space-y-4">
+              {articles.map((item) => (
+                <Link
+                  to={`/reading/${item.id}`}
+                  key={item.id}
+                  className="block rounded-sm border p-5 hover:border-accent/50"
+                >
+                  <p className="mb-2 text-xs text-accent">
+                    {item.storage === 'cloud'
+                      ? '已云端保存'
+                      : item.expiresAt
+                        ? '临时文章'
+                        : '本机长期保存'}{' '}
+                    · {item.annotationCount} 条摘录
+                  </p>
+                  <h2 className="font-serif text-lg font-semibold">{item.title}</h2>
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    {item.source || '来源待核对'}
+                    {item.expiresAt
+                      ? ` · 保留至 ${new Date(item.expiresAt).toLocaleDateString('zh-CN')}`
+                      : ''}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          )}
+          {cloud.length === 100 && (
+            <p className="mt-4 text-xs text-muted-foreground">
+              当前展示最近更新的 100 篇云端文章。
+            </p>
+          )}
+        </>
       ) : (
-        <div className="mt-6 space-y-4">
-          {articles.map((item) => (
-            <Link
-              to={`/reading/${item.id}`}
-              key={item.id}
-              className="block rounded-sm border p-5 hover:border-accent/50"
-            >
-              <p className="mb-2 text-xs text-accent">
-                {item.storage === 'cloud'
-                  ? '已云端保存'
-                  : item.expiresAt
-                    ? '临时文章'
-                    : '本机长期保存'}{' '}
-                · {item.annotationCount} 条摘录
-              </p>
-              <h2 className="font-serif text-lg font-semibold">{item.title}</h2>
-              <p className="mt-3 text-sm text-muted-foreground">
-                {item.source || '来源待核对'}
-                {item.expiresAt
-                  ? ` · 保留至 ${new Date(item.expiresAt).toLocaleDateString('zh-CN')}`
-                  : ''}
-              </p>
-            </Link>
-          ))}
-        </div>
-      )}
-      {cloud.length === 100 && (
-        <p className="mt-4 text-xs text-muted-foreground">当前展示最近更新的 100 篇云端文章。</p>
+        <ReadingOrganiser mode={tab as 'excerpts' | 'collections' | 'legacy'} />
       )}
       <EmailLoginDialog
         open={loginOpen}
