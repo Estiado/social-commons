@@ -9,7 +9,9 @@
 - 用户微信链接的真实本机 API 请求返回来源 HTTP 403，未生成正文；截图里的“环境异常／去验证”响应另用固定回归样本验证，返回 422 / SOURCE_VERIFICATION_REQUIRED。不得把模拟挑战页测试说成已读取该文全文。
 - 浏览器 Word 下载验收触发连接中断，未取得可核查的实际下载文件；生成器和 OOXML 已验证，真实下载文件及桌面 Word/PDF 视觉效果继续单独核验。浏览器工具不允许访问内部下载管理页，未绕过该限制。
 - 精选由 13 扩为 40 篇，27 条增补分别核对媒体原文的标题、日期和可见署名；未署名留空。7—10 月目录、主题关联、媒体和月份筛选均来自版本化数据；生产数据库种子本轮未执行，独立测试数据库执行了新种子并验证数量和权限。
-- GitHub 发布与 Cloudflare 的本轮确认在提交同步后补记，不把以上本地检查替代线上验收。
+- 功能提交 `c79822142440af1dfe64f4a07c21b982e4231fb6` 经 [PR #2](https://github.com/Estiado/social-commons/pull/2) 合并为 `2aea4d60534bd07eaff5b500f2f1b1267f63b0df`，已 fetch 核对并快进本机 main。PR 检查成功；[主分支 CI](https://github.com/Estiado/social-commons/actions/runs/39774770431) 成功，Cloudflare 对该合并提交显示 Deploy successful，部署 `455374d0`。
+- 正式站实际打开 `/guanlan`：显示 40 篇、13 个主题；选择南方周末后只显示该媒体的 2 篇。进入 `/reading`、新建文稿、输入标题与正文、加粗均正常。实际下载文件仍按前述边界保留待核验，不宣称所有来源全文可提取。
+- 仓库简介已改为统一选材与在线编辑说明；GitHub 官方 API 确认仓库仍为 public、主页仍指向 Cloudflare。未邀请协作者或扩大权限。Code Review 连接器提示需要连接 GitHub，未获得独立审查结果；检查结论来自 GitHub 自身 CI、Cloudflare 状态及本地验收。
 
 ## 阅读统一与仓库整理 · 2026-10-22
 
