@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isBlockedDocument, SourceVerificationError } from './sourceAccess.ts';
 
 export const GUEST_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
 export const MAX_ARTICLE_CHARACTERS = 160_000;
@@ -10,6 +11,26 @@ const textBlockSchema = z.object({
   type: z.enum(['paragraph', 'heading', 'quote', 'list-item']),
   text: z.string().min(1).max(30_000),
   level: z.number().int().min(1).max(4).optional(),
+  alignment: z.enum(['left', 'center', 'right', 'justify']).optional(),
+  listOrder: z.number().int().min(1).max(9999).optional(),
+  spans: z
+    .array(
+      z.object({
+        start: z.number().int().min(0),
+        end: z.number().int().min(1),
+        bold: z.boolean().optional(),
+        italic: z.boolean().optional(),
+        underline: z.boolean().optional(),
+        strike: z.boolean().optional(),
+        href: z
+          .url()
+          .max(2048)
+          .refine((url) => /^https?:\/\//i.test(url))
+          .optional(),
+      }),
+    )
+    .max(10_000)
+    .optional(),
 });
 const imageBlockSchema = z.object({
   id: z.string().max(80),
@@ -47,6 +68,15 @@ export const articleSchema = z
     const ids = new Set(article.blocks.map((block) => block.id));
     if (ids.size !== article.blocks.length)
       context.addIssue({ code: 'custom', message: '正文块编号重复' });
+    for (const block of article.blocks) {
+      if (!('text' in block)) continue;
+      let end = 0;
+      for (const span of block.spans || []) {
+        if (span.start < end || span.end <= span.start || span.end > block.text.length)
+          context.addIssue({ code: 'custom', message: '文字格式范围无效' });
+        end = span.end;
+      }
+    }
     if (
       article.blocks.reduce((sum, block) => sum + ('text' in block ? block.text.length : 0), 0) >
       MAX_ARTICLE_CHARACTERS
@@ -70,6 +100,7 @@ export function isPartialArticle(article: ArticleDocument): boolean {
 }
 
 export function prepareArticleExport(article: ArticleDocument): ArticleDocument {
+  if (isBlockedDocument(article)) throw new SourceVerificationError();
   if (!isPartialArticle(article)) return article;
   return {
     ...article,
@@ -96,6 +127,8 @@ export interface ReadingRecord {
   revision: number;
   /** Separate browser concurrency check; cloud revision retains its meaning. */
   localRevision?: number;
+  /** Personal associations stay in this browser, never in the public catalogue. */
+  topicIds?: string[];
 }
 export interface ReadingSummary {
   id: string;
@@ -104,6 +137,7 @@ export interface ReadingSummary {
   importedAt: string;
   annotationCount: number;
   expiresAt: number | null;
+  topicIds?: string[];
 }
 
 export function summarize(record: ReadingRecord): ReadingSummary {
@@ -115,6 +149,7 @@ export function summarize(record: ReadingRecord): ReadingSummary {
     importedAt,
     annotationCount: record.annotations.length,
     expiresAt: record.expiresAt,
+    topicIds: record.topicIds || [],
   };
 }
 

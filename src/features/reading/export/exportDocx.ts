@@ -10,6 +10,7 @@ import {
 } from 'docx';
 import type { ArticleDocument } from '../model';
 import { loadExportImage } from './assets';
+import { styledRuns } from '../writing/model';
 
 export async function buildArticleDocx(
   article: ArticleDocument,
@@ -79,7 +80,35 @@ export async function buildArticleDocx(
     }
     children.push(
       new Paragraph({
-        text: block.type === 'list-item' ? `• ${block.text}` : block.text,
+        children: [
+          ...(block.type === 'list-item'
+            ? [new TextRun(block.listOrder ? `${block.listOrder}. ` : '• ')]
+            : []),
+          ...styledRuns(block).flatMap((run) =>
+            run.text.split('\n').map((text, index) => {
+              const value = new TextRun({
+                text,
+                break: index ? 1 : undefined,
+                bold: run.bold,
+                italics: run.italic,
+                underline: run.underline ? {} : undefined,
+                strike: run.strike,
+                style: run.href ? 'Hyperlink' : undefined,
+              });
+              return run.href
+                ? new ExternalHyperlink({ link: run.href, children: [value] })
+                : value;
+            }),
+          ),
+        ],
+        alignment:
+          block.alignment === 'center'
+            ? AlignmentType.CENTER
+            : block.alignment === 'right'
+              ? AlignmentType.RIGHT
+              : block.alignment === 'justify'
+                ? AlignmentType.JUSTIFIED
+                : AlignmentType.LEFT,
         heading:
           block.type === 'heading'
             ? [

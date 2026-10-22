@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import HomePage from '@/pages/HomePage/HomePage';
 
@@ -17,13 +17,17 @@ const ArticleDetailPage = lazy(() => import('@/pages/ArticleDetailPage/ArticleDe
 const PresetArticleDetailPage = lazy(
   () => import('@/pages/PresetArticleDetailPage/PresetArticleDetailPage'),
 );
-const TopicsPage = lazy(() => import('@/pages/TopicsPage/TopicsPage'));
 const TopicDetailPage = lazy(() => import('@/pages/TopicDetailPage/TopicDetailPage'));
 const AdminArticlesPage = lazy(() => import('@/pages/AdminArticlesPage/AdminArticlesPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage/NotFoundPage'));
 const ArticleImportPage = lazy(() => import('@/pages/ArticleImportPage/ArticleImportPage'));
 const ReadingLibraryPage = lazy(() => import('@/pages/ReadingLibraryPage/ReadingLibraryPage'));
 const ReadingArticlePage = lazy(() => import('@/pages/ReadingArticlePage/ReadingArticlePage'));
+const WritingPage = lazy(() => import('@/pages/WritingPage/WritingPage'));
+function LegacyTopicRoute() {
+  const { id } = useParams();
+  return <Navigate to={'/guanlan/topics/' + encodeURIComponent(id || 'other')} replace />;
+}
 
 export default function App() {
   return (
@@ -39,16 +43,18 @@ export default function App() {
         <Route path="essay" element={<EssayPage />} />
         <Route path="editor/materials" element={<EditorMaterialsPage />} />
         <Route path="guanlan" element={<GuanlanPage />} />
+        <Route path="guanlan/topics/:id" element={<TopicDetailPage />} />
         <Route path="guanlan/preset/:id" element={<PresetArticleDetailPage />} />
         <Route path="guanlan/:id" element={<ArticleDetailPage />} />
         <Route path="reading" element={<ReadingLibraryPage />} />
         <Route path="reading/import" element={<ArticleImportPage />} />
+        <Route path="reading/write/:id" element={<WritingPage />} />
         <Route path="reading/:id" element={<ReadingArticlePage />} />
         <Route path="paragraphs" element={<Navigate to="/reading?tab=excerpts" replace />} />
         <Route path="collections" element={<Navigate to="/reading?tab=collections" replace />} />
         <Route path="collections/:id" element={<Navigate to="/reading?tab=legacy" replace />} />
-        <Route path="topics" element={<TopicsPage />} />
-        <Route path="topics/:id" element={<TopicDetailPage />} />
+        <Route path="topics" element={<Navigate to="/guanlan" replace />} />
+        <Route path="topics/:id" element={<LegacyTopicRoute />} />
         <Route path="admin/articles" element={<AdminArticlesPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

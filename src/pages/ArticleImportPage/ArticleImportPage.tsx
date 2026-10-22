@@ -10,7 +10,9 @@ import {
   isPartialArticle,
   type ArticleDocument,
 } from '@/features/reading/model';
-import { saveGuestArticle } from '@/features/reading/guestRepository';
+import { saveGuestArticle, linkArticleToTopic } from '@/features/reading/guestRepository';
+import { TOPIC_SPECIALS } from '@/data/topicSpecials';
+import { isBlockedDocument, SourceVerificationError } from '@/features/reading/sourceAccess';
 import { ArticleContent } from '@/features/reading/ArticleContent';
 import { errorMessage } from '@/lib/errors';
 import { getCloudArticle, saveCloudArticle } from '@/features/reading/cloudRepository';
@@ -18,6 +20,7 @@ import { getCloudArticle, saveCloudArticle } from '@/features/reading/cloudRepos
 export default function ArticleImportPage() {
   const [parameters] = useSearchParams();
   const navigate = useNavigate();
+  const topic = TOPIC_SPECIALS.find((item) => item.id === parameters.get('topic'));
   const [mode, setMode] = useState<'url' | 'paste'>(
     parameters.get('mode') === 'paste' ? 'paste' : 'url',
   );
@@ -53,7 +56,9 @@ export default function ArticleImportPage() {
         const result = await response.json();
         if (!response.ok || !result.success)
           throw new Error(result.error || '提取失败，请粘贴正文导入');
-        setArticle(articleSchema.parse(result.article));
+        const parsed = articleSchema.parse(result.article);
+        if (isBlockedDocument(parsed)) throw new SourceVerificationError();
+        setArticle(parsed);
       }
     } catch (error) {
       setError(errorMessage(error, '导入失败，请检查输入内容'));
@@ -66,6 +71,7 @@ export default function ArticleImportPage() {
     setBusy(true);
     setError('');
     try {
+      if (isBlockedDocument(article)) throw new SourceVerificationError();
       const replaceId = parameters.get('replace');
       if (replaceId) {
         if (!complete) throw new Error('替换节选前，请先勾选已对照原文确认完整');
@@ -95,7 +101,10 @@ export default function ArticleImportPage() {
           completeness: complete ? 'user-confirmed' : article.completeness,
         }),
       );
-      navigate(`/reading/${record.document.id}`);
+      if (topic) {
+        await linkArticleToTopic(record.document.id, topic.id, topic.relatedTags);
+        navigate(`/guanlan/topics/${topic.id}#my-commentaries`);
+      } else navigate(`/reading/${record.document.id}`);
     } catch (error) {
       setError(errorMessage(error, '浏览器未能保存文章，请检查存储空间或退出无痕模式后重试'));
     } finally {
@@ -105,13 +114,18 @@ export default function ArticleImportPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <Link
-        to="/guanlan"
+        to={topic ? `/guanlan/topics/${topic.id}` : '/guanlan'}
         className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground"
       >
         <ArrowLeft size={16} />
-        返回观澜
+        {topic ? `返回${topic.name}` : '返回观澜'}
       </Link>
       <h1 className="font-serif text-3xl font-semibold">把文章带进阅读空间</h1>
+      {topic && (
+        <p className="mt-4 rounded-sm border border-accent/30 p-4 text-sm">
+          正在添加到“{topic.name}”。保存后返回本专题，文章仅在你的浏览器可见。
+        </p>
+      )}
       <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
         粘贴原文链接，整理成适合阅读和备课的格式。免登录阅读与导出，临时保留 7
         天；点击“保存到本机”或收藏可在当前浏览器长期保留。
@@ -190,9 +204,23 @@ export default function ArticleImportPage() {
         )}
       </form>
       {error && (
-        <p role="alert" className="mt-4 rounded-sm border border-red-200 p-4 text-sm text-red-700">
-          {error}
-        </p>
+        <div
+          role="alert"
+          className="mt-4 space-y-3 rounded-sm border border-red-200 p-4 text-sm text-red-700"
+        >
+          <p>{error}</p>
+          {mode === 'url' && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                setMode('paste');
+                setArticle(null);
+              }}
+            >
+              切换到粘贴正文
+            </Button>
+          )}
+        </div>
       )}
       {article && (
         <section className="mt-9" aria-label="文章预览">
@@ -249,7 +277,7 @@ export default function ArticleImportPage() {
                   粘贴完整正文
                 </Button>
                 <Button variant="outline" disabled={busy} onClick={() => void beginReading()}>
-                  仅保存可见节选
+                  {topic ? '保存节选并回到专题' : '仅保存可见节选'}
                 </Button>
               </div>
             </div>
@@ -264,7 +292,7 @@ export default function ArticleImportPage() {
                 我已对照原文，确认正文完整（可选）
               </label>
               <Button onClick={() => void beginReading()} disabled={busy || !article.title.trim()}>
-                确认并开始阅读
+                {topic ? '保存并回到专题' : '确认并开始阅读'}
               </Button>
             </div>
           )}

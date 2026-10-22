@@ -1,5 +1,6 @@
 import { load, type Cheerio } from 'cheerio/slim';
 import type { AnyNode, Element } from 'domhandler';
+import { isVerificationPage, SourceVerificationError } from './sourceAccess.ts';
 import {
   articleSchema,
   canonicalArticleUrl,
@@ -79,6 +80,10 @@ export function parseArticleHtml(html: string, url = '', now = new Date()): Arti
     $('h1').first().text().trim() ||
     $('title').text().trim() ||
     '粘贴导入的文章';
+  const challengeForm = $('#challenge-form,#js_verify,.verify_area,[id^="cf-chl-"]').length > 0;
+  const visible = $.root().clone();
+  visible.find('script,style,noscript').remove();
+  if (isVerificationPage(title, visible.text(), challengeForm)) throw new SourceVerificationError();
   let author =
     meta('meta[name="author"]') ||
     meta('meta[property="article:author"]') ||

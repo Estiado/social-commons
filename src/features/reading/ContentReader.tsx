@@ -148,7 +148,7 @@ export function ContentReader({
         </Button>
       </div>
       <p className="text-xs text-muted-foreground">
-        悬停段落可收藏，选中文字可保存划线；自动进入阅读空间的“摘录”，无需登录。
+        悬停段落可收藏，选中文字可保存划线；自动进入阅读空间，无需登录。
       </p>
       {kind === 'public-article' && record && (
         <h2 className="font-serif text-3xl font-semibold">{record.document.title}</h2>

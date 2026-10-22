@@ -1,5 +1,7 @@
 import { openDB, type DBSchema, type IDBPTransaction } from 'idb';
 import { readingExcerpts, type ReadingExcerpt } from './excerpts.ts';
+import type { WritingDraft, DraftSummary } from './writing/model.ts';
+import { isBlockedDocument, SourceVerificationError } from './sourceAccess.ts';
 import {
   articleSchema,
   GUEST_RETENTION_MS,
@@ -15,6 +17,8 @@ interface ReadingDatabase extends DBSchema {
   documents: { key: string; value: ReadingRecord; indexes: { 'by-url': string } };
   summaries: { key: string; value: ReadingSummary; indexes: { 'by-expiry': number } };
   excerpts: { key: string; value: ReadingExcerpt; indexes: { 'by-document': string } };
+  drafts: { key: string; value: WritingDraft; indexes: { 'by-origin': string } };
+  draftSummaries: { key: string; value: DraftSummary };
 }
 const stores = ['documents', 'summaries', 'excerpts'] as const;
 type ReadingTransaction = IDBPTransaction<ReadingDatabase, typeof stores, 'readwrite'>;
@@ -27,8 +31,8 @@ async function replaceExcerpts(
   for (const key of await excerpts.index('by-document').getAllKeys(id)) await excerpts.delete(key);
   if (record) for (const excerpt of readingExcerpts(record)) await excerpts.put(excerpt);
 }
-const openReadingDatabase = () =>
-  openDB<ReadingDatabase>('social-commons-reading', 2, {
+export const openReadingDatabase = () =>
+  openDB<ReadingDatabase>('social-commons-reading', 3, {
     upgrade(database, oldVersion, _newVersion, transaction) {
       if (oldVersion < 1) {
         database
@@ -51,8 +55,40 @@ const openReadingDatabase = () =>
           }
         })().catch(() => transaction.abort());
       }
+      if (oldVersion < 3) {
+        database
+          .createObjectStore('drafts', { keyPath: 'document.id' })
+          .createIndex('by-origin', 'originKey', { unique: true });
+        database.createObjectStore('draftSummaries', { keyPath: 'id' });
+      }
     },
   });
+
+export async function linkArticleToTopic(id: string, topicId: string, tags: string[]) {
+  const database = await openReadingDatabase();
+  try {
+    const transaction = database.transaction(stores, 'readwrite');
+    const current = await transaction.objectStore('documents').get(id);
+    if (!current || isExpired(current)) throw new Error('文章已到期或移除，请重新导入');
+    const record: ReadingRecord = {
+      ...current,
+      expiresAt: null,
+      topicIds: [...new Set([...(current.topicIds || []), topicId])],
+      document: articleSchema.parse({
+        ...current.document,
+        tags: [...new Set([...current.document.tags, ...tags])].slice(0, 20),
+      }),
+      localRevision: (current.localRevision || 0) + 1,
+    };
+    await transaction.objectStore('documents').put(record);
+    await transaction.objectStore('summaries').put(summarize(record));
+    await replaceExcerpts(transaction, id, record);
+    await transaction.done;
+    return record;
+  } finally {
+    database.close();
+  }
+}
 
 async function removeExpired(now = Date.now()) {
   const database = await openReadingDatabase();
@@ -101,6 +137,7 @@ export async function getGuestArticle(id: string): Promise<ReadingRecord | undef
 
 export async function saveGuestArticle(document: ArticleDocument): Promise<ReadingRecord> {
   articleSchema.parse(document);
+  if (isBlockedDocument(document)) throw new SourceVerificationError();
   await removeExpired();
   const database = await openReadingDatabase();
   try {
@@ -110,7 +147,10 @@ export async function saveGuestArticle(document: ArticleDocument): Promise<Readi
     if (document.url) {
       const existing = await transaction.objectStore('documents').index('by-url').get(document.url);
       if (existing) {
-        if (isPartialArticle(existing.document) && document.completeness === 'user-confirmed') {
+        if (
+          (isPartialArticle(existing.document) && document.completeness === 'user-confirmed') ||
+          isBlockedDocument(existing.document)
+        ) {
           const completed = {
             ...existing,
             document: { ...document, id: existing.document.id },

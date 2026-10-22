@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
 import { parsePlainArticle } from '../src/features/reading/parseArticle.ts';
+import { CURATED_COMMENTARIES } from '../src/data/curatedCommentaries.ts';
 
 test('在独立 PostgreSQL 测试运行时执行迁移，验证两个账号、匿名账号和未登录角色的隔离', async () => {
   const database = new PGlite();
@@ -54,7 +55,7 @@ test('在独立 PostgreSQL 测试运行时执行迁移，验证两个账号、�
     await assert.rejects(database.query("insert into public.essay_examples(id,concept_id,title,content,source) values ('anonymous','e1','匿名','正文','来源')"));
     await database.exec('reset role; set role anon;');
     assert.equal((await database.query('select * from public.essay_examples')).rows.length, 3);
-    assert.equal((await database.query('select * from public.reading_catalogue')).rows.length, 13);
+    assert.equal((await database.query('select * from public.reading_catalogue')).rows.length, CURATED_COMMENTARIES.length);
     await assert.rejects(database.query("delete from public.essay_examples where id='editor-test'"));
   } finally { await database.close(); }
 });

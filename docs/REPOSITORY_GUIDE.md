@@ -19,7 +19,7 @@
                                                 │
                               ContentReader / ArticleContent
                                                 │
-                         本浏览器文章 + 摘录索引 + 素材包
+                         本浏览器文章 + 摘录索引 + 独立文稿
                                                 │
                               阅读空间 / Word / PDF / ZIP
 ```
@@ -37,8 +37,12 @@
 | `ArticleContent.tsx` | 共用正文排版、文字选区和高亮，不访问数据库 |
 | `guestRepository.ts` | 本浏览器文档、摘要与摘录索引；版本冲突和七天过期处理 |
 | `excerpts.ts` | 摘录清单及出处，不复制整篇正文 |
-| `collections.ts` | 素材包校验、去重、迁移合并和导出模型 |
-| `ReadingOrganiser.tsx` | 摘录选取、主题包、备注和排序界面 |
+| `collections.ts` | 旧素材包数据合同，保留迁移与备份兼容 |
+| `writing/` | 文稿模型、版本存储、所选内容编排、编辑器与格式转换 |
+| `writing/editorDocument.ts` | 编辑器 JSON 与统一文章块之间转换，不保存来源 HTML |
+| `writing/legacyDrafts.ts` | 把旧包与备注转成独立文稿，重复迁移不覆盖编辑结果 |
+| `TopicReading.tsx`、`CommentaryCatalogue.tsx` | 私人专题关联与公开媒体目录，全文仍属于导入者 |
+| `sourceAccess.ts` | 识别验证拦截页，阻止当成文章保存、编排或导出 |
 | `legacyImport.ts` | 只读迁移旧段落、划线、素材包；保留原件与本机修改 |
 | `cloudRepository.ts` | 后续正式账号私有文档保存，目前默认关闭 |
 | `export/` | Word、PDF、图片、压缩包；按需加载与分卷 |
@@ -69,3 +73,5 @@
 读 `HANDOFF.md` → 按本导览找模块 → 小范围修改 → 必要的回归用例 → `npm run check` → PR 检查与真实页面验收 → 合并 main → 核对 Cloudflare 发布。
 
 旧功能代码可以从 Git 历史找回；用户的数据库和浏览器存储不通过删除代码进行清理。
+
+本轮不再维护独立的专题目录页、旧观澜列表、摘录/素材包管理器和首页公共文章查询。观澜与首页共用版本化精选目录；阅读空间通过摘要与摘录索引列出内容，只加载选中的正文来编稿。编辑器、Word/PDF 依赖按页面或操作加载。具体协作权限见 [同学协作说明](CLASSMATE_COLLABORATION.md)。

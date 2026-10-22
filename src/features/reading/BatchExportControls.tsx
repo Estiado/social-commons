@@ -34,10 +34,10 @@ export function BatchExportControls({ ownerId }: { ownerId?: string }) {
     }
   };
   return (
-    <section aria-label="导出全部阅读文章" className="my-6 space-y-3 rounded-sm border p-5">
-      <h2 className="font-serif text-lg font-semibold">导出全部文章</h2>
+    <section aria-label="完整备份" className="my-6 space-y-3 rounded-sm border p-5">
+      <h2 className="font-serif text-lg font-semibold">备份整个阅读空间</h2>
       <p className="text-xs leading-relaxed text-muted-foreground">
-        包含本浏览器的临时文章和长期保存文章
+        包含文章、划线、段落和文稿的原始结构
         {ownerId
           ? '，以及本账号全部云端文章（含列表之外的文章）'
           : READING_CLOUD_ENABLED
@@ -47,14 +47,8 @@ export function BatchExportControls({ ownerId }: { ownerId?: string }) {
         自动分卷；请允许本站下载多个文件。每卷附文章结构、摘录和导出清单，缺图或失败会如实标注。
       </p>
       <div className="flex flex-wrap gap-3">
-        <Button size="sm" disabled={busy} onClick={() => void start('docx')}>
-          全部 Word · ZIP
-        </Button>
-        <Button size="sm" variant="outline" disabled={busy} onClick={() => void start('pdf')}>
-          全部 PDF · ZIP
-        </Button>
         <Button size="sm" variant="outline" disabled={busy} onClick={() => void start('json')}>
-          全部原始数据 · ZIP
+          下载完整备份 ZIP
         </Button>
         {busy && (
           <Button size="sm" variant="ghost" onClick={() => controller.current?.abort()}>

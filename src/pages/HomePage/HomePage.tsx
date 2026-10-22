@@ -1,58 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Calendar, Landmark, Feather, BookOpen, ChevronRight, Newspaper, Tag } from 'lucide-react';
+import {
+  ArrowRight,
+  Calendar,
+  Landmark,
+  Feather,
+  BookOpen,
+  ChevronRight,
+  Newspaper,
+  Tag,
+} from 'lucide-react';
 import { getTodayKnowledge } from '@/data/daily';
 import { EVENTS } from '@/data/events';
 import { QUOTES } from '@/data/quotes';
-import { TOPICS } from '@/data/topics';
+import { TOPIC_SPECIALS } from '@/data/topicSpecials';
+import { CURATED_COMMENTARIES } from '@/data/curatedCommentaries';
 import type { IQuote } from '@/data/types';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-
-interface LatestArticle {
-  id: string;
-  title: string;
-  source: string | null;
-  excerpt: string | null;
-  tags: string[];
-  created_at: string;
-}
+const latestArticles = [...CURATED_COMMENTARIES]
+  .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+  .slice(0, 4);
 
 export default function HomePage() {
   const todayKnowledge = getTodayKnowledge();
   const [heroQuote] = useState<IQuote>(() => {
     const dayOfYear = Math.floor(
-      (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+      (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000,
     );
     return QUOTES[dayOfYear % QUOTES.length];
   });
-  const [latestArticles, setLatestArticles] = useState<LatestArticle[]>([]);
-  const [articlesLoading, setArticlesLoading] = useState(Boolean(supabase));
-
-  // 获取最新观澜文章
-  useEffect(() => {
-    if (!supabase || !isSupabaseConfigured) {
-      return;
-    }
-    const fetchLatest = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('articles')
-          .select('id, title, source, excerpt, tags, created_at')
-          .eq('is_public', true)
-          .order('created_at', { ascending: false })
-          .limit(4);
-        if (!error && data) {
-          setLatestArticles(data);
-        }
-      } catch (err) {
-        console.error('获取最新文章失败:', err);
-      } finally {
-        setArticlesLoading(false);
-      }
-    };
-    fetchLatest();
-  }, []);
-
   return (
     <div>
       {/* Hero 区 - 撷英 */}
@@ -69,7 +44,8 @@ export default function HomePage() {
             <div className="flex items-center gap-2 mb-8">
               <Feather className="h-4 w-4 text-accent" />
               <span className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
-                今日一句 · {new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
+                今日一句 ·{' '}
+                {new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
               </span>
             </div>
             <blockquote className="font-serif text-3xl md:text-5xl font-medium leading-relaxed text-foreground mb-8">
@@ -99,7 +75,9 @@ export default function HomePage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Today · 日新</span>
+              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                Today · 日新
+              </span>
             </div>
             <h2 className="font-serif text-2xl md:text-3xl font-semibold">今日日新</h2>
           </div>
@@ -134,7 +112,9 @@ export default function HomePage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Newspaper className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Latest · 观澜</span>
+              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                Latest · 观澜
+              </span>
             </div>
             <h2 className="font-serif text-2xl md:text-3xl font-semibold">最新时评</h2>
           </div>
@@ -146,61 +126,50 @@ export default function HomePage() {
           </Link>
         </div>
 
-        {articlesLoading ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <p className="text-sm">加载中...</p>
-          </div>
-        ) : latestArticles.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground border border-dashed border-border/60 rounded-sm">
-            <Newspaper className="h-10 w-10 mx-auto mb-3 opacity-30" />
-            <p className="text-sm mb-2">还没有时评文章</p>
-            <Link to="/guanlan" className="text-sm text-accent hover:underline">
-              去观澜提交第一篇 →
-            </Link>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-4">
-            {latestArticles.map((article) => (
-              <Link
-                key={article.id}
-                to={`/guanlan/${article.id}`}
-                className="group block border border-border/60 bg-card p-6 rounded-sm hover:border-accent/30 hover:shadow-md transition-all duration-300"
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  {article.source && (
-                    <span className="text-xs px-2 py-0.5 bg-accent/10 text-accent rounded-sm">
-                      {article.source}
-                    </span>
-                  )}
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(article.created_at).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+        <div className="grid md:grid-cols-2 gap-4">
+          {latestArticles.map((article) => (
+            <Link
+              key={article.id}
+              to={'/reading/import?' + new URLSearchParams({ url: article.url })}
+              className="group block border border-border/60 bg-card p-6 rounded-sm hover:border-accent/30 hover:shadow-md transition-all duration-300"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                {article.source && (
+                  <span className="text-xs px-2 py-0.5 bg-accent/10 text-accent rounded-sm">
+                    {article.source}
                   </span>
+                )}
+                <span className="text-xs text-muted-foreground">
+                  {new Date(article.publishedAt).toLocaleDateString('zh-CN', {
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </span>
+              </div>
+              <h3 className="font-serif text-lg font-semibold mb-2 group-hover:text-accent transition-colors line-clamp-2">
+                {article.title}
+              </h3>
+              {article.recommendation && (
+                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-3">
+                  {article.recommendation}
+                </p>
+              )}
+              {article.writingTags && article.writingTags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {article.writingTags.slice(0, 3).map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-muted/60 text-muted-foreground rounded-sm"
+                    >
+                      <Tag className="h-2.5 w-2.5" />
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-                <h3 className="font-serif text-lg font-semibold mb-2 group-hover:text-accent transition-colors line-clamp-2">
-                  {article.title}
-                </h3>
-                {article.excerpt && (
-                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-3">
-                    {article.excerpt}
-                  </p>
-                )}
-                {article.tags && article.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {article.tags.slice(0, 3).map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-muted/60 text-muted-foreground rounded-sm"
-                      >
-                        <Tag className="h-2.5 w-2.5" />
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </Link>
-            ))}
-          </div>
-        )}
+              )}
+            </Link>
+          ))}
+        </div>
       </section>
 
       {/* 热门话题 */}
@@ -209,7 +178,9 @@ export default function HomePage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Tag className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Topics · 话题</span>
+              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                Topics · 话题
+              </span>
             </div>
             <h2 className="font-serif text-2xl md:text-3xl font-semibold">高考议论文话题</h2>
           </div>
@@ -222,18 +193,16 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {TOPICS.map((topic) => (
+          {TOPIC_SPECIALS.map((topic) => (
             <Link
               key={topic.id}
-              to={`/guanlan?topic=${encodeURIComponent(topic.name)}`}
+              to={'/guanlan/topics/' + topic.id}
               className="group block border border-border/60 bg-card p-5 rounded-sm hover:border-accent/30 hover:bg-accent/5 transition-all duration-300 text-center"
             >
               <p className="font-serif text-base font-medium group-hover:text-accent transition-colors">
                 {topic.name}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {topic.keywords.slice(0, 3).join(' · ')}
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">{topic.subtitle}</p>
             </Link>
           ))}
         </div>
@@ -245,7 +214,9 @@ export default function HomePage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Landmark className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Featured · 群鉴</span>
+              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                Featured · 群鉴
+              </span>
             </div>
             <h2 className="font-serif text-2xl md:text-3xl font-semibold">群鉴</h2>
           </div>
@@ -279,7 +250,9 @@ export default function HomePage() {
                 </p>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <BookOpen className="h-3.5 w-3.5" />
-                  <span>{event.perspectives.length} 个视角 · {event.academicPapers.length} 篇文献</span>
+                  <span>
+                    {event.perspectives.length} 个视角 · {event.academicPapers.length} 篇文献
+                  </span>
                 </div>
               </div>
               <div className="px-8 py-3 bg-muted/30 border-t border-border/40 flex items-center justify-between">
