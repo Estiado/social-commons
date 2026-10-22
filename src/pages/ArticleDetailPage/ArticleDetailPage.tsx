@@ -429,7 +429,7 @@ export default function ArticleDetailPage() {
             {relatedDaily.map((d) => (
               <Link
                 key={d.id}
-                to="/daily"
+                to={`/daily/${d.id}`}
                 className="block p-4 border border-border/40 rounded-sm hover:border-blue-500/30 hover:bg-blue-500/5 transition-all group"
               >
                 <p className="text-sm font-medium group-hover:text-blue-600 transition-colors line-clamp-1">
@@ -453,7 +453,7 @@ export default function ArticleDetailPage() {
             {relatedQuotes.map((q) => (
               <Link
                 key={q.id}
-                to="/quotes"
+                to={`/quotes/${q.id}`}
                 className="block p-4 border border-border/40 rounded-sm hover:border-amber-500/30 hover:bg-amber-500/5 transition-all group"
               >
                 <p className="text-sm font-serif font-medium group-hover:text-amber-700 transition-colors line-clamp-2">

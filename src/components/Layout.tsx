@@ -18,7 +18,7 @@ export const Layout = () => {
   const location = useLocation();
   const [myMenuOpen, setMyMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const isMyActive = location.pathname.startsWith('/paragraphs') || location.pathname.startsWith('/collections');
+  const isMyActive = ['/paragraphs', '/collections', '/reading'].some((path) => location.pathname.startsWith(path));
 
   // 快捷键：Ctrl+K / Cmd+K 打开搜索
   useEffect(() => {
@@ -101,6 +101,7 @@ export const Layout = () => {
                 </button>
                 {myMenuOpen && (
                   <div className="absolute right-0 top-full mt-1 w-44 bg-card border border-border/60 rounded-sm shadow-lg z-50 py-1">
+                    <Link to="/reading" onClick={() => setMyMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50"><BookOpen className="h-4 w-4" />阅读空间</Link>
                     <Link
                       to="/paragraphs"
                       onClick={() => setMyMenuOpen(false)}
@@ -124,6 +125,7 @@ export const Layout = () => {
 
             {/* 移动端菜单按钮 - 简化版 */}
             <nav aria-label="移动端导航" className="flex md:hidden items-center gap-1 max-w-[55vw] overflow-x-auto">
+              <NavLink to="/reading" aria-label="我的阅读空间" className="shrink-0 p-2 text-muted-foreground"><User className="h-5 w-5" /></NavLink>
               <button aria-label="搜索全站" onClick={() => setSearchOpen(true)} className="shrink-0 p-2 text-muted-foreground">
                 <Search className="h-5 w-5" />
               </button>

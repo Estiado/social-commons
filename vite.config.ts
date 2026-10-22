@@ -3,6 +3,7 @@ import path from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { articleApiPlugin } from './scripts/vite-article-api.ts';
 
 // ── 妙搭部署协议（参考《妙搭应用构建产物规范》）─────────────────────────
 // 构建期环境变量（托管构建时由部署链路自动注入；本地开发不需要，缺省回退）：
@@ -102,7 +103,7 @@ function collectRoutePaths(srcDir: string): string[] {
 }
 
 export default defineConfig(({ command }) => ({
-  plugins: [react(), tailwindcss(), miaodaOutputPlugin(), sparkJsonPlugin()],
+  plugins: [react(), tailwindcss(), miaodaOutputPlugin(), sparkJsonPlugin(), articleApiPlugin()],
   // 生产构建：JS/CSS 引用带 CDN 前缀（无 CDN 时退回 base path）；dev 恒为 /
   base: command === 'build' ? cdnPrefix || basePath : '/',
   define: {
@@ -114,6 +115,8 @@ export default defineConfig(({ command }) => ({
       '@': path.resolve(import.meta.dirname, 'src'),
     },
   },
+  // Stable origin keeps local reading data visible across restarts.
+  server: { host: '127.0.0.1', port: 5180, strictPort: true, watch: { ignored: ['**/.artifacts/**', '**/dist/**'] } },
   build: {
     outDir: 'dist/client',
     // 单独缓存稳定的框架/数据库 SDK，不把按需导出的依赖合并回首屏。

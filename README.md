@@ -12,8 +12,11 @@
 2. 阅读 [架构说明](docs/ARCHITECTURE.md)，按模块查代码。
 3. 阅读 [产品蓝图](docs/PRODUCT_BLUEPRINT.md)，区分已实现功能与下一步建议。
 4. 阅读 [验证记录](docs/VERIFICATION.md)，复核构建和行为。
+5. 阅读 [私人阅读空间](docs/READING_WORKSPACE.md)，了解已批准范围、数据库迁移、邮件登录和精选维护。
 
 ## 本地开发（Windows，文件留在 D 盘）
+
+当前按用户要求先本机内测，邮件系统延期。依赖已安装时，双击根目录 `启动本机内测.cmd`，然后打开 **http://127.0.0.1:5180**。保存文章、段落和划线均不要求登录；固定浏览器与地址，清理数据前用阅读空间的整库 ZIP 导出备份。
 
 建议 Node.js 22.18 以上。保留现有 D 盘项目根目录。首次安装依赖时使用 D 盘缓存：
 
@@ -24,7 +27,7 @@ Copy-Item .env.example .env.local
 .\scripts\dev.ps1 dev
 ```
 
-不配置 Supabase 也可以阅读所有内置内容。云端收藏、素材包和文章提取需要真实配置及数据库初始化。
+不配置 Supabase 也可以阅读内置内容、链接/粘贴导入、收藏、本机长期保存及 Word/PDF/JSON 整库导出。未经保存的临时文章保留七天。邮件与跨设备同步默认关闭，旧段落库/素材包仍保留原数据库机制。
 
 ```powershell
 .\scripts\dev.ps1 check      # 类型、lint、回归测试、前端构建、函数打包
@@ -42,13 +45,17 @@ GitHub 生产分支为 `main`。构建命令 `npm run build`，输出目录 **`d
 | --- | --- | --- |
 | `VITE_SUPABASE_URL` | Supabase 项目地址 | Pages 构建环境变量 |
 | `VITE_SUPABASE_ANON_KEY` | 浏览器公开客户端密钥 | Pages 构建环境变量 |
-| `SUPABASE_URL` | 后端项目地址 | Pages Functions 运行期变量 |
-| `SUPABASE_SERVICE_ROLE_KEY` | 服务端写入权限 | Pages 运行期 Secret，禁止 `VITE_` 前缀 |
+| `VITE_READING_CLOUD_ENABLED` | 默认 false；完成邮件与账号验收后才能启用 | 构建环境变量，不代替 RLS |
 | `ARTICLE_ALLOWED_HOSTS` | 可选，英文逗号分隔的来源域名 | Functions 运行期变量 |
+| `EXTRACTION_RATE_LIMITER` | 可选，分布式限流 | Pages Functions 绑定 |
 
-`functions/api/extract-article.ts` 提供 `POST /api/extract-article`；`public/_routes.json` 让 Functions 只接管 API，静态阅读走静态资源。接口需要 Supabase 登录令牌。必须在 Supabase 启用匿名登录，并依次执行 `supabase/init.sql`、`highlights-migration.sql`、`preset-articles-migration.sql`（对已有数据库先核实迁移状态，切勿盲目重跑初始化）。
+`POST /api/extract-article` 免登录返回结构化正文，`GET /api/article-image` 提供有来源限制的图片代理。它们不使用 Supabase 服务端 Secret。`public/_routes.json` 让 Functions 只接管 API。
 
-本轮没有更改线上 Secret 或执行数据库 SQL。`supabase/init.sql` 的宽松文章写入策略仍需专项收紧，详见蓝图。`npm run dev` 只提供前端，不模拟 Pages Functions；`npm run check:functions` 校验函数打包，完整接口联调应使用配置好 Secret 的 Cloudflare 预览部署。
+私人阅读空间在现有 Supabase 执行 `supabase/migrations/202610210001_reading_workspace.sql` 和精选种子 `supabase/seeds/reading_catalogue.sql`，不要盲目重跑旧初始化。配置邮箱 OTP 模板与正式 SMTP 后再验收真实发信、保存和跨设备同步，详见阅读空间文档。旧 `supabase/init.sql` 的宽松策略仍需专项审计。
+
+`npm run dev` 通过 Vite 中间件调用真实的共享函数处理器；`npm run check:functions` 校验提取和图片代理打包。当前本地与生产的实际验证状态见验证记录。
+
+本轮新增的 `supabase/migrations/202610220001_essay_examples.sql` 提供站方示例与编辑名单。维护流程及名句来源规则见 [内容发布约定](docs/CONTENT_POLICY.md)。本机素材不会上传公共示例表；在线编辑随邮件内测延期，站方仍可通过版本库发布精选。
 
 [Cloudflare 官方 Functions 文档](https://developers.cloudflare.com/pages/functions/)；[路由文档](https://developers.cloudflare.com/pages/functions/routing/)。原 Netlify 适配层保留，并把 `/api/extract-article` 重写到旧函数。
 

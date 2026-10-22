@@ -11,5 +11,7 @@ New-Item -ItemType Directory -Force -Path $taskTempDirectory | Out-Null
 $env:TEMP = $taskTempDirectory
 $env:TMP = $taskTempDirectory
 $env:npm_config_cache = Join-Path $taskTempDirectory 'npm-cache'
+# Node 24 supports the same proxy environment as the browser/PowerShell.
+if ($env:HTTPS_PROXY -or $env:HTTP_PROXY) { $env:NODE_USE_ENV_PROXY = '1' }
 & npm.cmd run $Task
 exit $LASTEXITCODE

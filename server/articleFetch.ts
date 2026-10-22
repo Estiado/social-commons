@@ -1,5 +1,5 @@
 // 抓取范围显式限制在可信媒体域名，重定向的每一跳也要重新检查。
-export const DEFAULT_ARTICLE_HOSTS = ['thepaper.cn', 'people.com.cn', 'gmw.cn', 'qq.com', 'toutiao.com', 'rmlt.com.cn', 'oeeee.com', 'lifeweek.com.cn', 'zjol.com.cn', 'wikisource.org'];
+export const DEFAULT_ARTICLE_HOSTS = ['thepaper.cn', 'people.com.cn', 'gmw.cn', 'qq.com', 'toutiao.com', 'rmlt.com.cn', 'oeeee.com', 'lifeweek.com.cn', 'zjol.com.cn', 'wikisource.org', 'neweekly.com.cn', 'infzm.com', 'mp.weixin.qq.com', 'zjwx.gov.cn'];
 const MAX_BYTES = 2 * 1024 * 1024;
 
 export class RequestError extends Error {

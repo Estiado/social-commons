@@ -65,10 +65,14 @@ export interface IQuote {
   author: string;
   source: string;
   context?: string;
+  sourceNote?: string;
   commentary?: {
     text: string;
     commentator: string;
     commentatorSource: string;
+    status: 'verified';
+    url: string;
+    checkedAt: string;
   };
 }
 

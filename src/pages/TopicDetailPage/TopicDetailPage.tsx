@@ -170,7 +170,7 @@ export default function TopicDetailPage() {
             {relatedDaily.map((d) => (
               <Link
                 key={d.id}
-                to="/daily"
+                to={`/daily/${d.id}`}
                 className="group block border border-border/60 bg-card p-6 rounded-sm hover:border-accent/30 transition-all"
               >
                 <div className="flex items-center gap-2 mb-3">
@@ -199,7 +199,7 @@ export default function TopicDetailPage() {
             {relatedQuotes.map((q) => (
               <Link
                 key={q.id}
-                to="/quotes"
+                to={`/quotes/${q.id}`}
                 className="group block border border-border/60 bg-card p-6 rounded-sm hover:border-accent/30 transition-all"
               >
                 <blockquote className="font-serif text-lg text-foreground mb-3 leading-relaxed">

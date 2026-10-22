@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { Feather, RefreshCw, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 import { QUOTES } from '@/data/quotes';
 import type { IQuote } from '@/data/types';
+import { QuoteCommentary } from '@/features/quotes/QuoteCommentary';
 
 export default function QuotesPage() {
   const [searchParams] = useSearchParams();
@@ -31,6 +32,8 @@ export default function QuotesPage() {
     if (next === currentIndex) next = (next + 1) % QUOTES.length;
     goTo(next);
   };
+
+  if (searchParams.get('id')) return <Navigate to={`/quotes/${encodeURIComponent(searchParams.get('id')!)}`} replace />;
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
@@ -74,21 +77,9 @@ export default function QuotesPage() {
               </div>
             </div>
 
-            {current.commentary && (
-              <div className="mt-8 border-l-2 border-accent/30 pl-4 relative z-10 max-w-2xl">
-                <p className="text-sm text-foreground/80 leading-relaxed mb-3">
-                  {current.commentary.text}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  —— {current.commentary.commentator}
-                </p>
-              </div>
-            )}
-            {current.context && !current.commentary && (
-              <p className="mt-8 text-sm text-muted-foreground leading-relaxed border-l-2 border-accent/30 pl-4 relative z-10 max-w-xl">
-                {current.context}
-              </p>
-            )}
+            <Link to={`/quotes/${current.id}`} className="relative z-10 mt-5 inline-block text-sm text-accent underline">打开这条名句的独立页面</Link>
+            {current.sourceNote && <p className="mt-3 text-sm text-amber-800">出处核验提示：{current.sourceNote}</p>}
+            <QuoteCommentary quote={current} />
           </div>
         </div>
       </div>

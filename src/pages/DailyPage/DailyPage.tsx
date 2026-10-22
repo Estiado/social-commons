@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useItemLocation } from '@/hooks/useItemLocation';
 import { Calendar, BookOpen, ChevronDown, ChevronUp, Tag, Clock, Newspaper, ExternalLink, Search } from 'lucide-react';
 import { DAILY_KNOWLEDGE } from '@/data/daily';
@@ -45,6 +45,8 @@ export default function DailyPage() {
     setActivePrimary(cat);
     setActiveSub('全部');
   };
+
+  if (searchParams.get('id')) return <Navigate to={`/daily/${encodeURIComponent(searchParams.get('id')!)}`} replace />;
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
@@ -153,6 +155,7 @@ export default function DailyPage() {
               {/* 展开内容 */}
               {isExpanded && (
                 <div className="px-6 pb-6 border-t border-border/40 pt-5">
+                  <Link to={`/daily/${item.id}`} className="mb-5 inline-block text-sm text-accent underline">打开这个词条的独立页面</Link>
                   <div className="prose prose-sm max-w-none">
                     <p className="text-foreground/85 leading-relaxed whitespace-pre-line">
                       {item.content}

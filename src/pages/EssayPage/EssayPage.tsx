@@ -1,20 +1,19 @@
 import { useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useItemLocation } from '@/hooks/useItemLocation';
 import {
   PenTool,
   Tag,
   Lightbulb,
-  BookOpen,
   ChevronDown,
   ChevronUp,
-  FileText,
   Search,
   Plus,
   X,
   Trash2,
 } from 'lucide-react';
 import { ESSAY_MATERIALS } from '@/data/essay';
+import { ConceptMaterials } from '@/features/essay/ConceptMaterials';
 import type { IEssayMaterial } from '@/data/types';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { Badge } from '@/components/ui/badge';
@@ -382,7 +381,7 @@ export default function EssayPage() {
                         <Tag className="h-3 w-3 mr-1" />
                         {item.category}
                       </Badge>
-                      <span className="text-xs text-muted-foreground">{item.materials.length} 条素材</span>
+                      <span className="text-xs text-muted-foreground">可添加个人素材</span>
                       {isCustom(item.id) && (
                         <span className="text-xs px-1.5 py-0.5 bg-accent/10 text-accent rounded-sm">自定义</span>
                       )}
@@ -426,46 +425,7 @@ export default function EssayPage() {
               {/* 展开的素材列表 */}
               {isExpanded && (
                 <div className="px-6 pb-6 border-t border-border/40 pt-5">
-                  <div className="flex items-center gap-2 mb-4">
-                    <FileText className="h-4 w-4 text-accent" />
-                    <span className="text-sm font-medium">素材列表</span>
-                  </div>
-                  {item.materials.length > 0 ? (
-                    <div className="space-y-4">
-                      {item.materials.map((material, idx) => (
-                        <div key={idx} className="border border-border/40 bg-muted/20 rounded-sm p-5">
-                          <h3 className="font-serif text-base font-semibold mb-3">{material.title}</h3>
-                          <p className="text-sm text-foreground/80 leading-relaxed mb-3 whitespace-pre-line">
-                            {material.content}
-                          </p>
-                          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <BookOpen className="h-3 w-3" />
-                              来源：{material.source}
-                            </span>
-                            {material.usageHint && (
-                              <span className="flex items-center gap-1 text-accent/80">
-                                <Lightbulb className="h-3 w-3" />
-                                {material.usageHint}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground italic">暂无素材，可在数据文件中添加或后续补充。</p>
-                  )}
-
-                  {/* 添加素材提示 */}
-                  <div className="mt-5 p-4 border border-dashed border-border/60 rounded-sm">
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      <strong className="text-foreground">添加更多素材：</strong>
-                      在 <code className="bg-muted px-1.5 py-0.5 rounded text-xs">src/data/essay.ts</code> 中
-                      找到对应概念，在 <code className="bg-muted px-1.5 py-0.5 rounded text-xs">materials</code> 数组里
-                      添加新对象即可。格式：<code className="bg-muted px-1.5 py-0.5 rounded text-xs">{'{ title, content, source, usageHint? }'}</code>
-                    </p>
-                  </div>
+                  <ConceptMaterials conceptId={item.id} legacy={item.id.startsWith('custom-') ? item.materials.map((material) => ({ ...material, sourceUrl: '', usageHint: material.usageHint || '' })) : []} />
                 </div>
               )}
             </article>
@@ -484,8 +444,9 @@ export default function EssayPage() {
       {/* 底部说明 */}
       <div className="mt-12 p-6 bg-muted/30 border border-border/40 rounded-sm">
         <p className="text-xs text-muted-foreground leading-relaxed">
-          自定义词条和标签保存在当前浏览器中（localStorage），换设备或清除浏览器数据会丢失。
-          建议重要素材同时备份到 <code className="bg-muted px-1 py-0.5 rounded">src/data/essay.ts</code> 文件中。
+          自定义词条、素材和标签保存在当前浏览器中，换设备或清除浏览器数据会丢失。
+          请在素材区使用“备份我的全部素材”保存个人摘录。站方推荐由具有编辑权限的账号维护。
+          <Link className="ml-2 text-accent underline" to="/editor/materials">站方推荐管理</Link>
         </p>
       </div>
     </div>

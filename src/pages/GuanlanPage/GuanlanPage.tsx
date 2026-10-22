@@ -1,6 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useUserSession } from '@/hooks/useUserId';
-import { errorMessage } from '@/lib/database';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   Waves,
@@ -11,19 +9,19 @@ import {
   Clock,
   User,
   Loader2,
-  Newspaper,
   ChevronRight,
   LayoutGrid,
   List,
   Flame,
 } from 'lucide-react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PRESET_ARTICLES } from '@/data/presetArticles';
 import { EXTERNAL_ARTICLES } from '@/data/externalArticles';
 import { HOT_TOPICS, matchHotTopic } from '@/data/hotTopics';
+import { RecentCommentaries } from '@/features/articles/RecentCommentaries';
 
 import { mergeArticles, filterArticles, countArticlesByTopic, type ArticleListItem as Article } from '@/lib/articleCatalog';
 
@@ -34,13 +32,8 @@ const STATIC_ARTICLES: Article[] = [...PRESET_ARTICLES.map((article) => ({ ...ar
 
 export default function GuanlanPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { userId, error: authError, loading: authLoading } = useUserSession();
   const [catalog, setCatalog] = useState<Article[]>(() => mergeArticles(STATIC_ARTICLES));
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitUrl, setSubmitUrl] = useState('');
-  const [submitTopic, setSubmitTopic] = useState<string>('');
-  const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const activeHotTopic = searchParams.get('hotTopic') || '';
   const activeTag = searchParams.get('topic') || '';
@@ -70,45 +63,6 @@ export default function GuanlanPage() {
   const selectHotTopic = (topicId: string) => {
     setViewMode('list');
     setSearchParams(topicId ? { hotTopic: topicId } : {});
-  };
-
-  // 提交链接
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!submitUrl.trim()) return;
-
-    setSubmitting(true);
-    setSubmitMessage(null);
-
-    try {
-      if (!supabase) throw new Error('素材库尚未配置');
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError || !session) throw new Error('请刷新页面，重新连接素材库后再提交');
-      const response = await fetch(import.meta.env.VITE_ARTICLE_API_PATH || '/api/extract-article', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ url: submitUrl.trim(), topicId: submitTopic }),
-        signal: AbortSignal.timeout(25_000),
-      });
-
-      if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('文章提取接口尚未部署，请联系维护者');
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        setSubmitMessage({ type: 'success', text: result.message || '提取成功！已归类到对应话题' });
-        setSubmitUrl('');
-        setSubmitTopic('');
-        // 刷新列表
-        const data = await loadCatalog();
-        setCatalog(data);
-      } else {
-        setSubmitMessage({ type: 'error', text: result.error || '提取失败，请检查链接是否正确' });
-      }
-    } catch (error) {
-      setSubmitMessage({ type: 'error', text: errorMessage(error, '网络错误，请稍后重试') });
-    } finally {
-      setSubmitting(false);
-    }
   };
 
   // 计算每个话题下的文章数量
@@ -142,71 +96,12 @@ export default function GuanlanPage() {
       </div>
 
       {loadError && <p role="alert" className="mb-6 text-sm text-amber-700">{loadError}</p>}
-      {/* 提交链接表单 */}
-      {isSupabaseConfigured && (
-        <div className="mb-8 p-5 border border-accent/30 bg-accent/5 rounded-sm">
-          <h3 className="font-serif text-lg font-semibold mb-3 flex items-center gap-2">
-            <Link2 className="h-4 w-4 text-accent" />
-            提交时评链接
-          </h3>
-          {authError && <p role="alert" className="mb-3 text-sm text-red-600">连接素材库失败：{authError}</p>}
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Input
-                type="url"
-                placeholder="粘贴文章链接，如 https://www.thepaper.cn/newsDetail_..."
-                value={submitUrl}
-                onChange={(e) => setSubmitUrl(e.target.value)}
-                className="flex-1"
-                disabled={submitting}
-              />
-              <Button type="submit" disabled={submitting || authLoading || !userId || !submitUrl.trim()} className="gap-2">
-                {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Newspaper className="h-4 w-4" />}
-                提取文章
-              </Button>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground shrink-0">归类到话题：</span>
-              <div className="flex flex-wrap gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setSubmitTopic('')}
-                  className={`px-2.5 py-1 text-xs rounded-sm transition-colors ${
-                    submitTopic === ''
-                      ? 'bg-accent/15 text-accent border border-accent/30'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                  }`}
-                >
-                  自动匹配
-                </button>
-                {HOT_TOPICS.slice(0, 6).map((topic) => (
-                  <button
-                    key={topic.id}
-                    type="button"
-                    onClick={() => setSubmitTopic(topic.id)}
-                    className={`px-2.5 py-1 text-xs rounded-sm transition-colors ${
-                      submitTopic === topic.id
-                        ? 'bg-accent/15 text-accent border border-accent/30'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                    }`}
-                  >
-                    {topic.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </form>
-          {submitMessage && (
-            <p
-              className={`mt-3 text-sm ${
-                submitMessage.type === 'success' ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              {submitMessage.text}
-            </p>
-          )}
-        </div>
-      )}
+      <div className="mb-8 rounded-sm border border-accent/30 bg-accent/5 p-5">
+        <h2 className="font-serif text-lg font-semibold">把好文章留在自己的阅读空间</h2>
+        <p className="my-3 text-sm leading-relaxed text-muted-foreground">粘贴链接或正文，统一排版后阅读、收藏与导出 Word / PDF。免登录使用，临时文章保留 7 天。</p>
+        <div className="flex flex-wrap gap-3"><Button asChild><Link to="/reading/import"><Link2 size={16} />导入文章</Link></Button><Button asChild variant="outline"><Link to="/reading">我的阅读空间</Link></Button></div>
+      </div>
+      <RecentCommentaries />
 
       {/* 搜索 + 视图切换 */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">

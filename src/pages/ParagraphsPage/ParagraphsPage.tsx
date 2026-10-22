@@ -327,6 +327,7 @@ export default function ParagraphsPage() {
           <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">My Paragraphs</span>
         </div>
         <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">我的段落库</h1>
+        <Link to="/reading" className="mb-4 inline-block text-sm text-accent underline">查看导入文章的个人摘录与阅读空间</Link>
         <p className="text-muted-foreground max-w-2xl leading-relaxed">
           你在文章中收藏的所有精彩段落都在这里。按内容搜索、按来源筛选，写作文时快速找到需要的素材。每段都保留原文出处。
         </p>

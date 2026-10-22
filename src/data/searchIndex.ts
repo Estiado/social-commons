@@ -8,12 +8,12 @@ import type { SearchDocument } from '../lib/search';
 export const SEARCH_INDEX: SearchDocument[] = [
   ...DAILY_KNOWLEDGE.map((item) => ({
     id: `daily-${item.id}`, type: 'daily' as const, title: item.title, subtitle: item.category,
-    path: `/daily?id=${encodeURIComponent(item.id)}`,
+    path: `/daily/${encodeURIComponent(item.id)}`,
     searchText: [item.title, item.content, item.category, item.summary, item.source].join(' ').toLowerCase(),
   })),
   ...QUOTES.map((item) => ({
     id: `quote-${item.id}`, type: 'quote' as const, title: item.text, subtitle: `${item.author} · ${item.source}`,
-    path: `/quotes?id=${encodeURIComponent(item.id)}`,
+    path: `/quotes/${encodeURIComponent(item.id)}`,
     searchText: [item.text, item.author, item.source, item.commentary?.text].join(' ').toLowerCase(),
   })),
   ...EVENTS.map((item) => ({

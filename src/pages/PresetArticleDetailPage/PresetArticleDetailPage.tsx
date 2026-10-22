@@ -217,7 +217,7 @@ export default function PresetArticleDetailPage() {
               {relatedDaily.map((d) => (
                 <Link
                   key={d.id}
-                  to="/daily"
+                  to={`/daily/${d.id}`}
                   className="block p-4 border border-border/60 rounded-sm hover:border-accent/30 hover:bg-accent/5 transition-all group"
                 >
                   <p className="font-medium text-sm group-hover:text-accent transition-colors mb-1">
@@ -241,7 +241,7 @@ export default function PresetArticleDetailPage() {
               {relatedQuotes.map((q) => (
                 <Link
                   key={q.id}
-                  to="/quotes"
+                  to={`/quotes/${q.id}`}
                   className="block p-4 border border-border/60 rounded-sm hover:border-accent/30 hover:bg-accent/5 transition-all group"
                 >
                   <p className="font-serif text-sm italic text-foreground/80 group-hover:text-accent transition-colors mb-1">
