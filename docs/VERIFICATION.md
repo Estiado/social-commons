@@ -14,6 +14,7 @@
 - 功能提交 `fa9be86d6a08ff1220f225e89b81e453934b7ae1` 已推送并通过 [PR #1](https://github.com/Estiado/social-commons/pull/1) 合并，主分支为 `a2a107201080951b3627be5558a556f222b324a0`；已 fetch 核对并将本地 main 快进到同一提交。PR 的 Ubuntu 检查成功（33 秒），主分支检查成功（41 秒），Cloudflare Pages 均显示 Deployed successfully。
 - 正式站真实打开 `/events/silk-road`，五个视角及文献目录完整显示；已加入私人阅读空间。在 `/daily` 收藏修昔底德概念的段落，在 `/quotes/q44` 实际双击选词并收藏划线，刷新阅读空间后仍显示三篇长期保存文章及两条摘录。正式站不是本机开发地址，二者浏览器存储互相独立。实际页面截图留在 D 盘 `.artifacts/reading-space-production.png`，不提交仓库。
 - GitHub 已保存新的项目简介、正式网站入口和教学素材主题标签；根 README 已显示中文目录导览。Code Review 插件返回“Connect your GitHub account to continue”，未获得插件诊断；上述检查结果来自 GitHub 页面，不能称独立代码审查已通过。
+- 最后移除无调用方的 `netlify/functions/topics.ts` 转发残留，话题逻辑仍在 `server/topics.ts`，根目录不再出现旧平台文件夹。再次完整运行 `npm run check` 成功（46/46）；日志 `.artifacts/final-structure-check.log`。真实生产接口 `GET /api/extract-article` 返回 JSON 405，确认仍进入 Function 路由；不以此冒充文章抓取全文验收。
 
 ## 当前内测 · 2026-10-22
 
