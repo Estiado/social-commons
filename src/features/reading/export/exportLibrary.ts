@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { createReadingArchives, type ExportSource } from './batchArchive';
 import { downloadArticleFile } from './assets';
 import { collectionsSchema } from '../collections';
+import { getDraft, listDrafts } from '../writing/repository';
 
 export async function exportReadingLibrary(
   format: 'docx' | 'pdf' | 'json',
@@ -14,6 +15,7 @@ export async function exportReadingLibrary(
 ) {
   const guest = await listGuestArticles();
   const cloud = ownerId ? await listAllCloudArticles() : [];
+  const drafts = await listDrafts();
   const sources: ExportSource[] = cloud.map((item) => ({ ...item, storage: 'cloud' }));
   const cloudIds = new Set(cloud.map((item) => item.id));
   sources.push(
@@ -21,7 +23,8 @@ export async function exportReadingLibrary(
       .filter((item) => !cloudIds.has(item.id))
       .map((item) => ({ ...item, storage: 'guest' as const })),
   );
-  if (!sources.length) throw new Error('阅读空间里还没有可导出的文章');
+  sources.push(...drafts.map((item) => ({ ...item, storage: 'draft' as const })));
+  if (!sources.length) throw new Error('阅读空间里还没有可备份的内容');
   let fontBytes: Uint8Array | undefined;
   if (format === 'pdf') {
     const response = await fetch('/fonts/NotoSansSC-Regular.ttf', { signal });
@@ -50,6 +53,12 @@ export async function exportReadingLibrary(
         const current = data.session?.user;
         if ((current && !current.is_anonymous ? current.id : undefined) !== ownerId)
           throw new Error('账号已变化，请重新开始导出');
+      }
+      if (source.storage === 'draft') {
+        const draft = await getDraft(source.id);
+        return draft
+          ? { document: draft.document, annotations: [], expiresAt: null, revision: 0 }
+          : undefined;
       }
       return source.storage === 'cloud' ? getCloudArticle(source.id) : getGuestArticle(source.id);
     },

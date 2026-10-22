@@ -8,8 +8,8 @@ import {
   PenTool,
   Waves,
   User,
-  Sparkles,
   Search,
+  Menu,
 } from 'lucide-react';
 const GlobalSearch = lazy(() =>
   import('./GlobalSearch').then((module) => ({ default: module.GlobalSearch })),
@@ -19,7 +19,6 @@ const NAV_ITEMS = [
   { path: '/daily', label: '日新', icon: Calendar },
   { path: '/events', label: '群鉴', icon: Landmark },
   { path: '/quotes', label: '撷英', icon: Feather },
-  { path: '/topics', label: '专题', icon: Sparkles },
   { path: '/essay', label: '议论文素材', icon: PenTool },
   { path: '/guanlan', label: '观澜', icon: Waves },
   { path: '/reading', label: '阅读空间', icon: User },
@@ -27,6 +26,7 @@ const NAV_ITEMS = [
 
 export function Layout() {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   useEffect(() => {
     const shortcut = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
@@ -76,10 +76,7 @@ export function Layout() {
               <Search className="h-4 w-4" />
             </button>
           </nav>
-          <nav
-            aria-label="移动端导航"
-            className="flex max-w-[55vw] items-center gap-1 overflow-x-auto lg:hidden"
-          >
+          <nav aria-label="移动端导航" className="flex shrink-0 items-center gap-1 lg:hidden">
             <NavLink
               aria-label="我的阅读空间"
               to="/reading"
@@ -94,21 +91,38 @@ export function Layout() {
             >
               <Search className="h-5 w-5" />
             </button>
-            {NAV_ITEMS.filter((item) => item.path !== '/reading').map((item) => (
+            <button
+              aria-label="网站栏目"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-sections"
+              className="p-2"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          </nav>
+        </div>
+        {mobileOpen && (
+          <nav
+            id="mobile-sections"
+            aria-label="网站栏目菜单"
+            className="grid grid-cols-3 gap-2 border-t px-5 py-4 lg:hidden"
+          >
+            {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 end={item.end}
-                aria-label={item.label}
+                onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `shrink-0 rounded-sm p-2 ${isActive ? 'text-accent' : 'text-muted-foreground'}`
+                  `rounded-sm border p-3 text-center text-sm ${isActive ? 'text-accent border-accent' : 'text-muted-foreground'}`
                 }
               >
-                <item.icon className="h-5 w-5" />
+                {item.label}
               </NavLink>
             ))}
           </nav>
-        </div>
+        )}
       </header>
       <main className="flex-1">
         <Suspense

@@ -3,6 +3,8 @@
 | 文档 | 谁来看 / 看什么 |
 | --- | --- |
 | [REPOSITORY_GUIDE](REPOSITORY_GUIDE.md) | 站长或首次接手的人：中文目录地图与文件职责 |
+| [CLASSMATE_COLLABORATION](CLASSMATE_COLLABORATION.md) | 同学与站长：GitHub 功能、Fork/PR、权限与恢复边界 |
+| [DEVELOPMENT_PLAN](DEVELOPMENT_PLAN.md) | 本轮用户已确认范围与完成状态 |
 | [HANDOFF](HANDOFF.md) | 接手工程师：当前要求、实现、限制与下一步 |
 | [ARCHITECTURE](ARCHITECTURE.md) | 工程师：模块边界、数据和算法 |
 | [READING_WORKSPACE](READING_WORKSPACE.md) | 阅读功能开发和运维：模型、导出、数据库与未来账号 |

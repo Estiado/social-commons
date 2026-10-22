@@ -22,6 +22,7 @@ import { EmailLoginDialog } from '@/features/auth/EmailLoginDialog';
 import { errorMessage } from '@/lib/errors';
 import { supabase } from '@/lib/supabase';
 import { READING_CLOUD_ENABLED } from '@/features/reading/config';
+import { isBlockedDocument, SOURCE_VERIFICATION_MESSAGE } from '@/features/reading/sourceAccess';
 
 export default function ReadingArticlePage() {
   const { id = '' } = useParams();
@@ -225,8 +226,12 @@ export default function ReadingArticlePage() {
     }
   };
 
+  const blocked = record && record.document.id === id && isBlockedDocument(record.document);
   const canRead =
-    record && record.document.id === id && (record.revision === 0 || loadedOwner === account?.id);
+    record &&
+    !blocked &&
+    record.document.id === id &&
+    (record.revision === 0 || loadedOwner === account?.id);
   const isLoading = loading || loadedId !== id || accountLoading;
   return (
     <div className="mx-auto max-w-3xl px-6 py-10 md:px-10">
@@ -238,6 +243,24 @@ export default function ReadingArticlePage() {
         我的阅读空间
       </Link>
       {isLoading && <p role="status">正在打开文章…</p>}
+      {!isLoading && blocked && (
+        <section role="alert" className="space-y-4 rounded-sm border border-amber-400 p-5">
+          <p>{SOURCE_VERIFICATION_MESSAGE}</p>
+          <p className="text-sm text-muted-foreground">
+            这份旧记录是误识别的验证提示，已停止作为文章显示。
+          </p>
+          <Button asChild>
+            <Link
+              to={
+                '/reading/import?' +
+                new URLSearchParams({ mode: 'paste', url: record?.document.url || '' })
+              }
+            >
+              粘贴真实正文替换
+            </Link>
+          </Button>
+        </section>
+      )}
       {error && loadedId === id && (
         <p role="alert" className="mb-5 rounded-sm border border-red-200 p-4 text-sm text-red-700">
           {error}

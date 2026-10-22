@@ -2,6 +2,8 @@
 
 先读根目录 README，再按 `docs/REPOSITORY_GUIDE.md` 找模块。运行环境使用 Node.js 24；安装依赖后运行 `npm run check`。开发时的临时目录、缓存和验收产物留在 D 盘。
 
+新同学默认使用 Fork → 分支修改 → Pull request，由站长审查合并。公开仓库不自动给予写入权限；详细操作与权限区别见 [同学协作说明](../docs/CLASSMATE_COLLABORATION.md)。
+
 - 页面组织交互，业务放在 `src/features`；通用控件不包含数据库或阅读业务。
 - 文章模型、存储边界和来源规则分别见阅读空间与内容约定文档。
 - 使用功能分支提交可读的变更，经 PR 的自动检查、浏览器验收后合并到 main。

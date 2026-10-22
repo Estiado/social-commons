@@ -4,7 +4,7 @@ import type { ReadingRecord } from '../model.ts';
 export interface ExportSource {
   id: string;
   title: string;
-  storage: 'guest' | 'cloud';
+  storage: 'guest' | 'cloud' | 'draft';
 }
 interface ExportResult {
   bytes: Uint8Array;
