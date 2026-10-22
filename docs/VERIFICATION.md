@@ -8,7 +8,9 @@
 - Edge 本机真实验收：`q51` 的两首诗、蒙曼书摘摘要及出处可读；保存全篇并收藏第一段，阅读空间出现独立文章与摘录。只选此摘录编成文稿，改名“语段精读 · 扩容验收”，设微软雅黑、14 磅、双倍行距，返回后重开保持样式与文本；未修改其他旧文稿。
 - 390×844 设置下，编辑器和《春江花月夜》DOM 宽度为375（另有滚动条），文档宽度同为375，无横向溢出；正文含结尾“落月摇情满江树”及莫砺锋解读。临时视口已恢复。一次浏览器截图超时，不把失败截图写成成功证据。
 - `essay?id=e26` 显示“同样两小时”的明确教学设例与 OpenStax 来源；`guanlan` 显示50篇，浙江宣传+9月筛为5篇；新印刷史主题显示三个视角与参考资料。Word/PDF 的本次生成产物与截图均在 D 盘 `.artifacts/`，不提交仓库。
-- GitHub 与 Cloudflare 发布状态将在下方补记；以上是本机与独立测试结果，不冒充部署或数据库线上验收。
+- 功能提交 `683c364bc99ab9745cd6e43e5907ac58f2088548` 经 [PR #3](https://github.com/Estiado/social-commons/pull/3) 合并为 `9b4bf252673c011fc1105b913d8062cdcbaa62ab`；已 fetch 并快进本机 main。PR 的类型、回归与构建检查成功（39秒），Cloudflare Pages 显示 Deployed successfully；[主分支 CI](https://github.com/Estiado/social-commons/actions/runs/39790978484) 和主分支 Cloudflare Pages 检查均为 completed / success。
+- 正式站 Edge 实际验收：`/quotes` 显示60篇、31篇附出处解读；勾选出处筛选找到31篇，搜索“长干行”找到1篇；`/quotes/q51` 两首正文与蒙曼书摘出处均可读。`/quotes/q23` 为王永年译本连续开篇，附版本及完整刊载链接，不再单独截取“忠诚”一句。`/guanlan` 显示50篇，浙江宣传+9月筛为5篇；`/events/printing-connections` 显示三种视角、原始馆藏参考及明确标注的本站教学问题。
+- 正式站截图保存至 D 盘 `.artifacts/content-expansion-production.png`，已实际查看。Code Review 连接器仍要求连接 GitHub，未获得该连接器的审查结果；CI 结论来自 GitHub 页面及其官方公共接口。以上线上页面验收不等于已执行生产 SQL，也不等于微信全文抓取已恢复。
 
 ## 观澜合并与文稿编辑 · 2026-10-22
 
