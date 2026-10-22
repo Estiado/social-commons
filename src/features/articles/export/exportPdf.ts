@@ -5,22 +5,44 @@ import { loadExportImage } from './assets';
 
 /** Character widths are memoized per font size. Wrapping stays linear in the
  * article length, including Chinese text and long source URLs. */
-export function wrapPdfText(text: string, width: number, measure: (character: string) => number): string[] {
-  const lines: string[] = []; let line = ''; let used = 0;
+export function wrapPdfText(
+  text: string,
+  width: number,
+  measure: (character: string) => number,
+): string[] {
+  const lines: string[] = [];
+  let line = '';
+  let used = 0;
   for (const character of text.replace(/\r/g, '')) {
-    if (character === '\n') { lines.push(line); line = ''; used = 0; continue; }
+    if (character === '\n') {
+      lines.push(line);
+      line = '';
+      used = 0;
+      continue;
+    }
     const size = measure(character);
-    if (line && used + size > width) { lines.push(line); line = ''; used = 0; }
-    line += character; used += size;
+    if (line && used + size > width) {
+      lines.push(line);
+      line = '';
+      used = 0;
+    }
+    line += character;
+    used += size;
   }
   if (line) lines.push(line);
   return lines;
 }
 
-export async function buildArticlePdf(article: ArticleDocument, fontBytes?: Uint8Array): Promise<{ bytes: Uint8Array; warnings: string[] }> {
+export async function buildArticlePdf(
+  article: ArticleDocument,
+  fontBytes?: Uint8Array,
+): Promise<{ bytes: Uint8Array; warnings: string[] }> {
   if (!fontBytes) {
-    const response = await fetch('/fonts/NotoSansSC-Regular.ttf', { signal: AbortSignal.timeout(60_000) });
-    if (!response.ok || response.headers.get('content-type')?.includes('text/html')) throw new Error('中文字体加载失败，请稍后重试');
+    const response = await fetch('/fonts/NotoSansSC-Regular.ttf', {
+      signal: AbortSignal.timeout(60_000),
+    });
+    if (!response.ok || response.headers.get('content-type')?.includes('text/html'))
+      throw new Error('中文字体加载失败，请稍后重试');
     fontBytes = new Uint8Array(await response.arrayBuffer());
   }
   const document = await PDFDocument.create();
@@ -28,42 +50,70 @@ export async function buildArticlePdf(article: ArticleDocument, fontBytes?: Uint
   // fontkit's CJK subsetting drops outlines in several PDF renderers. Embed the
   // static TrueType font intact so exported Chinese remains portable.
   const font = await document.embedFont(fontBytes, { subset: false });
-  document.setTitle(article.title); document.setAuthor(article.author || article.source); document.setCreator('社科通识');
+  document.setTitle(article.title);
+  document.setAuthor(article.author || article.source);
+  document.setCreator('社科通识');
   const PAGE = { width: 595.28, height: 841.89, margin: 52 };
   const width = PAGE.width - PAGE.margin * 2;
-  let page = document.addPage([PAGE.width, PAGE.height]); let y = PAGE.height - PAGE.margin;
+  let page = document.addPage([PAGE.width, PAGE.height]);
+  let y = PAGE.height - PAGE.margin;
   const widths = new Map<number, Map<string, number>>();
   const measure = (font: PDFFont, size: number) => {
     if (!widths.has(size)) widths.set(size, new Map());
     const cache = widths.get(size)!;
-    return (character: string) => { if (!cache.has(character)) cache.set(character, font.widthOfTextAtSize(character, size)); return cache.get(character)!; };
+    return (character: string) => {
+      if (!cache.has(character)) cache.set(character, font.widthOfTextAtSize(character, size));
+      return cache.get(character)!;
+    };
   };
-  const space = (height: number) => { if (y - height < PAGE.margin + 18) { page = document.addPage([PAGE.width, PAGE.height]); y = PAGE.height - PAGE.margin; } };
+  const space = (height: number) => {
+    if (y - height < PAGE.margin + 18) {
+      page = document.addPage([PAGE.width, PAGE.height]);
+      y = PAGE.height - PAGE.margin;
+    }
+  };
   const drawText = (text: string, size = 11, muted = false, indent = 0) => {
-    const printable = Array.from(text).filter((character) => character === '\n' || character.charCodeAt(0) >= 32).join('');
+    const printable = Array.from(text)
+      .filter((character) => character === '\n' || character.charCodeAt(0) >= 32)
+      .join('');
     const lines = wrapPdfText(printable, width - indent, measure(font, size));
     for (const line of lines) {
       space(size * 1.75);
-      page.drawText(line, { x: PAGE.margin + indent, y: y - size, size, font, color: muted ? rgb(0.4, 0.4, 0.4) : rgb(0.12, 0.12, 0.12) });
+      page.drawText(line, {
+        x: PAGE.margin + indent,
+        y: y - size,
+        size,
+        font,
+        color: muted ? rgb(0.4, 0.4, 0.4) : rgb(0.12, 0.12, 0.12),
+      });
       y -= size * 1.75;
     }
     y -= 7;
   };
   drawText(article.title, 20);
-  drawText([article.author, article.source, article.publishedAt].filter(Boolean).join(' · '), 9, true);
+  drawText(
+    [article.author, article.source, article.publishedAt].filter(Boolean).join(' · '),
+    9,
+    true,
+  );
   if (article.url) drawText(`原文：${article.url}`, 9, true);
   for (const warning of article.warnings) drawText(`导入核对提示：${warning}`, 9, true);
-  const warnings: string[] = []; let imageBytes = 0;
+  const warnings: string[] = [];
+  let imageBytes = 0;
   for (const block of article.blocks) {
     if (block.type === 'image') {
       try {
-        const image = await loadExportImage(block.url); imageBytes += image.bytes.byteLength;
+        const image = await loadExportImage(block.url);
+        imageBytes += image.bytes.byteLength;
         if (imageBytes > 20 * 1024 * 1024) throw new Error('本篇插图总量过大');
         const embedded = await document.embedPng(image.bytes);
         const scale = Math.min(1, width / image.width, 520 / image.height);
-        const w = image.width * scale; const h = image.height * scale;
-        space(h + 30); y -= h;
-        page.drawImage(embedded, { x: (PAGE.width - w) / 2, y, width: w, height: h }); y -= 10;
+        const w = image.width * scale;
+        const h = image.height * scale;
+        space(h + 30);
+        y -= h;
+        page.drawImage(embedded, { x: (PAGE.width - w) / 2, y, width: w, height: h });
+        y -= 10;
       } catch {
         warnings.push(`插图未嵌入：${block.caption || block.alt || block.id}`);
         drawText(`［插图未能读取，请参见原文：${block.url}］`, 9, true);
@@ -71,11 +121,23 @@ export async function buildArticlePdf(article: ArticleDocument, fontBytes?: Uint
       if (block.caption) drawText(block.caption, 9, true);
     } else {
       if (block.type === 'heading') space(65);
-      drawText(block.type === 'list-item' ? `• ${block.text}` : block.text,
-        block.type === 'heading' ? Math.max(12, 18 - (block.level || 2)) : 11, false, block.type === 'quote' ? 18 : 0);
+      drawText(
+        block.type === 'list-item' ? `• ${block.text}` : block.text,
+        block.type === 'heading' ? Math.max(12, 18 - (block.level || 2)) : 11,
+        false,
+        block.type === 'quote' ? 18 : 0,
+      );
     }
   }
   const pages = document.getPages();
-  pages.forEach((page, index) => page.drawText(`${index + 1} / ${pages.length} · 社科通识`, { x: PAGE.margin, y: 30, size: 8, font, color: rgb(0.5, 0.5, 0.5) }));
+  pages.forEach((page, index) =>
+    page.drawText(`${index + 1} / ${pages.length} · 社科通识`, {
+      x: PAGE.margin,
+      y: 30,
+      size: 8,
+      font,
+      color: rgb(0.5, 0.5, 0.5),
+    }),
+  );
   return { bytes: await document.save(), warnings };
 }

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "format:reading": "prettier --write src/features src/pages/ArticleImportPage src/pages/ReadingArticlePage src/pages/ReadingLibraryPage src/pages/DailyDetailPage src/pages/QuoteDetailPage src/pages/EditorMaterialsPage",
     "build": "vite build",
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.server.json && tsc -p tsconfig.node.json",
     "lint": "concurrently npm:typecheck npm:lint:eslint",
@@ -100,6 +101,7 @@
     "eslint-plugin-react-refresh": "^0.5",
     "fake-indexeddb": "^6.2.6",
     "globals": "^17",
+    "prettier": "3.6.2",
     "typescript": "~5.9",
     "typescript-eslint": "^8",
     "vite": "^8"

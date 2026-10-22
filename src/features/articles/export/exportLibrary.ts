@@ -5,12 +5,21 @@ import { supabase } from '@/lib/supabase';
 import { createReadingArchives, type ExportSource } from './batchArchive';
 import { downloadArticleFile } from './assets';
 
-export async function exportReadingLibrary(format: 'docx' | 'pdf' | 'json', ownerId: string | undefined, signal: AbortSignal, progress: (done: number, total: number) => void) {
+export async function exportReadingLibrary(
+  format: 'docx' | 'pdf' | 'json',
+  ownerId: string | undefined,
+  signal: AbortSignal,
+  progress: (done: number, total: number) => void,
+) {
   const guest = await listGuestArticles();
   const cloud = ownerId ? await listAllCloudArticles() : [];
   const sources: ExportSource[] = cloud.map((item) => ({ ...item, storage: 'cloud' }));
   const cloudIds = new Set(cloud.map((item) => item.id));
-  sources.push(...guest.filter((item) => !cloudIds.has(item.id)).map((item) => ({ ...item, storage: 'guest' as const })));
+  sources.push(
+    ...guest
+      .filter((item) => !cloudIds.has(item.id))
+      .map((item) => ({ ...item, storage: 'guest' as const })),
+  );
   if (!sources.length) throw new Error('阅读空间里还没有可导出的文章');
   let fontBytes: Uint8Array | undefined;
   if (format === 'pdf') {
@@ -19,7 +28,8 @@ export async function exportReadingLibrary(format: 'docx' | 'pdf' | 'json', owne
     fontBytes = new Uint8Array(await response.arrayBuffer());
   }
   return createReadingArchives(sources, format, {
-    signal, progress,
+    signal,
+    progress,
     load: async (source) => {
       // Changing accounts during a long export must stop the operation; no
       // documents from a second identity can be mixed into the same archive.
@@ -27,7 +37,8 @@ export async function exportReadingLibrary(format: 'docx' | 'pdf' | 'json', owne
         const { data, error } = await supabase.auth.getSession();
         if (error) throw error;
         const current = data.session?.user;
-        if ((current && !current.is_anonymous ? current.id : undefined) !== ownerId) throw new Error('账号已变化，请重新开始导出');
+        if ((current && !current.is_anonymous ? current.id : undefined) !== ownerId)
+          throw new Error('账号已变化，请重新开始导出');
       }
       return source.storage === 'cloud' ? getCloudArticle(source.id) : getGuestArticle(source.id);
     },
@@ -36,11 +47,15 @@ export async function exportReadingLibrary(format: 'docx' | 'pdf' | 'json', owne
       if (format === 'docx') {
         const { buildArticleDocx } = await import('./exportDocx');
         const result = await buildArticleDocx(article);
-        return { bytes: new Uint8Array(await result.blob.arrayBuffer()), warnings: result.warnings };
+        return {
+          bytes: new Uint8Array(await result.blob.arrayBuffer()),
+          warnings: result.warnings,
+        };
       }
       const { buildArticlePdf } = await import('./exportPdf');
       return buildArticlePdf(article, fontBytes);
     },
-    writePart: (bytes, part) => downloadArticleFile(bytes, `阅读空间-${format}-第${part}卷.zip`, 'application/zip'),
+    writePart: (bytes, part) =>
+      downloadArticleFile(bytes, `阅读空间-${format}-第${part}卷.zip`, 'application/zip'),
   });
 }
