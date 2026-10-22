@@ -12,6 +12,8 @@ import { documentToEditor, editorToDocument } from './editorDocument';
 import type { WritingDraft } from './model';
 import { saveDraft } from './repository';
 import { EditorToolbar } from './EditorToolbar';
+import { DocumentStyleControls } from './DocumentStyleControls';
+import { DEFAULT_TYPOGRAPHY, DOCUMENT_FONTS, type DocumentTypography } from '../typography';
 import './writing.css';
 
 const ReadingImage = Image.extend({
@@ -53,6 +55,10 @@ export function WritingEditor({ initial }: { initial: WritingDraft }) {
   const blocked = useRef(false);
   const active = useRef(true);
   const [title, setTitle] = useState(initial.document.title);
+  const [typography, setTypography] = useState<DocumentTypography>(
+    initial.document.typography || DEFAULT_TYPOGRAPHY,
+  );
+  const typographyRef = useRef(typography);
   const [status, setStatus] = useState('已保存在当前浏览器');
   const [notice, setNotice] = useState('');
   const [exporting, setExporting] = useState(false);
@@ -65,7 +71,7 @@ export function WritingEditor({ initial }: { initial: WritingDraft }) {
       try {
         const document = editorToDocument(
           content.current,
-          saved.current.document,
+          { ...saved.current.document, typography: typographyRef.current },
           titleRef.current,
         );
         saved.current = await saveDraft({ ...saved.current, document });
@@ -139,7 +145,11 @@ export function WritingEditor({ initial }: { initial: WritingDraft }) {
     setNotice('');
     try {
       // Export reads the live snapshot, including edits made within the debounce window.
-      const document = editorToDocument(content.current, saved.current.document, titleRef.current);
+      const document = editorToDocument(
+        content.current,
+        { ...saved.current.document, typography: typographyRef.current },
+        titleRef.current,
+      );
       const { exportArticle } = await import('../export/articleExport');
       const warnings = await exportArticle(document, format);
       setNotice(warnings.length ? warnings.join('；') : '已生成一份包含当前文稿内容的文件');
@@ -197,8 +207,23 @@ export function WritingEditor({ initial }: { initial: WritingDraft }) {
           {notice}
         </p>
       )}
+      <DocumentStyleControls
+        value={typography}
+        onChange={(value) => {
+          typographyRef.current = value;
+          setTypography(value);
+          changed();
+        }}
+      />
       {editor && <EditorToolbar editor={editor} />}
-      <div className="mt-5 border bg-card px-5 py-8 shadow-sm md:px-14 md:py-12">
+      <div
+        className="mt-5 border bg-card px-5 py-8 shadow-sm md:px-14 md:py-12"
+        style={{
+          fontFamily: DOCUMENT_FONTS[typography.font].css,
+          fontSize: `${typography.size}pt`,
+          lineHeight: typography.lineHeight,
+        }}
+      >
         <EditorContent editor={editor} />
       </div>
       <p className="mt-5 text-xs text-muted-foreground">

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { documentTypographySchema } from './typography.ts';
 import { isBlockedDocument, SourceVerificationError } from './sourceAccess.ts';
 
 export const GUEST_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
@@ -63,6 +64,7 @@ export const articleSchema = z
       .min(1)
       .max(2000),
     warnings: z.array(z.string().max(500)).max(20),
+    typography: documentTypographySchema.optional(),
   })
   .superRefine((article, context) => {
     const ids = new Set(article.blocks.map((block) => block.id));

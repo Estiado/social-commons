@@ -24,6 +24,11 @@ const fromRow = (row: ExampleRow): EssayExample => ({
 });
 
 export function RecommendedMaterials({ conceptId }: { conceptId: string }) {
+  // Changing concepts resets the local form and results as one component unit.
+  return <ConceptRecommendations key={conceptId} conceptId={conceptId} />;
+}
+
+function ConceptRecommendations({ conceptId }: { conceptId: string }) {
   const { account } = useAccount();
   const [examples, setExamples] = useState(() =>
     ESSAY_EXAMPLES.filter((item) => item.conceptId === conceptId),
@@ -34,6 +39,7 @@ export function RecommendedMaterials({ conceptId }: { conceptId: string }) {
   const [editing, setEditing] = useState<EssayExample | 'new' | null>(null);
   useEffect(() => {
     let active = true;
+    const bundled = ESSAY_EXAMPLES.filter((item) => item.conceptId === conceptId);
     if (!supabase) return;
     void (async () => {
       const { data, error } = await supabase
@@ -41,7 +47,14 @@ export function RecommendedMaterials({ conceptId }: { conceptId: string }) {
         .select('id,concept_id,title,content,source,source_url,usage_hint')
         .eq('concept_id', conceptId)
         .order('created_at');
-      if (active && !error && data) setExamples(data.map(fromRow));
+      if (error) throw error;
+      if (active && data) {
+        // The site catalogue can be newer than its optional database seed.
+        // Remote edits replace the same ID without erasing new bundled items.
+        const merged = new Map(bundled.map((item) => [item.id, item]));
+        for (const item of data.map(fromRow)) merged.set(item.id, item);
+        setExamples([...merged.values()]);
+      }
       if (account) {
         const result = await supabase
           .from('site_editors')

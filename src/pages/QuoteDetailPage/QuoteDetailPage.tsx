@@ -12,7 +12,15 @@ export default function QuoteDetailPage() {
       </Link>
       {quote ? (
         <>
-          <h1 className="font-serif text-3xl font-semibold leading-relaxed">{quote.text}</h1>
+          <h1 className="font-serif text-3xl font-semibold leading-relaxed">
+            {quote.title || quote.source}
+          </h1>
+          <p className="my-4 text-muted-foreground">{quote.author}</p>
+          {quote.canonicalId && (
+            <p className="mb-4 text-sm text-muted-foreground">
+              同一作品已合并整理，原有链接仍可使用。
+            </p>
+          )}
           <ContentReader kind="quote" id={quote.id} />
         </>
       ) : (

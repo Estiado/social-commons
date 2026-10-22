@@ -9,12 +9,8 @@ import {
   type ArticleDocument,
   type ReadingRecord,
 } from './model';
-import {
-  contentUrl,
-  loadContentDocument,
-  versionContentDocument,
-  type ContentKind,
-} from './contentDocuments';
+import { loadContentDocument, type ContentKind } from './contentDocuments';
+import { resolveCatalogueReading } from './catalogueReading';
 import { getGuestArticleByUrl, saveGuestArticle, saveLocalReading } from './guestRepository';
 
 /** A catalogue page and the private reader share exactly the same text blocks,
@@ -33,25 +29,29 @@ export function ContentReader({
   const [loadedKey, setLoadedKey] = useState('');
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
+  const [olderId, setOlderId] = useState<string>();
   const key = `${kind}:${id}`;
   useEffect(() => {
     let active = true;
     void (async () => {
       let existing: ReadingRecord | undefined;
       let storageNotice = '';
-      const suppliedSnapshot = supplied ? await versionContentDocument(supplied) : undefined;
+      let document = supplied || (await loadContentDocument(kind, id));
+      let previousId: string | undefined;
       try {
-        existing = await getGuestArticleByUrl(suppliedSnapshot?.url || contentUrl(kind, id));
+        const resolved = await resolveCatalogueReading(document, getGuestArticleByUrl);
+        document = resolved.document;
+        existing = resolved.existing;
+        previousId = resolved.olderId;
       } catch {
         storageNotice = '当前浏览器无法读取本地存储，仍可阅读和导出；收藏前请检查浏览器设置。';
       }
-      const document =
-        existing?.document || suppliedSnapshot || (await loadContentDocument(kind, id));
       if (active) {
         setRecord(existing || { document, annotations: [], revision: 0, expiresAt: null });
         setSavedId(existing?.document.id || '');
         setLoadedKey(key);
         setNotice(storageNotice);
+        setOlderId(previousId);
       }
     })().catch((error) => {
       if (active) {
@@ -156,6 +156,14 @@ export function ContentReader({
       {notice && (
         <p role="status" className="text-sm text-accent">
           {notice}
+        </p>
+      )}
+      {olderId && (
+        <p className="text-sm text-muted-foreground">
+          这里展示更新后的内容。
+          <Link className="ml-1 text-accent underline" to={`/reading/${olderId}`}>
+            查看已保存的旧版和划线
+          </Link>
         </p>
       )}
       {record && (

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { getTodayKnowledge } from '@/data/daily';
 import { EVENTS } from '@/data/events';
-import { QUOTES } from '@/data/quotes';
+import { QUOTE_CATALOGUE as QUOTES } from '@/data/quotes';
 import { TOPIC_SPECIALS } from '@/data/topicSpecials';
 import { CURATED_COMMENTARIES } from '@/data/curatedCommentaries';
 import type { IQuote } from '@/data/types';
@@ -44,13 +44,19 @@ export default function HomePage() {
             <div className="flex items-center gap-2 mb-8">
               <Feather className="h-4 w-4 text-accent" />
               <span className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
-                今日一句 ·{' '}
+                今日摘读 ·{' '}
                 {new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
               </span>
             </div>
-            <blockquote className="font-serif text-3xl md:text-5xl font-medium leading-relaxed text-foreground mb-8">
-              "{heroQuote.text}"
+            <blockquote className="whitespace-pre-line font-serif text-2xl md:text-4xl font-medium leading-relaxed text-foreground mb-8">
+              {heroQuote.text.length > 100 ? `${heroQuote.text.slice(0, 96)}……` : heroQuote.text}
             </blockquote>
+            <Link
+              className="mb-6 inline-block text-sm text-accent underline"
+              to={`/quotes/${heroQuote.id}`}
+            >
+              阅读全文与有出处的解读
+            </Link>
             <div className="flex items-center gap-3">
               <div className="h-px w-12 bg-accent/60" />
               <div>

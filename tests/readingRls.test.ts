@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
 import { parsePlainArticle } from '../src/features/reading/parseArticle.ts';
 import { CURATED_COMMENTARIES } from '../src/data/curatedCommentaries.ts';
+import { ESSAY_EXAMPLES } from '../src/data/essayExamples.ts';
 
 test('在独立 PostgreSQL 测试运行时执行迁移，验证两个账号、匿名账号和未登录角色的隔离', async () => {
   const database = new PGlite();
@@ -16,46 +17,133 @@ test('在独立 PostgreSQL 测试运行时执行迁移，验证两个账号、�
       create function auth.jwt() returns jsonb language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claims', true), '')::jsonb, '{}'::jsonb) $$;
       create function auth.uid() returns uuid language sql stable as $$ select (auth.jwt() ->> 'sub')::uuid $$;
       grant usage on schema auth to authenticated, anon;`);
-    await database.exec(await readFile(new URL('../supabase/migrations/202610210001_reading_workspace.sql', import.meta.url), 'utf8'));
+    await database.exec(
+      await readFile(
+        new URL('../supabase/migrations/202610210001_reading_workspace.sql', import.meta.url),
+        'utf8',
+      ),
+    );
     const identity = async (id: string, anonymous = false) => {
       await database.exec('reset role;');
-      await database.query('select set_config($1, $2, false)', ['request.jwt.claims', JSON.stringify({ sub: id, is_anonymous: anonymous })]);
+      await database.query('select set_config($1, $2, false)', [
+        'request.jwt.claims',
+        JSON.stringify({ sub: id, is_anonymous: anonymous }),
+      ]);
       await database.exec('set role authenticated;');
     };
     const article = parsePlainArticle('这是一篇需要严格隔离的私人文章。');
     await identity(owner);
-    await database.query('insert into public.reading_documents(id, document) values ($1, $2)', [article.id, article]);
+    await database.query('insert into public.reading_documents(id, document) values ($1, $2)', [
+      article.id,
+      article,
+    ]);
     assert.equal((await database.query('select id from public.reading_documents')).rows.length, 1);
     await identity(other);
     assert.equal((await database.query('select id from public.reading_documents')).rows.length, 0);
-    assert.equal((await database.query('update public.reading_documents set revision = 2 where id = $1 returning id', [article.id])).rows.length, 0);
-    await assert.rejects(database.query('insert into public.reading_documents(id, owner_id, document) values ($1, $2, $3)', [crypto.randomUUID(), owner, article]));
+    assert.equal(
+      (
+        await database.query(
+          'update public.reading_documents set revision = 2 where id = $1 returning id',
+          [article.id],
+        )
+      ).rows.length,
+      0,
+    );
+    await assert.rejects(
+      database.query(
+        'insert into public.reading_documents(id, owner_id, document) values ($1, $2, $3)',
+        [crypto.randomUUID(), owner, article],
+      ),
+    );
     await identity(owner, true);
     assert.equal((await database.query('select id from public.reading_documents')).rows.length, 0);
-    await assert.rejects(database.query('insert into public.reading_documents(id, document) values ($1, $2)', [article.id, article]));
+    await assert.rejects(
+      database.query('insert into public.reading_documents(id, document) values ($1, $2)', [
+        article.id,
+        article,
+      ]),
+    );
     await database.exec('reset role; set role anon;');
     await assert.rejects(database.query('select * from public.reading_documents'));
     await identity(owner);
-    assert.equal((await database.query('update public.reading_documents set revision = 2 where id = $1 and revision = 1 returning id', [article.id])).rows.length, 1);
-    assert.equal((await database.query('update public.reading_documents set revision = 2 where id = $1 and revision = 1 returning id', [article.id])).rows.length, 0);
-    await assert.rejects(database.query("insert into public.reading_submissions(title,url,status) values ('绕过审核', 'https://thepaper.cn/a', 'approved')"));
+    assert.equal(
+      (
+        await database.query(
+          'update public.reading_documents set revision = 2 where id = $1 and revision = 1 returning id',
+          [article.id],
+        )
+      ).rows.length,
+      1,
+    );
+    assert.equal(
+      (
+        await database.query(
+          'update public.reading_documents set revision = 2 where id = $1 and revision = 1 returning id',
+          [article.id],
+        )
+      ).rows.length,
+      0,
+    );
+    await assert.rejects(
+      database.query(
+        "insert into public.reading_submissions(title,url,status) values ('绕过审核', 'https://thepaper.cn/a', 'approved')",
+      ),
+    );
     await database.exec('reset role;');
-    await database.exec(await readFile(new URL('../supabase/migrations/202610220001_essay_examples.sql', import.meta.url), 'utf8'));
-    await database.exec(await readFile(new URL('../supabase/seeds/essay_examples.sql', import.meta.url), 'utf8'));
-    await database.exec(await readFile(new URL('../supabase/seeds/reading_catalogue.sql', import.meta.url), 'utf8'));
+    await database.exec(
+      await readFile(
+        new URL('../supabase/migrations/202610220001_essay_examples.sql', import.meta.url),
+        'utf8',
+      ),
+    );
+    await database.exec(
+      await readFile(new URL('../supabase/seeds/essay_examples.sql', import.meta.url), 'utf8'),
+    );
+    await database.exec(
+      await readFile(new URL('../supabase/seeds/reading_catalogue.sql', import.meta.url), 'utf8'),
+    );
     await database.query('insert into public.site_editors(user_id) values ($1)', [owner]);
     await identity(owner);
-    await database.query("insert into public.essay_examples(id,concept_id,title,content,source) values ('editor-test','e1','站方素材','经过审核的正文','测试来源')");
+    await database.query(
+      "insert into public.essay_examples(id,concept_id,title,content,source) values ('editor-test','e1','站方素材','经过审核的正文','测试来源')",
+    );
     await identity(other);
     assert.equal((await database.query('select * from public.site_editors')).rows.length, 0);
-    await assert.rejects(database.query('insert into public.site_editors(user_id) values ($1)', [other]));
-    await assert.rejects(database.query("insert into public.essay_examples(id,concept_id,title,content,source) values ('forged','e1','伪造','正文','来源')"));
-    assert.equal((await database.query("update public.essay_examples set title='篡改' where id='editor-test' returning id")).rows.length, 0);
+    await assert.rejects(
+      database.query('insert into public.site_editors(user_id) values ($1)', [other]),
+    );
+    await assert.rejects(
+      database.query(
+        "insert into public.essay_examples(id,concept_id,title,content,source) values ('forged','e1','伪造','正文','来源')",
+      ),
+    );
+    assert.equal(
+      (
+        await database.query(
+          "update public.essay_examples set title='篡改' where id='editor-test' returning id",
+        )
+      ).rows.length,
+      0,
+    );
     await identity(owner, true);
-    await assert.rejects(database.query("insert into public.essay_examples(id,concept_id,title,content,source) values ('anonymous','e1','匿名','正文','来源')"));
+    await assert.rejects(
+      database.query(
+        "insert into public.essay_examples(id,concept_id,title,content,source) values ('anonymous','e1','匿名','正文','来源')",
+      ),
+    );
     await database.exec('reset role; set role anon;');
-    assert.equal((await database.query('select * from public.essay_examples')).rows.length, 3);
-    assert.equal((await database.query('select * from public.reading_catalogue')).rows.length, CURATED_COMMENTARIES.length);
-    await assert.rejects(database.query("delete from public.essay_examples where id='editor-test'"));
-  } finally { await database.close(); }
+    assert.equal(
+      (await database.query('select * from public.essay_examples')).rows.length,
+      ESSAY_EXAMPLES.length + 1,
+    );
+    assert.equal(
+      (await database.query('select * from public.reading_catalogue')).rows.length,
+      CURATED_COMMENTARIES.length,
+    );
+    await assert.rejects(
+      database.query("delete from public.essay_examples where id='editor-test'"),
+    );
+  } finally {
+    await database.close();
+  }
 });

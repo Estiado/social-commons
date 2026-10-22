@@ -1,8 +1,10 @@
 import type { IEvent } from './types';
+import { PUBLIC_LIFE_EVENTS } from './history/publicLife.ts';
 
 // EXPORTS: EVENTS, getEventById
 
 export const EVENTS: IEvent[] = [
+  ...PUBLIC_LIFE_EVENTS,
   {
     id: 'mayflower-1620',
     title: '五月花号登陆与《五月花公约》',
@@ -42,7 +44,8 @@ export const EVENTS: IEvent[] = [
           '五月花号抵达时，万帕诺亚格人（Wampanoag）正处于一场巨大的创伤之后。1616至1618年，欧洲渔民和商人带来的传染病（可能是腺鼠疫或肝炎）席卷新英格兰沿岸，万帕诺亚格人口锐减约90%。大酋长马萨索伊特（Massasoit）面临着来自西部纳拉甘西特人的威胁——后者未受瘟疫影响，实力相对完整。在这种背景下，马萨索伊特做出了一个战略选择：与新来的英国人结盟，利用他们的火器和贸易物品来制衡敌对部落。1621年3月，双方签订了和平互助条约。这个联盟维持了约五十年，但随着殖民者人口增长和土地扩张，矛盾最终在1675年的"菲利普国王战争"中总爆发。',
         quote:
           '万帕诺亚格人在瘟疫后对英国人的友好，并非出于天真或善意，而是一种经过深思熟虑的战略计算——一个经历了人口崩溃的民族，在强敌环伺之下做出的生存选择。',
-        source: 'Alyson J. Fink, "Psychological Conquest: Pilgrims, Indians and the Plague of 1616-1618"',
+        source:
+          'Alyson J. Fink, "Psychological Conquest: Pilgrims, Indians and the Plague of 1616-1618"',
         sourceType: '后世研究',
       },
       {
@@ -60,7 +63,8 @@ export const EVENTS: IEvent[] = [
         title: '从公约到神话：一个事件的多重面孔',
         description:
           '学者指出，《五月花公约》的意义并非在签署时就被充分认识，而是在后世被不断建构和放大。19世纪的浪漫主义者将其塑造成"美国精神的起源"；20世纪初，它被用来强化盎格鲁-撒克逊种族认同；而在后殖民史学的视野下，公约的"自治"只属于那41名签署的白人男性——妇女、儿童、仆人和原住民都被排除在外。李世洞等学者考证指出，公约实际签订于科德角（普罗温斯敦），而非普利茅斯海岸，但许多通俗读物长期混淆了这一地理细节。普利茅斯岩——那个被视为"登陆点"的巨石——在18世纪才被赋予象征意义，其本身并无可靠的历史证据证明是实际登陆处。',
-        source: '李世洞《〈五月花公约〉考实》；Tom Hulme, "The Mayflower and Historical Culture in Britain"',
+        source:
+          '李世洞《〈五月花公约〉考实》；Tom Hulme, "The Mayflower and Historical Culture in Britain"',
         sourceType: '后世研究',
       },
     ],
@@ -104,8 +108,7 @@ export const EVENTS: IEvent[] = [
         authors: ['朱世广'],
         year: 1999,
         venue: '拉丁美洲研究',
-        abstract:
-          '从内部分裂、宗教愚弄、疾病传入等角度分析印第安人被欧洲殖民者征服的深层原因。',
+        abstract: '从内部分裂、宗教愚弄、疾病传入等角度分析印第安人被欧洲殖民者征服的深层原因。',
         externalId: '7bb64f3a-845c-441b-83da-dac44439e12a',
         pdfDownloadable: true,
       },
@@ -127,7 +130,8 @@ export const EVENTS: IEvent[] = [
         venue: 'University of Hawaii at Manoa',
         abstract:
           '通过比较受瘟疫影响的万帕诺亚格人与未受影响的纳拉甘西特人对殖民者的不同反应，论证1616-1618年瘟疫造成的心理创伤如何塑造了原住民最初的友好态度。',
-        downloadUrl: 'https://scholarspace.manoa.hawaii.edu/bitstreams/159f938b-1c9a-44d9-b09b-c81b19359b79/download',
+        downloadUrl:
+          'https://scholarspace.manoa.hawaii.edu/bitstreams/159f938b-1c9a-44d9-b09b-c81b19359b79/download',
       },
     ],
     references: [
@@ -185,8 +189,7 @@ export const EVENTS: IEvent[] = [
         title: '宗教不是简单退场，而是在理性挑战中变形',
         description:
           '启蒙运动常被描述为"宗教的敌人"，但实际情况要复杂得多。法国启蒙中确实有拉美特利、霍尔巴赫等战斗无神论者，但更多启蒙思想家是自然神论者——他们否定教会的权威和神迹，但承认上帝作为"钟表匠"创造了宇宙。伏尔泰就说："即使没有上帝，也必须造出一个来。"另一方面，宗教内部也在回应启蒙的挑战：新教中的虔敬主义（斯彭内尔、亲岑道夫）强调个人的宗教体验和情感，反对理性化的教条；天主教内部的詹森主义、费布朗尼乌主义则要求教会改革和权力下放。学者王兴指出，启蒙运动对宗教的批判反而促进了宗教的自我革新——政教分离、宗教宽容、信仰私人化，这些现代宗教格局正是在启蒙与宗教的互动中形成的。',
-        quote:
-          '在上帝存在的这种观点中，存在着难题；但在相反的观点（上帝不存在）中，则存在着荒谬。',
+        quote: '在上帝存在的这种观点中，存在着难题；但在相反的观点（上帝不存在）中，则存在着荒谬。',
         source: '伏尔泰《哲学辞典》，1764年',
         sourceType: '史料记载',
       },
@@ -272,7 +275,13 @@ export const EVENTS: IEvent[] = [
       {
         id: 'epaper7',
         title: 'The German Enlightenment',
-        authors: ['Thomas Ahnert', 'Élisabeth Décultot', 'Simon Grote', 'Iwan-Michelangelo D\'Aprile', 'Avi S. Lifschitz'],
+        authors: [
+          'Thomas Ahnert',
+          'Élisabeth Décultot',
+          'Simon Grote',
+          "Iwan-Michelangelo D'Aprile",
+          'Avi S. Lifschitz',
+        ],
         year: 2017,
         venue: 'German History',
         abstract:
@@ -281,7 +290,8 @@ export const EVENTS: IEvent[] = [
       },
       {
         id: 'epaper8',
-        title: 'Reasoning with Savages: The Anthropological Imagination of the Scottish Enlightenment',
+        title:
+          'Reasoning with Savages: The Anthropological Imagination of the Scottish Enlightenment',
         authors: ['Randall Joseph Holt'],
         year: 2016,
         venue: 'eScholarship (University of California)',
@@ -325,8 +335,7 @@ export const EVENTS: IEvent[] = [
         title: '在财富增长的同时，贫穷也在大量增加',
         description:
           '工业革命对工人阶级来说，是一场漫长的苦难。工厂制度把人变成了机器的附属品——工人必须按照机器的节奏工作，每天12到16小时，每周6天，没有休息日。童工尤为悲惨：7、8岁的孩子就在纺织厂做工，因为他们的手指灵巧，可以钻进机器下面接线头，工资却只有成人的三分之一。1842年的一份议会调查报告显示，在煤矿里，儿童和妇女赤身裸体地在黑暗中拉煤车，"他们的膝盖和手肘都磨出了厚茧，背上有深深的勒痕"。城市居住条件同样恶劣：曼彻斯特的工人区，几十个人挤在一间屋子里，没有下水道，没有清洁水源，霍乱和伤寒定期爆发。史学界长期存在"悲观派"与"乐观派"之争——悲观派（汤恩比、哈孟德夫妇、汤普森）认为工人生活水平绝对恶化；乐观派（克拉潘、艾什顿）则认为实际工资在上升。但正如学者王章辉所指出的，这场争论本身就说明问题：即使乐观派也不否认，工人阶级承受了巨大的苦难，只是争论这种苦难是不是"值得"。',
-        quote:
-          '在财富巨额增长的同时，你可以看到贫穷的大量增加。',
+        quote: '在财富巨额增长的同时，你可以看到贫穷的大量增加。',
         source: '汤恩比《十八世纪英国工业革命演讲集》',
         sourceType: '后世研究',
       },
