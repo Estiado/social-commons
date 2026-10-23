@@ -12,7 +12,11 @@
 - npm官方源全依赖审计为0项：移除未使用ECharts依赖，兼容更新构建依赖，约束选择器解析器补丁。版本控制文件扫描未发现实际service_role/secret或私钥。该结果不等于渗透测试或永远无漏洞；未做并发压测。
 - 生产Supabase实际只读审计确认：7张现有新旧表启用RLS；reading_documents由owner_id限制本人且排除匿名身份；站方示例写入受site_editors限制。旧articles/article_paragraphs曾有任意INSERT策略、段落SELECT为true，且客户端角色有TRUNCATE等多余权限。用户明确批准后，202610230001实际执行成功；核验anon/authenticated的两张表均可SELECT，INSERT/UPDATE/DELETE/TRUNCATE均为false，RLS均为true。匿名直接读取reading_documents实际返回42501权限拒绝。没有重跑init.sql、删除数据或执行覆盖式种子。
 - 首次GitHub Ubuntu检查为63/64，失败原因为Git换行规范化改变了电子书字节。新增.gitattributes对原始TXT禁用文本换行转换，重新加入原文件并验证清单；此为真实CI发现并修复的问题，不放宽散列测试。
-- 本节发布SHA、线上数据库修复与Cloudflare正式站验收在实际完成后追加，不从本地测试推断。
+- 生产匿名角色实际可见2篇旧公共文章、35个公开段落，私人段落为0；authenticated无用户身份时私人段落和reading_documents均为0。角色核验为事务内SET LOCAL ROLE后回滚，不创建用户、不修改正文；不是两位真实登录用户的端到端验收。证据在D盘 `.artifacts/production-rls-*`。
+- 两次功能提交经 [PR #4](https://github.com/Estiado/social-commons/pull/4) 合并，main为 `6caf43ff4075d42c0041e32b9b4e1e61de51af02`，已fetch并快进本机。PR最终Ubuntu检查成功（52秒），[主分支CI](https://github.com/Estiado/social-commons/actions/runs/39921831819) 与Cloudflare Pages均为completed/success。Code Review连接器本轮成功读取对应head的检查和失败日志；此为CI诊断，不冒充独立人工代码审查。
+- 正式站Edge实际验收：素材页显示52条、分类下拉；手机390×844搜索“社会”显示24条，并将焦点移到搜索结果。截图D盘 `.artifacts/beta-production-mobile-materials.png`。正式站q82实读上下片与教育局赏析及题名链接，保存文章、收藏首段显示mark与成功状态。
+- 正式站内置浏览器实际将q82首段单独编成文稿“正式站验收 · 赤壁摘读”，新文稿仅含所选上片、署名与题名链接；返回列表后标题仍存在，旧三篇文章与原摘录保留。390×844正文宽375px、正文默认16px、标题输入20px，排版设置与更多均折叠；截图 `.artifacts/beta-production-mobile-editor.png`。页脚“数据与备份”实际定位并展开可恢复备份；反馈复制实际显示“尚未发送”。本轮新增测试条目均另存，不覆盖原内容。
+- 源码资料字节校验、部署成功和真实浏览器验收分别记录；现代文献不能确认整本镜像许可或下载失败时仍使用出版源链接。微信、SMTP、账号同步继续延期；没有在生产执行站方示例覆盖式种子。
 
 ## 全站扩容与常用文稿样式 · 2026-10-22
 
