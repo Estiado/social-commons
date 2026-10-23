@@ -186,8 +186,7 @@ export function WritingEditor({ initial }: { initial: WritingDraft }) {
           </Button>
         </div>
       </div>
-      <p className="mb-3 text-xs tracking-widest text-accent">MY WRITING DESK</p>
-      <h1 className="mb-4 font-serif text-2xl font-semibold">编辑文稿</h1>
+      <h1 className="sr-only">编辑文稿</h1>
       <Input
         aria-label="文稿标题"
         maxLength={500}
@@ -200,21 +199,24 @@ export function WritingEditor({ initial }: { initial: WritingDraft }) {
         className="mb-3 h-auto py-3 font-serif text-xl"
       />
       <p role="status" className="mb-4 text-xs text-muted-foreground">
-        {status} · 编辑的是独立副本，原文及原有划线保留。
+        {status}
       </p>
       {notice && (
         <p role="status" className="mb-4 rounded-sm border border-accent/30 p-3 text-sm">
           {notice}
         </p>
       )}
-      <DocumentStyleControls
-        value={typography}
-        onChange={(value) => {
-          typographyRef.current = value;
-          setTypography(value);
-          changed();
-        }}
-      />
+      <details className="mb-4 rounded-sm border px-3 py-2">
+        <summary className="cursor-pointer text-sm">排版设置</summary>
+        <DocumentStyleControls
+          value={typography}
+          onChange={(value) => {
+            typographyRef.current = value;
+            setTypography(value);
+            changed();
+          }}
+        />
+      </details>
       {editor && <EditorToolbar editor={editor} />}
       <div
         className="mt-5 border bg-card px-5 py-8 shadow-sm md:px-14 md:py-12"

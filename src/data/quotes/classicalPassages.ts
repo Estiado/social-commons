@@ -12,7 +12,7 @@ export const CLASSICAL_PASSAGES: Omit<IQuote, 'commentary'>[] = [
     source: '《长干行》二首',
     text: '君家何处住，妾住在横塘。\n停船暂借问，或恐是同乡。\n\n家临九江水，来去九江侧。\n同是长干人，生小不相识。',
     sourceUrl: 'https://www.chinawriter.com.cn/n1/2019/0114/c405074-30535628.html',
-    context: '两首合读，保留船家女子发问与男子回答的对话。所列书摘附蒙曼的具体解读。',
+    context: '两首诗一问一答，写出江上相逢时从试探到认出同乡的语气变化。',
   },
   {
     id: 'q52',

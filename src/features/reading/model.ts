@@ -14,6 +14,22 @@ const textBlockSchema = z.object({
   level: z.number().int().min(1).max(4).optional(),
   alignment: z.enum(['left', 'center', 'right', 'justify']).optional(),
   listOrder: z.number().int().min(1).max(9999).optional(),
+  resource: z
+    .object({
+      title: z.string().min(1).max(500),
+      url: z
+        .url()
+        .max(2048)
+        .refine((url) => /^https?:\/\//i.test(url)),
+      sourceUrl: z
+        .url()
+        .max(2048)
+        .refine((url) => /^https?:\/\//i.test(url)),
+      format: z.enum(['PDF', 'TXT', '网页']),
+      edition: z.string().max(500),
+      license: z.string().max(500).optional(),
+    })
+    .optional(),
   spans: z
     .array(
       z.object({

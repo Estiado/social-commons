@@ -64,8 +64,6 @@
     "date-fns": "^4.1.0",
     "docx": "^9.13.0",
     "domhandler": "^6.0.1",
-    "echarts": "~5.6.0",
-    "echarts-for-react": "~3.0.2",
     "embla-carousel-react": "^8.6.0",
     "fflate": "^0.8.3",
     "framer-motion": "^12.38.0",
@@ -110,6 +108,9 @@
     "typescript": "~5.9",
     "typescript-eslint": "^8",
     "vite": "^8"
+  },
+  "overrides": {
+    "postcss-selector-parser": "^7.1.6"
   },
   "engines": {
     "node": ">=22.18.0"

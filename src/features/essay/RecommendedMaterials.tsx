@@ -18,7 +18,12 @@ interface ExampleRow {
   usage_hint: string;
 }
 const fromRow = (row: ExampleRow): EssayExample => ({
-  ...materialFieldsSchema.parse({ ...row, sourceUrl: row.source_url, usageHint: row.usage_hint }),
+  ...materialFieldsSchema.parse({
+    ...row,
+    source: row.source.replace(/[；，]\s*非(?:逐字引语|原文引语|原话)[。]?/gu, ''),
+    sourceUrl: row.source_url,
+    usageHint: row.usage_hint,
+  }),
   id: row.id,
   conceptId: row.concept_id,
 });

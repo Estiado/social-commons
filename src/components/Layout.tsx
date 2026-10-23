@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
 import {
   BookOpen,
   Calendar,
@@ -25,6 +25,7 @@ const NAV_ITEMS = [
 ];
 
 export function Layout() {
+  const location = useLocation();
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   useEffect(() => {
@@ -121,6 +122,13 @@ export function Layout() {
                 {item.label}
               </NavLink>
             ))}
+            <Link
+              to={'/feedback?page=' + encodeURIComponent(location.pathname)}
+              onClick={() => setMobileOpen(false)}
+              className="rounded-sm border p-3 text-center text-sm text-muted-foreground"
+            >
+              内测反馈
+            </Link>
           </nav>
         )}
       </header>
@@ -142,6 +150,17 @@ export function Layout() {
           <p className="mt-5 text-xs text-muted-foreground">
             本站内容仅供学习交流，引用请核对原始出处。个人文章与摘录保存在当前浏览器。
           </p>
+          <div className="mt-4 flex gap-5 text-sm">
+            <Link
+              to={'/feedback?page=' + encodeURIComponent(location.pathname)}
+              className="text-accent underline"
+            >
+              内测反馈
+            </Link>
+            <Link to="/reading?tab=legacy" className="text-muted-foreground underline">
+              数据与备份
+            </Link>
+          </div>
         </div>
       </footer>
       {searchOpen && (

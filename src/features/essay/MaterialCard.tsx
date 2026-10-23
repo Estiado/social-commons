@@ -2,6 +2,7 @@ import { useMemo, type ReactNode } from 'react';
 import type { MaterialFields } from './materials';
 import { ContentReader } from '@/features/reading/ContentReader';
 import { createContentDocument, SITE_ORIGIN } from '@/features/reading/contentDocuments';
+import { referenceParagraph } from '@/features/reading/references';
 
 export function MaterialCard({
   material,
@@ -22,10 +23,9 @@ export function MaterialCard({
         [
           { type: 'heading', level: 2, text: material.title },
           { type: 'paragraph', text: material.content },
-          {
-            type: 'paragraph',
-            text: `来源：${material.source}${material.sourceUrl ? `\n原始来源：${material.sourceUrl}` : ''}`,
-          },
+          material.sourceUrl
+            ? referenceParagraph(material.source, material.sourceUrl, '来源：')
+            : { type: 'paragraph', text: `来源：${material.source}` },
           ...(material.usageHint
             ? [
                 {

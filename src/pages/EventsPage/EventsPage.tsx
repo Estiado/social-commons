@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Landmark, BookOpen, MapPin, Calendar, ArrowRight, Search } from 'lucide-react';
 import { useState } from 'react';
 import { EVENTS } from '@/data/events';
+import { HISTORY_READINGS } from '@/data/history/readings';
 
 export default function EventsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -10,7 +11,7 @@ export default function EventsPage() {
     (e) =>
       e.title.includes(searchQuery) ||
       e.summary.includes(searchQuery) ||
-      e.category.includes(searchQuery)
+      e.category.includes(searchQuery),
   );
 
   return (
@@ -19,7 +20,9 @@ export default function EventsPage() {
       <div className="mb-10">
         <div className="flex items-center gap-2 mb-3">
           <Landmark className="h-4 w-4 text-accent" />
-          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Events · 群鉴</span>
+          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+            Events · 群鉴
+          </span>
         </div>
         <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">群鉴</h1>
         <p className="text-muted-foreground max-w-2xl leading-relaxed">
@@ -74,7 +77,16 @@ export default function EventsPage() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Landmark className="h-3.5 w-3.5" />
-                    {event.academicPapers.length} 篇学术文献
+                    {
+                      new Set(
+                        event.perspectives.flatMap((view) =>
+                          view.readingId && HISTORY_READINGS[view.readingId]?.file
+                            ? [view.readingId]
+                            : [],
+                        ),
+                      ).size
+                    }{' '}
+                    份电子文献
                   </span>
                 </div>
                 <span className="flex items-center gap-1 text-sm text-accent opacity-0 group-hover:opacity-100 transition-opacity">

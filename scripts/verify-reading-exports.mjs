@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { build } from 'vite';
 import { parseArticleHtml } from '../src/features/reading/parseArticle.ts';
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, PDFName } from 'pdf-lib';
 import { unzipSync, strFromU8 } from 'fflate';
 
 await build({
@@ -67,6 +67,16 @@ const parsed = await PDFDocument.load(pdf.bytes);
 assert.ok(parsed.getPageCount() > 1);
 assert.equal(parsed.getTitle(), article.title);
 assert.ok(pdf.bytes.byteLength > 1000);
+const destinations = parsed.getPages().flatMap((page) =>
+  (page.node.Annots()?.asArray() || []).flatMap((ref) => {
+    const annotation = parsed.context.lookup(ref);
+    const action = annotation.get(PDFName.of('A'));
+    const uri = action?.get(PDFName.of('URI'));
+    return uri ? [uri.decodeText()] : [];
+  }),
+);
+assert.ok(destinations.includes('https://example.com/source'));
+assert.ok(destinations.includes(article.url));
 const { buildArticleDocx } = await import('../.artifacts/reading-export-build/word.mjs');
 const word = await buildArticleDocx(article);
 const wordBytes = new Uint8Array(await word.blob.arrayBuffer());

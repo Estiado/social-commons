@@ -1,0 +1,122 @@
+export interface HistoryReading {
+  title: string;
+  url: string;
+  format: 'PDF' | 'TXT' | '网页';
+  edition: string;
+  file?: string;
+  license?: string;
+}
+
+/** A local file is listed only after its signature and text have been checked.
+ * Author-hosted papers without a redistribution licence keep their source URL. */
+export const HISTORY_READINGS: Record<string, HistoryReading> = {
+  'declaration-transcript': {
+    title: '《独立宣言》完整转录',
+    url: 'https://www.archives.gov/founding-docs/declaration-transcript',
+    format: '网页',
+    edition: '美国国家档案馆，Stone 刻印本转录',
+  },
+  'adams-ladies': {
+    title: '阿比盖尔·亚当斯：1776年3月31日至4月5日书信',
+    url: 'https://chnm.gmu.edu/mcpstah/wordpress/wp-content/themes/tah/files/adams_remember-the-ladies_1776.pdf',
+    format: 'PDF',
+    edition: '马萨诸塞历史学会电子档案转录，4页',
+  },
+  'udhr-chinese': {
+    title: '《世界人权宣言》中文本',
+    url: 'https://2017-2021.state.gov/wp-content/uploads/2020/04/CHN-Universal-Declaration-of-Human-Rights.pdf',
+    format: 'PDF',
+    edition: '联合国中文本，美国国务院存档',
+  },
+  'bradford-plymouth': {
+    title: '布拉福德《普利茅斯殖民史》',
+    url: 'https://www.gutenberg.org/ebooks/69871',
+    format: 'TXT',
+    edition: 'Harold Paget 整理本，1920；英文全本',
+    file: 'bradford-plymouth.txt',
+    license: 'Project Gutenberg；保留原版许可说明',
+  },
+  'smith-wealth': {
+    title: '亚当·斯密《国富论》',
+    url: 'https://www.gutenberg.org/ebooks/3300',
+    format: 'TXT',
+    edition: '英文全本，Project Gutenberg #3300',
+    file: 'smith-wealth.txt',
+    license: 'Project Gutenberg；保留原版许可说明',
+  },
+  'wollstonecraft-rights': {
+    title: '沃斯通克拉夫特《女权辩护》',
+    url: 'https://www.gutenberg.org/ebooks/3420',
+    format: 'TXT',
+    edition: '英文全本，Project Gutenberg #3420',
+    file: 'wollstonecraft-rights.txt',
+    license: 'Project Gutenberg；保留原版许可说明',
+  },
+  'engels-workers': {
+    title: '恩格斯《英国工人阶级状况》',
+    url: 'https://www.gutenberg.org/ebooks/17306',
+    format: 'TXT',
+    edition: 'Florence Kelley 英译，1892年版；英文全本',
+    file: 'engels-workers.txt',
+    license: 'Project Gutenberg；保留原版许可说明',
+  },
+  'faxian-kingdoms': {
+    title: '法显《佛国记》',
+    url: 'https://www.gutenberg.org/ebooks/2124',
+    format: 'TXT',
+    edition: 'James Legge 英译，1886；英文全本',
+    file: 'faxian-kingdoms.txt',
+    license: 'Project Gutenberg；保留原版许可说明',
+  },
+  'seneca-report': {
+    title: '1848年妇女权利会议报告',
+    url: 'https://www.nps.gov/wori/learn/historyculture/report-of-the-womans-rights-convention.htm',
+    format: '网页',
+    edition: '美国国家公园管理局完整转录',
+  },
+  'cdc-snow-2004': {
+    title: '斯诺与水泵把手事件150周年',
+    url: 'https://stacks.cdc.gov/view/cdc/28527',
+    format: 'PDF',
+    edition: 'MMWR 2004年第53卷34期，整期24页；本文在第783页',
+    file: 'cdc-snow-2004.pdf',
+    license: '美国政府公共卫生出版物；保留原出版信息',
+  },
+  'loc-printing-2023': {
+    title: '国会图书馆杂志：百万塔与经咒',
+    url: 'https://www.loc.gov/lcm/pdf/LCM_2023_0102.pdf',
+    format: 'PDF',
+    edition: '2023年1—2月，整期32页；本文在纸面第5页',
+  },
+  'jikji-nomination': {
+    title: '《直指》世界记忆名录申报表',
+    url: 'https://media.unesco.org/sites/default/files/webform/mow001/korea_buljo_jikj_simch_yo_jeol.pdf',
+    format: 'PDF',
+    edition: '英文申报原件，13页',
+  },
+  'ozone-assessment-2022': {
+    title: '2022年臭氧消耗科学评估：执行摘要',
+    url: 'https://ozone.unep.org/system/files/documents/Scientific-Assessment-of-Ozone-Depletion-2022-Executive-Summary.pdf',
+    format: 'PDF',
+    edition: 'WMO GAW Report No.278；英文原版，57页',
+  },
+  'allen-engels-pause': {
+    title: 'Robert C. Allen：Engels’ pause',
+    url: 'https://www.nuff.ox.ac.uk/Users/Allen/engelspause.pdf',
+    format: 'PDF',
+    edition: '2009年作者公开稿，18页',
+  },
+  'hansen-turfan': {
+    title: 'Valerie Hansen：丝路贸易对吐鲁番地方社会的影响',
+    url: 'https://history.yale.edu/sites/default/files/files/hansen-silk-road-trade.pdf',
+    format: 'PDF',
+    edition: '2005年作者公开稿，第283—310页',
+  },
+  'shiode-snow-2015': {
+    title: '斯诺霍乱地图的死亡率与时空分布再分析',
+    url: 'https://link.springer.com/content/pdf/10.1186/s12942-015-0011-y.pdf',
+    format: 'PDF',
+    edition: 'Shiode 等，2015；15页，出版页附图件勘误',
+    license: 'CC BY 4.0',
+  },
+};

@@ -7,6 +7,7 @@ import {
 import type { ReadingExcerpt } from '../excerpts.ts';
 import { newDraft } from './model.ts';
 import { isBlockedDocument, isVerificationPage, SourceVerificationError } from '../sourceAccess.ts';
+import { provenanceParagraph } from '../references.ts';
 
 export type WritingSource =
   | { kind: 'article' | 'draft'; document: ArticleDocument }
@@ -30,8 +31,7 @@ export function composeDraft(sources: WritingSource[], title = '我的阅读文�
     else blocks.push(...source.document.blocks.map((block) => ({ ...block })));
     blocks.push({
       id: '',
-      type: 'paragraph',
-      text: `出处：${[item.author, item.source].filter(Boolean).join(' · ') || item.title}${item.url ? `\n原文：${item.url}` : ''}`,
+      ...provenanceParagraph(item),
     });
     if (article)
       for (const warning of article.warnings)

@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Bookmark, BookmarkCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { createAnnotation, type ArticleAnnotation, type ArticleDocument } from './model';
+import {
+  createAnnotation,
+  type ArticleAnnotation,
+  type ArticleDocument,
+  type TextBlock,
+} from './model';
+import { readingTextSegments } from './textSegments';
+import { ReadingResource } from './ReadingResource';
 import { articleImageUrl } from './export/assets';
 import { DOCUMENT_FONTS } from './typography';
 
@@ -27,35 +34,38 @@ function linkedText(text: string): ReactNode[] {
   if (position < text.length) pieces.push(text.slice(position));
   return pieces;
 }
-function MarkedText({ text, annotations }: { text: string; annotations: ArticleAnnotation[] }) {
-  // Sweep endpoints once: overlapping annotations take O(A log A), not O(A²).
-  const events = new Map<number, number>([
-    [0, 0],
-    [text.length, 0],
-  ]);
-  for (const item of annotations) {
-    events.set(item.start, (events.get(item.start) || 0) + 1);
-    events.set(item.end, (events.get(item.end) || 0) - 1);
-  }
-  const boundaries = [...events.keys()].sort((a, b) => a - b);
-  let active = 0;
-  const fragments: ReactNode[] = [];
-  for (let index = 0; index < boundaries.length - 1; index++) {
-    const start = boundaries[index];
-    const end = boundaries[index + 1];
-    active += events.get(start) || 0;
-    const saved = active > 0;
-    fragments.push(
-      saved ? (
-        <mark key={start} className="bg-amber-100 text-inherit dark:bg-amber-900/40">
-          {linkedText(text.slice(start, end))}
-        </mark>
-      ) : (
-        linkedText(text.slice(start, end))
-      ),
+function MarkedText({
+  block,
+  annotations,
+}: {
+  block: TextBlock;
+  annotations: ArticleAnnotation[];
+}) {
+  return readingTextSegments(block, annotations).map((run, index) => {
+    let content: ReactNode = run.href ? (
+      <a
+        href={run.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-accent underline"
+      >
+        {run.text}
+      </a>
+    ) : (
+      linkedText(run.text)
     );
-  }
-  return <>{fragments}</>;
+    if (run.bold) content = <strong>{content}</strong>;
+    if (run.italic) content = <em>{content}</em>;
+    if (run.underline) content = <u>{content}</u>;
+    if (run.strike) content = <s>{content}</s>;
+    return run.saved ? (
+      <mark key={index} className="bg-amber-100 text-inherit dark:bg-amber-900/40">
+        {content}
+      </mark>
+    ) : (
+      <span key={index}>{content}</span>
+    );
+  });
 }
 
 function ArticleFigure({ url, alt, caption }: { url: string; alt: string; caption: string }) {
@@ -197,7 +207,7 @@ export function ArticleContent({
           if (block.type === 'image') return <ArticleFigure key={block.id} {...block} />;
           const saved = annotationsByBlock.get(block.id) || [];
           const wholeSaved = saved.some((item) => item.kind === 'paragraph');
-          const text = <MarkedText text={block.text} annotations={saved} />;
+          const text = <MarkedText block={block} annotations={saved} />;
           const attributes = {
             'data-reading-text': true,
             'data-block-id': block.id,
@@ -246,6 +256,7 @@ export function ArticleContent({
                   {wholeSaved ? '已收藏' : '收藏'}
                 </button>
               )}
+              {block.resource && <ReadingResource resource={block.resource} />}
             </div>
           );
         })}

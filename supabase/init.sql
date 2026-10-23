@@ -133,19 +133,18 @@ alter table public.collections enable row level security;
 alter table public.collection_paragraphs enable row level security;
 alter table public.saved_paragraphs enable row level security;
 
--- 文章：公开可读，登录用户可插入（第一期简化，后续加审核）
+-- 旧公共文章目录只读；私人正文使用 reading_documents。
 create policy "articles are viewable by everyone" on public.articles
   for select using (is_public = true);
 
-create policy "users can insert articles" on public.articles
-  for insert with check (true);
-
--- 段落：公开可读
+-- 段落仅随公开父文章显示；旧私有引用见后续增量迁移。
 create policy "paragraphs are viewable by everyone" on public.article_paragraphs
-  for select using (true);
+  for select using (exists (select 1 from public.articles a where a.id = article_id and a.is_public = true));
 
-create policy "users can insert paragraphs" on public.article_paragraphs
-  for insert with check (true);
+revoke all on public.articles, public.article_paragraphs from public;
+revoke insert, update, delete, truncate, references, trigger
+  on public.articles, public.article_paragraphs from anon, authenticated;
+grant select on public.articles, public.article_paragraphs to anon, authenticated;
 
 -- 话题：公开可读
 create policy "topics are viewable by everyone" on public.topics

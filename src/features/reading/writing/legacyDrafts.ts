@@ -3,6 +3,7 @@ import type { ReadingExcerpt } from '../excerpts.ts';
 import { articleSchema, type ArticleBlock } from '../model.ts';
 import { newDraft } from './model.ts';
 import { getDraftByOrigin, saveDraft } from './repository.ts';
+import { provenanceParagraph } from '../references.ts';
 
 /** Old folders become editable manuscripts. Keep the original backup untouched. */
 export async function migrateLegacyDrafts(excerpts: ReadingExcerpt[], raw?: unknown) {
@@ -29,8 +30,7 @@ export async function migrateLegacyDrafts(excerpts: ReadingExcerpt[], raw?: unkn
       if (excerpt)
         blocks.push({
           id: '',
-          type: 'paragraph',
-          text: `出处：${excerpt.source || excerpt.title}${excerpt.url ? `\n原文：${excerpt.url}` : ''}`,
+          ...provenanceParagraph(excerpt),
         });
       if (reference.note)
         blocks.push({ id: '', type: 'paragraph', text: `我的备注：${reference.note}` });

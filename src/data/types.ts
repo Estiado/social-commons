@@ -8,8 +8,13 @@ export interface IPerspective {
   title: string;
   description: string;
   quote?: string;
+  translated?: boolean;
   source: string;
   sourceType: IPerspectiveSourceType;
+  sourceUrl: string;
+  original: string;
+  locator: string;
+  readingId?: string;
 }
 
 export interface IAcademicPaper {
@@ -35,6 +40,7 @@ export interface IEvent {
   location: string;
   category: string;
   summary: string;
+  summarySources: { title: string; url: string }[];
   perspectives: IPerspective[];
   academicPapers: IAcademicPaper[];
   references: { title: string; url?: string }[];

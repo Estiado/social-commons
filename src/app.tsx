@@ -18,7 +18,7 @@ const PresetArticleDetailPage = lazy(
   () => import('@/pages/PresetArticleDetailPage/PresetArticleDetailPage'),
 );
 const TopicDetailPage = lazy(() => import('@/pages/TopicDetailPage/TopicDetailPage'));
-const AdminArticlesPage = lazy(() => import('@/pages/AdminArticlesPage/AdminArticlesPage'));
+const FeedbackPage = lazy(() => import('@/pages/FeedbackPage/FeedbackPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage/NotFoundPage'));
 const ArticleImportPage = lazy(() => import('@/pages/ArticleImportPage/ArticleImportPage'));
 const ReadingLibraryPage = lazy(() => import('@/pages/ReadingLibraryPage/ReadingLibraryPage'));
@@ -55,7 +55,7 @@ export default function App() {
         <Route path="collections/:id" element={<Navigate to="/reading?tab=legacy" replace />} />
         <Route path="topics" element={<Navigate to="/guanlan" replace />} />
         <Route path="topics/:id" element={<LegacyTopicRoute />} />
-        <Route path="admin/articles" element={<AdminArticlesPage />} />
+        <Route path="feedback" element={<FeedbackPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

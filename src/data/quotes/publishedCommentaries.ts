@@ -7,7 +7,7 @@ function educationNote(text: string, work: string, file: string): Commentary {
   return {
     text,
     commentator: '香港教育局编选资料（未单列撰稿者）',
-    commentatorSource: `《建议篇章配套资料》〈${work}〉，“赏析重点”；本站概述，非逐字引语`,
+    commentatorSource: `《建议篇章配套资料》〈${work}〉，“赏析重点”`,
     status: 'verified',
     url: `${edb}${file}.pdf`,
     checkedAt: '2026-10-22',
@@ -32,7 +32,7 @@ export const PUBLISHED_COMMENTARIES: Record<string, Commentary> = {
     'https://opinion.people.com.cn/n1/2026/0915/c461529-40798667.html',
   ),
   q23: published(
-    '在同名舞作的创作访谈中，崔健、唐瑜珮把诗中保全内在自我的表达，理解为坦诚面对身体及其局限，并借音乐与舞蹈回应文本。这里呈现艺术创作者真实发表的接受视角，不将它冒充为博尔赫斯原意的唯一解释。',
+    '在同名舞作的创作访谈中，崔健、唐瑜珮把诗中保全内在自我的表达，理解为坦诚面对身体及其局限，并借音乐与舞蹈回应文本。他们的舞台创作将这首诗延伸为对身体与自我的探索。',
     '崔健、唐瑜珮（编导访谈）',
     '上海国际舞蹈中心剧场：《委约｜〈我用什么才能留住你〉：摆脱惯性的“营字造句”，坦诚对待自己的身体》，澎湃号刊载，2021',
     'https://m.thepaper.cn/newsDetail_forward_15079568',
@@ -68,7 +68,7 @@ export const PUBLISHED_COMMENTARIES: Record<string, Commentary> = {
     'https://www.chinawriter.com.cn/n1/2022/0210/c404018-32349000.html',
   ),
   q54: published(
-    '曹璐从日暮、寒冷与夜归的转折解读此诗：犬吠和归来，使漂泊中寻找安顿的感受显现。这里呈现该文对归宿的理解，不能据此消除诗句人物身份与视角的其他解释。',
+    '曹璐从日暮、寒冷与夜归的转折解读此诗：犬吠和归来，使漂泊中寻找安顿的感受显现。解读由寒夜中的声响与人物行动，走向对归宿的理解。',
     '曹璐',
     '《古诗中的雪与暖》，北京日报；中国作家网刊载，2022-02-10',
     'https://www.chinawriter.com.cn/n1/2022/0210/c404018-32349000.html',

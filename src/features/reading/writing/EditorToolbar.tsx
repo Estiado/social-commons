@@ -1,5 +1,6 @@
 import { useEditorState, type Editor } from '@tiptap/react';
 import { Button } from '@/components/ui/button';
+import { Undo2, Redo2, Bold, Underline } from 'lucide-react';
 
 export function EditorToolbar({ editor }: { editor: Editor }) {
   const state = useEditorState({
@@ -34,7 +35,7 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
     <div
       role="toolbar"
       aria-label="文稿格式"
-      className="sticky top-16 z-10 flex flex-wrap items-center gap-2 border-y bg-background/95 p-3 backdrop-blur"
+      className="sticky top-16 z-10 flex flex-wrap items-center gap-1 border-y bg-background/95 py-2 backdrop-blur"
     >
       <select
         aria-label="段落样式"
@@ -53,46 +54,77 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
           </option>
         ))}
       </select>
-      {actions.map(([label, active, run]) => (
-        <Button
-          key={label}
-          type="button"
-          size="sm"
-          aria-pressed={active}
-          variant={active ? 'default' : 'outline'}
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={run}
-        >
-          {label}
-        </Button>
-      ))}
-      <select
-        aria-label="文字对齐"
-        className="rounded-sm border bg-background p-2 text-sm"
-        value={state.alignment}
-        onChange={(event) => editor.chain().focus().setTextAlign(event.target.value).run()}
-      >
-        <option value="left">左对齐</option>
-        <option value="center">居中</option>
-        <option value="right">右对齐</option>
-      </select>
+      {actions
+        .filter(([label]) => ['加粗', '下划线'].includes(label))
+        .map(([label, active, run]) => (
+          <Button
+            key={label}
+            type="button"
+            size="sm"
+            aria-pressed={active}
+            aria-label={label}
+            title={label}
+            className="h-9 w-9 px-0"
+            variant={active ? 'default' : 'outline'}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={run}
+          >
+            {label === '加粗' ? <Bold className="h-4 w-4" /> : <Underline className="h-4 w-4" />}
+          </Button>
+        ))}
+      <details className="relative">
+        <summary className="cursor-pointer rounded-sm border px-2 py-2 text-sm">更多</summary>
+        <div className="absolute right-0 z-20 mt-2 flex w-64 flex-wrap gap-2 rounded-sm border bg-background p-3 shadow-md">
+          {actions
+            .filter(([label]) => !['加粗', '下划线'].includes(label))
+            .map(([label, active, run]) => (
+              <Button
+                key={label}
+                type="button"
+                size="sm"
+                aria-pressed={active}
+                variant={active ? 'default' : 'outline'}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={run}
+              >
+                {label}
+              </Button>
+            ))}
+          <select
+            aria-label="文字对齐"
+            className="rounded-sm border bg-background p-2 text-sm"
+            value={state.alignment}
+            onChange={(event) => editor.chain().focus().setTextAlign(event.target.value).run()}
+          >
+            <option value="left">左对齐</option>
+            <option value="center">居中</option>
+            <option value="right">右对齐</option>
+          </select>
+        </div>
+      </details>
       <Button
         type="button"
         size="sm"
         variant="ghost"
+        aria-label="撤销"
+        title="撤销"
+        className="h-9 w-9 px-0"
         disabled={!state.undo}
         onClick={() => editor.chain().focus().undo().run()}
       >
-        撤销
+        <Undo2 className="h-4 w-4" />
       </Button>
       <Button
         type="button"
         size="sm"
         variant="ghost"
+        aria-label="重做"
+        title="重做"
+        className="h-9 w-9 px-0"
         disabled={!state.redo}
         onClick={() => editor.chain().focus().redo().run()}
       >
-        重做
+        <Redo2 className="h-4 w-4" />
       </Button>
     </div>
   );

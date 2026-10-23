@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useItemLocation } from '@/hooks/useItemLocation';
 import {
@@ -31,6 +31,7 @@ export default function EssayPage() {
   useItemLocation(searchParams.get('id'), 'essay');
   const [expandedId, setExpandedId] = useState<string | null>(searchParams.get('id'));
   const [searchQuery, setSearchQuery] = useState('');
+  const resultsRef = useRef<HTMLDivElement>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showTagForm, setShowTagForm] = useState(false);
 
@@ -196,16 +197,33 @@ export default function EssayPage() {
       </div>
 
       {/* 搜索 + 操作按钮 */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+      <form
+        className="flex flex-wrap gap-2 mb-4"
+        role="search"
+        onSubmit={(event) => {
+          event.preventDefault();
+          resultsRef.current?.scrollIntoView({
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+              ? 'instant'
+              : 'smooth',
+            block: 'start',
+          });
+          resultsRef.current?.focus({ preventScroll: true });
+        }}
+      >
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="搜索概念、素材、适用话题..."
+            aria-label="搜索素材"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
           />
         </div>
+        <Button type="submit">搜索</Button>
+      </form>
+      <div className="mb-5 flex flex-wrap gap-2">
         <Button
           variant="outline"
           onClick={() => {
@@ -364,46 +382,45 @@ export default function EssayPage() {
         </div>
       )}
 
-      {/* 一级分类筛选 */}
-      <div className="flex flex-wrap gap-2 mb-3">
-        {primaryCategories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => handlePrimaryChange(cat)}
-            className={`px-4 py-1.5 text-sm rounded-sm transition-colors ${
-              activePrimary === cat
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
-            }`}
+      <div className="mb-5 flex flex-wrap items-end gap-3">
+        <label className="flex min-w-0 flex-1 flex-col gap-1 text-xs text-muted-foreground">
+          学科分类
+          <select
+            className="w-full rounded-sm border bg-background p-2 text-sm text-foreground"
+            value={activePrimary}
+            onChange={(event) => handlePrimaryChange(event.target.value)}
           >
-            {cat}
-          </button>
-        ))}
+            {primaryCategories.map((category) => (
+              <option key={category}>{category}</option>
+            ))}
+          </select>
+        </label>
+        {subCategories.length > 1 && (
+          <label className="flex min-w-0 flex-1 flex-col gap-1 text-xs text-muted-foreground">
+            细分主题
+            <select
+              className="w-full rounded-sm border bg-background p-2 text-sm text-foreground"
+              value={activeSub}
+              onChange={(event) => setActiveSub(event.target.value)}
+            >
+              {subCategories.map((category) => (
+                <option key={category}>{category}</option>
+              ))}
+            </select>
+          </label>
+        )}
       </div>
 
-      {/* 二级分类筛选 */}
-      {subCategories.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 mb-8 pl-2 border-l-2 border-accent/20">
-          <span className="text-xs text-muted-foreground mr-1">细分：</span>
-          {subCategories.map((sub) => (
-            <button
-              key={sub}
-              onClick={() => setActiveSub(sub)}
-              className={`px-3 py-1 text-xs rounded-sm transition-colors ${
-                activeSub === sub
-                  ? 'bg-accent/15 text-accent border border-accent/30'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-              }`}
-            >
-              {sub}
-            </button>
-          ))}
-        </div>
-      )}
-      {subCategories.length === 0 && <div className="mb-8" />}
-
       {/* 词条列表 */}
-      <div className="space-y-4">
+      <div
+        ref={resultsRef}
+        tabIndex={-1}
+        className="scroll-mt-20 space-y-4 outline-none"
+        aria-label="素材搜索结果"
+      >
+        <p role="status" aria-live="polite" className="text-sm text-muted-foreground">
+          {searchQuery.trim() ? `“${searchQuery.trim()}”找到` : '共'} {filtered.length} 个词条
+        </p>
         {filtered.map((item) => {
           const isExpanded = expandedId === item.id;
           return (
@@ -448,18 +465,6 @@ export default function EssayPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0 mt-1">
-                    {isCustom(item.id) && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteCustom(item.id);
-                        }}
-                        className="p-1 text-muted-foreground hover:text-destructive transition-colors"
-                        title="删除此词条"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    )}
                     {isExpanded ? (
                       <ChevronUp className="h-5 w-5 text-muted-foreground" />
                     ) : (
@@ -468,6 +473,16 @@ export default function EssayPage() {
                   </div>
                 </div>
               </button>
+              {isCustom(item.id) && (
+                <button
+                  onClick={() => handleDeleteCustom(item.id)}
+                  className="mx-6 mb-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive"
+                  aria-label={`删除词条：${item.concept}`}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  删除词条
+                </button>
+              )}
 
               {/* 展开的素材列表 */}
               {isExpanded && (

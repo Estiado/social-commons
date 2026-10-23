@@ -1,4 +1,4 @@
-import { PDFDocument, rgb, degrees, type PDFFont } from 'pdf-lib';
+import { PDFDocument, PDFString, rgb, degrees, type PDFFont } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import type { ArticleDocument } from '../model';
 import { loadExportImage } from './assets';
@@ -151,6 +151,16 @@ export async function buildArticlePdf(
         // A small second pass preserves emphasis with the same portable CJK font.
         if (run.bold) page.drawText(run.text, { ...options, x: x + 0.25 });
         const length = Array.from(run.text).reduce((sum, char) => sum + advance(char), 0);
+        if (run.href) {
+          const annotation = document.context.obj({
+            Type: 'Annot',
+            Subtype: 'Link',
+            Rect: [x, y - size, x + length, y + 2],
+            Border: [0, 0, 0],
+            A: { Type: 'Action', S: 'URI', URI: PDFString.of(run.href) },
+          });
+          page.node.addAnnot(document.context.register(annotation));
+        }
         for (const offset of [run.underline ? -1 : undefined, run.strike ? size * 0.35 : undefined])
           if (offset !== undefined)
             page.drawLine({
@@ -171,7 +181,7 @@ export async function buildArticlePdf(
     9,
     true,
   );
-  if (article.url) drawText(`原文：${article.url}`, 9, true);
+  if (article.url) drawStyled([{ text: `原文：${article.title}`, href: article.url }], 9, 0);
   for (const warning of article.warnings) drawText(`导入核对提示：${warning}`, 9, true);
   const warnings: string[] = [];
   let imageBytes = 0;
@@ -191,7 +201,16 @@ export async function buildArticlePdf(
         y -= 10;
       } catch {
         warnings.push(`插图未嵌入：${block.caption || block.alt || block.id}`);
-        drawText(`［插图未能读取，请参见原文：${block.url}］`, 9, true);
+        drawStyled(
+          [
+            {
+              text: `插图未能读取：${block.caption || block.alt || '查看原文插图'}`,
+              href: block.url,
+            },
+          ],
+          9,
+          0,
+        );
       }
       if (block.caption) drawText(block.caption, 9, true);
     } else {
