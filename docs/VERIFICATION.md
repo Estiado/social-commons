@@ -4,7 +4,7 @@
 
 - 电脑顶部增加可见的“内测反馈”链接，原页脚和手机栏目入口保留，并共用当前路径。相关页面提供八个栏目和“不指定／其他页面或具体条目”；期望结果提供六项预填，文字可继续编辑。表单仍调用原受限RPC，无数据库迁移或权限变更。
 - 完整 `scripts/dev.ps1 check` 通过67/67，日志 `.artifacts/feedback-ui-check.log`。本机浏览器实测：具体条目 `/quotes/q82` 保留；选择阅读空间和Word/PDF期望后正确填入，切回自定义可修改；从素材页点击顶部入口后自动选中“议论文素材”。1024px电脑宽度下按钮在视口内，390px手机内容宽375px，无横向溢出。临时视口已恢复默认。
-- 正式站发布与验收结果在部署后补充，不能将上述本机结果当作正式站已更新。
+- 功能提交 `9c511026e03afe87be7f237f5ff60e137d01595a` 已推送main并核对远端SHA；[GitHub检查](https://github.com/Estiado/social-commons/actions/runs/39964776176) 与Cloudflare Pages均completed/success。正式站从素材页点击顶部入口自动选中“议论文素材”，六项期望预填均可见，选择排版期望后正文正确填入；提交带“反馈选项验收”的合成反馈，服务器返回回执 `6e221bff-2d50-49a5-b3b3-a2af080f80a3`，页面显示已提交。截图 `.artifacts/feedback-ui-production.png`、`.artifacts/feedback-ui-production-success.png`，回执证据 `.artifacts/feedback-ui-production-receipt.txt`。提交接口和生产权限沿用已有配置及核验结果。
 
 ## 在线反馈收件与微信对照 · 2026-10-23
 
