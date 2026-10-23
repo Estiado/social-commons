@@ -6,21 +6,27 @@ export const feedbackSchema = z.object({
   expected: z.string().trim().max(2000),
   page: z.string().trim().max(500),
 });
+export type FeedbackFields = z.infer<typeof feedbackSchema>;
+
+export function normalizeFeedback(input: unknown): FeedbackFields {
+  const fields = feedbackSchema.parse(input);
+  let page = '';
+  try {
+    const url = new URL(fields.page, 'https://social-commons.pages.dev');
+    if (fields.page && url.origin === 'https://social-commons.pages.dev') page = url.pathname;
+  } catch {
+    // An optional page address must never add query tokens or external URLs.
+  }
+  return { ...fields, page };
+}
 /** A portable report, with no article bodies, identifiers, browsing history or automatic upload. */
 export function feedbackReport(input: unknown, createdAt = new Date().toISOString()) {
-  const fields = feedbackSchema.parse(input);
-  let page = fields.page;
-  try {
-    const url = new URL(page, 'https://social-commons.pages.dev');
-    page = url.origin === 'https://social-commons.pages.dev' ? url.pathname : '';
-  } catch {
-    page = '';
-  }
+  const fields = normalizeFeedback(input);
   return [
     '社科通识 · 内测反馈',
     `时间：${createdAt}`,
     `类型：${fields.kind}`,
-    `页面：${page || '未填写'}`,
+    `页面：${fields.page || '未填写'}`,
     '',
     '问题或建议：',
     fields.description,
