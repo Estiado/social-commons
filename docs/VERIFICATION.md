@@ -10,7 +10,8 @@
 - 实际本机恢复指定合成备份显示“已恢复1条；已有或到期0条未覆盖”；下载真实阅读备份成功，已移到D盘 `.artifacts/reading-backup-browser-20261023.json`。反馈复制显示“尚未发送”，没有开放在线投稿。没有清空或覆盖用户数据。
 - 导出合成样本PDF为10页、6,461,806字节，最终DOCX为10,767字节；PDF URI注释和DOCX链接关系已检查。Poppler渲染第一页确认中文、链接和排版；未进行桌面Word视觉验收。
 - npm官方源全依赖审计为0项：移除未使用ECharts依赖，兼容更新构建依赖，约束选择器解析器补丁。版本控制文件扫描未发现实际service_role/secret或私钥。该结果不等于渗透测试或永远无漏洞；未做并发压测。
-- 生产Supabase实际只读审计确认：7张现有新旧表启用RLS；reading_documents由owner_id限制本人且排除匿名身份；站方示例写入受site_editors限制。旧articles/article_paragraphs仍有任意INSERT策略，段落SELECT为true，且客户端角色有TRUNCATE等多余权限。已准备202610230001增量修复；执行被自动审批拦截，等待用户明确批准这组生产权限变更，尚未执行。没有重跑init.sql或删除数据。
+- 生产Supabase实际只读审计确认：7张现有新旧表启用RLS；reading_documents由owner_id限制本人且排除匿名身份；站方示例写入受site_editors限制。旧articles/article_paragraphs曾有任意INSERT策略、段落SELECT为true，且客户端角色有TRUNCATE等多余权限。用户明确批准后，202610230001实际执行成功；核验anon/authenticated的两张表均可SELECT，INSERT/UPDATE/DELETE/TRUNCATE均为false，RLS均为true。匿名直接读取reading_documents实际返回42501权限拒绝。没有重跑init.sql、删除数据或执行覆盖式种子。
+- 首次GitHub Ubuntu检查为63/64，失败原因为Git换行规范化改变了电子书字节。新增.gitattributes对原始TXT禁用文本换行转换，重新加入原文件并验证清单；此为真实CI发现并修复的问题，不放宽散列测试。
 - 本节发布SHA、线上数据库修复与Cloudflare正式站验收在实际完成后追加，不从本地测试推断。
 
 ## 全站扩容与常用文稿样式 · 2026-10-22
