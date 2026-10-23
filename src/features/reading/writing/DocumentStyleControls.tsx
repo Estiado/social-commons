@@ -13,7 +13,7 @@ export function DocumentStyleControls({
   onChange(value: DocumentTypography): void;
 }) {
   return (
-    <fieldset className="mb-5 rounded-sm border bg-card p-4">
+    <fieldset className="mt-3 rounded-sm bg-card p-2">
       <legend className="px-2 text-sm font-medium">整篇正文样式</legend>
       <div className="flex flex-wrap items-center gap-4">
         <label className="text-sm">
@@ -76,7 +76,7 @@ export function DocumentStyleControls({
           className="text-sm text-accent underline"
           onClick={() => onChange({ ...DEFAULT_TYPOGRAPHY })}
         >
-          讲义默认：宋体小四
+          恢复默认样式
         </button>
       </div>
       <p className="mt-3 text-xs leading-relaxed text-muted-foreground">

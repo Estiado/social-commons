@@ -1,3 +1,5 @@
+import { downloadFile } from '../../../lib/downloadFile.ts';
+
 export function articleImageUrl(url: string): string {
   return `/api/article-image?${new URLSearchParams({ url })}`;
 }
@@ -43,16 +45,5 @@ export async function loadExportImage(url: string): Promise<ExportImage> {
 
 export function downloadArticleFile(bytes: Uint8Array | Blob, filename: string, type: string) {
   const blob = bytes instanceof Blob ? bytes : new Blob([bytes as BlobPart], { type });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = Array.from(filename, (character) =>
-    character.charCodeAt(0) < 32 || '<>:"/\\|?*'.includes(character) ? '_' : character,
-  )
-    .join('')
-    .slice(0, 180);
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 2000);
+  downloadFile(blob, filename);
 }

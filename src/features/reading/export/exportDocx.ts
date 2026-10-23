@@ -36,7 +36,7 @@ export async function buildArticleDocx(
           new TextRun('原文：'),
           new ExternalHyperlink({
             link: article.url,
-            children: [new TextRun({ text: article.url, style: 'Hyperlink' })],
+            children: [new TextRun({ text: article.title, style: 'Hyperlink' })],
           }),
         ],
       }),
@@ -69,7 +69,22 @@ export async function buildArticleDocx(
         );
       } catch {
         warnings.push(`插图未嵌入：${block.caption || block.alt || block.id}`);
-        children.push(new Paragraph({ text: `［插图未能读取，请参见原文：${block.url}］` }));
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun('插图未能读取：'),
+              new ExternalHyperlink({
+                link: block.url,
+                children: [
+                  new TextRun({
+                    text: block.caption || block.alt || '查看原文插图',
+                    style: 'Hyperlink',
+                  }),
+                ],
+              }),
+            ],
+          }),
+        );
       }
       if (block.caption)
         children.push(

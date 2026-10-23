@@ -1,6 +1,8 @@
 import { articleSchema, type ArticleBlock, type ArticleDocument } from './model.ts';
 import type { IDailyKnowledge, IEvent, IQuote, IEssayMaterial } from '@/data/types';
 import type { PresetArticle } from '@/data/presetArticles';
+import { nameCatalogueReferences, referenceParagraph } from './references.ts';
+import { HISTORY_READINGS } from '../../data/history/readings.ts';
 
 export type ContentKind =
   | 'daily'
@@ -76,6 +78,7 @@ export function createContentDocument(
     warnings: [],
     blocks: blocks
       .filter((block) => block.text.trim())
+      .map(nameCatalogueReferences)
       .map((block, index) => ({ ...block, id: `b${index + 1}` })),
   });
 }
@@ -101,7 +104,7 @@ export function dailyDocument(item: IDailyKnowledge): ArticleDocument {
         heading(reference.title),
         paragraph(`${reference.source}${reference.date ? ` · ${reference.date}` : ''}`),
         paragraph(reference.excerpt),
-        ...(reference.url ? [paragraph(`原文：${reference.url}`)] : []),
+        ...(reference.url ? [referenceParagraph(reference.title, reference.url)] : []),
       ]),
     ],
     '',
@@ -113,18 +116,22 @@ export function quoteDocument(item: IQuote): ArticleDocument {
     ...item.text.split(/\n\s*\n/u).map((text) => ({ type: 'quote' as const, text })),
     paragraph(`${item.author} · ${item.source}`),
   ];
-  if (item.sourceUrl) blocks.push(paragraph(`作品与版本资料：${item.sourceUrl}`));
+  if (item.sourceUrl) blocks.push(referenceParagraph(item.source, item.sourceUrl, '作品出处：'));
   if (item.sourceNote) blocks.push(paragraph(`出处说明：${item.sourceNote}`));
   if (item.context) blocks.push(paragraph(item.context));
   if (item.commentary) {
     const note = item.commentary;
     blocks.push(
-      heading('资料摘要 · 依据已发布资料整理，非逐字引语'),
+      heading('作品赏析'),
       paragraph(note.text),
-      paragraph(`作者 / 评述者：${note.commentator}`),
-      paragraph(note.commentatorSource),
-      paragraph(`评析原文：${note.url}`),
-      paragraph(`核验日期：${note.checkedAt}。资料观点不等于唯一解释。`),
+      paragraph(note.commentator.replace('（未单列撰稿者）', '')),
+      referenceParagraph(
+        note.commentatorSource.replace(
+          /[；，]\s*本站(?:概述|摘要|整理|整理摘要)[^；。]*|[；，]\s*非逐字引语/gu,
+          '',
+        ),
+        note.url,
+      ),
     );
   }
   return createContentDocument(
@@ -142,12 +149,25 @@ export function eventDocument(item: IEvent): ArticleDocument {
     contentUrl('event', item.id),
     [
       paragraph(`${item.date} · ${item.location}`),
+      heading('事件概述'),
       paragraph(item.summary),
+      ...item.summarySources.map((source) => referenceParagraph(source.title, source.url)),
+      heading('多方视角'),
       ...item.perspectives.flatMap((view) => [
         heading(`${view.role}：${view.title}`),
         ...paragraphs(view.description),
-        ...(view.quote ? [{ type: 'quote' as const, text: view.quote }] : []),
-        paragraph(`来源：${view.source} · ${view.sourceType}`),
+        ...(view.quote
+          ? [
+              {
+                type: 'quote' as const,
+                text: view.quote + (view.translated === false ? '' : '（节译）'),
+              },
+            ]
+          : []),
+        paragraph(view.original),
+        referenceParagraph(view.source, view.sourceUrl),
+        paragraph(view.locator),
+        ...(view.readingId ? [historyReadingBlock(view.readingId)] : []),
       ]),
       ...(item.academicPapers.length
         ? [
@@ -172,21 +192,45 @@ export function eventDocument(item: IEvent): ArticleDocument {
           `检索：${`https://scholar.google.com/scholar?q=${encodeURIComponent(paper.title)}`}`,
         ),
       ]),
-      heading('参考资料'),
+      ...(item.references.length ? [heading('参考资料')] : []),
       ...item.references.map((reference) =>
-        paragraph(`${reference.title}${reference.url ? ` ${reference.url}` : ''}`),
+        reference.url
+          ? referenceParagraph(reference.title, reference.url)
+          : paragraph(reference.title),
       ),
     ],
     '',
     [item.category],
   );
 }
+
+function historyReadingBlock(id: string): Omit<Extract<ArticleBlock, { text: string }>, 'id'> {
+  const reading = HISTORY_READINGS[id];
+  if (!reading) throw new Error(`未登记电子文献：${id}`);
+  const url = reading.file ? `${SITE_ORIGIN}/readings/history/${reading.file}` : reading.url;
+  return {
+    ...referenceParagraph(reading.title, url, '电子文献：'),
+    resource: {
+      title: reading.title,
+      url,
+      sourceUrl: reading.url,
+      format: reading.format,
+      edition: reading.edition,
+      license: reading.license,
+    },
+  };
+}
 export function presetDocument(item: PresetArticle): ArticleDocument {
   const document = createContentDocument(
     item.title,
     item.source,
     contentUrl('preset', item.id),
-    [...paragraphs(item.content), paragraph(`原文出处：${item.url || item.source}`)],
+    [
+      ...paragraphs(item.content),
+      ...(item.url
+        ? [referenceParagraph(item.title, item.url, '原文：')]
+        : [paragraph(item.source)]),
+    ],
     item.author,
     item.tags,
   );
@@ -202,7 +246,7 @@ export function essayDocument(item: IEssayMaterial): ArticleDocument {
       paragraph(item.description),
       paragraph(`适用话题：${item.applicableTopics.join('、')}`),
       ...(item.references || []).map((reference) =>
-        paragraph(`参考资料：${reference.title} ${reference.url}`),
+        referenceParagraph(reference.title, reference.url),
       ),
       ...item.materials.flatMap((material) => [
         heading(material.title),
@@ -267,7 +311,10 @@ export async function loadContentDocument(kind: ContentKind, id: string): Promis
       data.title,
       data.source || '来源待核对',
       contentUrl(kind, id),
-      [...paragraphs(data.content || ''), paragraph(`原文：${data.url}`)],
+      [
+        ...paragraphs(data.content || ''),
+        ...(data.url ? [referenceParagraph(data.title, data.url, '原文：')] : []),
+      ],
       data.author || '',
       data.tags || [],
     );

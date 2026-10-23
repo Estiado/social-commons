@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { ReadingExcerpt } from './excerpts.ts';
 import { createContentDocument } from './contentDocuments.ts';
+import { provenanceParagraph } from './references.ts';
 
 export const collectionSchema = z.object({
   id: z.string().min(1).max(100),
@@ -73,7 +74,7 @@ export function collectionDocument(collection: ReadingCollection, excerpts: Read
         { type: 'quote' as const, text: item.text },
         {
           type: 'paragraph' as const,
-          text: `出处：${item.author ? `${item.author} · ` : ''}${item.source || item.title}${item.url ? `\n原文：${item.url}` : ''}`,
+          ...provenanceParagraph(item),
         },
         ...(reference.note
           ? [{ type: 'paragraph' as const, text: `我的使用备注：${reference.note}` }]

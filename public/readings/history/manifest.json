@@ -1,0 +1,50 @@
+[
+  {
+    "id": "bradford-plymouth",
+    "file": "bradford-plymouth.txt",
+    "source": "https://www.gutenberg.org/ebooks/69871",
+    "bytes": 780931,
+    "sha256": "7bac89a4dd09635685b0b745bdee577060c46ec803c33ec4337f0cee6885b73b",
+    "license": "Project Gutenberg；保留原版许可说明"
+  },
+  {
+    "id": "smith-wealth",
+    "file": "smith-wealth.txt",
+    "source": "https://www.gutenberg.org/ebooks/3300",
+    "bytes": 2468951,
+    "sha256": "e91d52dca43fd0fd69baf7776b00a5d8e74b69675b6b608ca8a0378aaf3ae58d",
+    "license": "Project Gutenberg；保留原版许可说明"
+  },
+  {
+    "id": "wollstonecraft-rights",
+    "file": "wollstonecraft-rights.txt",
+    "source": "https://www.gutenberg.org/ebooks/3420",
+    "bytes": 538225,
+    "sha256": "7d79652f43541759d8ff0ce467372fa4a534d3f9dc32013e01ca99ea04b286a8",
+    "license": "Project Gutenberg；保留原版许可说明"
+  },
+  {
+    "id": "engels-workers",
+    "file": "engels-workers.txt",
+    "source": "https://www.gutenberg.org/ebooks/17306",
+    "bytes": 736497,
+    "sha256": "25ff9b6ba4bef75632145e785f86acfaeeb0b437fd7f8f5409bf103eed7ae93b",
+    "license": "Project Gutenberg；保留原版许可说明"
+  },
+  {
+    "id": "faxian-kingdoms",
+    "file": "faxian-kingdoms.txt",
+    "source": "https://www.gutenberg.org/ebooks/2124",
+    "bytes": 315934,
+    "sha256": "6cd2afe97685a22ce00c5245dde67d6ffee547290009bdf17b2bc0f522d1e235",
+    "license": "Project Gutenberg；保留原版许可说明"
+  },
+  {
+    "id": "cdc-snow-2004",
+    "file": "cdc-snow-2004.pdf",
+    "source": "https://stacks.cdc.gov/view/cdc/28527",
+    "bytes": 436564,
+    "sha256": "108e7353dc729fe129f27ecc2f88e94e8115922da1159b10106190d089ddb75c",
+    "license": "美国政府公共卫生出版物；保留原出版信息"
+  }
+]

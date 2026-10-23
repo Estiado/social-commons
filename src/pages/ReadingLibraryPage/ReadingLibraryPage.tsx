@@ -18,6 +18,8 @@ import { getDraft, listDrafts, saveDraft } from '@/features/reading/writing/repo
 import { newDraft, type DraftSummary } from '@/features/reading/writing/model';
 import { composeDraft, type WritingSource } from '@/features/reading/writing/compose';
 import { migrateLegacyDrafts } from '@/features/reading/writing/legacyDrafts';
+import { ReadingBackupControls } from '@/features/reading/ReadingBackupControls';
+import { useItemLocation } from '@/hooks/useItemLocation';
 
 interface WorkspaceItem {
   key: string;
@@ -33,6 +35,7 @@ interface WorkspaceItem {
 export default function ReadingLibraryPage() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
+  useItemLocation(params.get('tab') === 'legacy' ? 'backup' : null, 'reading');
   const { account, loading: authLoading } = useAccount();
   const [articles, setArticles] = useState<(ReadingSummary & { storage: 'local' | 'cloud' })[]>([]);
   const [excerpts, setExcerpts] = useState<ReadingExcerpt[]>([]);
@@ -348,13 +351,23 @@ export default function ReadingLibraryPage() {
           )}
         </div>
       )}
-      <details className="mt-10 rounded-sm border p-4" open={params.get('tab') === 'legacy'}>
-        <summary className="cursor-pointer text-sm">完整备份与旧资料导入</summary>
+      <details
+        id="reading-backup"
+        className="mt-10 scroll-mt-20 rounded-sm border p-4"
+        open={params.get('tab') === 'legacy'}
+      >
+        <summary className="cursor-pointer text-sm">数据与备份</summary>
         <p className="mt-3 text-xs text-muted-foreground">
           临时文章先保留 7 天，保存或收藏后长期保留。清理浏览器数据前，请下载完整备份。
         </p>
-        <BatchExportControls ownerId={READING_CLOUD_ENABLED ? account?.id : undefined} />
-        <LegacyReadingImport onImported={() => setReload((value) => value + 1)} />
+        <ReadingBackupControls onRestored={() => setReload((value) => value + 1)} />
+        <details className="mt-5 border-t pt-4">
+          <summary className="cursor-pointer text-sm text-muted-foreground">
+            其他导出与旧版资料
+          </summary>
+          <BatchExportControls ownerId={READING_CLOUD_ENABLED ? account?.id : undefined} />
+          <LegacyReadingImport onImported={() => setReload((value) => value + 1)} />
+        </details>
       </details>
     </div>
   );

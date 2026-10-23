@@ -1,9 +1,11 @@
 import type { IDailyKnowledge } from './types';
 import { REASONING_KNOWLEDGE } from './knowledge/reasoning.ts';
+import { SOCIAL_KNOWLEDGE } from './knowledge/socialEvidence.ts';
 
 // EXPORTS: DAILY_KNOWLEDGE, getTodayKnowledge
 
 export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
+  ...SOCIAL_KNOWLEDGE,
   ...REASONING_KNOWLEDGE,
   {
     id: 'd1',

@@ -11,6 +11,7 @@
 | 服务端 | `server/` | 受限抓取、无状态提取和限流 |
 | 平台入口 | `functions/api/` | Cloudflare Request/Response 适配 |
 | 数据库 | `supabase/` | 新表、RLS、精选元数据及种子 |
+| 内测反馈 | `src/features/feedback/` | 校验主动填写信息，生成本地文本，不发送 |
 
 具体文件职责见 [目录导览](REPOSITORY_GUIDE.md)。
 
@@ -42,4 +43,11 @@ IndexedDB V3 原位新增 `drafts` 和 `draftSummaries`，保留旧文档、索�
 
 抓取限制来源白名单、每次跳转、12 秒超时和 2 MiB HTML；图片代理限制媒体/CDN、4 MiB、光栅图片。拒绝私网、凭据 URL、任意代理和 SVG。提取为无状态服务，不使用 Supabase 服务端 Secret。
 
-数据库和 SMTP 状态独立于部署成功。新私有表按正式账号 RLS 隔离；旧表权限仍须独立审计，不能用隐藏按钮代替鉴权。
+数据库和 SMTP 状态独立于部署成功。新私有表按正式账号 RLS 隔离；旧表采用202610230001增量权限修复，实际执行状态见验证记录，不能用隐藏按钮代替鉴权。
+
+## 本轮维护入口
+
+- `history/` 按事件拆分，`readings.ts` 为文献清单；对应视角通过 `readingId` 附电子版，文件大小/散列由清单检查。
+- `references.ts` 保存引用的可见题名和链接格式范围，`textSegments.ts` 合并富文本与收藏划线边界。新快照及新文稿显示题名，旧保存文本不重写。
+- `backup.ts` 的本机备份用只读事务、游标逐条序列化并限制大小；恢复先完整校验，再在一个事务中追加文档/摘要/摘录/文稿。重复ID或迁移来源跳过，不覆盖已有记录。
+- `ReadingBackupControls` 处理文件选择和状态，底层存储/校验不依赖页面；`feedback/report.ts` 是纯报告函数，不收集文章、身份或设备信息。

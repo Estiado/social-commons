@@ -21,10 +21,11 @@ import {
 import { materialFieldsSchema } from '../src/features/essay/materials.ts';
 
 test('扩容后旧 ID 保留，目录不重复推荐同一作品，新增内容具有来源和有效专题关系', () => {
-  assert.ok(DAILY_KNOWLEDGE.length >= 70);
-  assert.ok(EVENTS.length >= 8);
-  assert.ok(ESSAY_MATERIALS.length >= 40);
-  assert.ok(ESSAY_EXAMPLES.length >= 15);
+  assert.ok(DAILY_KNOWLEDGE.length >= 82);
+  assert.ok(EVENTS.length >= 10);
+  assert.ok(ESSAY_MATERIALS.length >= 52);
+  assert.ok(ESSAY_EXAMPLES.length >= 29);
+  assert.ok(QUOTE_CATALOGUE.length >= 80);
   assert.equal(CURATED_COMMENTARIES.length, 50);
   for (const collection of [
     QUOTES,
