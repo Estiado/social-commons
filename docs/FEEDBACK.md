@@ -9,6 +9,8 @@
 3. `kind` 为类型，`description` 为问题，`expected` 为期望，`page` 为相关路径；可用 `id` 查找读者的回执编号。
 4. `status` 可改为 `new`（未处理）、`reviewing`（处理中）、`resolved`（已处理）。这是后台处理状态，不向访客开放查询。
 
+当前项目的 [Supabase Table Editor](https://supabase.com/dashboard/project/dwubzeqwwsvlhbqvgldk/editor) 需要站长登录后使用。2026-10-23已经从正式站成功提交并在后台核对同一回执，实际验证记录见VERIFICATION.md；带“验收”的两条记录是维护测试。
+
 不要把项目管理员账号或服务端密钥发给内测者。网站内暂不增加管理员收件箱，也不发送邮件；公众文章投稿与本反馈入口分开，仍未开放。
 
 ## 权限与失败处理

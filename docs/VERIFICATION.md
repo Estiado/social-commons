@@ -4,8 +4,11 @@
 
 - 用户后续明确改为网站内直接提交，选择现有Supabase后台集中查看。前端改为显式提交、等待匹配回执、失败保留输入及同编号重试；本地复制和下载为副本，不冒充在线成功。不启用SMTP，不扩展到文章投稿或网站内管理员账号。
 - 完整 `scripts/dev.ps1 check` 通过67/67，日志D盘 `.artifacts/online-feedback-check.log`。新增回归验证回执不匹配/超时不能报成功、只上传主动填写字段、失败重试沿用编号、匿名和登录角色均不能直接读取/写入/清空收件表、重复请求不覆盖后台状态、分钟与24小时限额。
-- 202610230002增量迁移在真实Supabase执行显示Success。未重跑init.sql，未修改旧文章、私人阅读表或原有收藏；迁移仅新增beta_feedback和受限提交函数。生产角色权限与浏览器回执核验结果在实际完成后补充，不能从独立PGlite推断。
-- 微信对照见WECHAT_IMPORT.md：最早dddbe34已有缓存优先，2e0b551扩展缓存返回；当前请求头及原Netlify请求头在同一本机网络均为403空响应；真实正式提取API为422/SOURCE_VERIFICATION_REQUIRED。Edge原文导航连接被关闭。没有将恢复请求头发布为“已修复”，没有处理验证码或传输Cookie。
+- 202610230002增量迁移在真实Supabase执行显示Success。未重跑init.sql，未修改旧文章、私人阅读表或原有收藏；迁移仅新增beta_feedback和受限提交函数。生产实际权限查询确认anon、authenticated均无SELECT/INSERT/UPDATE/DELETE/TRUNCATE权限、RLS为true，仅可执行提交函数；真实SET LOCAL ROLE anon读取该表返回42501。证据 `.artifacts/online-feedback-permissions.txt`、`.artifacts/online-feedback-anon-denied.txt`，不是从PGlite推断。
+- Cloudflare预览页真实提交返回 `d62450a0-5519-42ea-802e-e9cef9ce2a73`，后台精确查询同ID找到同正文；合成路径 `/reading/reading?token=synthetic-test#draft` 入库为 `/reading/reading`，查询与片段已剥离。未使用真实令牌或读者信息。证据 `.artifacts/online-feedback-preview-row.txt`。
+- [PR #5](https://github.com/Estiado/social-commons/pull/5) 已合并，main为 `16ca300314f850a2fb85669b93dfc872e26b0f55`，本机fetch并快进一致。该提交的 [主分支检查](https://github.com/Estiado/social-commons/actions/runs/39954580782) 与Cloudflare Pages均completed/success。Code Review连接器用于对应head的CI检查，不冒充独立人工安全审查。
+- 正式 `social-commons.pages.dev/feedback?page=%2Freading` 真实提交“正式站验收”反馈，网页显示已提交及回执 `a9b3a885-0502-4d71-bd75-69a5a8461b07`；Supabase精确查询同ID返回一行，同正文、期望与 `/reading` 路径均一致。截图 `.artifacts/online-feedback-production.png`，后台证据 `.artifacts/online-feedback-production-row.txt`。这是正式网址与真实数据库的端到端验证，不仅是预览部署成功。
+- 微信对照见WECHAT_IMPORT.md：最早dddbe34已有缓存优先，2e0b551扩展缓存返回；两条用户原文在本机当前及原Netlify请求头下均403空响应，正式Cloudflare API均422/SOURCE_VERIFICATION_REQUIRED。第二条旧Netlify接口虽200/success，实际只有“环境异常／完成验证／去验证”三块，无文章正文。首条Edge原文导航连接被关闭。没有修改抓取链路、将恢复请求头发布为“已修复”、处理验证码或传输Cookie。
 
 ## 内容、手机体验与内测保障 · 2026-10-23
 
