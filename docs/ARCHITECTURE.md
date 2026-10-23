@@ -11,7 +11,7 @@
 | 服务端 | `server/` | 受限抓取、无状态提取和限流 |
 | 平台入口 | `functions/api/` | Cloudflare Request/Response 适配 |
 | 数据库 | `supabase/` | 新表、RLS、精选元数据及种子 |
-| 内测反馈 | `src/features/feedback/` | 校验主动填写信息，生成本地文本，不发送 |
+| 内测反馈 | `src/features/feedback/` | 校验主动填写信息，通过受限RPC写入私人收件表并确认回执；本地副本备用 |
 
 具体文件职责见 [目录导览](REPOSITORY_GUIDE.md)。
 
