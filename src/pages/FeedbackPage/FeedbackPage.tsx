@@ -11,6 +11,7 @@ import {
   type FeedbackFields,
 } from '@/features/feedback/report';
 import { submitFeedback } from '@/features/feedback/submit';
+import { FEEDBACK_EXPECTATIONS, FEEDBACK_PAGES } from '@/features/feedback/options';
 
 export default function FeedbackPage() {
   const [params] = useSearchParams();
@@ -20,6 +21,9 @@ export default function FeedbackPage() {
     description: '',
     expected: '',
   });
+  const [customPage, setCustomPage] = useState(
+    () => Boolean(fields.page) && !FEEDBACK_PAGES.some((option) => option.value === fields.page),
+  );
   const [website, setWebsite] = useState('');
   const [sending, setSending] = useState(false);
   const [receipt, setReceipt] = useState('');
@@ -98,16 +102,41 @@ export default function FeedbackPage() {
               ))}
             </select>
           </label>
-          <label className="block text-sm">
-            相关页面（可选）
-            <Input
-              className="mt-2"
-              value={fields.page}
-              maxLength={500}
-              placeholder="例如 /essay"
-              onChange={(event) => updateField('page', event.target.value)}
-            />
-          </label>
+          <div className="space-y-2 text-sm">
+            <label htmlFor="feedback-page" className="block">
+              相关页面（选填）
+            </label>
+            <select
+              id="feedback-page"
+              value={customPage ? 'custom' : fields.page}
+              onChange={(event) => {
+                const choice = event.target.value;
+                setCustomPage(choice === 'custom');
+                updateField('page', choice === 'custom' ? fields.page : choice);
+              }}
+              className="block w-full rounded-sm border bg-background p-2"
+            >
+              <option value="">不指定页面</option>
+              {FEEDBACK_PAGES.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+              <option value="custom">其他页面或具体条目</option>
+            </select>
+            {customPage && (
+              <label className="block text-muted-foreground">
+                具体页面链接或路径
+                <Input
+                  className="mt-2"
+                  value={fields.page}
+                  maxLength={500}
+                  placeholder="粘贴页面地址，例如 /quotes/q82"
+                  onChange={(event) => updateField('page', event.target.value)}
+                />
+              </label>
+            )}
+          </div>
           <label className="block text-sm">
             问题或建议
             <Textarea
@@ -117,20 +146,40 @@ export default function FeedbackPage() {
               maxLength={5000}
               rows={6}
               value={fields.description}
-              placeholder="做了什么操作，出现了什么情况？可以另外附上截图。"
+              placeholder="做了什么操作，出现了什么情况？请写清步骤和看到的问题。"
               onChange={(event) => updateField('description', event.target.value)}
             />
           </label>
-          <label className="block text-sm">
-            期望结果（可选）
+          <div className="space-y-2 text-sm">
+            <label htmlFor="feedback-expected" className="block">
+              期望结果（选填）
+            </label>
+            <select
+              aria-label="常见期望结果"
+              value={
+                FEEDBACK_EXPECTATIONS.some((option) => option.value === fields.expected)
+                  ? fields.expected
+                  : ''
+              }
+              onChange={(event) => updateField('expected', event.target.value)}
+              className="block w-full rounded-sm border bg-background p-2"
+            >
+              <option value="">自行填写或暂不填写</option>
+              {FEEDBACK_EXPECTATIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
             <Textarea
-              className="mt-2"
+              id="feedback-expected"
               maxLength={2000}
               rows={3}
+              placeholder="选一项快速填写，也可以在这里补充或修改。"
               value={fields.expected}
               onChange={(event) => updateField('expected', event.target.value)}
             />
-          </label>
+          </div>
           <div className="flex flex-wrap gap-3">
             <Button type="submit" disabled={sending || Boolean(receipt)}>
               {sending ? '正在提交…' : receipt ? '已提交' : '提交反馈'}

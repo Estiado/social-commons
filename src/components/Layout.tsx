@@ -10,6 +10,7 @@ import {
   User,
   Search,
   Menu,
+  MessageSquare,
 } from 'lucide-react';
 const GlobalSearch = lazy(() =>
   import('./GlobalSearch').then((module) => ({ default: module.GlobalSearch })),
@@ -26,6 +27,7 @@ const NAV_ITEMS = [
 
 export function Layout() {
   const location = useLocation();
+  const feedbackPath = '/feedback?page=' + encodeURIComponent(location.pathname);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   useEffect(() => {
@@ -62,7 +64,7 @@ export function Layout() {
                 to={item.path}
                 end={item.end}
                 className={({ isActive }) =>
-                  `flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm ${isActive ? 'bg-accent/5 text-accent' : 'text-muted-foreground hover:text-foreground'}`
+                  `flex items-center gap-1.5 whitespace-nowrap rounded-sm px-2 py-2 text-sm ${isActive ? 'bg-accent/5 text-accent' : 'text-muted-foreground hover:text-foreground'}`
                 }
               >
                 <item.icon className="h-4 w-4" />
@@ -76,6 +78,15 @@ export function Layout() {
             >
               <Search className="h-4 w-4" />
             </button>
+            <NavLink
+              to={feedbackPath}
+              className={({ isActive }) =>
+                `ml-1 flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm border border-accent/30 px-2 py-2 text-sm text-accent hover:bg-accent/5 ${isActive ? 'bg-accent/5' : ''}`
+              }
+            >
+              <MessageSquare className="h-4 w-4" />
+              内测反馈
+            </NavLink>
           </nav>
           <nav aria-label="移动端导航" className="flex shrink-0 items-center gap-1 lg:hidden">
             <NavLink
@@ -123,7 +134,7 @@ export function Layout() {
               </NavLink>
             ))}
             <Link
-              to={'/feedback?page=' + encodeURIComponent(location.pathname)}
+              to={feedbackPath}
               onClick={() => setMobileOpen(false)}
               className="rounded-sm border p-3 text-center text-sm text-muted-foreground"
             >
@@ -151,10 +162,7 @@ export function Layout() {
             本站内容仅供学习交流，引用请核对原始出处。个人文章与摘录保存在当前浏览器。
           </p>
           <div className="mt-4 flex gap-5 text-sm">
-            <Link
-              to={'/feedback?page=' + encodeURIComponent(location.pathname)}
-              className="text-accent underline"
-            >
+            <Link to={feedbackPath} className="text-accent underline">
               内测反馈
             </Link>
             <Link to="/reading?tab=legacy" className="text-muted-foreground underline">
