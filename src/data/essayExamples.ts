@@ -2,6 +2,7 @@ import type { MaterialFields } from '../features/essay/materials';
 import { REASONING_EXAMPLES } from './essay/reasoningExamples.ts';
 import { SOCIAL_EXAMPLES } from './essay/socialEvidence.ts';
 import { LEARNING_EXAMPLES } from './essay/learningAndCulture.ts';
+import { YOUTH_EXAMPLES } from './essay/youthStudies.ts';
 
 export interface EssayExample extends MaterialFields {
   id: string;
@@ -11,6 +12,7 @@ export interface EssayExample extends MaterialFields {
 // Site examples are source-based summaries, not unattributed copied passages.
 // The same reviewed data can seed Supabase; visitors cannot edit these entries.
 export const ESSAY_EXAMPLES: EssayExample[] = [
+  ...YOUTH_EXAMPLES,
   ...LEARNING_EXAMPLES,
   ...SOCIAL_EXAMPLES,
   ...REASONING_EXAMPLES,
@@ -20,8 +22,7 @@ export const ESSAY_EXAMPLES: EssayExample[] = [
     title: '“修昔底德陷阱”是一种研究视角，不是战争预言',
     content:
       '哈佛大学贝尔弗中心的项目介绍列出 16 组大国竞争案例，其中 4 组没有以战争告终。项目同时说明，其讨论目的是避免冲突，而非把历史当作未来必然重复的定律。这些数字属于该项目的案例选择，不能直接解释为所有国家关系的战争概率。',
-    source:
-      '本站依据 Harvard Kennedy School Belfer Center 的 Thucydides’s Trap 项目介绍整理。',
+    source: '本站依据 Harvard Kennedy School Belfer Center 的 Thucydides’s Trap 项目介绍整理。',
     sourceUrl: 'https://www.belfercenter.org/programs/thucydidess-trap',
     usageHint: '比较结构压力与政治选择；避免将有限案例的比例直接当作普遍概率。',
   },

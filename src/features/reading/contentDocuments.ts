@@ -100,6 +100,14 @@ export function dailyDocument(item: IDailyKnowledge): ArticleDocument {
       ...paragraphs(item.content),
       heading('参考资料'),
       paragraph(item.source),
+      ...(item.researchSource?.fullTextUrl
+        ? [
+            referenceParagraph(
+              `${item.researchSource.title}（期刊原站 PDF）`,
+              item.researchSource.fullTextUrl,
+            ),
+          ]
+        : []),
       ...(item.mediaReferences || []).flatMap((reference) => [
         heading(reference.title),
         paragraph(`${reference.source}${reference.date ? ` · ${reference.date}` : ''}`),

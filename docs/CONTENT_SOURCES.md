@@ -4,12 +4,35 @@
 
 | 栏目 | 之前 | 当前 | 新内容位置 |
 | --- | --- | --- | --- |
-| 日新 | 82 条 | 100 条 | `knowledge/learningAndCulture.ts` |
+| 日新 | 100 条 | 114 条 | `knowledge/youthStudies.ts` |
 | 撷英 | 90 个 ID、80 篇推荐作品 | 98 个 ID、88 篇推荐作品 | `quotes/friendshipAndNature.ts` |
 | 已发表解读摘要 | 51 篇去重作品 | 59 篇去重作品 | `src/data/quotes/` |
 | 群鉴 | 10 个主题、30 个视角 | 11 个主题、33 个视角 | `history/naturalSelection.ts` |
-| 议论文素材 | 52 个概念、29 个示例 | 70 个概念、47 个示例 | `essay/learningAndCulture.ts` |
+| 议论文素材 | 70 个概念、47 个示例 | 84 个概念、61 个示例 | `essay/youthStudies.ts` |
 | 观澜近期目录 | 50 篇 | 50 篇，轮换7篇 | `commentaries/cultureAndTechnology.ts` |
+
+## 青年与大学研究选读 · 2026-10-24
+
+新增14篇学术研究短读，集中在观澜“青年与大学”，日新和素材库使用同一台账。**本轮核对的是出版站公开摘要、书目信息及部分表格，不冒充逐篇阅读全文。** 每条区分作者解释、研究对象和可支持的范围；不把定性研究当作普遍比例，不从题名推测样本数量。没有新增政府政策、宣传稿或课堂练习。站内录入日统一为2026-10-24，论文实际年份保存在`researchSource.year`；2022—2026年论文不混入7—10月50篇近期媒体目录。
+
+| 条目 | 已核对的原始出版页 | 方法或边界 |
+| --- | --- | --- |
+| d101 / e71 认得与认可 | [项飙、康岚，2025年第4期，1–21页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/d1e2af27446d83938a303387bcb52a6d) | 理论框架；不写成人群调查 |
+| d102 / e72 考研与自我身份 | [孙孝孝，2026年第5期，68–84页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/281d253c23c85aa68faacc5d533699a2) | 不补造摘要未报告的样本数 |
+| d103 / e73 青年的内在性转向 | [阎云翔、康岚，2026年第2期，1–22页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/f36e042a2a69f3cc1a4cc1c807c4b662) | 代际解释；不等于全体青年的统计描述 |
+| d104 / e74 好学生心态与自我价值 | [温丽蔚、江淑玲，2025年第4期，22–37页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/37ecbe49024a5c3b93ae39be3474c6f9) | 深度访谈；两类分析不当作个人诊断 |
+| d105 / e75 松弛感与自我呈现 | [孟志雷、宋一婷，2026年第4期，17–33页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/f3c6c3758c74daf6a30dd3e56ec174ef) | 质性研究、ABC态度模型；不将建议改成实证结果 |
+| d106 / e76 时间的过度道德化 | [孙元涛、祖宇轩，《教育科学》2025,41(3):52–59](https://jykx.lnnu.edu.cn/CN/abstract/abstract502.shtml) | 质性研究；实读公开摘要、两张表；网页上线日与期刊出版日分开 |
+| d107 / e77 校园招聘的体验机制 | [盛春、周蓉，2025年第6期，20–35页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/d252bf25d104cc399cd7559d55d3463f) | 2022—2023年上海10所高校招聘会；就业意愿不等于入职表现 |
+| d108 / e78 实习中的不确定性 | [顾楚丹、文军，华东师大学报2022,54(5):121–132](https://xbzs.ecnu.edu.cn/CN/abstract/abstract11827.shtml) | 劳动过程分析；只核摘要与PDF页首，不补造样本数 |
+| d109 / e79 临时共同体与消费空间 | [王健，《北京青年研究》2026,35(4):86–93](https://bjqz.cbpt.cnki.net/portal/journal/portal/client/paper/d00fdac81d2ed1b492cfbda25a492bcf) | 网络文本分析；不写成访谈或现场实验 |
+| d110 / e80 亲密关系的数字边界 | [路阳，中北大学学报2024,40(6):46–52](https://cjournal.hep.com.cn/1673-1646/CN/1200838558677607036) | 上海14位青年；网页迁移更新日不是论文年份；不使用摘要引言中的宏观单身率 |
+| d111 / e81 算法依恋 | [关茹之、毛春，《视听》2026(1):110–114](https://shit.cbpt.cnki.net/portal/journal/portal/client/paper/89eb8a4573452bd6d2f872cdfc47f60f) | 参与式观察、深度访谈；不写成临床因果实验 |
+| d112 / e82 数字素养与情绪消费 | [葛晨等，上海财经大学学报2026,28(2):109–123](https://qks.sufe.edu.cn/J/CDXB/Article/Details/A0eaXU3Id8-UvVp-G2PS-WJuC-L5KTZyennHUD/CN) | CFPS 2014—2022五轮数据；消费额不等于理性程度 |
+| d113 / e83 本真性与体验消费 | [刘笑明、雷濛，2026年第5期，50–67页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/d4240a8da3f90525ba3dabeb23a7c3ef) | 莫干山、丹寨案例；不推导苦难本身的价值 |
+| d114 / e84 搭子社交的关系边界 | [张健，《新媒体研究》2025(12):104–108](https://www.xmtyj.org.cn/zh/article/doi/10.16604/j.cnki.issn2096-0360.2025.12.009/) | 形态与路径分析；以引用格式确定刊名，不误用网页栏目名称 |
+
+其中7篇来自《当代青年研究》。两份PDF已核对真实论文页首、题名与摘要：d108华东师大出版站、d112上海财大出版站；以有题名的原站链接进入共享阅读/文稿模型，不镜像版权未核定的现代论文。其余页面的“下载”按钮不等于已取得文件，不编造PDF地址。CNKI托管页可能要求登录或机构访问全文，本站只提供短读与实际出版入口。
 
 ## 2026-10-24 增补来源
 

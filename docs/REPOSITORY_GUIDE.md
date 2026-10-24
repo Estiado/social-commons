@@ -57,6 +57,8 @@
 - `features/reading/catalogueReading.ts` 处理新版正文与旧快照的选择；`typography.ts` 定义可保存的常用正文样式，`writing/DocumentStyleControls.tsx` 只负责样式选择界面。
 - `lib/`、`hooks/`：跨模块小工具。新的业务逻辑优先放对应 feature，不再随意塞进公共工具目录。
 
+- 青年与大学研究集中在`knowledge/youthStudies.ts`，日新、观澜、`essay/youthStudies.ts`共用同一书目。作者、期刊、卷期页码与原站PDF使用`types.ts`中的`IResearchSource`；新增论文时先核来源，不从旧摘要推测全文。`TopicSpecial.readingFocus`只调整研究主题的展示顺序，保留私人关联工具。
+
 ## 为什么根目录还留有配置
 
 | 配置 | 作用 |

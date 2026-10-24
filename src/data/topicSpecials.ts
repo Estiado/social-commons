@@ -1,6 +1,5 @@
 /**
- * 高考议论文专题数据
- * 每个专题聚合相关话题的文章、通识、名句，方便高三学生按主题找素材
+ * 观澜专题聚合文章、通识、名句；既有 ID 和关联保持稳定。
  */
 
 export interface TopicSpecial {
@@ -16,9 +15,38 @@ export interface TopicSpecial {
   relatedQuoteIds: string[];
   // 专题封面色（用于卡片渐变）
   color: string;
+  /** Research themes lead with studies, while retaining personal article tools. */
+  readingFocus?: 'research';
 }
 
 export const TOPIC_SPECIALS: TopicSpecial[] = [
+  {
+    id: 'youth-university',
+    name: '青年与大学',
+    subtitle: '成绩之外，理解生活与自我',
+    description:
+      '考研与实习、时间压力与自我价值、亲密关系与数字社交：从具体经历出发，读青年研究与社会科学论文。把个人感受放回关系、组织和生活环境中理解，也留意不同研究的对象与边界。',
+    relatedTags: ['青年与大学'],
+    relatedDailyIds: [
+      'd101',
+      'd102',
+      'd103',
+      'd104',
+      'd105',
+      'd106',
+      'd107',
+      'd108',
+      'd109',
+      'd110',
+      'd111',
+      'd112',
+      'd113',
+      'd114',
+    ],
+    relatedQuoteIds: ['q16', 'q23', 'q90', 'q91', 'q97'],
+    color: 'from-amber-500/10 to-stone-500/10',
+    readingFocus: 'research',
+  },
   {
     id: 'economy-development',
     name: '经济与发展',

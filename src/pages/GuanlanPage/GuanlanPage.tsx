@@ -16,7 +16,7 @@ export default function GuanlanPage() {
         <p className="mb-3 text-xs tracking-widest text-accent">GUANLAN · READING THE WORLD</p>
         <h1 className="mb-4 font-serif text-4xl font-semibold">观澜</h1>
         <p className="max-w-3xl leading-relaxed text-muted-foreground">
-          从一个主题出发，读时评、通识与名句。比较不同媒体的论证，把有出处的文字带进自己的文稿。
+          从一个主题出发，读时评、期刊研究、通识与名句。比较不同作者的论证，把有出处的文字带进自己的文稿。
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Button asChild>
@@ -40,8 +40,11 @@ export default function GuanlanPage() {
             <h2 className="mb-2 font-serif text-xl font-semibold">{topic.name}</h2>
             <p className="mb-4 text-sm text-muted-foreground">{topic.subtitle}</p>
             <p className="text-xs text-accent">
-              {counts.get(topic.id) || 0} 篇时评 · {topic.relatedDailyIds.length} 条通识 ·{' '}
-              {topic.relatedQuoteIds.length} 句名句
+              {topic.readingFocus === 'research'
+                ? `${topic.relatedDailyIds.length} 篇研究选读`
+                : `${counts.get(topic.id) || 0} 篇时评 · ${topic.relatedDailyIds.length} 条通识`}
+              {' · '}
+              {topic.relatedQuoteIds.length} 篇诗文摘读
             </p>
           </Link>
         ))}

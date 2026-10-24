@@ -62,7 +62,21 @@ export interface IDailyKnowledge {
   summary: string;
   content: string;
   source: string;
+  researchSource?: IResearchSource;
   mediaReferences?: IMediaReference[];
+}
+
+/** Bibliographic publication dates are distinct from the site's entry date. */
+export interface IResearchSource {
+  title: string;
+  authors: string[];
+  journal: string;
+  year: number;
+  volume?: number;
+  issue: string;
+  pages: string;
+  url: string;
+  fullTextUrl?: string;
 }
 
 export interface IQuote {

@@ -2,10 +2,12 @@ import type { IEssayMaterial } from './types';
 import { REASONING_ESSAYS } from './essay/reasoning.ts';
 import { SOCIAL_ESSAYS } from './essay/socialEvidence.ts';
 import { LEARNING_ESSAYS } from './essay/learningAndCulture.ts';
+import { YOUTH_ESSAYS } from './essay/youthStudies.ts';
 
 // 内置概念目录。读者素材在本浏览器保存，站方示例独立维护于 essayExamples.ts。
 
 export const ESSAY_MATERIALS: IEssayMaterial[] = [
+  ...YOUTH_ESSAYS,
   ...LEARNING_ESSAYS,
   ...SOCIAL_ESSAYS,
   ...REASONING_ESSAYS,

@@ -5,6 +5,8 @@ import { QUOTES } from '@/data/quotes';
 import { ContentReader } from '@/features/reading/ContentReader';
 import { CommentaryCatalogue } from '@/features/reading/CommentaryCatalogue';
 import { TopicReading } from '@/features/reading/TopicReading';
+import { CURATED_COMMENTARIES } from '@/data/curatedCommentaries';
+import { commentaryTopics } from '@/features/reading/commentaryTopics';
 
 export default function TopicDetailPage() {
   const { id } = useParams();
@@ -18,6 +20,17 @@ export default function TopicDetailPage() {
     );
   const daily = DAILY_KNOWLEDGE.filter((item) => topic.relatedDailyIds.includes(item.id));
   const quotes = QUOTES.filter((item) => topic.relatedQuoteIds.includes(item.id));
+  const research = topic.readingFocus === 'research';
+  const articles = (
+    <>
+      <TopicReading key={topic.id} topic={topic} />
+      {(!research ||
+        CURATED_COMMENTARIES.some((item) => commentaryTopics(item).includes(topic.id))) && (
+        <CommentaryCatalogue key={'catalogue-' + topic.id} topicId={topic.id} />
+      )}
+    </>
+  );
+  const knowledgeHeading = research ? '期刊研究选读' : '相关通识概念';
   return (
     <div className="mx-auto max-w-5xl px-5 py-10 md:px-6">
       <Link className="mb-7 inline-block text-sm text-accent underline" to="/guanlan">
@@ -28,10 +41,9 @@ export default function TopicDetailPage() {
         <h1 className="mb-4 font-serif text-3xl font-semibold">{topic.name}</h1>
         <ContentReader kind="topic" id={topic.id} />
       </header>
-      <TopicReading key={topic.id} topic={topic} />
-      <CommentaryCatalogue key={'catalogue-' + topic.id} topicId={topic.id} />
-      <section className="my-10" aria-label="相关通识概念">
-        <h2 className="mb-5 font-serif text-2xl font-semibold">相关通识概念</h2>
+      {!research && articles}
+      <section className="my-10" aria-label={knowledgeHeading}>
+        <h2 className="mb-5 font-serif text-2xl font-semibold">{knowledgeHeading}</h2>
         <div className="space-y-4">
           {daily.map((item) => (
             <Link
@@ -42,6 +54,12 @@ export default function TopicDetailPage() {
               <p className="mb-2 text-xs text-accent">{item.category}</p>
               <h3 className="mb-2 font-serif text-lg font-semibold">{item.title}</h3>
               <p className="text-sm leading-relaxed text-muted-foreground">{item.summary}</p>
+              {item.researchSource && (
+                <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                  {item.researchSource.authors.join('、')} · 《{item.researchSource.journal}》
+                  {item.researchSource.year}年第{item.researchSource.issue}期
+                </p>
+              )}
             </Link>
           ))}
         </div>
@@ -65,6 +83,7 @@ export default function TopicDetailPage() {
           ))}
         </div>
       </section>
+      {research && articles}
       <p className="rounded-sm border p-5 text-sm leading-relaxed text-muted-foreground">
         阅读时可选择段落、语句加入阅读空间，再勾选编成一份文稿。公共目录保留原文出处，个人导入正文仅在自己的浏览器使用。
       </p>
