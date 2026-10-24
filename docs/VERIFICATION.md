@@ -5,6 +5,9 @@
 - 新增d101—d114、e71—e84及14个对应站方示例，114条通识/84个概念/61个示例。观澜新增青年与大学主题，研究优先；近期时评50篇和其他旧条目保留。没有执行生产SQL或更改账号/权限。
 - 14篇来源已在真实出版页核对公开摘要和书目，其中7篇《当代青年研究》。不冒充14篇全文精读；两份PDF只链接出版站，未托管现代版权全文。详细边界见CONTENT_SOURCES.md。
 - 完整`scripts/dev.ps1 check`通过77/77；类型、ESLint、旧数据/快照、分类、引用/编排、种子权限、生产构建、Cloudflare函数及Word/PDF生成通过。新回归验证研究台账与素材一致、论文年份独立、原站题名链接及两份PDF在编辑转换中保留。日志D盘`.artifacts/youth-expansion-check.log`。SQL种子仅生成，未执行生产。
+- 功能提交`b0761b3544d4ed0cbdc83ceb0ad7ebe6941acdef`推送main并以`ls-remote`核对一致；[主分支检查](https://github.com/Estiado/social-commons/actions/runs/40081910479)completed/success，Cloudflare Pages明确显示Deployed successfully。初次Git连接的TLS中断以单次命令切换证书后端解决，未关闭证书检查、修改全局配置或强推。
+- 正式站从观澜卡片实际进入`/guanlan/topics/youth-university`，显示14条研究、作者/期刊/年份/期次，先研究后诗文及私人关联区，不展示空的公共时评区。实点d108进入独立页，正文、论文原站及有题名PDF链接均出现；实际保存文章和一个正文段落，刷新后同一阅读ID及“取消收藏本段”状态保留。另保存了新主题介绍的本地副本；未改旧私人文章。
+- 390×844手机验收内容宽375px、scrollWidth375px，研究卡片、题名和出处可换行，视口已恢复。日新显示114条，搜索“当代青年研究”命中7篇；素材显示84条，搜索“算法依恋”命中1条并定位，展开后完整三段和题名出处出现。`/essay?id=e81`可定位展开；验收定位器最初错误使用整段精确匹配，改为片段匹配后确认正文完整，未据此误改功能。页面控制台没有error。截图`.artifacts/youth-live-topic.png`、`youth-live-mobile-studies.png`、`youth-live-search.png`均在D盘，不提交Git。
 
 ## 文学、学习与科技扩充 · 2026-10-24
 
