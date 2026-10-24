@@ -8,7 +8,9 @@
 - 本机粘贴独立合成样本，只有正文含关键词“紫藤星河”。阅读空间搜索找到1条，链接直接带`#reading-b4`，对应段落位于约110px并有关键词标记；选此文另编文稿后搜索找到文章与文稿共2条，进入文稿实际选中相同关键词。选区不改原文字；截图`.artifacts/workspace-search-editor.jpg`。
 - 本机实际生成统一备份，校验包含7份阅读文档、2份原文稿、1份个人素材与1份合成自建词条，无反馈字段；文件由浏览器默认下载目录归档至D盘`.artifacts/personal-backup-browser-20261024.json`，不提交Git。重复恢复显示“已恢复0条；已有或到期的11条未覆盖”，原文章与编辑内容保留。自动化另覆盖自定义分类往返、旧阅读/素材备份兼容和容量失败恢复。
 - 本机反馈填写合成草稿与常见期望，刷新后文字、期望和`/quotes/q82`来路恢复；再次从手机菜单点击反馈仍保留同一来路。没有为测试草稿点击提交，不冒充新增生产回执或数据库验收。
-- 发布前核对远端main仍为`357a2c2444ea59da5c1a9842359cd656d41d4b15`，无他人新提交。GitHub同步、CI与正式网址验证在发布后另补，以上本机结果不代表已上线。
+- 发布前核对远端main仍为`357a2c2444ea59da5c1a9842359cd656d41d4b15`，无他人新提交；功能提交`414898a133ec80ba31aee645bc9d7be8a38c1791`已推送，`ls-remote`与本机SHA一致。[主分支CI](https://github.com/Estiado/social-commons/actions/runs/40065298743)与对应Cloudflare Pages检查均completed/success，Cloudflare显示Deployed successfully。
+- 正式`social-commons.pages.dev`在390×844真实完成全部25步：首页滚动、丝路正文、阅读空间/备份、素材、导航展开、日新/撷英/观澜及反馈；每步均找到聚光目标，无横向溢出，完成后刷新不再弹出。首次移动端截图`.artifacts/onboarding-production-mobile.jpg`，逐步记录`.artifacts/onboarding-production-audit.json`，均在D盘且不提交。
+- 正式阅读空间对旧资料搜索“大江东去”找到文章、原有摘录、旧文稿共3条；点击文章直接到`#reading-b1`，目标顶端约96px，蓝色搜索与原黄色收藏同时存在；打开原文稿实际选中“大江东去”。只改变检索/选区，没有编辑原文稿或重新写入生产文章，证明生产旧资料升级后的索引可用。
 
 ## 反馈入口与表单选项 · 2026-10-23
 
