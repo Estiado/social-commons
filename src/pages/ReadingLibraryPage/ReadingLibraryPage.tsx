@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAccount } from '@/features/auth/useAccount';
@@ -20,6 +20,9 @@ import { composeDraft, type WritingSource } from '@/features/reading/writing/com
 import { migrateLegacyDrafts } from '@/features/reading/writing/legacyDrafts';
 import { ReadingBackupControls } from '@/features/reading/ReadingBackupControls';
 import { useItemLocation } from '@/hooks/useItemLocation';
+import { searchReadingWorkspace } from '@/features/reading/searchRepository';
+import type { WorkspaceMatch } from '@/features/reading/searchIndex';
+import { SearchText } from '@/features/reading/SearchText';
 
 interface WorkspaceItem {
   key: string;
@@ -32,8 +35,14 @@ interface WorkspaceItem {
   href: string;
   storage?: 'local' | 'cloud';
 }
+const EMPTY_MATCHES = new Map<string, WorkspaceMatch>();
 export default function ReadingLibraryPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const query =
+    typeof location.state?.workspaceQuery === 'string'
+      ? location.state.workspaceQuery.slice(0, 200)
+      : '';
   const [params] = useSearchParams();
   useItemLocation(params.get('tab') === 'legacy' ? 'backup' : null, 'reading');
   const { account, loading: authLoading } = useAccount();
@@ -44,11 +53,45 @@ export default function ReadingLibraryPage() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [reload, setReload] = useState(0);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(query);
+  const [searchResult, setSearchResult] = useState<{
+    key: string;
+    matches: Map<string, WorkspaceMatch>;
+    error: string;
+  } | null>(null);
+  const searchKey = `${reload}:${loading}:${query}`;
+  const currentResult = query && searchResult?.key === searchKey ? searchResult : null;
+  const searchMatches = currentResult?.matches ?? EMPTY_MATCHES;
+  const searching = Boolean(query && !currentResult);
+  const searchError = currentResult?.error ?? '';
+  const resultsRef = useRef<HTMLHeadingElement>(null);
   const [kind, setKind] = useState('all');
   const [selected, setSelected] = useState<string[]>([]);
   const appendId = params.get('append');
   const topicId = params.get('topic');
+  useEffect(() => {
+    if (!query || loading) return;
+    const operation = new AbortController();
+    void searchReadingWorkspace(query, operation.signal)
+      .then((matches) => {
+        if (operation.signal.aborted) return;
+        setSearchResult({ key: searchKey, matches, error: '' });
+        requestAnimationFrame(() => {
+          resultsRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+          resultsRef.current?.focus({ preventScroll: true });
+        });
+      })
+      .catch((error) => {
+        if (!operation.signal.aborted) {
+          setSearchResult({
+            key: searchKey,
+            matches: EMPTY_MATCHES,
+            error: error instanceof Error ? error.message : '正文检索失败，请重试',
+          });
+        }
+      });
+    return () => operation.abort();
+  }, [query, searchKey, loading]);
   useEffect(() => {
     if (authLoading) return;
     let active = true;
@@ -137,13 +180,14 @@ export default function ReadingLibraryPage() {
   const byKey = new Map(items.map((item) => [item.key, item]));
   const selectedKeys = new Set(selected);
   const excerptsByKey = new Map(excerpts.map((item) => [item.key, item]));
-  const query = search.trim().toLocaleLowerCase();
   const visible = items.filter(
     (item) =>
       (kind === 'all' || item.kind === kind) &&
-      (item.title + ' ' + item.source + ' ' + (item.preview || ''))
-        .toLocaleLowerCase()
-        .includes(query),
+      (!query ||
+        searchMatches.has(item.key) ||
+        (item.title + ' ' + item.source + ' ' + (item.preview || ''))
+          .toLocaleLowerCase()
+          .includes(query.toLocaleLowerCase())),
   );
   const toggle = (key: string, checked: boolean) =>
     setSelected((previous) =>
@@ -204,7 +248,9 @@ export default function ReadingLibraryPage() {
       <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="mb-3 text-xs tracking-widest text-accent">MY READING & WRITING SPACE</p>
-          <h1 className="font-serif text-3xl font-semibold">我的阅读空间</h1>
+          <h1 data-tour="reading-intro" className="font-serif text-3xl font-semibold">
+            我的阅读空间
+          </h1>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" disabled={busy} onClick={() => void write(true)}>
@@ -250,14 +296,29 @@ export default function ReadingLibraryPage() {
           </Button>
         ))}
       </div>
-      <Input
-        aria-label="搜索阅读空间"
-        placeholder="搜索标题、文字、来源…"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-      />
+      <form
+        className="flex gap-2"
+        data-tour="reading-search"
+        onSubmit={(event) => {
+          event.preventDefault();
+          navigate(location.pathname + location.search, {
+            replace: true,
+            state: { ...location.state, workspaceQuery: search.trim().slice(0, 200) },
+          });
+        }}
+      >
+        <Input
+          aria-label="搜索阅读空间"
+          placeholder="搜索标题、正文、摘录、来源…"
+          maxLength={200}
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+        />
+        <Button type="submit">搜索</Button>
+      </form>
       <section
         aria-label="选材与编排"
+        data-tour="reading-selection"
         className="sticky top-16 z-10 my-5 space-y-3 rounded-sm border bg-background/95 p-4 backdrop-blur"
       >
         <div className="flex flex-wrap items-center gap-3">
@@ -315,35 +376,62 @@ export default function ReadingLibraryPage() {
           {error}
         </p>
       )}
-      {loading ? (
+      {searchError && (
+        <p role="alert" className="my-4 text-sm text-accent">
+          {searchError}
+        </p>
+      )}
+      {loading || searching ? (
         <p role="status" className="py-10">
-          正在读取内容…
+          {searching ? '正在检索正文…' : '正在读取内容…'}
         </p>
       ) : (
         <div className="space-y-4">
-          {visible.map((item) => (
-            <article key={item.key} className="rounded-sm border bg-card p-5">
-              <label className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
-                <input
-                  type="checkbox"
-                  aria-label={'选择：' + item.title + ' · ' + item.kind}
-                  checked={selectedKeys.has(item.key)}
-                  onChange={(event) => toggle(item.key, event.target.checked)}
-                />
-                {item.kind === 'article' ? '文章' : item.kind === 'draft' ? '文稿' : '段落与语句'} ·{' '}
-                {item.source || '来源待核对'}
-              </label>
-              <Link className="font-serif text-lg font-semibold hover:text-accent" to={item.href}>
-                {item.title}
-              </Link>
-              {item.preview && (
-                <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                  {item.preview.slice(0, 240)}
-                  {item.preview.length > 240 ? '…' : ''}
-                </p>
-              )}
-            </article>
-          ))}
+          <h2
+            ref={resultsRef}
+            tabIndex={-1}
+            className="scroll-mt-24 text-sm text-muted-foreground"
+            role="status"
+          >
+            {query ? `“${query}”找到 ${visible.length} 条结果` : `共 ${visible.length} 条内容`}
+          </h2>
+          {visible.map((item) => {
+            const match = searchMatches.get(item.key);
+            const href =
+              match?.blockId && item.kind === 'article'
+                ? `/reading/${item.id}#reading-${match.blockId}`
+                : item.href;
+            return (
+              <article key={item.key} className="rounded-sm border bg-card p-5">
+                <label className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
+                  <input
+                    type="checkbox"
+                    aria-label={'选择：' + item.title + ' · ' + item.kind}
+                    checked={selectedKeys.has(item.key)}
+                    onChange={(event) => toggle(item.key, event.target.checked)}
+                  />
+                  {item.kind === 'article' ? '文章' : item.kind === 'draft' ? '文稿' : '段落与语句'}{' '}
+                  · {item.source || '来源待核对'}
+                </label>
+                <Link
+                  className="font-serif text-lg font-semibold hover:text-accent"
+                  to={href}
+                  state={{ readingQuery: query }}
+                >
+                  <SearchText text={item.title} query={query} />
+                </Link>
+                {(match?.snippet || item.preview) && (
+                  <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                    <SearchText
+                      text={match?.snippet || item.preview!.slice(0, 240)}
+                      query={query}
+                    />
+                    {!match && item.preview!.length > 240 ? '…' : ''}
+                  </p>
+                )}
+              </article>
+            );
+          })}
           {!visible.length && (
             <p className="py-12 text-center text-muted-foreground">
               暂无匹配内容。可以导入文章，或在阅读时选中文字加入这里。

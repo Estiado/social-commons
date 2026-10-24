@@ -1,5 +1,6 @@
 import { openReadingDatabase } from '../guestRepository.ts';
 import { draftSchema, summarizeDraft, type WritingDraft } from './model.ts';
+import { searchEntry } from '../searchIndex.ts';
 
 export async function listDrafts() {
   const database = await openReadingDatabase();
@@ -33,7 +34,10 @@ export async function saveDraft(value: WritingDraft) {
   const draft = draftSchema.parse(value);
   const database = await openReadingDatabase();
   try {
-    const transaction = database.transaction(['drafts', 'draftSummaries'], 'readwrite');
+    const transaction = database.transaction(
+      ['drafts', 'draftSummaries', 'searchEntries'],
+      'readwrite',
+    );
     if (draft.originKey) {
       const migrated = await transaction
         .objectStore('drafts')
@@ -50,6 +54,7 @@ export async function saveDraft(value: WritingDraft) {
     const saved = { ...draft, revision: draft.revision + 1, updatedAt: new Date().toISOString() };
     await transaction.objectStore('drafts').put(saved);
     await transaction.objectStore('draftSummaries').put(summarizeDraft(saved));
+    await transaction.objectStore('searchEntries').put(searchEntry(saved.document, 'draft'));
     await transaction.done;
     return saved;
   } finally {

@@ -48,7 +48,10 @@ export default function HomePage() {
                 {new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
               </span>
             </div>
-            <blockquote className="whitespace-pre-line font-serif text-2xl md:text-4xl font-medium leading-relaxed text-foreground mb-8">
+            <blockquote
+              data-tour="home-quote"
+              className="whitespace-pre-line font-serif text-2xl md:text-4xl font-medium leading-relaxed text-foreground mb-8"
+            >
               {heroQuote.text.length > 100 ? `${heroQuote.text.slice(0, 96)}……` : heroQuote.text}
             </blockquote>
             <Link
@@ -85,7 +88,9 @@ export default function HomePage() {
                 Today · 日新
               </span>
             </div>
-            <h2 className="font-serif text-2xl md:text-3xl font-semibold">今日日新</h2>
+            <h2 data-tour="home-daily" className="font-serif text-2xl md:text-3xl font-semibold">
+              今日日新
+            </h2>
           </div>
           <Link
             to="/daily"
@@ -122,7 +127,12 @@ export default function HomePage() {
                 Latest · 观澜
               </span>
             </div>
-            <h2 className="font-serif text-2xl md:text-3xl font-semibold">最新时评</h2>
+            <h2
+              data-tour="home-commentaries"
+              className="font-serif text-2xl md:text-3xl font-semibold"
+            >
+              最新时评
+            </h2>
           </div>
           <Link
             to="/guanlan"
@@ -188,7 +198,9 @@ export default function HomePage() {
                 Topics · 话题
               </span>
             </div>
-            <h2 className="font-serif text-2xl md:text-3xl font-semibold">高考议论文话题</h2>
+            <h2 data-tour="home-topics" className="font-serif text-2xl md:text-3xl font-semibold">
+              高考议论文话题
+            </h2>
           </div>
           <Link
             to="/guanlan"
@@ -224,7 +236,9 @@ export default function HomePage() {
                 Featured · 群鉴
               </span>
             </div>
-            <h2 className="font-serif text-2xl md:text-3xl font-semibold">群鉴</h2>
+            <h2 data-tour="home-events" className="font-serif text-2xl md:text-3xl font-semibold">
+              群鉴
+            </h2>
           </div>
           <Link
             to="/events"
@@ -272,6 +286,41 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section
+        aria-label="个人阅读与素材"
+        className="mx-auto grid max-w-6xl gap-5 border-t border-border/40 px-6 py-16 md:grid-cols-2"
+      >
+        <Link
+          data-tour="home-reading"
+          to="/reading"
+          className="rounded-sm border bg-card p-7 transition-colors hover:border-accent/50"
+        >
+          <span className="text-xs tracking-widest text-accent">我的阅读空间</span>
+          <h2 className="my-3 font-serif text-2xl font-semibold">把读过的文字，整理成自己的文稿</h2>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            保存文章与划线，选择需要的材料，编辑后下载 Word 或 PDF。
+          </p>
+          <span className="mt-5 inline-flex items-center gap-2 text-sm text-accent">
+            打开阅读空间 <ArrowRight size={16} />
+          </span>
+        </Link>
+        <Link
+          data-tour="home-essay"
+          to="/essay"
+          className="rounded-sm border bg-card p-7 transition-colors hover:border-accent/50"
+        >
+          <span className="text-xs tracking-widest text-accent">议论文素材</span>
+          <h2 className="my-3 font-serif text-2xl font-semibold">
+            从一个概念出发，积累有出处的材料
+          </h2>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            阅读概念与推荐示例，也可以添加自己的词条、标签和个人素材。
+          </p>
+          <span className="mt-5 inline-flex items-center gap-2 text-sm text-accent">
+            进入素材页 <ArrowRight size={16} />
+          </span>
+        </Link>
+      </section>
       {/* 引导区 */}
       <section className="mx-auto max-w-6xl px-6 py-16">
         <div className="border border-border/60 bg-card p-10 md:p-14 rounded-sm text-center relative overflow-hidden">

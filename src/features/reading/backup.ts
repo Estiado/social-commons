@@ -3,6 +3,7 @@ import { articleSchema, isExpired, summarize } from './model.ts';
 import { openReadingDatabase } from './guestRepository.ts';
 import { readingExcerpts } from './excerpts.ts';
 import { draftSchema, summarizeDraft } from './writing/model.ts';
+import { searchEntry } from './searchIndex.ts';
 
 export const MAX_BACKUP_BYTES = 50 * 1024 * 1024;
 const annotationSchema = z.object({
@@ -113,7 +114,7 @@ export async function restoreReadingBackup(text: string) {
   try {
     // Validation finishes before this transaction. Any write failure aborts the entire restore.
     const transaction = database.transaction(
-      ['documents', 'summaries', 'excerpts', 'drafts', 'draftSummaries'],
+      ['documents', 'summaries', 'excerpts', 'drafts', 'draftSummaries', 'searchEntries'],
       'readwrite',
     );
     // Observe failures immediately, including quota errors that abort an IDB request.
@@ -129,6 +130,9 @@ export async function restoreReadingBackup(text: string) {
         }
         await transaction.objectStore('documents').add(record);
         await transaction.objectStore('summaries').put(summarize(record));
+        await transaction
+          .objectStore('searchEntries')
+          .put(searchEntry(record.document, 'article', record.expiresAt));
         for (const excerpt of readingExcerpts(record))
           await transaction.objectStore('excerpts').put(excerpt);
         restored++;
@@ -144,6 +148,7 @@ export async function restoreReadingBackup(text: string) {
         }
         await store.add(draft);
         await transaction.objectStore('draftSummaries').put(summarizeDraft(draft));
+        await transaction.objectStore('searchEntries').put(searchEntry(draft.document, 'draft'));
         restored++;
       }
       await transaction.done;

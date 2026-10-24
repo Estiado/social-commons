@@ -12,6 +12,7 @@
 | 平台入口 | `functions/api/` | Cloudflare Request/Response 适配 |
 | 数据库 | `supabase/` | 新表、RLS、精选元数据及种子 |
 | 内测反馈 | `src/features/feedback/` | 校验主动填写信息，通过受限RPC写入私人收件表并确认回执；本地副本备用 |
+| 使用指引 | `src/features/onboarding/` | 显式路线与目标、按需动画、首次标记；不执行业务写入 |
 
 具体文件职责见 [目录导览](REPOSITORY_GUIDE.md)。
 
@@ -26,6 +27,8 @@
 IndexedDB V3 原位新增 `drafts` 和 `draftSummaries`，保留旧文档、索引与期限。文稿是所选内容的独立快照，编辑不覆盖来源与划线。旧素材包转为文稿，保留原关系备份；缺失的旧摘录显示编号与待恢复提示，备注保留。文稿自动保存串行写入并检查 revision，冲突或容量不足时保留编辑区内容供下载，禁止静默覆盖。
 
 编辑器仅在 `/reading/write/:id` 加载；Tiptap JSON 转换为经过 Zod 校验的文本块与格式范围。格式范围有序、不重叠；正文长度、块数、图片数与 URL 协议受合同约束。DOCX/PDF 共用格式片段，选材只加载已选正文；摘要列表不加载全部正文。
+
+IndexedDB V4增加 `searchEntries`，只保留标题、来源、段落ID和纯文本；写入与原件同事务。`searchIndex.ts`只负责命中和文字范围，`searchRepository.ts`逐条游标读取并支持取消。查询是正文总长度的线性扫描，额外内存为当前条目与命中摘要，不是倒排索引或O(1)检索。查询与匹配状态按请求区分，旧异步结果不能覆盖新查询；正文标记只用于显示，文稿选中只改变编辑器选区，均不改原文字与划线。
 
 观澜统一按主题组织：公共精选元数据来自 `curatedCommentaries.ts`，专题私人文章关联写在本浏览器记录的 `topicIds`。公共目录不查询私人全文；SQL 种子是同一目录的可选服务端副本，更新文件不代表已经执行线上 SQL。
 
@@ -51,3 +54,6 @@ IndexedDB V3 原位新增 `drafts` 和 `draftSummaries`，保留旧文档、索�
 - `references.ts` 保存引用的可见题名和链接格式范围，`textSegments.ts` 合并富文本与收藏划线边界。新快照及新文稿显示题名，旧保存文本不重写。
 - `backup.ts` 的本机备份用只读事务、游标逐条序列化并限制大小；恢复先完整校验，再在一个事务中追加文档/摘要/摘录/文稿。重复ID或迁移来源跳过，不覆盖已有记录。
 - `ReadingBackupControls` 处理文件选择和状态，底层存储/校验不依赖页面；`feedback/report.ts` 是纯报告函数，不收集文章、身份或设备信息。
+- `personalBackup.ts`组合阅读备份与`essay/personalData.ts`的显式白名单；不遍历/打包未知localStorage，不含认证信息或反馈。新格式不改旧阅读模型，恢复先完整校验，再按存储边界补缺；局部失败可安全重试。
+- `feedback/draft.ts`处理本地草稿合同、原始快照比较和待确认提交编号；`navigation.ts`是导航共用的小模块，布局不为生成链接而加载表单校验代码。草稿不等于在线提交。
+- 指引步骤和动画组件分离，布局只保留首次判断及按需入口。具体路线与可访问性约束见[GUIDED_TOUR.md](GUIDED_TOUR.md)。

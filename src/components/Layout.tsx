@@ -12,6 +12,9 @@ import {
   Menu,
   MessageSquare,
 } from 'lucide-react';
+import { feedbackLink } from '@/features/feedback/navigation';
+import { shouldOfferTour } from '@/features/onboarding/preferences';
+const GuidedTour = lazy(() => import('@/features/onboarding/GuidedTour'));
 const GlobalSearch = lazy(() =>
   import('./GlobalSearch').then((module) => ({ default: module.GlobalSearch })),
 );
@@ -27,11 +30,19 @@ const NAV_ITEMS = [
 
 export function Layout() {
   const location = useLocation();
-  const feedbackPath = '/feedback?page=' + encodeURIComponent(location.pathname);
+  const feedbackPath = feedbackLink(location.pathname, location.search);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(() => {
+    try {
+      return shouldOfferTour(localStorage);
+    } catch {
+      return false;
+    }
+  });
   useEffect(() => {
     const shortcut = (event: KeyboardEvent) => {
+      if (tourOpen) return;
       if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
         event.preventDefault();
         setSearchOpen(true);
@@ -39,10 +50,13 @@ export function Layout() {
     };
     window.addEventListener('keydown', shortcut);
     return () => window.removeEventListener('keydown', shortcut);
-  }, []);
+  }, [tourOpen]);
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md">
+      <header
+        data-tour-shell
+        className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md"
+      >
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6">
           <NavLink to="/" className="group flex shrink-0 items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary font-serif text-lg font-bold text-primary-foreground group-hover:bg-accent">
@@ -61,6 +75,7 @@ export function Layout() {
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.path}
+                data-tour={'nav-' + (item.path.slice(1) || 'home')}
                 to={item.path}
                 end={item.end}
                 className={({ isActive }) =>
@@ -73,6 +88,7 @@ export function Layout() {
             ))}
             <button
               aria-label="搜索全站"
+              data-tour="nav-search"
               onClick={() => setSearchOpen(true)}
               className="p-2 text-muted-foreground"
             >
@@ -80,6 +96,7 @@ export function Layout() {
             </button>
             <NavLink
               to={feedbackPath}
+              data-tour="nav-feedback"
               className={({ isActive }) =>
                 `ml-1 flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm border border-accent/30 px-2 py-2 text-sm text-accent hover:bg-accent/5 ${isActive ? 'bg-accent/5' : ''}`
               }
@@ -98,6 +115,7 @@ export function Layout() {
             </NavLink>
             <button
               aria-label="搜索全站"
+              data-tour="nav-search"
               className="shrink-0 p-2"
               onClick={() => setSearchOpen(true)}
             >
@@ -123,6 +141,7 @@ export function Layout() {
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.path}
+                data-tour={'nav-' + (item.path.slice(1) || 'home')}
                 to={item.path}
                 end={item.end}
                 onClick={() => setMobileOpen(false)}
@@ -135,15 +154,26 @@ export function Layout() {
             ))}
             <Link
               to={feedbackPath}
+              data-tour="nav-feedback"
               onClick={() => setMobileOpen(false)}
               className="rounded-sm border p-3 text-center text-sm text-muted-foreground"
             >
               内测反馈
             </Link>
+            <button
+              type="button"
+              className="rounded-sm border p-3 text-center text-sm text-muted-foreground"
+              onClick={() => {
+                setMobileOpen(false);
+                setTourOpen(true);
+              }}
+            >
+              使用指引
+            </button>
           </nav>
         )}
       </header>
-      <main className="flex-1">
+      <main data-tour-shell className="flex-1">
         <Suspense
           fallback={
             <p role="status" className="p-12 text-center text-muted-foreground">
@@ -154,26 +184,38 @@ export function Layout() {
           <Outlet />
         </Suspense>
       </main>
-      <footer className="mt-16 border-t border-border/60">
+      <footer data-tour-shell className="mt-16 border-t border-border/60">
         <div className="mx-auto max-w-6xl px-6 py-10">
           <p className="mb-2 font-serif font-semibold">社科通识</p>
           <p className="text-sm text-muted-foreground">以多视角阅读世界，以批判性思维理解历史</p>
           <p className="mt-5 text-xs text-muted-foreground">
             本站内容仅供学习交流，引用请核对原始出处。个人文章与摘录保存在当前浏览器。
           </p>
-          <div className="mt-4 flex gap-5 text-sm">
+          <div className="mt-4 flex flex-wrap gap-5 text-sm">
             <Link to={feedbackPath} className="text-accent underline">
               内测反馈
             </Link>
             <Link to="/reading?tab=legacy" className="text-muted-foreground underline">
               数据与备份
             </Link>
+            <button
+              type="button"
+              className="text-muted-foreground underline"
+              onClick={() => setTourOpen(true)}
+            >
+              使用指引
+            </button>
           </div>
         </div>
       </footer>
       {searchOpen && (
         <Suspense fallback={null}>
           <GlobalSearch open onOpenChange={setSearchOpen} />
+        </Suspense>
+      )}
+      {tourOpen && (
+        <Suspense fallback={null}>
+          <GuidedTour onClose={() => setTourOpen(false)} onMenuChange={setMobileOpen} />
         </Suspense>
       )}
     </div>

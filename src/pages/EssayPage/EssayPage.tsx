@@ -198,6 +198,7 @@ export default function EssayPage() {
 
       {/* 搜索 + 操作按钮 */}
       <form
+        data-tour="essay-search"
         className="flex flex-wrap gap-2 mb-4"
         role="search"
         onSubmit={(event) => {
@@ -223,7 +224,7 @@ export default function EssayPage() {
         </div>
         <Button type="submit">搜索</Button>
       </form>
-      <div className="mb-5 flex flex-wrap gap-2">
+      <div data-tour="essay-add" className="mb-5 flex flex-wrap gap-2">
         <Button
           variant="outline"
           onClick={() => {
@@ -518,8 +519,11 @@ export default function EssayPage() {
       {/* 底部说明 */}
       <div className="mt-12 p-6 bg-muted/30 border border-border/40 rounded-sm">
         <p className="text-xs text-muted-foreground leading-relaxed">
-          自定义词条、素材和标签保存在当前浏览器中，换设备或清除浏览器数据会丢失。
-          请在素材区使用“备份我的全部素材”保存个人摘录。站方推荐由具有编辑权限的账号维护。
+          自定义词条、素材和标签保存在当前浏览器中，换设备或清除浏览器数据会丢失。 可在
+          <Link to="/reading?tab=legacy" className="text-accent underline">
+            阅读空间的数据与备份
+          </Link>
+          中，一次保存文章、划线、文稿和全部个人素材。站方推荐由具有编辑权限的账号维护。
           <Link className="ml-2 text-accent underline" to="/editor/materials">
             站方推荐管理
           </Link>

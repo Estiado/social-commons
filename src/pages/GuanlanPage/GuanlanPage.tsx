@@ -12,7 +12,7 @@ for (const article of CURATED_COMMENTARIES)
 export default function GuanlanPage() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 md:px-6">
-      <header className="mb-8">
+      <header data-tour="guanlan-intro" className="mb-8">
         <p className="mb-3 text-xs tracking-widest text-accent">GUANLAN · READING THE WORLD</p>
         <h1 className="mb-4 font-serif text-4xl font-semibold">观澜</h1>
         <p className="max-w-3xl leading-relaxed text-muted-foreground">

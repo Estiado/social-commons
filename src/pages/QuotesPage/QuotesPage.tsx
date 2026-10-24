@@ -29,7 +29,9 @@ export default function QuotesPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       <p className="mb-3 text-center text-xs tracking-widest text-accent">WORDS IN CONTEXT</p>
-      <h1 className="mb-4 text-center font-serif text-3xl font-semibold">撷英</h1>
+      <h1 data-tour="quotes-intro" className="mb-4 text-center font-serif text-3xl font-semibold">
+        撷英
+      </h1>
       <p className="mb-8 text-center text-muted-foreground">连着读，才看得见文字的来处与回响。</p>
       <p className="mb-8 text-center text-sm text-muted-foreground">
         {QUOTES.length} 篇摘读 · {QUOTES.filter((quote) => quote.commentary).length}{' '}

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { feedbackPagePath } from './navigation.ts';
 
 export const feedbackSchema = z.object({
   kind: z.enum(['使用问题', '内容纠错', '功能建议']),
@@ -10,14 +11,7 @@ export type FeedbackFields = z.infer<typeof feedbackSchema>;
 
 export function normalizeFeedback(input: unknown): FeedbackFields {
   const fields = feedbackSchema.parse(input);
-  let page = '';
-  try {
-    const url = new URL(fields.page, 'https://social-commons.pages.dev');
-    if (fields.page && url.origin === 'https://social-commons.pages.dev') page = url.pathname;
-  } catch {
-    // An optional page address must never add query tokens or external URLs.
-  }
-  return { ...fields, page };
+  return { ...fields, page: feedbackPagePath(fields.page) };
 }
 /** A portable report, with no article bodies, identifiers, browsing history or automatic upload. */
 export function feedbackReport(input: unknown, createdAt = new Date().toISOString()) {

@@ -32,7 +32,7 @@ export default function EventsPage() {
       </div>
 
       {/* 搜索框 */}
-      <div className="relative mb-10 max-w-md">
+      <div data-tour="events-search" className="relative mb-10 max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <input
           type="text"

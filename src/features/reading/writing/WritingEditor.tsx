@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { mergeAttributes, type JSONContent } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
@@ -15,6 +15,7 @@ import { EditorToolbar } from './EditorToolbar';
 import { DocumentStyleControls } from './DocumentStyleControls';
 import { DEFAULT_TYPOGRAPHY, DOCUMENT_FONTS, type DocumentTypography } from '../typography';
 import './writing.css';
+import { firstSearchMatch } from '../searchIndex';
 
 const ReadingImage = Image.extend({
   addAttributes() {
@@ -44,6 +45,11 @@ const ReadingImage = Image.extend({
 /** Only this component owns the mutable editor. Typing does not rerender the library. */
 export function WritingEditor({ initial }: { initial: WritingDraft }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchQuery =
+    typeof location.state?.readingQuery === 'string'
+      ? location.state.readingQuery.slice(0, 200)
+      : '';
   const [initialContent] = useState(() => documentToEditor(initial.document));
   const saved = useRef(initial);
   const titleRef = useRef(initial.document.title);
@@ -140,6 +146,24 @@ export function WritingEditor({ initial }: { initial: WritingDraft }) {
       window.removeEventListener('beforeunload', beforeUnload);
     };
   }, [flush]);
+  useEffect(() => {
+    if (!editor || !searchQuery) return;
+    let found = false;
+    editor.state.doc.descendants((node, position) => {
+      if (found || !node.isTextblock) return !found;
+      const match = firstSearchMatch(node.textContent, searchQuery);
+      if (match) {
+        found = true;
+        editor
+          .chain()
+          .focus(undefined, { scrollIntoView: false })
+          .setTextSelection({ from: position + 1 + match.start, to: position + 1 + match.end })
+          .scrollIntoView()
+          .run();
+      }
+      return !found;
+    });
+  }, [editor, searchQuery]);
   const exportFile = async (format: 'docx' | 'pdf') => {
     setExporting(true);
     setNotice('');

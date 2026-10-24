@@ -12,15 +12,39 @@ import {
 } from '@/features/feedback/report';
 import { submitFeedback } from '@/features/feedback/submit';
 import { FEEDBACK_EXPECTATIONS, FEEDBACK_PAGES } from '@/features/feedback/options';
+import {
+  clearFeedbackDraft,
+  FEEDBACK_DRAFT_KEY,
+  parseFeedbackDraft,
+  saveFeedbackDraft,
+} from '@/features/feedback/draft';
+import { feedbackPagePath } from '@/features/feedback/navigation';
 
 export default function FeedbackPage() {
   const [params] = useSearchParams();
-  const [fields, setFields] = useState<FeedbackFields>({
-    kind: '使用问题',
-    page: params.get('page') || '',
-    description: '',
-    expected: '',
+  const [initial] = useState(() => {
+    try {
+      const raw = localStorage.getItem(FEEDBACK_DRAFT_KEY);
+      return { raw, draft: parseFeedbackDraft(raw), available: true };
+    } catch {
+      return { raw: null, draft: null, available: false };
+    }
   });
+  const [fields, setFields] = useState<FeedbackFields>(
+    initial.draft?.fields || {
+      kind: '使用问题',
+      page: feedbackPagePath(params.get('page') || ''),
+      description: '',
+      expected: '',
+    },
+  );
+  const fieldsRef = useRef(fields);
+  const draftRaw = useRef(initial.raw);
+  const [draftNotice, setDraftNotice] = useState(
+    initial.draft
+      ? '已恢复上次未提交的草稿，相关页面保留为上次填写的内容。'
+      : '填写内容会暂存在当前浏览器，刷新后可继续。',
+  );
   const [customPage, setCustomPage] = useState(
     () => Boolean(fields.page) && !FEEDBACK_PAGES.some((option) => option.value === fields.page),
   );
@@ -28,10 +52,24 @@ export default function FeedbackPage() {
   const [sending, setSending] = useState(false);
   const [receipt, setReceipt] = useState('');
   const [status, setStatus] = useState('');
-  const attempt = useRef<{ fingerprint: string; id: string } | null>(null);
+  const attempt = useRef<{ fingerprint: string; id: string } | null>(
+    initial.draft?.request || null,
+  );
+  const persistDraft = (next: FeedbackFields, request?: { fingerprint: string; id: string }) => {
+    try {
+      if (!initial.available) throw new Error('浏览器未允许保存草稿；请保留此页或下载副本。');
+      draftRaw.current = saveFeedbackDraft(localStorage, draftRaw.current, next, request);
+      setDraftNotice('草稿已保存在当前浏览器，尚未提交。');
+    } catch (error) {
+      setDraftNotice(error instanceof Error ? error.message : '草稿未能保存，请下载副本。');
+    }
+  };
   const report = () => feedbackReport(fields);
   const updateField = (field: keyof FeedbackFields, value: string) => {
-    setFields((current) => ({ ...current, [field]: value }));
+    const next = { ...fieldsRef.current, [field]: value };
+    fieldsRef.current = next;
+    setFields(next);
+    persistDraft(next);
     setReceipt('');
     setStatus('');
   };
@@ -48,9 +86,14 @@ export default function FeedbackPage() {
   };
   return (
     <div className="mx-auto max-w-2xl px-5 py-10">
-      <h1 className="font-serif text-3xl font-semibold">内测反馈</h1>
+      <h1 data-tour="feedback-intro" className="font-serif text-3xl font-semibold">
+        内测反馈
+      </h1>
       <p className="my-4 text-sm leading-relaxed text-muted-foreground">
         告诉我们哪里不顺手，或哪条内容需要核对。点击提交即可发送给维护者，无需登录。
+      </p>
+      <p className="mb-5 text-xs text-muted-foreground" role="status">
+        {draftNotice}
       </p>
       <form
         className="space-y-5"
@@ -66,12 +109,19 @@ export default function FeedbackPage() {
           const fingerprint = JSON.stringify(normalized);
           if (attempt.current?.fingerprint !== fingerprint)
             attempt.current = { fingerprint, id: crypto.randomUUID() };
+          persistDraft(fields, attempt.current);
           setSending(true);
           setStatus('正在提交，请稍候…');
           try {
             const id = await submitFeedback(normalized, attempt.current.id, website);
             setReceipt(id);
             setStatus('反馈已提交，维护者可以在后台查看。谢谢你的反馈！');
+            try {
+              if (clearFeedbackDraft(localStorage, draftRaw.current)) draftRaw.current = null;
+              setDraftNotice('反馈已提交。');
+            } catch {
+              setDraftNotice('反馈已提交，本机草稿未能清理。');
+            }
           } catch (error) {
             setStatus(error instanceof Error ? error.message : '提交失败，内容仍保留，请重试。');
           } finally {

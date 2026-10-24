@@ -28,6 +28,10 @@ export default function ReadingArticlePage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const searchQuery =
+    typeof location.state?.readingQuery === 'string'
+      ? location.state.readingQuery.slice(0, 200)
+      : '';
   const { account, loading: accountLoading } = useAccount();
   const [record, setRecord] = useState<ReadingRecord | null>(null);
   const [loadedOwner, setLoadedOwner] = useState('');
@@ -351,6 +355,7 @@ export default function ReadingArticlePage() {
             </div>
           )}
           <ArticleContent
+            searchQuery={searchQuery}
             article={record.document}
             annotations={record.annotations}
             onSave={requestSave}

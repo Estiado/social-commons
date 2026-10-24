@@ -121,7 +121,7 @@ export function ContentReader({
     );
   return (
     <section aria-label="可收藏正文" className="space-y-6">
-      <div className="flex flex-wrap items-center gap-3">
+      <div data-tour="reader-actions" className="flex flex-wrap items-center gap-3">
         <Button size="sm" disabled={busy || !record} onClick={() => void save()}>
           {savedId ? '已加入阅读空间' : '加入阅读空间'}
         </Button>

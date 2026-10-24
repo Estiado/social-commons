@@ -2,6 +2,7 @@ import { openDB, type DBSchema, type IDBPTransaction } from 'idb';
 import { readingExcerpts, type ReadingExcerpt } from './excerpts.ts';
 import type { WritingDraft, DraftSummary } from './writing/model.ts';
 import { isBlockedDocument, SourceVerificationError } from './sourceAccess.ts';
+import { searchEntry, type SearchEntry } from './searchIndex.ts';
 import {
   articleSchema,
   GUEST_RETENTION_MS,
@@ -19,8 +20,9 @@ interface ReadingDatabase extends DBSchema {
   excerpts: { key: string; value: ReadingExcerpt; indexes: { 'by-document': string } };
   drafts: { key: string; value: WritingDraft; indexes: { 'by-origin': string } };
   draftSummaries: { key: string; value: DraftSummary };
+  searchEntries: { key: string; value: SearchEntry };
 }
-const stores = ['documents', 'summaries', 'excerpts'] as const;
+const stores = ['documents', 'summaries', 'excerpts', 'searchEntries'] as const;
 type ReadingTransaction = IDBPTransaction<ReadingDatabase, typeof stores, 'readwrite'>;
 async function replaceExcerpts(
   transaction: ReadingTransaction,
@@ -30,9 +32,17 @@ async function replaceExcerpts(
   const excerpts = transaction.objectStore('excerpts');
   for (const key of await excerpts.index('by-document').getAllKeys(id)) await excerpts.delete(key);
   if (record) for (const excerpt of readingExcerpts(record)) await excerpts.put(excerpt);
+  if (record)
+    await transaction
+      .objectStore('searchEntries')
+      .put(searchEntry(record.document, 'article', record.expiresAt));
+  else await transaction.objectStore('searchEntries').delete('article:' + id);
 }
 export const openReadingDatabase = () =>
-  openDB<ReadingDatabase>('social-commons-reading', 3, {
+  openDB<ReadingDatabase>('social-commons-reading', 4, {
+    blocking(_currentVersion, _blockedVersion, event) {
+      (event.target as IDBDatabase).close();
+    },
     upgrade(database, oldVersion, _newVersion, transaction) {
       if (oldVersion < 1) {
         database
@@ -60,6 +70,25 @@ export const openReadingDatabase = () =>
           .createObjectStore('drafts', { keyPath: 'document.id' })
           .createIndex('by-origin', 'originKey', { unique: true });
         database.createObjectStore('draftSummaries', { keyPath: 'id' });
+      }
+      if (oldVersion < 4) {
+        const index = database.createObjectStore('searchEntries', { keyPath: 'key' });
+        void (async () => {
+          for (const name of ['documents', 'drafts'] as const) {
+            let cursor = await transaction.objectStore(name).openCursor();
+            while (cursor) {
+              const value = cursor.value;
+              await index.put(
+                searchEntry(
+                  value.document,
+                  name === 'documents' ? 'article' : 'draft',
+                  'expiresAt' in value ? value.expiresAt : null,
+                ),
+              );
+              cursor = await cursor.continue();
+            }
+          }
+        })().catch(() => transaction.abort());
       }
     },
   });

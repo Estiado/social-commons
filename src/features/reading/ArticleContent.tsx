@@ -37,11 +37,13 @@ function linkedText(text: string): ReactNode[] {
 function MarkedText({
   block,
   annotations,
+  query = '',
 }: {
   block: TextBlock;
   annotations: ArticleAnnotation[];
+  query?: string;
 }) {
-  return readingTextSegments(block, annotations).map((run, index) => {
+  return readingTextSegments(block, annotations, query).map((run, index) => {
     let content: ReactNode = run.href ? (
       <a
         href={run.href}
@@ -58,6 +60,7 @@ function MarkedText({
     if (run.italic) content = <em>{content}</em>;
     if (run.underline) content = <u>{content}</u>;
     if (run.strike) content = <s>{content}</s>;
+    if (run.searched) content = <mark className="bg-sky-100 text-inherit">{content}</mark>;
     return run.saved ? (
       <mark key={index} className="bg-amber-100 text-inherit dark:bg-amber-900/40">
         {content}
@@ -104,14 +107,17 @@ export function ArticleContent({
   onSave,
   busy = false,
   idPrefix = 'reading',
+  searchQuery = '',
 }: {
   article: ArticleDocument;
   annotations?: ArticleAnnotation[];
   onSave?(annotations: ArticleAnnotation[]): void;
   busy?: boolean;
   idPrefix?: string;
+  searchQuery?: string;
 }) {
   const root = useRef<HTMLDivElement>(null);
+  const firstParagraphId = article.blocks.find((block) => block.type === 'paragraph')?.id;
   const annotationsByBlock = useMemo(() => {
     const map = new Map<string, ArticleAnnotation[]>();
     for (const item of annotations) {
@@ -207,7 +213,7 @@ export function ArticleContent({
           if (block.type === 'image') return <ArticleFigure key={block.id} {...block} />;
           const saved = annotationsByBlock.get(block.id) || [];
           const wholeSaved = saved.some((item) => item.kind === 'paragraph');
-          const text = <MarkedText block={block} annotations={saved} />;
+          const text = <MarkedText block={block} annotations={saved} query={searchQuery} />;
           const attributes = {
             'data-reading-text': true,
             'data-block-id': block.id,
@@ -217,6 +223,7 @@ export function ArticleContent({
             <div
               key={block.id}
               id={`${idPrefix}-${block.id}`}
+              data-tour={block.id === firstParagraphId ? 'reader-paragraph' : undefined}
               className="group relative my-5 scroll-mt-24 rounded-sm hover:bg-accent/[0.025]"
             >
               {block.type === 'heading' ? (

@@ -39,7 +39,9 @@ export default function DailyPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       <p className="mb-3 text-xs tracking-widest text-accent">DAILY KNOWLEDGE</p>
-      <h1 className="mb-4 font-serif text-3xl font-semibold">日新</h1>
+      <h1 data-tour="daily-intro" className="mb-4 font-serif text-3xl font-semibold">
+        日新
+      </h1>
       <p className="mb-7 leading-relaxed text-muted-foreground">
         每天一个知识点，在阅读中积累理解。正文可以收藏段落、划线，并加入自己的阅读空间。
       </p>
