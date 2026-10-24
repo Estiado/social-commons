@@ -53,6 +53,7 @@
 - `features/auth/`：准备好的邮箱验证码界面，待 SMTP 和真实账号验收后启用。
 - `data/`：`daily.ts` 通识，`quotes.ts` 名句，`quoteCommentaries.ts` 已核验评析，`events.ts` 历史，`essay*.ts` 素材，`curatedCommentaries.ts` 近期目录，`topic*.ts` 话题。
 - 扩容内容按领域放在 `data/knowledge/`、`history/`、`essay/`、`quotes/`、`commentaries/`，入口文件继续统一导出。`quotes/expandedReadings.ts` 修订旧语段及别名；`publishedCommentaries.ts` 只存已发表解读的来源摘要。新增数据与页面交互分开维护。
+- 新的学习、心理与审美来源集中在`knowledge/learningAndCulture.ts`；`essay/learningAndCulture.ts`从同一台账生成素材，不再手工维护两份解释。完整诗文在`quotes/friendshipAndNature.ts`，科学史在`history/naturalSelection.ts`，文化科技目录在`commentaries/cultureAndTechnology.ts`。海外`readingMode`决定只显示原站入口，不能通过新增目录条目绕过抓取白名单。
 - `features/reading/catalogueReading.ts` 处理新版正文与旧快照的选择；`typography.ts` 定义可保存的常用正文样式，`writing/DocumentStyleControls.tsx` 只负责样式选择界面。
 - `lib/`、`hooks/`：跨模块小工具。新的业务逻辑优先放对应 feature，不再随意塞进公共工具目录。
 

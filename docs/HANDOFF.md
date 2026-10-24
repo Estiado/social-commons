@@ -11,6 +11,7 @@
 - `knowledge/learningAndCulture.ts`集中18条来源，与`essay/learningAndCulture.ts`共用；`quotes/friendshipAndNature.ts`包含8篇完整诗文；`history/naturalSelection.ts`按原有概述与多方视角规范组织。
 - 《物种起源》实际下载的是Project Gutenberg #1228的1859年初版；保留原始许可、字节与SHA-256。1858年论文18页扫描本保留出版站链接。
 - 海外目录`readingMode: external`只显示原站入口，不承诺不支持的链接提取，不扩展抓取白名单。SQL种子仅生成、未执行生产；私人快照、划线和数据库权限没有迁移。
+- 全流程75/75通过；功能和概念检索修正已同步GitHub并部署Cloudflare，正式站诗文保存、概念搜索、素材搜索、科学史文献及海外媒体筛选已验收，证据见`VERIFICATION.md`。
 
 ## 2026-10-24 个人数据与首次使用体验
 

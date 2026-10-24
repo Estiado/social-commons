@@ -8,7 +8,8 @@
 - 本机预览服务已启动，但本轮内置浏览器访问回环地址超时，未将其记为浏览器验收通过。
 - 功能提交`35a25c1cc121607ecc380129e54e64b7fa648227`已推送，远端main核对一致；[主分支检查](https://github.com/Estiado/social-commons/actions/runs/40078933153)成功，Cloudflare Pages明确为Deployed successfully。
 - 正式站`/quotes/q91`显示连续全诗、完整末句、题名出处和作品赏析，真实点击加入阅读空间显示已长期保存。`/events/darwin-wallace-1858`显示概述、3方原文与位置、电子文献；实际展开TXT阅读。观澜媒体筛选The Economist显示2篇，只有英文原站入口；375px实际内容宽度与页面宽度相等，无横向溢出，视口已恢复。截图`.artifacts/content-live-poem.png`、`content-live-mobile.png`。
-- 线上检索发现形象化标题未包含部分概念名，补齐18条标题的概念名并加入来源台账回归，最终全流程仍75/75通过；日志`.artifacts/content-expansion-final-check.log`。原电子书字节保留，`.gitattributes`只豁免电子版原样空白检查，代码检查继续生效。该修正发布后的概念搜索仍待本轮下方追加。
+- 线上检索发现形象化标题未包含部分概念名，补齐18条标题的概念名并加入来源台账回归，最终全流程仍75/75通过；日志`.artifacts/content-expansion-final-check.log`。原电子书字节保留，`.gitattributes`只豁免电子版原样空白检查，代码检查继续生效。
+- 修正提交`bf646b4d494a631bacc26cbc660e92dbab95fe68`已推送，远端SHA一致；[CI检查](https://github.com/Estiado/social-commons/actions/runs/40079451314)与Cloudflare Pages均成功。正式站搜索“日常审美”命中1条，展开正文正常；素材目录显示70条，搜索“间隔效应”命中1条并定位结果，页面控制台无error。新增截图`.artifacts/content-live-search.png`。正式站实际下载电子书仍为970611字节，与清单SHA-256完全相同。临时预览进程已关闭，未改系统网络或用户原来的标签页。
 
 ## 统一备份、正文搜索、反馈草稿与指引 · 2026-10-24
 
