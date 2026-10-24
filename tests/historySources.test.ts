@@ -16,10 +16,10 @@ import { readingTextSegments } from '../src/features/reading/textSegments.ts';
 import { createAnnotation } from '../src/features/reading/model.ts';
 
 test('群鉴每条先有背景再有可定位的著述摘读，没有自拟课堂题冒充观点', () => {
-  assert.equal(EVENTS.length, 10);
+  assert.equal(EVENTS.length, 11);
   assert.equal(
     EVENTS.reduce((sum, event) => sum + event.perspectives.length, 0),
-    30,
+    33,
   );
   for (const event of EVENTS) {
     assert.ok(event.summary.length >= 180, event.id);

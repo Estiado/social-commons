@@ -1,5 +1,13 @@
 [
   {
+    "id": "darwin-origin-first",
+    "file": "darwin-origin-first.txt",
+    "source": "https://www.gutenberg.org/ebooks/1228",
+    "bytes": 970611,
+    "sha256": "362142cb7c6f90850477520cfe2a62fe423ae92ea8eb6d9cd8b30ddb39de60b9",
+    "license": "Project Gutenberg；保留原版许可说明"
+  },
+  {
     "id": "bradford-plymouth",
     "file": "bradford-plymouth.txt",
     "source": "https://www.gutenberg.org/ebooks/69871",

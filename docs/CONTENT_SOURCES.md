@@ -1,15 +1,24 @@
 # 内容维护与本轮来源
 
-更新：2026-10-23。本轮补充现有栏目，不新增需要账号的系统。具体条目中的出处链接是维护入口，不能用本文件代替原文。
+更新：2026-10-24。本轮补充现有栏目，不新增需要账号的系统。具体条目中的出处链接是维护入口，不能用本文件代替原文。
 
 | 栏目 | 之前 | 当前 | 新内容位置 |
 | --- | --- | --- | --- |
-| 日新 | 70 条 | 82 条 | `src/data/knowledge/reasoning.ts` |
-| 撷英 | 50 个 ID，40 篇去重且排除疑似误署名的作品 | 90 个 ID，80 篇推荐作品 | `src/data/quotes/` |
-| 已发表解读摘要 | 7 篇去重作品 | 51 篇去重作品 | `quoteCommentaries.ts`、`quotes/publishedCommentaries.ts` |
-| 群鉴 | 8 个主题 | 10 个主题、30 个视角 | `src/data/history/publicLife.ts` |
-| 议论文素材 | 25 个概念、2 个示例 | 52 个概念、29 个示例 | `src/data/essay/` |
-| 观澜近期目录 | 40 篇 | 50 篇 | `src/data/commentaries/autumn.ts` |
+| 日新 | 82 条 | 100 条 | `knowledge/learningAndCulture.ts` |
+| 撷英 | 90 个 ID、80 篇推荐作品 | 98 个 ID、88 篇推荐作品 | `quotes/friendshipAndNature.ts` |
+| 已发表解读摘要 | 51 篇去重作品 | 59 篇去重作品 | `src/data/quotes/` |
+| 群鉴 | 10 个主题、30 个视角 | 11 个主题、33 个视角 | `history/naturalSelection.ts` |
+| 议论文素材 | 52 个概念、29 个示例 | 70 个概念、47 个示例 | `essay/learningAndCulture.ts` |
+| 观澜近期目录 | 50 篇 | 50 篇，轮换7篇 | `commentaries/cultureAndTechnology.ts` |
+
+## 2026-10-24 增补来源
+
+- 本轮新增避开政策宣传和立场评论；金税四期、旭日旗均不新增。不为凑数量降低出处要求，不批量删除既有条目。
+- 18条新通识和对应素材共用一份来源台账：NBER 25148/31161、Brynjolfsson《The Turing Trap》、Acemoglu与Restrepo的JEP论文、Pan与Rickard的迁移元分析、Cepeda等人的分散练习元分析、Risko与Gilbert的认知卸载综述、Rozenblit与Keil的解释深度论文、Nickerson的确认偏误综述、Yeager等人的Nature研究、OpenStax各具体章节、斯坦福哲学百科、Digital Inquiry Group。限定研究情境，不将平均效果或作者论证写成普遍定律。NBER 31161明确使用2023年修订工作论文，未混用2025年期刊版数字。
+- 8篇完整古典作品对应香港教育局配套文学赏析PDF：`KS3_05`（行行重行行、迢迢牵牛星）、`KS3_07`（世说新语两则）、`KS3_11`（燕诗、慈乌夜啼）、`KS4_18a/b`（四块玉、沉醉东风）。短赏析概述实际对应章节，不凭机构名字扩写；慈乌不当作现代动物学证据。
+- 群鉴新增1858年达尔文—华莱士发表过程。概述参考[林奈学会的纪念介绍](https://www.linnean.org/news/2018/07/01/1st-july-2018-160th-anniversary-of-the-presentation-of-on-the-tendency-of-species-to-form-varieties)；三方视角分别来自[联合发表文本](https://darwin-online.org.uk/converted/published/1858_species_F350.html)中的达尔文、华莱士、莱尔与胡克。页码依原刊页码，扫描PDF18页不镜像。另预存[《物种起源》1859年初版英文全书](https://www.gutenberg.org/ebooks/1228)，实查扉页、版次、首尾许可，记录970611字节及SHA-256；不是1872年第六版。
+- 观澜新增澎湃5篇：打铁花非遗传播、人工智能劳动史、伍尔夫《海浪》、程抱一与雅各泰风景意象、常沙娜自述。标题、作者、日期与推荐依据来自各原页。The Economist两篇使用Hindustan Times实际刊载页：2026-09-25新小说书单、2026-08-21智能与意识；日期为刊载页日期，不冒充原刊日期。只发布题名与简短阅读入口，未取得原刊全文，不提供不支持的提取按钮。
+- 原50篇台账留在`PREVIOUS_COMMENTARIES`，新精选加旧条目前43篇组成公开50篇；不是删除私人文章。重新生成的SQL是可选副本，没有执行生产数据库。
 
 ## 来源如何使用
 

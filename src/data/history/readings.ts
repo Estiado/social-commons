@@ -10,6 +10,20 @@ export interface HistoryReading {
 /** A local file is listed only after its signature and text have been checked.
  * Author-hosted papers without a redistribution licence keep their source URL. */
 export const HISTORY_READINGS: Record<string, HistoryReading> = {
+  'darwin-wallace-paper': {
+    title: '达尔文—华莱士1858年联合发表论文',
+    url: 'https://darwin-online.org.uk/converted/pdf/1858_species_F350.pdf',
+    format: 'PDF',
+    edition: '原刊第45—62页，18页扫描本；Darwin Online',
+  },
+  'darwin-origin-first': {
+    title: '达尔文《物种起源》1859年初版',
+    url: 'https://www.gutenberg.org/ebooks/1228',
+    format: 'TXT',
+    edition: '1859年初版英文全本，Project Gutenberg #1228',
+    file: 'darwin-origin-first.txt',
+    license: 'Project Gutenberg；保留原版许可说明',
+  },
   'declaration-transcript': {
     title: '《独立宣言》完整转录',
     url: 'https://www.archives.gov/founding-docs/declaration-transcript',

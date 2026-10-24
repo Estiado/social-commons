@@ -4,6 +4,14 @@
 
 本轮继续工作见 [扩容清单](CONTENT_EXPANSION_PLAN.md) 与 [来源说明](CONTENT_SOURCES.md)。此前的网站内编辑器、统一选材、观澜合并见 [开发清单](DEVELOPMENT_PLAN.md)。交付证据与发布状态见 `VERIFICATION.md`。
 
+## 2026-10-24 文学、学习与科技扩充
+
+- 用户最新选题要求：不为追热点凑篇数，新增避开政府政策说明、宣传稿和立场评论。金税四期、旭日旗本轮不新增；不批量删除既有目录。优先有扎实出处的文学、审美、心理学、科技与日常生活。
+- 当前共100条通识、98个摘读ID/88篇推荐作品（59篇有已发表解读）、11个历史事件/33个出处视角、70个素材概念/47个站方示例。观澜精选继续50篇，本轮轮换7篇，其中2篇为The Economist在Hindustan Times刊载的英文文章。
+- `knowledge/learningAndCulture.ts`集中18条来源，与`essay/learningAndCulture.ts`共用；`quotes/friendshipAndNature.ts`包含8篇完整诗文；`history/naturalSelection.ts`按原有概述与多方视角规范组织。
+- 《物种起源》实际下载的是Project Gutenberg #1228的1859年初版；保留原始许可、字节与SHA-256。1858年论文18页扫描本保留出版站链接。
+- 海外目录`readingMode: external`只显示原站入口，不承诺不支持的链接提取，不扩展抓取白名单。SQL种子仅生成、未执行生产；私人快照、划线和数据库权限没有迁移。
+
 ## 2026-10-24 个人数据与首次使用体验
 
 - 已实现用户批准的四项：全部个人内容统一备份、私人正文检索定位、反馈草稿与来路保留、沿首页滚动并实际进入栏目的25步指引。路径与维护方式见 [首次使用指引](GUIDED_TOUR.md)。

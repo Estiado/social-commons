@@ -4,6 +4,7 @@ import { CLASSICAL_PASSAGES } from './quotes/classicalPassages.ts';
 import { EXPANDED_READINGS, QUOTE_ALIASES } from './quotes/expandedReadings.ts';
 import { PUBLISHED_COMMENTARIES } from './quotes/publishedCommentaries.ts';
 import { EXTENDED_CLASSICS, EXTENDED_COMMENTARIES } from './quotes/extendedClassics.ts';
+import { FRIENDSHIP_READINGS, FRIENDSHIP_COMMENTARIES } from './quotes/friendshipAndNature.ts';
 
 // IDs remain stable for existing links. Unverified legacy commentary was
 // withdrawn; only specifically sourced, reviewed summaries are published.
@@ -314,13 +315,22 @@ const QUOTE_TEXTS: Omit<IQuote, 'commentary'>[] = [
 ];
 
 const readings = new Map(
-  [...QUOTE_TEXTS, ...CLASSICAL_PASSAGES, ...EXTENDED_CLASSICS].map((quote) => {
-    const revised = { ...quote, ...EXPANDED_READINGS[quote.id] };
-    return [
-      quote.id,
-      { ...revised, commentary: EXTENDED_COMMENTARIES[quote.id] || PUBLISHED_COMMENTARIES[quote.id] || QUOTE_COMMENTARIES[quote.id] },
-    ];
-  }),
+  [...QUOTE_TEXTS, ...CLASSICAL_PASSAGES, ...EXTENDED_CLASSICS, ...FRIENDSHIP_READINGS].map(
+    (quote) => {
+      const revised = { ...quote, ...EXPANDED_READINGS[quote.id] };
+      return [
+        quote.id,
+        {
+          ...revised,
+          commentary:
+            FRIENDSHIP_COMMENTARIES[quote.id] ||
+            EXTENDED_COMMENTARIES[quote.id] ||
+            PUBLISHED_COMMENTARIES[quote.id] ||
+            QUOTE_COMMENTARIES[quote.id],
+        },
+      ];
+    },
+  ),
 );
 
 export const QUOTES: IQuote[] = [...readings.values()].map((quote) => {

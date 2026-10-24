@@ -1,10 +1,12 @@
 import type { IDailyKnowledge } from './types';
 import { REASONING_KNOWLEDGE } from './knowledge/reasoning.ts';
 import { SOCIAL_KNOWLEDGE } from './knowledge/socialEvidence.ts';
+import { LEARNING_KNOWLEDGE } from './knowledge/learningAndCulture.ts';
 
 // EXPORTS: DAILY_KNOWLEDGE, getTodayKnowledge
 
 export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
+  ...LEARNING_KNOWLEDGE,
   ...SOCIAL_KNOWLEDGE,
   ...REASONING_KNOWLEDGE,
   {

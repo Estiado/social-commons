@@ -225,7 +225,7 @@ test('大类覆盖全部细学科；精选条目日期、URL、专题关联有�
   );
   for (const item of CURATED_COMMENTARIES) {
     assert.match(item.publishedAt, /^2026-(07|08|09|10)-\d\d$/);
-    assert.ok(item.publishedAt <= '2026-10-22');
+    assert.ok(item.publishedAt <= item.checkedAt);
     assert.ok(commentaryTopics(item).every((id) => topics.has(id)));
   }
 });

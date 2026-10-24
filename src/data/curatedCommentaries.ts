@@ -1,4 +1,5 @@
 import { AUTUMN_COMMENTARIES } from './commentaries/autumn.ts';
+import { CULTURE_AND_TECHNOLOGY } from './commentaries/cultureAndTechnology.ts';
 
 export interface CuratedCommentary {
   id: string;
@@ -13,11 +14,13 @@ export interface CuratedCommentary {
   writingTags: string[];
   generalTags: string[];
   topicIds?: string[];
+  /** Unsupported publisher: offer its reading page, never promise URL extraction. */
+  readingMode?: 'external';
 }
 
 // Public metadata only. Recommendations and teaching tags are editorial notes,
 // not quotations attributed to the publisher. Full text belongs to its importer.
-export const CURATED_COMMENTARIES: CuratedCommentary[] = [
+const PREVIOUS_COMMENTARIES: CuratedCommentary[] = [
   ...AUTUMN_COMMENTARIES,
   {
     id: 'southern-343016',
@@ -528,6 +531,13 @@ export const CURATED_COMMENTARIES: CuratedCommentary[] = [
     generalTags: ['适老化', '技术体验'],
     topicIds: ['tech-ai', 'society-fairness'],
   },
+];
+
+// Preserve the source ledger while keeping the public selection within 50.
+// Explicit rotation retains all new selections, including older overseas reads.
+export const CURATED_COMMENTARIES: CuratedCommentary[] = [
+  ...CULTURE_AND_TECHNOLOGY,
+  ...PREVIOUS_COMMENTARIES.slice(0, 50 - CULTURE_AND_TECHNOLOGY.length),
 ];
 
 export function recentCommentaries(

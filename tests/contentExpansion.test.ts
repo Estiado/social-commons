@@ -19,13 +19,15 @@ import {
   type ReadingRecord,
 } from '../src/features/reading/model.ts';
 import { materialFieldsSchema } from '../src/features/essay/materials.ts';
+import { LEARNING_AND_CULTURE } from '../src/data/knowledge/learningAndCulture.ts';
+import { CULTURE_AND_TECHNOLOGY } from '../src/data/commentaries/cultureAndTechnology.ts';
 
 test('扩容后旧 ID 保留，目录不重复推荐同一作品，新增内容具有来源和有效专题关系', () => {
-  assert.ok(DAILY_KNOWLEDGE.length >= 82);
-  assert.ok(EVENTS.length >= 10);
-  assert.ok(ESSAY_MATERIALS.length >= 52);
-  assert.ok(ESSAY_EXAMPLES.length >= 29);
-  assert.ok(QUOTE_CATALOGUE.length >= 80);
+  assert.ok(DAILY_KNOWLEDGE.length >= 100);
+  assert.ok(EVENTS.length >= 11);
+  assert.ok(ESSAY_MATERIALS.length >= 70);
+  assert.ok(ESSAY_EXAMPLES.length >= 47);
+  assert.ok(QUOTE_CATALOGUE.length >= 88);
   assert.equal(CURATED_COMMENTARIES.length, 50);
   for (const collection of [
     QUOTES,
@@ -60,6 +62,33 @@ test('扩容后旧 ID 保留，目录不重复推荐同一作品，新增内容�
     for (const id of article.topicIds || [])
       assert.ok(TOPIC_SPECIALS.some((topic) => topic.id === id));
   }
+});
+
+test('新来源在通识与素材中一致，完整作品及海外目录进入正确阅读路径', () => {
+  for (const evidence of LEARNING_AND_CULTURE) {
+    const daily = DAILY_KNOWLEDGE.find((item) => item.id === evidence.id)!;
+    const concept = ESSAY_MATERIALS.find((item) => item.id === evidence.conceptId)!;
+    const example = ESSAY_EXAMPLES.find((item) => item.conceptId === evidence.conceptId)!;
+    assert.equal(example.content, daily.content);
+    assert.equal(example.sourceUrl, concept.references?.[0].url);
+    assert.ok(daily.source.includes(evidence.url));
+    assert.ok(daily.content.split('\n\n').length >= 2);
+  }
+  assert.match(getQuoteById('q91')!.text, /^行行重行行[\s\S]*努力加餐饭！$/u);
+  assert.match(getQuoteById('q95')!.text, /^叟有爱子[\s\S]*今日尔应知！$/u);
+  for (let number = 91; number <= 98; number++) {
+    const document = quoteDocument(getQuoteById(`q${number}`)!);
+    articleSchema.parse(document);
+    assert.ok(document.blocks.some((block) => block.type === 'quote'));
+  }
+  const overseas = CULTURE_AND_TECHNOLOGY.filter((item) => item.source === 'The Economist');
+  assert.equal(overseas.length, 2);
+  for (const item of overseas) {
+    assert.equal(item.readingMode, 'external');
+    assert.ok(CURATED_COMMENTARIES.some((selection) => selection.id === item.id));
+  }
+  const newText = JSON.stringify([LEARNING_AND_CULTURE, CULTURE_AND_TECHNOLOGY]);
+  assert.doesNotMatch(newText, /金税四期|旭日旗|课堂讨论|备课方案/u);
 });
 
 test('长语段使用作品标题，分段原文完整进入阅读和导出模型', () => {

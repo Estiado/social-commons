@@ -26,7 +26,7 @@ export const TOPIC_SPECIALS: TopicSpecial[] = [
     description:
       '从经济增长到劳动权益，从市场规则到消费选择，练习把宏观变化与人的具体生活联系起来。比较不同政策和行为的条件、收益与代价。',
     relatedTags: ['经济与发展'],
-    relatedDailyIds: ['d78', 'd79', 'd51', 'd54', 'd67', 'd2', 'd5', 'd8'],
+    relatedDailyIds: ['d83', 'd85', 'd100', 'd78', 'd79', 'd51', 'd54', 'd67', 'd2', 'd5', 'd8'],
     relatedQuoteIds: ['q25', 'q15', 'q65', 'q79'],
     color: 'from-orange-500/10 to-amber-500/10',
   },
@@ -59,7 +59,7 @@ export const TOPIC_SPECIALS: TopicSpecial[] = [
     description:
       '当算法开始写作、AI开始对话，人类的独特性在哪里？科技发展与人文关怀的张力，是高考作文常考的核心议题。',
     relatedTags: ['科技与AI'],
-    relatedDailyIds: ['d69', 'd64', 'd61', 'd21', 'd25', 'd26'],
+    relatedDailyIds: ['d84', 'd88', 'd100', 'd83', 'd69', 'd64', 'd61', 'd21', 'd25', 'd26'],
     relatedQuoteIds: ['q36', 'q28', 'q39'],
     color: 'from-blue-500/10 to-cyan-500/10',
   },
@@ -81,8 +81,8 @@ export const TOPIC_SPECIALS: TopicSpecial[] = [
     description:
       '文化是一个民族的根脉。从意境到记忆的场所，从屈原到杜甫，如何在现代化进程中守护和传承文化，是高考作文的高频考点。',
     relatedTags: ['文化与传承'],
-    relatedDailyIds: ['d64', 'd7', 'd23', 'd46'],
-    relatedQuoteIds: ['q31', 'q41', 'q44', 'q58', 'q59'],
+    relatedDailyIds: ['d97', 'd98', 'd64', 'd7', 'd23', 'd46'],
+    relatedQuoteIds: ['q31', 'q41', 'q44', 'q58', 'q59', 'q95', 'q96'],
     color: 'from-amber-500/10 to-yellow-500/10',
   },
   {
@@ -92,8 +92,23 @@ export const TOPIC_SPECIALS: TopicSpecial[] = [
     description:
       '教育的本质是什么？是灌输还是唤醒？从惯习与场域到附近的消失，从"知道自己为什么而活"到"人生如逆旅"，成长是一生的课题。',
     relatedTags: ['教育与成长'],
-    relatedDailyIds: ['d75', 'd55', 'd57', 'd60', 'd34', 'd39', 'd40'],
-    relatedQuoteIds: ['q7', 'q16', 'q65', 'q66', 'q57', 'q87', 'q89', 'q90'],
+    relatedDailyIds: [
+      'd86',
+      'd87',
+      'd89',
+      'd91',
+      'd92',
+      'd94',
+      'd95',
+      'd75',
+      'd55',
+      'd57',
+      'd60',
+      'd34',
+      'd39',
+      'd40',
+    ],
+    relatedQuoteIds: ['q7', 'q16', 'q65', 'q66', 'q57', 'q87', 'q89', 'q90', 'q93', 'q94'],
     color: 'from-green-500/10 to-emerald-500/10',
   },
   {
@@ -114,7 +129,20 @@ export const TOPIC_SPECIALS: TopicSpecial[] = [
     description:
       '我是谁？从哪里来？到哪里去？从洞穴寓言到被抛，从维特根斯坦到卡夫卡，哲学思辨能力是议论文深度的核心，也是区分平庸与深刻的关键。',
     relatedTags: ['哲学与思辨', '文化与传承'],
-    relatedDailyIds: ['d71', 'd72', 'd81', 'd58', 'd59', 'd62', 'd10', 'd47', 'd13'],
+    relatedDailyIds: [
+      'd89',
+      'd90',
+      'd98',
+      'd71',
+      'd72',
+      'd81',
+      'd58',
+      'd59',
+      'd62',
+      'd10',
+      'd47',
+      'd13',
+    ],
     relatedQuoteIds: ['q39', 'q49', 'q26', 'q70'],
     color: 'from-slate-500/10 to-gray-500/10',
   },
@@ -125,7 +153,7 @@ export const TOPIC_SPECIALS: TopicSpecial[] = [
     description:
       '历史不是单一的叙事，而是多方声音的交织。从想象的共同体到记忆的场所，从屈原到杜甫，学会从不同视角看历史，是思辨深度的重要来源。',
     relatedTags: ['文化与传承', '国际与全球'],
-    relatedDailyIds: ['d22', 'd17', 'd23'],
+    relatedDailyIds: ['d93', 'd99', 'd22', 'd17', 'd23'],
     relatedQuoteIds: ['q31', 'q41', 'q43', 'q55', 'q63', 'q76', 'q81', 'q82'],
     color: 'from-amber-500/10 to-orange-500/10',
   },
@@ -147,8 +175,8 @@ export const TOPIC_SPECIALS: TopicSpecial[] = [
     description:
       '从阿伦特的"平庸之恶"到马尔库塞的"单向度的人"，从福柯的"规训"到项飙的"附近的消失"——个体如何在现代社会中保持独立思考和自由意志，是高考作文的核心议题。',
     relatedTags: ['哲学与思辨', '社会与民生'],
-    relatedDailyIds: ['d73', 'd76', 'd77', 'd52', 'd53', 'd30', 'd18', 'd14', 'd39'],
-    relatedQuoteIds: ['q12', 'q14', 'q49', 'q68', 'q78', 'q80'],
+    relatedDailyIds: ['d84', 'd94', 'd73', 'd76', 'd77', 'd52', 'd53', 'd30', 'd18', 'd14', 'd39'],
+    relatedQuoteIds: ['q12', 'q14', 'q49', 'q68', 'q78', 'q80', 'q97', 'q98'],
     color: 'from-rose-500/10 to-pink-500/10',
   },
   {
@@ -158,7 +186,7 @@ export const TOPIC_SPECIALS: TopicSpecial[] = [
     description:
       '文学是议论文的文采之源。从王勃到苏轼，从博尔赫斯到卡夫卡，名家名句不仅是素材，更是思维方式。学会用文学的眼光看世界，文章自然有了温度和深度。',
     relatedTags: ['文化与传承', '哲学与思辨'],
-    relatedDailyIds: ['d32', 'd44', 'd46'],
+    relatedDailyIds: ['d96', 'd97', 'd98', 'd32', 'd44', 'd46'],
     relatedQuoteIds: [
       'q3',
       'q6',
@@ -172,6 +200,12 @@ export const TOPIC_SPECIALS: TopicSpecial[] = [
       'q60',
       'q62',
       'q64',
+      'q91',
+      'q92',
+      'q95',
+      'q96',
+      'q97',
+      'q98',
     ],
     color: 'from-violet-500/10 to-fuchsia-500/10',
   },

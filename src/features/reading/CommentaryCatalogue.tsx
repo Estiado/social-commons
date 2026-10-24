@@ -39,7 +39,7 @@ export function CommentaryCatalogue({ topicId }: { topicId?: string }) {
         <span className="text-sm text-muted-foreground">{visible.length} 篇</span>
       </div>
       <p className="text-sm leading-relaxed text-muted-foreground">
-        2026 年 7—10 月已发布文章。推荐理由与教学标签为本站整理；全文导入个人空间后使用。
+        2026 年 7—10 月精选文章，按媒体和主题检索。海外文章提供原站阅读入口。
       </p>
       <Input
         aria-label="搜索时评"
@@ -96,26 +96,28 @@ export function CommentaryCatalogue({ topicId }: { topicId?: string }) {
             </p>
             <p className="mb-4 text-xs text-accent">{article.writingTags.join(' · ')}</p>
             <div className="mt-auto flex flex-wrap gap-3">
-              <Button asChild size="sm">
-                <Link
-                  to={
-                    '/reading/import?' +
-                    new URLSearchParams({
-                      url: article.url,
-                      ...(topicId ? { topic: topicId } : {}),
-                    })
-                  }
-                >
-                  导入我的阅读空间
-                </Link>
-              </Button>
+              {article.readingMode !== 'external' && (
+                <Button asChild size="sm">
+                  <Link
+                    to={
+                      '/reading/import?' +
+                      new URLSearchParams({
+                        url: article.url,
+                        ...(topicId ? { topic: topicId } : {}),
+                      })
+                    }
+                  >
+                    导入我的阅读空间
+                  </Link>
+                </Button>
+              )}
               <a
                 className="self-center text-sm text-accent underline"
                 href={article.url}
                 target="_blank"
                 rel="noreferrer"
               >
-                阅读原文
+                {article.readingMode === 'external' ? '前往原站阅读（英文）' : '阅读原文'}
               </a>
             </div>
           </article>
