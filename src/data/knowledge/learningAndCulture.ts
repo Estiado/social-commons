@@ -250,7 +250,8 @@ export const LEARNING_AND_CULTURE = [
 export const LEARNING_KNOWLEDGE: IDailyKnowledge[] = LEARNING_AND_CULTURE.map((item) => ({
   id: item.id,
   date: '2026-10-24',
-  title: item.title,
+  // Keep the canonical concept searchable even when the editorial title is figurative.
+  title: item.title.includes(item.concept) ? item.title : `${item.concept}：${item.title}`,
   category: item.category,
   summary: item.summary,
   content: item.content,

@@ -1,2 +1,2 @@
 # Preserve downloaded editions and their SHA-256 manifest across Windows/Linux.
-public/readings/history/*.txt -text
+public/readings/history/*.txt -text -whitespace

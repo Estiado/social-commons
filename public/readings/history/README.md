@@ -1,6 +1,6 @@
 # 群鉴电子文献
 
-本目录仅存放已检查的可再分发电子版本，文件不得经格式化工具改写。`manifest.json` 记录来源、大小及 SHA-256，回归检查逐字节验证。根目录 `.gitattributes` 禁止 Git 自动转换这些 TXT 的换行，以保留原始字节。
+本目录仅存放已检查的可再分发电子版本，文件不得经格式化工具改写。`manifest.json` 记录来源、大小及 SHA-256，回归检查逐字节验证。根目录 `.gitattributes` 禁止 Git 自动转换这些 TXT 的换行，并豁免原电子版自带的空白排版检查，以保留原始字节；代码文件仍检查空白错误。
 
 - `bradford-plymouth.txt`：布拉福德，Harold Paget 1920 英译/整理本，Project Gutenberg #69871。
 - `smith-wealth.txt`：斯密《国富论》，Project Gutenberg #3300。

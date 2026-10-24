@@ -72,6 +72,7 @@ test('新来源在通识与素材中一致，完整作品及海外目录进入�
     assert.equal(example.content, daily.content);
     assert.equal(example.sourceUrl, concept.references?.[0].url);
     assert.ok(daily.source.includes(evidence.url));
+    assert.ok(daily.title.includes(evidence.concept));
     assert.ok(daily.content.split('\n\n').length >= 2);
   }
   assert.match(getQuoteById('q91')!.text, /^行行重行行[\s\S]*努力加餐饭！$/u);
