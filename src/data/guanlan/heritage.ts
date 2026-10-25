@@ -101,7 +101,7 @@ const event: GuanlanEvent = {
       },
     },
   ],
-  relatedDailyIds: ['d94', 'd97'],
+  relatedDailyIds: ['d94', 'd96', 'd97'],
   relatedQuoteIds: ['q65', 'q90'],
 };
 

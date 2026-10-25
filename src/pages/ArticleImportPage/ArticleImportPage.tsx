@@ -146,7 +146,7 @@ export default function ArticleImportPage() {
         )
       )}
       <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-        粘贴原文链接，整理成适合阅读和备课的格式。免登录阅读与导出，临时保留 7
+        粘贴原文链接，整理成适合阅读与摘录的格式。免登录阅读与导出，临时保留 7
         天；点击“保存到本机”或收藏可在当前浏览器长期保留。
       </p>
       <div className="my-7 flex gap-3" role="group" aria-label="导入方式">

@@ -213,6 +213,12 @@ export function ArticleContent({
           if (block.type === 'image') return <ArticleFigure key={block.id} {...block} />;
           const saved = annotationsByBlock.get(block.id) || [];
           const wholeSaved = saved.some((item) => item.kind === 'paragraph');
+          const Heading = `h${Math.min(6, Math.max(2, block.level || 2))}` as
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6';
           const text = <MarkedText block={block} annotations={saved} query={searchQuery} />;
           const attributes = {
             'data-reading-text': true,
@@ -227,12 +233,12 @@ export function ArticleContent({
               className="group relative my-5 scroll-mt-24 rounded-sm hover:bg-accent/[0.025]"
             >
               {block.type === 'heading' ? (
-                <h2
+                <Heading
                   {...attributes}
                   className={`font-semibold ${block.level && block.level <= 2 ? 'text-2xl' : 'text-xl'}`}
                 >
                   {text}
-                </h2>
+                </Heading>
               ) : block.type === 'quote' ? (
                 <blockquote
                   {...attributes}

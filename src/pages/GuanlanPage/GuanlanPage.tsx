@@ -7,7 +7,10 @@ import { EventCatalogue } from '@/features/guanlan/EventCatalogue';
 
 export default function GuanlanPage() {
   const navigate = useNavigate();
-  const featured = TOPIC_SPECIALS.filter((topic) => eventsForTopic(topic.id).length > 0);
+  const featured = TOPIC_SPECIALS.filter((topic) => eventsForTopic(topic.id).length > 0).slice(
+    0,
+    6,
+  );
   return (
     <div className="mx-auto max-w-5xl px-5 py-10 md:px-6">
       <header data-tour="guanlan-intro" className="mb-8 space-y-4">
@@ -27,7 +30,7 @@ export default function GuanlanPage() {
             >
               {topic.name}
               <span className="ml-1 text-xs text-muted-foreground">
-                {eventsForTopic(topic.id).length}
+                {eventsForTopic(topic.id).length}篇
               </span>
             </Link>
           ))}

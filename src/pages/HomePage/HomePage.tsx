@@ -16,10 +16,14 @@ import { QUOTE_CATALOGUE as QUOTES } from '@/data/quotes';
 import { TOPIC_SPECIALS } from '@/data/topicSpecials';
 import { GUANLAN_EVENTS } from '@/data/guanlan/catalogue';
 import type { IQuote } from '@/data/types';
+import { nameCatalogueReferences } from '@/features/reading/references';
+import { readingTextSegments } from '@/features/reading/textSegments';
 const latestEvents = [...GUANLAN_EVENTS].sort((a, b) => b.sortDate.localeCompare(a.sortDate));
 
 export default function HomePage() {
   const todayKnowledge = getTodayKnowledge();
+  const source = nameCatalogueReferences({ type: 'paragraph', text: todayKnowledge.source });
+  const sourceRuns = readingTextSegments({ ...source, id: 'home-source' }, []);
   const [heroQuote] = useState<IQuote>(() => {
     const dayOfYear = Math.floor(
       (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000,
@@ -98,8 +102,8 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <Link to="/daily" className="block group">
-          <div className="border border-border/60 bg-card p-8 md:p-10 rounded-sm hover:border-accent/30 transition-all duration-300 hover:shadow-md">
+        <div className="group border border-border/60 bg-card p-8 md:p-10 rounded-sm hover:border-accent/30 transition-all duration-300 hover:shadow-md">
+          <Link to={`/daily/${todayKnowledge.id}`} className="block">
             <div className="flex items-start justify-between mb-4">
               <span className="inline-block px-3 py-1 text-xs font-medium bg-accent/10 text-accent rounded-sm">
                 {todayKnowledge.category}
@@ -110,9 +114,26 @@ export default function HomePage() {
               {todayKnowledge.title}
             </h3>
             <p className="text-muted-foreground leading-relaxed mb-4">{todayKnowledge.summary}</p>
-            <p className="text-xs text-muted-foreground/70">来源：{todayKnowledge.source}</p>
-          </div>
-        </Link>
+          </Link>
+          <p className="break-words text-xs leading-relaxed text-muted-foreground/70">
+            来源：
+            {sourceRuns.map((run, index) =>
+              run.href ? (
+                <a
+                  key={index}
+                  href={run.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-accent underline underline-offset-4"
+                >
+                  {run.text}
+                </a>
+              ) : (
+                <span key={index}>{run.text}</span>
+              ),
+            )}
+          </p>
+        </div>
       </section>
 
       {/* 最新观澜 */}
