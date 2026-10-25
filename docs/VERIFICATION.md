@@ -5,7 +5,8 @@
 - `content/站内编辑稿.md`共34组620处文字，约283kB；构建输出分组生成到D盘`.artifacts/editorial/`，不提交缓存文件。三篇事件扩写，十份来源均有多段可阅读提要。
 - 先保存公开模型快照，再完成迁移并逐项比较：迁移时全站模型完全相同；扩写后非观澜正文、全站原句、书目、编号与关联仍一致。临时比对文件仅留D盘`.artifacts`，未读取或改写浏览器私人数据。
 - 完整检查85/85通过，日志`.artifacts/editorial-check.log`。新增回归验证CRLF/Unicode/段落保留、标记损坏/重复与路径拒绝、实际修改总稿后生成模块内容改变、排版后的多行引用及注释、缺字段/整组删除/孤立编号在写入前失败、十份提要进入统一模型。旧快照、备份与导出回归保持。
-- 目前完成的是本机检查；GitHub同步、Cloudflare干净构建及正式站提要跳转/收藏/手机验证将在发布后另记，不把85项检查当成生产验收。
+- 最终完整检查仍85/85通过，日志`.artifacts/editorial-final-check.log`。功能提交`3a3ab3f1955015f6eb32f25ca018d0ddfa234c8f`已推送main并核对远端SHA；[GitHub检查](https://github.com/Estiado/social-commons/actions/runs/40157895178)success，Cloudflare检查明确Deployed successfully。干净构建能由总稿生成所需模块，没有将`.artifacts/editorial`提交仓库。
+- 本轮真实页面交互验收尚未完成：浏览器工具未发现可用连接；改用Windows Computer Use打开已安装Edge后，工具因无法可靠确定当前浏览器URL以执行安全策略而终止该轮控制。随后停止全部电脑/浏览器输入，没有绕过安全阻断。未将85项检查或发布成功写成提要跳转、手机布局、段落收藏已经实际点击通过；未生成冒充新版的截图。已有私人数据未清空。
 
 ## 观澜事件阅读结构 · 2026-10-25
 
