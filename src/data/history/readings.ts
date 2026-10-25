@@ -133,4 +133,36 @@ export const HISTORY_READINGS: Record<string, HistoryReading> = {
     edition: 'Shiode 等，2015；15页，出版页附图件勘误',
     license: 'CC BY 4.0',
   },
+  'new-coke-schindler': {
+    title: '辛德勒：新可乐与焦点小组',
+    url: 'https://jameshammon.com.au/wp-content/uploads/2019/01/new_coke_AMA.pdf',
+    format: 'PDF',
+    edition: 'Marketing Research 4(4)，1992，第22—27页；原刊副本',
+  },
+  'new-coke-neuron': {
+    title: '熟悉饮料的品牌线索与行为偏好',
+    url: 'https://mcclurelab.org/pdf/McClureLi2004.pdf',
+    format: 'PDF',
+    edition: 'Neuron 44(2)，2004，第379—387页；作者实验室电子版',
+  },
+  'eclipse-report': {
+    title: '1919年日食观测的1920年正式报告',
+    url: 'https://doi.org/10.1098/rsta.1920.0009',
+    format: '网页',
+    edition: 'Dyson、Eddington、Davidson，Philosophical Transactions A 220，第291—333页',
+  },
+  'eclipse-longair': {
+    title: '朗盖尔：重访1919年日食观测',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC4360090/',
+    format: '网页',
+    edition: 'Philosophical Transactions A 373:20140287，2015；开放全文',
+  },
+  'radio-research-2013': {
+    title: '重访《来自火星的入侵》：传播研究经典的形成',
+    url: 'https://ijoc.org/index.php/ijoc/article/viewFile/2117/980',
+    format: 'PDF',
+    edition: 'International Journal of Communication 7，2013，第1920—1948页，29页原版',
+    file: 'war-of-worlds-research-2013.pdf',
+    license: 'CC BY-NC-ND；Jefferson D. Pooley、Michael J. Socolow；非商业、署名、保留原件',
+  },
 };

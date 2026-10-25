@@ -18,7 +18,10 @@ import { GUANLAN_EVENTS } from '@/data/guanlan/catalogue';
 import type { IQuote } from '@/data/types';
 import { nameCatalogueReferences } from '@/features/reading/references';
 import { readingTextSegments } from '@/features/reading/textSegments';
-const latestEvents = [...GUANLAN_EVENTS].sort((a, b) => b.sortDate.localeCompare(a.sortDate));
+// Keep the home preview short as the full event catalogue grows.
+const latestEvents = [...GUANLAN_EVENTS]
+  .sort((a, b) => b.sortDate.localeCompare(a.sortDate))
+  .slice(0, 3);
 
 export default function HomePage() {
   const todayKnowledge = getTodayKnowledge();

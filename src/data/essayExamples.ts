@@ -3,6 +3,7 @@ import type { MaterialFields } from '../features/essay/materials';
 import { REASONING_EXAMPLES } from './essay/reasoningExamples.ts';
 import { SOCIAL_EXAMPLES } from './essay/socialEvidence.ts';
 import { LEARNING_EXAMPLES } from './essay/learningAndCulture.ts';
+import { EXPERIENCE_EXAMPLES } from './essay/socialExperience.ts';
 import { YOUTH_EXAMPLES } from './essay/youthStudies.ts';
 
 export interface EssayExample extends MaterialFields {
@@ -13,6 +14,7 @@ export interface EssayExample extends MaterialFields {
 // Site examples are source-based summaries, not unattributed copied passages.
 // The same reviewed data can seed Supabase; visitors cannot edit these entries.
 export const ESSAY_EXAMPLES: EssayExample[] = [
+  ...EXPERIENCE_EXAMPLES,
   ...YOUTH_EXAMPLES,
   ...LEARNING_EXAMPLES,
   ...SOCIAL_EXAMPLES,

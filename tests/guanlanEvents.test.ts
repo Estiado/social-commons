@@ -38,7 +38,7 @@ import {
 } from '../src/features/reading/backup.ts';
 
 test('观澜事件保留三层视角、真实署名及有效关联，未知路径不能命中对象原型', async () => {
-  assert.equal(new Set(GUANLAN_EVENTS.map((item) => item.id)).size, 3);
+  assert.equal(new Set(GUANLAN_EVENTS.map((item) => item.id)).size, 12);
   const topics = new Set(TOPIC_SPECIALS.map((item) => item.id));
   for (const summary of GUANLAN_EVENTS) {
     const event = (await getGuanlanEvent(summary.id))!;
@@ -80,7 +80,10 @@ test('话题复用同一事件路径，全站搜索直接命中事件；旧目�
       ai,
     );
   assert.deepEqual(eventsForTopic('not-a-topic'), []);
-  assert.equal(eventsForTopic()[0].id, 'heritage-short-video');
+  const ordered = eventsForTopic();
+  assert.ok(
+    ordered.every((item, index) => index === 0 || ordered[index - 1].sortDate >= item.sortDate),
+  );
   for (const query of ['打铁花', '学术酒吧']) {
     const result = searchDocuments(SEARCH_INDEX, query).find(
       (item) => item.type === 'guanlan-event',

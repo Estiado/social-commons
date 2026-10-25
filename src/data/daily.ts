@@ -3,11 +3,13 @@ import type { IDailyKnowledge } from './types';
 import { REASONING_KNOWLEDGE } from './knowledge/reasoning.ts';
 import { SOCIAL_KNOWLEDGE } from './knowledge/socialEvidence.ts';
 import { LEARNING_KNOWLEDGE } from './knowledge/learningAndCulture.ts';
+import { EXPERIENCE_KNOWLEDGE } from './knowledge/socialExperience.ts';
 import { YOUTH_KNOWLEDGE } from './knowledge/youthStudies.ts';
 
 // EXPORTS: DAILY_KNOWLEDGE, getTodayKnowledge
 
 export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
+  ...EXPERIENCE_KNOWLEDGE,
   ...YOUTH_KNOWLEDGE,
   ...LEARNING_KNOWLEDGE,
   ...SOCIAL_KNOWLEDGE,

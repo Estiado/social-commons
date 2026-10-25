@@ -83,7 +83,7 @@ const paragraphs = paragraphCopy('d1.paragraphs');`,
   }
 });
 
-test('十份观澜资料均有可收藏的多段提要，阅读正文与导出模型包含相同文字', async () => {
+test('观澜全部资料均有可收藏的多段提要，阅读正文与导出模型包含相同文字', async () => {
   const copy = parseEditorialCopy(await readFile(EDITORIAL_FILE, 'utf8'));
   assert.ok([...copy.values()].reduce((sum, group) => sum + Object.keys(group).length, 0) >= 620);
   let count = 0;
@@ -100,5 +100,5 @@ test('十份观澜资料均有可收藏的多段提要，阅读正文与导出�
         );
     }
   }
-  assert.equal(count, 10);
+  assert.equal(count, 38);
 });

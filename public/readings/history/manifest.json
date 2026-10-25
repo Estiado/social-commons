@@ -54,5 +54,13 @@
     "bytes": 436564,
     "sha256": "108e7353dc729fe129f27ecc2f88e94e8115922da1159b10106190d089ddb75c",
     "license": "美国政府公共卫生出版物；保留原出版信息"
+  },
+  {
+    "id": "radio-research-2013",
+    "file": "war-of-worlds-research-2013.pdf",
+    "source": "https://ijoc.org/index.php/ijoc/article/viewFile/2117/980",
+    "bytes": 758728,
+    "sha256": "e67b04d7a3f7320edd7c6ace88f4c8e1bd415699baaece48b28d7e965c9ea649",
+    "license": "CC BY-NC-ND；Jefferson D. Pooley、Michael J. Socolow；非商业、署名、保留原件"
   }
 ]

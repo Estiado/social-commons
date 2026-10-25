@@ -5,9 +5,11 @@ import { ENLIGHTENMENT_EVENT } from './enlightenment.ts';
 import { INDUSTRIAL_EVENT } from './industry.ts';
 import { SILK_ROAD_EVENT } from './silkRoad.ts';
 import { RIGHTS_EVENTS } from './rights.ts';
+import { EVIDENCE_AND_MEDIA_EVENTS } from './evidenceAndMedia.ts';
 import { NATURAL_SELECTION_EVENT } from './naturalSelection.ts';
 
 export const HISTORY_EVENTS: IEvent[] = [
+  ...EVIDENCE_AND_MEDIA_EVENTS,
   NATURAL_SELECTION_EVENT,
   ...RIGHTS_EVENTS,
   ...PUBLIC_LIFE_EVENTS,

@@ -294,6 +294,8 @@ export const YOUTH_STUDIES: YouthStudy[] = [
 ];
 
 export function researchCitation(source: IResearchSource): string {
+  if (source.issue === '专著')
+    return `${source.authors.join('、')}：《${source.title}》，${source.journal}，${source.year}年，${source.pages}`;
   return `${source.authors.join('、')}：《${source.title}》，《${source.journal}》${source.year}${source.volume ? `, ${source.volume}` : ''}(${source.issue})，${source.pages}页`;
 }
 

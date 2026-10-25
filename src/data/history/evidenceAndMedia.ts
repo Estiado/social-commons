@@ -1,0 +1,215 @@
+import { EDITORIAL } from '../../../.artifacts/editorial/history/evidenceAndMedia.ts';
+import type { IEvent } from '../types';
+
+export const EVIDENCE_AND_MEDIA_EVENTS: IEvent[] = [
+  {
+    id: 'new-coke-1985',
+    title: '新可乐风波：口味测试没有问完的问题',
+    date: '1985年4月23日推出新配方；7月11日恢复经典配方',
+    location: '美国；可口可乐公司及消费者市场',
+    category: '消费与社会',
+    summarySources: [
+      {
+        title: '可口可乐公司：New Coke历史回顾',
+        url: 'https://www.coca-colacompany.com/about-us/history/new-coke-the-most-memorable-marketing-blunder-ever',
+      },
+      {
+        title: '罗伯特·辛德勒：新可乐与焦点小组研究',
+        url: 'https://jameshammon.com.au/wp-content/uploads/2019/01/new_coke_AMA.pdf',
+      },
+    ],
+    academicPapers: [],
+    references: [
+      {
+        title: '麦克卢尔实验论文 · 作者实验室电子版',
+        url: 'https://mcclurelab.org/pdf/McClureLi2004.pdf',
+      },
+    ],
+    summary: EDITORIAL['new-coke-1985.summary'],
+    perspectives: [
+      {
+        id: 'new-coke-company',
+        role: '企业的事后回顾',
+        title: '口味之外，还有消费者与旧产品的联系',
+        quote: '消费者对自己的可口可乐所感到的联系。',
+        original: 'the bond consumers felt with their Coca-Cola',
+        translated: true,
+        source:
+          'The Coca-Cola Company：New Coke: The Most Memorable Marketing Blunder Ever?，Factors That Shaped the Launch Decision',
+        sourceUrl:
+          'https://www.coca-colacompany.com/about-us/history/new-coke-the-most-memorable-marketing-blunder-ever',
+        locator: 'Factors That Shaped the Launch Decision，试饮与消费者联系一段',
+        sourceType: '后世研究',
+        description: EDITORIAL['new-coke-1985.new-coke-company.description'],
+      },
+      {
+        id: 'new-coke-schindler',
+        role: '营销研究者罗伯特·辛德勒',
+        title: '个别试饮与群体反应，需要不同观察方式',
+        quote: '它们预测社会影响效果的独特能力。',
+        original: 'their unique ability to predict the effects of social influence',
+        translated: true,
+        source:
+          'Robert M. Schindler：The Real Lesson of New Coke，Marketing Research 4(4)，1992，第22—27页',
+        sourceUrl: 'https://jameshammon.com.au/wp-content/uploads/2019/01/new_coke_AMA.pdf',
+        locator: '第22页开篇摘要，an alternative explanation一段',
+        sourceType: '后世研究',
+        readingId: 'new-coke-schindler',
+        description: EDITORIAL['new-coke-1985.new-coke-schindler.description'],
+      },
+      {
+        id: 'new-coke-mcclure',
+        role: '麦克卢尔等人的后续实验',
+        title: '知道品牌，与不知道品牌时的偏好并不相同',
+        quote: '文化信息怎样与内容结合，塑造我们的感知。',
+        original: 'cultural messages combine with content to shape our perceptions',
+        translated: true,
+        source:
+          'Samuel M. McClure 等：Neural correlates of behavioral preference for culturally familiar drinks，Neuron 44(2)，2004，第379—387页',
+        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/15473974/',
+        locator: '论文摘要，提出cultural messages问题的句子',
+        sourceType: '后世研究',
+        readingId: 'new-coke-neuron',
+        description: EDITORIAL['new-coke-1985.new-coke-mcclure.description'],
+      },
+    ],
+  },
+  {
+    id: 'eclipse-1919',
+    title: '1919年日食观测：证据怎样改变一个理论的地位',
+    date: '1919年5月29日观测；11月6日公布；1920年刊出报告',
+    location: '普林西比岛与巴西索布拉尔；伦敦的科学交流',
+    category: '科学与自然',
+    summarySources: [
+      {
+        title: '皇家学会：1919年相对论观测档案',
+        url: 'https://www.royalsociety.org/blog/2024/08/observing-relativity/',
+      },
+      {
+        title: '马尔科姆·朗盖尔：对1920年报告的科学史评论',
+        url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC4360090/',
+      },
+    ],
+    academicPapers: [],
+    references: [
+      {
+        title: '戴森、爱丁顿、戴维森：1920年观测报告出版页',
+        url: 'https://doi.org/10.1098/rsta.1920.0009',
+      },
+    ],
+    summary: EDITORIAL['eclipse-1919.summary'],
+    perspectives: [
+      {
+        id: 'eclipse-harrison',
+        role: '皇家学会助理秘书罗伯特·哈里森',
+        title: '当时的通信把偏折看作理论获得支持',
+        quote: '太阳附近存在光线偏折。',
+        original: 'a deflection of light takes place in the neighbourhood of the Sun',
+        translated: true,
+        source: 'Robert Harrison致Frank Dyson信，皇家学会Observing general relativity所引档案',
+        sourceUrl: 'https://www.royalsociety.org/blog/2024/08/observing-relativity/',
+        locator: '网页中Harrison letter段，底片质量介绍之后',
+        sourceType: '史料记载',
+        readingId: 'eclipse-report',
+        description: EDITORIAL['eclipse-1919.eclipse-harrison.description'],
+      },
+      {
+        id: 'eclipse-longair',
+        role: '天体物理学家马尔科姆·朗盖尔',
+        title: '一次转折，仍然需要后续数据',
+        quote: '还需要更多的数据。',
+        original: 'more data were needed',
+        translated: true,
+        source:
+          'Malcolm Longair：Bending space–time，Philosophical Transactions A 373:20140287，2015',
+        sourceUrl: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC4360090/',
+        locator: '第4节The aftermath，(a) The deflections开头',
+        sourceType: '后世研究',
+        readingId: 'eclipse-longair',
+        description: EDITORIAL['eclipse-1919.eclipse-longair.description'],
+      },
+      {
+        id: 'eclipse-thomson',
+        role: '皇家学会会长J. J. 汤姆孙',
+        title: '科学判断进入公共传播之后',
+        quote: '非同寻常程度的兴趣。',
+        original: 'an extraordinary degree of interest',
+        translated: true,
+        source: 'J. J. Thomson评论，Vida Milovanovic：Observing general relativity，皇家学会，2024',
+        sourceUrl: 'https://www.royalsociety.org/blog/2024/08/observing-relativity/',
+        locator: '结果公布之后的Thomson评论及1919年11月报刊剪辑',
+        sourceType: '后世研究',
+        description: EDITORIAL['eclipse-1919.eclipse-thomson.description'],
+      },
+    ],
+  },
+  {
+    id: 'war-of-worlds-1938',
+    title: '《世界大战》广播：恐慌本身也需要证据',
+    date: '1938年10月30日广播；1940年研究；后续传播史再审视',
+    location: '美国CBS广播网与听众来信网络',
+    category: '媒介与社会',
+    summarySources: [
+      {
+        title: '美国国家档案馆：广播后的听众来信',
+        url: 'https://www.archives.gov/publications/prologue/2003/fall/war-of-worlds.html',
+      },
+      {
+        title: 'Pooley与Socolow：对《来自火星的入侵》的研究史重访',
+        url: 'https://ijoc.org/index.php/ijoc/article/view/2117',
+      },
+    ],
+    academicPapers: [],
+    references: [
+      {
+        title: '美国国会图书馆：广播传奇与夸大叙事',
+        url: 'https://blogs.loc.gov/loc/2016/10/lcm-page-from-the-past-war-of-the-worlds/',
+      },
+    ],
+    summary: EDITORIAL['war-of-worlds-1938.summary'],
+    perspectives: [
+      {
+        id: 'radio-welles',
+        role: '奥逊·威尔斯的节目结语',
+        title: '制作者以万圣节玩笑解释这场表演',
+        quote: '从灌木后跳出来，说一声“吓你一下”！',
+        original: 'jumping out of a bush and saying Boo!',
+        translated: true,
+        source:
+          'Orson Welles节目结语，Lee Ann Potter：Jitterbugs and Crack-pots，Prologue 35(3)，2003',
+        sourceUrl: 'https://www.archives.gov/publications/prologue/2003/fall/war-of-worlds.html',
+        locator: '档案介绍开头Halloween Eve一段',
+        sourceType: '史料记载',
+        description: EDITORIAL['war-of-worlds-1938.radio-welles.description'],
+      },
+      {
+        id: 'radio-ferguson',
+        role: '听众罗威娜·弗格森的来信',
+        title: '担忧错误，也担忧用限制创作来回应',
+        quote: '审查的弊端影响更远，也更难处理。',
+        original: 'The evils of a censorship are more far-reaching and harder to handle',
+        translated: true,
+        source: 'Rowena Ferguson致FCC信，由Lee Ann Potter档案介绍转录，2003',
+        sourceUrl: 'https://www.archives.gov/publications/prologue/2003/fall/war-of-worlds.html',
+        locator: '听众支持来信部分，Rowena Ferguson of Nashville一段',
+        sourceType: '史料记载',
+        description: EDITORIAL['war-of-worlds-1938.radio-ferguson.description'],
+      },
+      {
+        id: 'radio-pooley-socolow',
+        role: '传播史研究者普利与索科洛',
+        title: '重新检查一部被反复引用的经典',
+        quote: '研究应被读作一个早期部分。',
+        original: 'should be read as an early installment',
+        translated: true,
+        source:
+          'Jefferson D. Pooley、Michael J. Socolow：Checking Up on The Invasion from Mars，International Journal of Communication 7，2013，第1920—1948页',
+        sourceUrl: 'https://ijoc.org/index.php/ijoc/article/view/2117',
+        locator: '第1920页摘要，should be read as an early installment所在句',
+        sourceType: '后世研究',
+        readingId: 'radio-research-2013',
+        description: EDITORIAL['war-of-worlds-1938.radio-pooley-socolow.description'],
+      },
+    ],
+  },
+];
