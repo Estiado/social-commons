@@ -7,10 +7,12 @@
 | 想完成什么 | 从哪里开始 | 继续去哪里 |
 | --- | --- | --- |
 | 修改页面、导航或排版 | `src/pages/`、`src/components/Layout.tsx` | 对应 `src/features/`，通用控件在 `components/ui/` |
-| 增加内容或核对出处 | `src/data/` | `docs/CONTENT_POLICY.md`、`scripts/build-*-seed.mjs` |
+| 修改解释、摘要或赏析 | `content/站内编辑稿.md` | `docs/EDITORIAL_COPY.md`；新增条目和书目仍到`src/data/` |
 | 修改收藏、导出或数据库 | `src/features/reading/` | `supabase/migrations/`、`tests/` |
 
 ## 一篇内容经过哪些文件
+
+本站编写或转述的正文集中在`content/站内编辑稿.md`，构建时按模块生成至`.artifacts/editorial/`。各数据文件保留结构、原句、作者、出处与ID，再读取对应编辑文字。修改正文先看[总稿说明](EDITORIAL_COPY.md)，不要编辑生成文件。
 
 ```text
 站内内容 src/data/ ── contentDocuments.ts ─┐

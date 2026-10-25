@@ -54,7 +54,7 @@ export function guanlanEventDocument(event: GuanlanEvent) {
       ...event.sources.flatMap((source): Block[] => [
         heading(source.title, 3),
         paragraph(`${source.author} · ${source.publication} · ${source.date}`),
-        paragraph(source.description),
+        ...source.digest.map(paragraph),
         referenceParagraph(source.title, source.url),
       ]),
     ],

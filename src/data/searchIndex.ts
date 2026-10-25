@@ -1,3 +1,4 @@
+import { EDITORIAL } from '../../.artifacts/editorial/searchIndex.ts';
 import { DAILY_KNOWLEDGE } from './daily.ts';
 import { QUOTE_CATALOGUE as QUOTES } from './quotes.ts';
 import { EVENTS } from './events.ts';
@@ -11,7 +12,7 @@ export const SEARCH_INDEX: SearchDocument[] = [
     id: `guanlan-event-${item.id}`,
     type: 'guanlan-event' as const,
     title: item.title,
-    subtitle: '观澜 · 事件精读',
+    subtitle: EDITORIAL['SEARCH_INDEX.0.arg0.subtitle'],
     path: `/guanlan/events/${item.id}`,
     searchText: [item.title, item.summary, item.question, ...item.keywords].join(' ').toLowerCase(),
   })),

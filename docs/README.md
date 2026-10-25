@@ -2,6 +2,7 @@
 
 | 文档 | 谁来看 / 看什么 |
 | --- | --- |
+| [EDITORIAL_COPY](EDITORIAL_COPY.md) | 站长与编辑：只改一份文本更新正文、提交发布及来源维护 |
 | [REPOSITORY_GUIDE](REPOSITORY_GUIDE.md) | 站长或首次接手的人：中文目录地图与文件职责 |
 | [CLASSMATE_COLLABORATION](CLASSMATE_COLLABORATION.md) | 同学与站长：GitHub 功能、Fork/PR、权限与恢复边界 |
 | [DEVELOPMENT_PLAN](DEVELOPMENT_PLAN.md) | 本轮用户已确认范围与完成状态 |

@@ -4,6 +4,25 @@ import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { articleApiPlugin } from './scripts/vite-article-api.ts';
+import { EDITORIAL_FILE, generateEditorialContent } from './scripts/editorial-content.ts';
+
+function editorialContentPlugin(): Plugin {
+  return {
+    name: 'editorial-content',
+    async buildStart() {
+      await generateEditorialContent();
+    },
+    configureServer(server) {
+      const source = path.resolve(EDITORIAL_FILE);
+      server.watcher.add(source);
+      // Restart only the development server when the maintained text changes;
+      // this also invalidates generated modules ignored by the normal watcher.
+      server.watcher.on('change', async (file) => {
+        if (path.resolve(file) === source) await server.restart();
+      });
+    },
+  };
+}
 
 // ── 妙搭部署协议（参考《妙搭应用构建产物规范》）─────────────────────────
 // 构建期环境变量（托管构建时由部署链路自动注入；本地开发不需要，缺省回退）：
@@ -48,13 +67,11 @@ function miaodaOutputPlugin(): Plugin {
       }
       // routes.json：扫描 src 内 <Route path> 生成路由枚举（TNS 按此遍历送审）；
       // SPA 场景各路由均由 index.html 服务
-      const routes = collectRoutePaths(
-        path.resolve(import.meta.dirname, 'src'),
-      ).map((p) => ({ path: p, file: 'index.html' }));
-      fs.writeFileSync(
-        path.join(output, 'routes.json'),
-        JSON.stringify(routes, null, 2) + '\n',
-      );
+      const routes = collectRoutePaths(path.resolve(import.meta.dirname, 'src')).map((p) => ({
+        path: p,
+        file: 'index.html',
+      }));
+      fs.writeFileSync(path.join(output, 'routes.json'), JSON.stringify(routes, null, 2) + '\n');
       // 清理中间产物，dist 只保留部署分层
       fs.rmSync(client, { recursive: true, force: true });
     },
@@ -72,9 +89,7 @@ function sparkJsonPlugin(): Plugin {
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Cache-Control', 'no-store');
-        res.end(
-          fs.readFileSync(path.resolve(import.meta.dirname, 'config/miaoda/spark.json')),
-        );
+        res.end(fs.readFileSync(path.resolve(import.meta.dirname, 'config/miaoda/spark.json')));
       });
     },
   };
@@ -103,7 +118,14 @@ function collectRoutePaths(srcDir: string): string[] {
 }
 
 export default defineConfig(({ command }) => ({
-  plugins: [react(), tailwindcss(), miaodaOutputPlugin(), sparkJsonPlugin(), articleApiPlugin()],
+  plugins: [
+    editorialContentPlugin(),
+    react(),
+    tailwindcss(),
+    miaodaOutputPlugin(),
+    sparkJsonPlugin(),
+    articleApiPlugin(),
+  ],
   // 生产构建：JS/CSS 引用带 CDN 前缀（无 CDN 时退回 base path）；dev 恒为 /
   base: command === 'build' ? cdnPrefix || basePath : '/',
   define: {
@@ -117,7 +139,12 @@ export default defineConfig(({ command }) => ({
   },
   // Stable origin keeps local reading data visible across restarts.
   optimizeDeps: { include: ['@radix-ui/react-tabs', '@radix-ui/react-dialog'] },
-  server: { host: '127.0.0.1', port: 5180, strictPort: true, watch: { ignored: ['**/.artifacts/**', '**/dist/**'] } },
+  server: {
+    host: '127.0.0.1',
+    port: 5180,
+    strictPort: true,
+    watch: { ignored: ['**/.artifacts/**', '**/dist/**'] },
+  },
   build: {
     outDir: 'dist/client',
     // 单独缓存稳定的框架/数据库 SDK，不把按需导出的依赖合并回首屏。
@@ -125,7 +152,10 @@ export default defineConfig(({ command }) => ({
       output: {
         codeSplitting: {
           groups: [
-            { name: 'react-vendor', test: /node_modules[\\/](?:react|react-dom|react-router|react-router-dom|scheduler)[\\/]/ },
+            {
+              name: 'react-vendor',
+              test: /node_modules[\\/](?:react|react-dom|react-router|react-router-dom|scheduler)[\\/]/,
+            },
             { name: 'supabase', test: /node_modules[\\/]@supabase[\\/]/ },
           ],
         },

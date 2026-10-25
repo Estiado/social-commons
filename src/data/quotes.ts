@@ -1,3 +1,4 @@
+import { EDITORIAL } from '../../.artifacts/editorial/quotes.ts';
 import type { IQuote } from './types';
 import { QUOTE_COMMENTARIES } from './quoteCommentaries.ts';
 import { CLASSICAL_PASSAGES } from './quotes/classicalPassages.ts';
@@ -56,7 +57,7 @@ const QUOTE_TEXTS: Omit<IQuote, 'commentary'>[] = [
     text: '我所有的花，都从我的灰烬里长出。',
     author: '安妮·塞克斯顿',
     source: '《The Starry Night》(1962)',
-    sourceNote: '现有作者与篇名尚未在可靠原版中核实，请勿直接作为已确认引文使用。',
+    sourceNote: EDITORIAL['QUOTE_TEXTS.q8.sourceNote'],
   },
   {
     id: 'q9',
@@ -69,7 +70,7 @@ const QUOTE_TEXTS: Omit<IQuote, 'commentary'>[] = [
     text: '我们终此一生，就是要摆脱他人的期待，找到真正的自己。',
     author: '埃莱娜·费兰特',
     source: '《我的天才女友》(那不勒斯四部曲之一)',
-    sourceNote: '现有作者与篇名尚未在可靠原版中核实，请勿直接作为已确认引文使用。',
+    sourceNote: EDITORIAL['QUOTE_TEXTS.q10.sourceNote'],
   },
   {
     id: 'q11',
@@ -184,7 +185,7 @@ const QUOTE_TEXTS: Omit<IQuote, 'commentary'>[] = [
     text: '我行过许多地方的桥，看过许多次数的云，喝过许多种类的酒，却只爱过一个正当最好年龄的人。',
     author: '沈从文',
     source: '《湘行书简》（沈从文致张兆和的书信；版本页码待核对）',
-    sourceNote: '旧版标为《湘行散记》，现区分合编书名与书信篇目。引用时仍需核对具体版本。',
+    sourceNote: EDITORIAL['QUOTE_TEXTS.q29.sourceNote'],
   },
   {
     id: 'q30',

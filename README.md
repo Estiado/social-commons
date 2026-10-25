@@ -19,6 +19,8 @@
 
 ## 仓库从哪里看
 
+**修改站内解释、摘要或赏析：[打开统一编辑稿](content/站内编辑稿.md)。** 改标记中间的正文，提交到GitHub后随Cloudflare构建更新。[操作说明](docs/EDITORIAL_COPY.md)包含编辑方法及原作者引文、书目如何维护。
+
 **第一次看仓库，请先读 [中文目录导览](docs/REPOSITORY_GUIDE.md)。** 不需要先翻配置文件。
 
 和同学一起维护，请先看 [Fork 与 PR 协作说明](docs/CLASSMATE_COLLABORATION.md)。公开查看不等于有权修改原仓库。
@@ -27,6 +29,7 @@
 
 | 目录 | 放什么 | 常见修改 |
 | --- | --- | --- |
+| [content](content/站内编辑稿.md) | 站内编辑文字的统一总稿 | 改简介、解释、资料提要和赏析转述 |
 | [src](src/README.md) | 用户看到的页面、业务模块、内置内容 | 页面样式、阅读收藏、文章与名句 |
 | [server](server/README.md) | 服务端抓取、提取、限流 | 媒体适配、接口规则 |
 | [functions](functions/README.md) | Cloudflare API 入口 | 把请求交给共享服务 |

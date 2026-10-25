@@ -1,3 +1,4 @@
+import { EDITORIAL } from '../../../.artifacts/editorial/commentaries/cultureAndTechnology.ts';
 import type { CuratedCommentary } from '../curatedCommentaries';
 
 /** Dated publisher pages checked on 24 October; metadata only, no cached full text. */
@@ -10,8 +11,7 @@ export const CULTURE_AND_TECHNOLOGY: CuratedCommentary[] = [
     author: '张涛甫',
     publishedAt: '2026-10-23',
     checkedAt: '2026-10-24',
-    recommendation:
-      '从打铁花的短视频传播进入非遗保存：观看次数之外，还有技艺如何被学习、使用和延续的问题。',
+    recommendation: EDITORIAL['CULTURE_AND_TECHNOLOGY.paper-34273575.recommendation'],
     writingTags: ['文化与生活', '现象与实质'],
     generalTags: ['非遗', '数字传播'],
     topicIds: ['culture-heritage', 'tech-ai'],
@@ -24,8 +24,7 @@ export const CULTURE_AND_TECHNOLOGY: CuratedCommentary[] = [
     author: '孙一洲',
     publishedAt: '2026-10-21',
     checkedAt: '2026-10-24',
-    recommendation:
-      '沿计算员、机械计算与人工智能的线索，观察技术如何吸收既有的劳动分工，连接工具、技能与人的经验。',
+    recommendation: EDITORIAL['CULTURE_AND_TECHNOLOGY.paper-34261996.recommendation'],
     writingTags: ['人与技术', '历史眼光'],
     generalTags: ['人工智能', '劳动史'],
     topicIds: ['tech-ai', 'history-memory'],
@@ -38,8 +37,7 @@ export const CULTURE_AND_TECHNOLOGY: CuratedCommentary[] = [
     author: '谢雅卿',
     publishedAt: '2026-10-20',
     checkedAt: '2026-10-24',
-    recommendation:
-      '从九个幕间引子与人物独白的交织，进入《海浪》的节奏、生命经验与自然意象。适合在原作阅读前后对照。',
+    recommendation: EDITORIAL['CULTURE_AND_TECHNOLOGY.paper-34255421.recommendation'],
     writingTags: ['文学与生命', '叙述形式'],
     generalTags: ['伍尔夫', '小说', '文学评论'],
     topicIds: ['literature-aesthetics', 'individual-freedom'],
@@ -52,7 +50,7 @@ export const CULTURE_AND_TECHNOLOGY: CuratedCommentary[] = [
     author: '范佳妮',
     publishedAt: '2026-10-16',
     checkedAt: '2026-10-24',
-    recommendation: '围绕王维、程抱一与雅各泰的风景书写，阅读人与景物、文字与感知之间的关系。',
+    recommendation: EDITORIAL['CULTURE_AND_TECHNOLOGY.paper-34212826.recommendation'],
     writingTags: ['风景与心境', '比较阅读'],
     generalTags: ['诗歌', '意象', '审美'],
     topicIds: ['literature-aesthetics', 'philosophy-thinking'],
@@ -65,8 +63,7 @@ export const CULTURE_AND_TECHNOLOGY: CuratedCommentary[] = [
     author: '常沙娜',
     publishedAt: '2026-10-20',
     checkedAt: '2026-10-24',
-    recommendation:
-      '从常沙娜整理画稿、与家人合作的自述中，理解文化传承怎样进入个人生活与代际关系。',
+    recommendation: EDITORIAL['CULTURE_AND_TECHNOLOGY.paper-34236648.recommendation'],
     writingTags: ['热爱与传承', '个人记忆'],
     generalTags: ['敦煌', '艺术', '人生自述'],
     topicIds: ['culture-heritage', 'history-memory'],
@@ -79,7 +76,7 @@ export const CULTURE_AND_TECHNOLOGY: CuratedCommentary[] = [
     author: '',
     publishedAt: '2026-09-25',
     checkedAt: '2026-10-24',
-    recommendation: '英文文化阅读入口，可由这份书单继续查找感兴趣的作家和作品。',
+    recommendation: EDITORIAL['CULTURE_AND_TECHNOLOGY.economist-novels-20260925.recommendation'],
     writingTags: ['海外阅读', '文学'],
     generalTags: ['小说', '书单'],
     topicIds: ['literature-aesthetics'],
@@ -93,7 +90,8 @@ export const CULTURE_AND_TECHNOLOGY: CuratedCommentary[] = [
     author: '',
     publishedAt: '2026-08-21',
     checkedAt: '2026-10-24',
-    recommendation: '英文科技阅读入口，关注“智能”与“意识”这两个概念的区别。',
+    recommendation:
+      EDITORIAL['CULTURE_AND_TECHNOLOGY.economist-consciousness-20260821.recommendation'],
     writingTags: ['概念辨析', '海外阅读'],
     generalTags: ['人工智能', '意识'],
     topicIds: ['tech-ai', 'philosophy-thinking'],

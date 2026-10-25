@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom';
 import type { GuanlanEvent } from '@/data/guanlan/types';
 
 /** Filtering changes only this reference list, never the saved reading text. */
-export function EventSources({ event }: { event: GuanlanEvent }) {
+export function EventSources({
+  event,
+  anchors,
+}: {
+  event: GuanlanEvent;
+  anchors: Record<string, string>;
+}) {
   const [publication, setPublication] = useState('');
   const publications = [...new Set(event.sources.map((source) => source.publication))];
   const sources = event.sources.filter(
@@ -47,6 +53,12 @@ export function EventSources({ event }: { event: GuanlanEvent }) {
             </h3>
             <p className="mb-3 text-xs text-muted-foreground">{source.author}</p>
             <p className="text-sm leading-relaxed text-muted-foreground">{source.description}</p>
+            <a
+              href={anchors[source.id]}
+              className="mt-4 inline-block text-sm text-accent underline"
+            >
+              阅读站内提要 →
+            </a>
             {source.fullText && (
               <a
                 className="mt-4 block text-sm text-accent underline"

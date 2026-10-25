@@ -19,6 +19,8 @@ export interface EventSource {
   kind: '报道' | '评论' | '研究' | '自述';
   url: string;
   description: string;
+  /** Attributed reading notes, stored with the rest of the site's editorial copy. */
+  digest: string[];
   /** Sources outside the supported extraction adapters start in the paste form. */
   importMode?: 'paste';
   fullText?: { title: string; url: string };

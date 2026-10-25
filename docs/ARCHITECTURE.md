@@ -14,10 +14,13 @@
 | 内测反馈 | `src/features/feedback/` | 校验主动填写信息，通过受限RPC写入私人收件表并确认回执；本地副本备用 |
 | 使用指引 | `src/features/onboarding/` | 显式路线与目标、按需动画、首次标记；不执行业务写入 |
 | 观澜事件 | `src/data/guanlan/`、`src/features/guanlan/` | 轻量目录、独立案例正文、来源筛选和统一文章转换 |
+| 编辑正文 | `content/站内编辑稿.md`、`scripts/editorial-content.ts` | 单一文本来源、引用校验、按模块生成；原句和书目独立保留 |
 
 具体文件职责见 [目录导览](REPOSITORY_GUIDE.md)。
 
 ## 本机与云端
+
+编辑稿在构建期解析为`.artifacts/editorial/`模块，不在浏览器解析整份Markdown。标记内只有文本，不执行代码、HTML或front matter。构建前检查实际TypeScript字段引用与总稿编号一致；缺失、重复和孤立编号失败。原诗、引语和出处数据仍在`src/data`，内容迁移不改写读者私人存储。
 
 “浏览器内保存”与“本机开发服务器”是两件事。正式网站也可把私人文档保存到浏览器 IndexedDB，无需用户运行 CMD；开发地址只供维护者调试，两种域名的存储隔离。
 

@@ -1,3 +1,4 @@
+import { EDITORIAL } from '../../../.artifacts/editorial/quotes/publishedCommentaries.ts';
 import type { IQuote } from '../types';
 
 type Commentary = NonNullable<IQuote['commentary']>;
@@ -26,135 +27,87 @@ function published(
 // These are attributed paraphrases; nobody's words are reconstructed as quotes.
 export const PUBLISHED_COMMENTARIES: Record<string, Commentary> = {
   q11: published(
-    '虞金星在讨论鲁迅文学周时引述此句，把它与文学走近普通人、融入城市生活联系起来。文章讨论文学如何超越创作本身成为生活方式。这是当代评论对原句的运用，可与鲁迅原作的具体语境对读。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q11.arg0'],
     '虞金星',
     '《文学，扎根群众才更有力量》，人民日报，2026-09-15，第5版',
     'https://opinion.people.com.cn/n1/2026/0915/c461529-40798667.html',
   ),
   q23: published(
-    '在同名舞作的创作访谈中，崔健、唐瑜珮把诗中保全内在自我的表达，理解为坦诚面对身体及其局限，并借音乐与舞蹈回应文本。他们的舞台创作将这首诗延伸为对身体与自我的探索。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q23.arg0'],
     '崔健、唐瑜珮（编导访谈）',
     '上海国际舞蹈中心剧场：《委约｜〈我用什么才能留住你〉：摆脱惯性的“营字造句”，坦诚对待自己的身体》，澎湃号刊载，2021',
     'https://m.thepaper.cn/newsDetail_forward_15079568',
   ),
   q36: published(
-    '这份整理以“莫听”与“吟啸且徐行”解读苏轼面对打击时的主动选择：既不被外界压倒，也保留观察和欣赏的余裕。末尾的阴晴并置，则被解释为超越幸与不幸的精神境界。应连着上下片阅读，而不只摘出一句劝人乐观。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q36.arg0'],
     '张静整理（“叶嘉莹古典诗词系列”）',
     '人民日报“叶嘉莹古典诗词系列”：《了然人生的况味——读苏轼〈定风波·莫听穿林打叶声〉》，2014-05-13；中国作家网刊载',
     'https://www.chinawriter.com.cn/wxpl/2014/2014-05-13/203498.html',
   ),
   q49: published(
-    '夏可君把这则箴言放在卡夫卡关于无用、手段与目的的思考中，讨论目的与道路的分离，以及行动何以可能。这里是一种具体的哲学读法；不能直接把它改写成“只要坚持就一定抵达”的成功格言。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q49.arg0'],
     '夏可君',
     '《卡夫卡与中国：无用的文学》，澎湃新闻；中国作家网刊载，2020-08-25',
     'https://www.chinawriter.com.cn/n1/2020/0825/c404091-31835292.html',
   ),
   q51: published(
-    '蒙曼将这两首诗读作男女的一问一答：女子从率真发问转向含蓄解释，男子以朴实回答表现相见恨晚。解读重点在对话、语气与白描怎样写出人物，不能拆成一句通用的“同乡情”。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q51.arg0'],
     '蒙曼',
     '《蒙曼品最美唐诗：人生五味》，浙江人民出版社，2018；“长干行”书摘，中国作家网，2019-01-14',
     'https://www.chinawriter.com.cn/n1/2019/0114/c405074-30535628.html',
   ),
   q52: published(
-    '潘向黎特别分析末句的口语问法：它像面对朋友随意而真诚的邀请，使简朴酒炉具有温暖的人情意味。文章又将它放入白居易写酒与友情的一组作品中，不把酒当作孤立的意象。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q52.arg0'],
     '潘向黎',
     '《能饮一杯无》，新民晚报；中国作家网刊载，2014-07-03',
     'https://www.chinawriter.com.cn/wxpl/2014/2014-07-03/209839.html',
   ),
   q53: published(
-    '曹璐将寂静天地中的独钓身影，与柳宗元被贬后的孤寂处境联系，认为寒冷既是景物感受，也构成内心体验。文章随即对比《问刘十九》的雪中暖意，说明相近意象能够承载不同情感。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q53.arg0'],
     '曹璐',
     '《古诗中的雪与暖》，北京日报；中国作家网刊载，2022-02-10',
     'https://www.chinawriter.com.cn/n1/2022/0210/c404018-32349000.html',
   ),
   q54: published(
-    '曹璐从日暮、寒冷与夜归的转折解读此诗：犬吠和归来，使漂泊中寻找安顿的感受显现。解读由寒夜中的声响与人物行动，走向对归宿的理解。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q54.arg0'],
     '曹璐',
     '《古诗中的雪与暖》，北京日报；中国作家网刊载，2022-02-10',
     'https://www.chinawriter.com.cn/n1/2022/0210/c404018-32349000.html',
   ),
   q55: published(
-    '曹璐将杨柳与雨雪的前后对照，放回久征不还者的乡愁，说明雪景如何牵动归乡与温暖的渴求。读末章时，还应保留饥渴、迟行与无人知哀的后半部分。末句为本站阅读提醒。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q55.arg0'],
     '曹璐；末句为本站提示',
     '《古诗中的雪与暖》，北京日报；中国作家网刊载，2022-02-10',
     'https://www.chinawriter.com.cn/n1/2022/0210/c404018-32349000.html',
   ),
   q56: published(
-    '蒙曼从首联“但”字中的寂寞，读到开门迎客的喜悦；家常饭菜、隔年酒和邀邻同饮，使情谊在具体生活中展开。这份书摘强调语气与细节，不是把杜甫概括为始终只有沉郁的一种面貌。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q56.arg0'],
     '蒙曼',
     '《蒙曼品最美唐诗：人生五味》“客至”书摘，浙江人民出版社，2018；中国作家网刊载，2019-01-14',
     'https://www.chinawriter.com.cn/n1/2019/0114/c405074-30535628.html',
   ),
   q57: published(
-    '这篇新书介绍转述张静的细读：开篇黄白色彩、“依”与“入”的对举形成张力，登高又被联系到精神修养的提升。这是报道所介绍的一种读法，页面并非整部著作的全文。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q57.arg0'],
     '张静；路艳霞、吴桐雨报道',
     '《叶嘉莹亲传弟子张静出新作，解读古典诗词中的品格与修养》，北京日报客户端；中国作家网，2026-03-19',
     'https://www.chinawriter.com.cn/n1/2026/0319/c403994-40684588.html',
   ),
-  q58: educationNote(
-    '资料从托物言志说明作者以莲自况，再比较菊、牡丹与莲所指向的不同人生取向。对莲的形态描写与君子品格相互照应，结尾的感叹又把选择与世俗风气联系起来。',
-    '爱莲说',
-    'KS3_15',
-  ),
-  q59: educationNote(
-    '资料指出文章借居室表达不随世俗的志趣。“德馨”统摄环境、交往和日常活动；结尾借古人居所与孔子的话收束，因此“陋”不能只按房屋大小理解。',
-    '陋室铭',
-    'KS3_12',
-  ),
-  q60: educationNote(
-    '资料细读月松与泉石的构图，继而说明颈联先闻竹喧、再知浣女，先见莲动、再知渔舟的感知顺序。全诗的清幽包含人的活动，不能把“空山”误读成完全无人。',
-    '山居秋暝',
-    'KS4_16a',
-  ),
-  q61: educationNote(
-    '资料将开篇的辽阔背景与“同是宦游人”的客中送客相连，再解释知己之情如何超越空间阻隔。尾联的宽慰由前文自然引出，表达方式有别于一味伤别。',
-    '送杜少府之任蜀州',
-    'KS3_09',
-  ),
-  q62: educationNote(
-    '资料按上下片梳理情感：上片从向往月宫转向留恋人间，下片从伤离怨别转向宽解与祝福。结尾的旷达由前面的矛盾与思念发展而来，不等于作品从来没有悲伤。',
-    '水调歌头',
-    'KS3_17',
-  ),
-  q63: educationNote(
-    '资料从眼前春花秋月与故国往事的反差解释愁怀，继而讨论宫室犹在与朱颜已改的对照。结尾以流水呈现难以度量的愁，须结合前文的故国之思理解。',
-    '虞美人',
-    'KS3_13',
-  ),
-  q64: educationNote(
-    '资料把小桥流水人家的安定，与天涯游子的无归相对照；这组意象既可读作实景，也可联系思乡的想象。末尾人物与前文景物相互照应，形成整体的漂泊感。',
-    '天净沙·秋思',
-    'KS3_19',
-  ),
-  q65: educationNote(
-    '资料指出“学”不仅是吸收知识，也包括品格修养。多个比喻分别说明改造、借助外物、积累与专一，构成层层推进的论证，不能只保留一句“坚持就会成功”。',
-    '劝学',
-    'KS4_06',
-  ),
-  q66: educationNote(
-    '资料以古今从师态度的对比解释全文，指出择师看的是对道理的领会与专业所长，而非年龄地位。节选中的孔子例子承接这一主张，弟子与教师也并非固定的高低关系。',
-    '师说',
-    'KS4_12',
-  ),
-  q67: educationNote(
-    '资料将“大同”与“小康”比较，说明文本表达儒家社会理想的不同层次。亲爱不止于自家、各尽所能和照顾弱者，共同构成“大同”部分；不应把理想叙述直接当成已证实的社会史。末句为本站提示。',
-    '大同与小康',
-    'KS3_02',
-  ),
+  q58: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q58.arg0'], '爱莲说', 'KS3_15'),
+  q59: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q59.arg0'], '陋室铭', 'KS3_12'),
+  q60: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q60.arg0'], '山居秋暝', 'KS4_16a'),
+  q61: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q61.arg0'], '送杜少府之任蜀州', 'KS3_09'),
+  q62: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q62.arg0'], '水调歌头', 'KS3_17'),
+  q63: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q63.arg0'], '虞美人', 'KS3_13'),
+  q64: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q64.arg0'], '天净沙·秋思', 'KS3_19'),
+  q65: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q65.arg0'], '劝学', 'KS4_06'),
+  q66: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q66.arg0'], '师说', 'KS4_12'),
+  q67: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q67.arg0'], '大同与小康', 'KS3_02'),
   q68: published(
-    '吴永兴、王珍从思想的静穆、人格的独善与生活的逸乐三个方面分析此辞，也介绍朱光潜与鲁迅对陶渊明精神面貌的不同观察。它提供有出处的讨论框架，提醒我们不要用“淡泊”抹去全部复杂性。',
+    EDITORIAL['PUBLISHED_COMMENTARIES.q68.arg0'],
     '吴永兴、王珍',
     '《静穆·独善·逸乐：陶渊明的三重精神价值——以〈归去来兮辞〉为考察中心》，《学语文》2025年第4期，50—54页',
     'https://wxy.ahnu.edu.cn/__local/E/3E/7C/01C2A6C44A492E8C498B878E8BA_E5FF3674_A532F.pdf',
   ),
-  q69: educationNote(
-    '资料从迁客骚人登楼时因景而异的悲喜，读到古仁人不因个人际遇转移的公共关切。末段政治抱负建立在前文两种情境的比较上，并非只是一句抽离背景的自我激励。',
-    '岳阳楼记',
-    'KS4_14',
-  ),
-  q70: educationNote(
-    '资料区分前一则大葫芦故事中的“善于用大”，与大树对话中的“无用之用”。大树不合木工标准，却得以保全；应比较评价尺度，不能简单归结为“不努力也无所谓”。',
-    '逍遥游',
-    'KS4_05',
-  ),
+  q69: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q69.arg0'], '岳阳楼记', 'KS4_14'),
+  q70: educationNote(EDITORIAL['PUBLISHED_COMMENTARIES.q70.arg0'], '逍遥游', 'KS4_05'),
 };

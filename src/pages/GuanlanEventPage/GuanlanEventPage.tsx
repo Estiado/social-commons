@@ -50,6 +50,14 @@ export default function GuanlanEventPage() {
     );
   const prefix = `guanlan-${id}`;
   const sections = document.blocks.filter((block) => block.type === 'heading' && block.level === 2);
+  const sourceAnchors = Object.fromEntries(
+    event.sources.map((source) => {
+      const heading = document.blocks.findLast(
+        (block) => block.type === 'heading' && block.text === source.title,
+      );
+      return [source.id, `#${prefix}-${heading?.id}`];
+    }),
+  );
   return (
     <article className="mx-auto max-w-4xl px-5 py-9 md:px-8">
       <Link className="text-sm text-accent underline" to="/guanlan">
@@ -84,7 +92,7 @@ export default function GuanlanEventPage() {
         ))}
       </nav>
       <ContentReader key={id} kind="guanlan-event" id={id} document={document} idPrefix={prefix} />
-      <EventSources key={id} event={event} />
+      <EventSources key={id} event={event} anchors={sourceAnchors} />
       <EventRelatedReadings key={id} event={event} />
       <ReadingAssociations event={event} />
     </article>

@@ -1,3 +1,4 @@
+import { EDITORIAL } from '../../../.artifacts/editorial/quotes/classicalPassages.ts';
 import type { IQuote } from '../types';
 
 const edb =
@@ -12,7 +13,7 @@ export const CLASSICAL_PASSAGES: Omit<IQuote, 'commentary'>[] = [
     source: '《长干行》二首',
     text: '君家何处住，妾住在横塘。\n停船暂借问，或恐是同乡。\n\n家临九江水，来去九江侧。\n同是长干人，生小不相识。',
     sourceUrl: 'https://www.chinawriter.com.cn/n1/2019/0114/c405074-30535628.html',
-    context: '两首诗一问一答，写出江上相逢时从试探到认出同乡的语气变化。',
+    context: EDITORIAL['CLASSICAL_PASSAGES.q51.context'],
   },
   {
     id: 'q52',
@@ -41,7 +42,7 @@ export const CLASSICAL_PASSAGES: Omit<IQuote, 'commentary'>[] = [
     source: '《小雅·采薇》末章',
     text: '昔我往矣，杨柳依依。今我来思，雨雪霏霏。\n行道迟迟，载渴载饥。我心伤悲，莫知我哀！',
     sourceUrl: 'https://ctext.org/book-of-poetry/cai-wei/zh',
-    context: '节选末章，保留景物、归途与抒情的连续关系，不将全诗简化为一幅春日画面。',
+    context: EDITORIAL['CLASSICAL_PASSAGES.q55.context'],
   },
   {
     id: 'q56',
@@ -91,7 +92,7 @@ export const CLASSICAL_PASSAGES: Omit<IQuote, 'commentary'>[] = [
     source: '《水调歌头·明月几时有》',
     text: '明月几时有？把酒问青天。\n不知天上宫阙，今夕是何年。\n我欲乘风归去，又恐琼楼玉宇，高处不胜寒。\n起舞弄清影，何似在人间。\n\n转朱阁，低绮户，照无眠。\n不应有恨，何事长向别时圆？\n人有悲欢离合，月有阴晴圆缺，此事古难全。\n但愿人长久，千里共婵娟。',
     sourceUrl: `${edb}KS3_17.pdf`,
-    context: '原词小序记丙辰中秋，并点明“兼怀子由”。这里展示词的完整上下片。',
+    context: EDITORIAL['CLASSICAL_PASSAGES.q62.context'],
   },
   {
     id: 'q63',
@@ -113,8 +114,7 @@ export const CLASSICAL_PASSAGES: Omit<IQuote, 'commentary'>[] = [
     source: '《劝学》节选',
     text: '积土成山，风雨兴焉；积水成渊，蛟龙生焉；积善成德，而神明自得，圣心备焉。\n\n故不积跬步，无以至千里；不积小流，无以成江海。骐骥一跃，不能十步；驽马十驾，功在不舍。锲而舍之，朽木不折；锲而不舍，金石可镂。',
     sourceUrl: `${edb}KS4_06.pdf`,
-    context:
-      '连续节选同一段的前半部分。后文还以蚯蚓与蟹比较专一和浮躁，全文并非只有“坚持”一个论点。',
+    context: EDITORIAL['CLASSICAL_PASSAGES.q65.context'],
   },
   {
     id: 'q66',
@@ -122,7 +122,7 @@ export const CLASSICAL_PASSAGES: Omit<IQuote, 'commentary'>[] = [
     source: '《师说》节选',
     text: '圣人无常师。孔子师郯子、苌弘、师襄、老聃。郯子之徒，其贤不及孔子。孔子曰：三人行，则必有我师。\n\n是故弟子不必不如师，师不必贤于弟子。闻道有先后，术业有专攻，如是而已。',
     sourceUrl: `${edb}KS4_12.pdf`,
-    context: '节选第三段。这里的“不必”应按古义理解，不应读成现代口语中的“不需要”。',
+    context: EDITORIAL['CLASSICAL_PASSAGES.q66.context'],
   },
   {
     id: 'q67',
@@ -130,8 +130,7 @@ export const CLASSICAL_PASSAGES: Omit<IQuote, 'commentary'>[] = [
     source: '《礼运》“大道之行也”章',
     text: '大道之行也，天下为公，选贤与能，讲信修睦。故人不独亲其亲，不独子其子，使老有所终，壮有所用，幼有所长，矜寡孤独废疾者皆有所养，男有分，女有归。\n\n货恶其弃于地也，不必藏于己；力恶其不出于身也，不必为己。是故谋闭而不兴，盗窃乱贼而不作，故外户而不闭，是谓大同。',
     sourceUrl: `${edb}KS3_02.pdf`,
-    context:
-      '节选“大同”部分；原文随后还讨论“小康”。历史文本中的角色和性别安排需放回其时代，不能直接当作今日制度方案。',
+    context: EDITORIAL['CLASSICAL_PASSAGES.q67.context'],
   },
   {
     id: 'q68',
@@ -139,7 +138,7 @@ export const CLASSICAL_PASSAGES: Omit<IQuote, 'commentary'>[] = [
     source: '《归去来兮辞》节选',
     text: '归去来兮，田园将芜胡不归？既自以心为形役，奚惆怅而独悲？悟已往之不谏，知来者之可追。实迷途其未远，觉今是而昨非。\n\n舟遥遥以轻飏，风飘飘而吹衣。问征夫以前路，恨晨光之熹微。',
     sourceUrl: 'https://www.gdep.edu.cn/mksxy/info/1081/2687.htm',
-    context: '节选辞的开篇。阅读辞前小序，可以补充家计、出仕与辞官的具体处境。',
+    context: EDITORIAL['CLASSICAL_PASSAGES.q68.context'],
   },
   {
     id: 'q69',
@@ -154,6 +153,6 @@ export const CLASSICAL_PASSAGES: Omit<IQuote, 'commentary'>[] = [
     source: '《庄子·逍遥游》节选',
     text: '惠子谓庄子曰：吾有大树，人谓之樗。其大本拥肿而不中绳墨，其小枝卷曲而不中规矩，立之涂，匠者不顾。今子之言，大而无用，众所同去也。\n\n庄子曰：子独不见狸狌乎？卑身而伏，以候敖者；东西跳梁，不辟高下；中于机辟，死于罔罟。今夫斄牛，其大若垂天之云。此能为大矣，而不能执鼠。\n\n今子有大树，患其无用，何不树之于无何有之乡，广莫之野，彷徨乎无为其侧，逍遥乎寝卧其下。不夭斤斧，物无害者，无所可用，安所困苦哉！',
     sourceUrl: `${edb}KS4_05.pdf`,
-    context: '保留惠子质疑与庄子回应的完整一轮论辩。“无用”在不同评价尺度中的含义，需要连着读。',
+    context: EDITORIAL['CLASSICAL_PASSAGES.q70.context'],
   },
 ];

@@ -4,6 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "content:sync": "node scripts/editorial-content.ts",
+    "pretypecheck": "npm run content:sync",
+    "pretest": "npm run content:sync",
+    "prebuild": "npm run content:sync",
+    "predev": "npm run content:sync",
+    "preseed:catalogue": "npm run content:sync",
+    "preseed:examples": "npm run content:sync",
     "dev": "node scripts/start-local.mjs",
     "format:reading": "prettier --write src/features src/pages/ArticleImportPage src/pages/ReadingArticlePage src/pages/ReadingLibraryPage src/pages/DailyDetailPage src/pages/QuoteDetailPage src/pages/EditorMaterialsPage",
     "build": "vite build",

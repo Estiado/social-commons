@@ -1,3 +1,4 @@
+import { EDITORIAL } from '../../../.artifacts/editorial/commentaries/autumn.ts';
 import type { CuratedCommentary } from '../curatedCommentaries';
 
 // Source metadata checked on 2026-10-22. Titles are publisher titles;
@@ -11,8 +12,7 @@ export const AUTUMN_COMMENTARIES: CuratedCommentary[] = [
     author: '虞金星',
     publishedAt: '2026-09-15',
     checkedAt: '2026-10-22',
-    recommendation:
-      '从鲁迅文学周与生活现场的连接，讨论文学怎样走近普通人；可与鲁迅原文作比较阅读。',
+    recommendation: EDITORIAL['AUTUMN_COMMENTARIES.people-literature-20260915.recommendation'],
     writingTags: ['文学与生活', '由事入理'],
     generalTags: ['公共文化', '城市生活'],
     topicIds: ['literature-aesthetics', 'culture-heritage'],
@@ -25,8 +25,7 @@ export const AUTUMN_COMMENTARIES: CuratedCommentary[] = [
     author: '陈艺娴',
     publishedAt: '2026-09-30',
     checkedAt: '2026-10-22',
-    recommendation:
-      '观察文章如何从互助细节推进到公共关切。写作时把具体事例、价值判断与进一步推论分开。',
+    recommendation: EDITORIAL['AUTUMN_COMMENTARIES.people-ren-20260930.recommendation'],
     writingTags: ['推己及人', '层进论证'],
     generalTags: ['公共精神', '仁爱'],
     topicIds: ['society-fairness', 'youth-responsibility'],
@@ -39,7 +38,8 @@ export const AUTUMN_COMMENTARIES: CuratedCommentary[] = [
     author: '田轩',
     publishedAt: '2026-10-20',
     checkedAt: '2026-10-22',
-    recommendation: '比较技术概念、资本投入与真实应用效果，练习给“创新”补上可以检验的判断标准。',
+    recommendation:
+      EDITORIAL['AUTUMN_COMMENTARIES.people-intelligent-economy-20261020.recommendation'],
     writingTags: ['技术与现实', '效果检验'],
     generalTags: ['人工智能', '实体经济'],
     topicIds: ['tech-ai', 'economy-development'],
@@ -52,7 +52,7 @@ export const AUTUMN_COMMENTARIES: CuratedCommentary[] = [
     author: '',
     publishedAt: '2026-10-14',
     checkedAt: '2026-10-22',
-    recommendation: '练习区分总量、增速与结构；引用文中数字前，可继续到原始统计发布核对口径。',
+    recommendation: EDITORIAL['AUTUMN_COMMENTARIES.paper-trade-34249206.recommendation'],
     writingTags: ['数据论证', '结构分析'],
     generalTags: ['国际贸易', '开放合作'],
     topicIds: ['economy-development', 'international-global'],
@@ -65,8 +65,7 @@ export const AUTUMN_COMMENTARIES: CuratedCommentary[] = [
     author: '',
     publishedAt: '2026-10-10',
     checkedAt: '2026-10-22',
-    recommendation:
-      '围绕创新与实际条件的关系，练习分析“共同目标为什么需要不同路径”，避免照搬案例。',
+    recommendation: EDITORIAL['AUTUMN_COMMENTARIES.paper-local-34225678.recommendation'],
     writingTags: ['因地制宜', '条件分析'],
     generalTags: ['科技创新', '产业发展'],
     topicIds: ['economy-development', 'tech-ai'],
@@ -79,7 +78,7 @@ export const AUTUMN_COMMENTARIES: CuratedCommentary[] = [
     author: '',
     publishedAt: '2026-09-29',
     checkedAt: '2026-10-22',
-    recommendation: '从制度安排理解程序公正，比较“提出价值要求”与“设计保障机制”的不同论证层次。',
+    recommendation: EDITORIAL['AUTUMN_COMMENTARIES.paper-jurisdiction-34171067.recommendation'],
     writingTags: ['程序与结果', '制度分析'],
     generalTags: ['司法公正', '公共信任'],
     topicIds: ['society-fairness'],
@@ -92,8 +91,7 @@ export const AUTUMN_COMMENTARIES: CuratedCommentary[] = [
     author: '',
     publishedAt: '2026-09-28',
     checkedAt: '2026-10-22',
-    recommendation:
-      '从线路连接理解区域协同，练习说明局部建设如何形成网络效应，同时补充成本与条件。',
+    recommendation: EDITORIAL['AUTUMN_COMMENTARIES.paper-rail-34164076.recommendation'],
     writingTags: ['整体与部分', '联系视角'],
     generalTags: ['交通网络', '区域协同'],
     topicIds: ['economy-development'],
@@ -106,7 +104,7 @@ export const AUTUMN_COMMENTARIES: CuratedCommentary[] = [
     author: '',
     publishedAt: '2026-09-20',
     checkedAt: '2026-10-22',
-    recommendation: '比较规则制定、执行与监督三层责任，讨论怎样把公平要求转成可问责的程序。',
+    recommendation: EDITORIAL['AUTUMN_COMMENTARIES.paper-enforcement-34109210.recommendation'],
     writingTags: ['规则与执行', '公共责任'],
     generalTags: ['营商环境', '制度信任'],
     topicIds: ['society-fairness', 'economy-development'],
@@ -119,8 +117,7 @@ export const AUTUMN_COMMENTARIES: CuratedCommentary[] = [
     author: '',
     publishedAt: '2026-09-15',
     checkedAt: '2026-10-22',
-    recommendation:
-      '用交通基础设施讨论区域发展条件与长期投入，练习把地理约束、建设路径和发展预期分别说明。',
+    recommendation: EDITORIAL['AUTUMN_COMMENTARIES.paper-canal-34074374.recommendation'],
     writingTags: ['长期主义', '条件与行动'],
     generalTags: ['基础设施', '区域发展'],
     topicIds: ['economy-development'],
@@ -133,7 +130,7 @@ export const AUTUMN_COMMENTARIES: CuratedCommentary[] = [
     author: '',
     publishedAt: '2026-09-17',
     checkedAt: '2026-10-22',
-    recommendation: '从玉海楼的收藏与流传讨论文化保护：保存器物、开放使用和数字回归怎样相互补充。',
+    recommendation: EDITORIAL['AUTUMN_COMMENTARIES.zhejiang-yuhai-20260917.recommendation'],
     writingTags: ['传承与活用', '有形与无形'],
     generalTags: ['文化遗产', '阅读'],
     topicIds: ['culture-heritage', 'history-memory', 'literature-aesthetics'],
