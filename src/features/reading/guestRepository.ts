@@ -93,16 +93,26 @@ export const openReadingDatabase = () =>
     },
   });
 
-export async function linkArticleToTopic(id: string, topicId: string, tags: string[]) {
+/** Associations change neither the source text nor annotation offsets. */
+async function linkArticle(id: string, topicIds: string[], tags: string[], eventId?: string) {
   const database = await openReadingDatabase();
   try {
     const transaction = database.transaction(stores, 'readwrite');
     const current = await transaction.objectStore('documents').get(id);
     if (!current || isExpired(current)) throw new Error('文章已到期或移除，请重新导入');
+    const nextTopics = [...new Set([...(current.topicIds || []), ...topicIds])];
+    const nextEvents = [...new Set([...(current.eventIds || []), ...(eventId ? [eventId] : [])])];
+    if (
+      [nextTopics, nextEvents].some(
+        (ids) => ids.length > 100 || ids.some((item) => !item || item.length > 100),
+      )
+    )
+      throw new Error('这篇文章的关联数量已达到上限，现有材料仍保留。');
     const record: ReadingRecord = {
       ...current,
       expiresAt: null,
-      topicIds: [...new Set([...(current.topicIds || []), topicId])],
+      topicIds: nextTopics,
+      ...(eventId ? { eventIds: nextEvents } : {}),
       document: articleSchema.parse({
         ...current.document,
         tags: [...new Set([...current.document.tags, ...tags])].slice(0, 20),
@@ -136,6 +146,17 @@ async function removeExpired(now = Date.now()) {
   } finally {
     database.close();
   }
+}
+
+export function linkArticleToTopic(id: string, topicId: string, tags: string[]) {
+  return linkArticle(id, [topicId], tags);
+}
+
+export function linkArticleToEvent(
+  id: string,
+  event: { id: string; topicIds: string[]; keywords: string[] },
+) {
+  return linkArticle(id, event.topicIds, event.keywords, event.id);
 }
 
 export async function listGuestArticles(): Promise<ReadingSummary[]> {

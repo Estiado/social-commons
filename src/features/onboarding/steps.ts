@@ -34,9 +34,9 @@ export const TOUR_STEPS: TourStep[] = [
     path: '/',
     target: 'home-commentaries',
     chapter: '认识首页',
-    title: '跟着时事看不同论证',
+    title: '围绕一件事，读不同论证',
     description:
-      '这里推荐近期媒体时评，卡片注明媒体与日期。点开后可以导入自己可读取的正文，整理进阅读空间。',
+      '这里推荐观澜的事件精读。进入后先了解事实与背景，再读不同立意、思辨翻转及原始资料。',
   },
   {
     id: 'topics',
@@ -44,7 +44,8 @@ export const TOUR_STEPS: TourStep[] = [
     target: 'home-topics',
     chapter: '认识首页',
     title: '从主题串联阅读',
-    description: '同一个话题可以连起时评、通识和名句。按主题浏览，能把散落的材料放到一起理解。',
+    description:
+      '话题下先按事件组织阅读，相关时评、通识和名句附在事件里。先选一个感兴趣的话题，再看具体发生了什么。',
   },
   {
     id: 'history',
@@ -200,8 +201,9 @@ export const TOUR_STEPS: TourStep[] = [
     path: '/quotes',
     target: 'nav-guanlan',
     chapter: '认识导航',
-    title: '观澜：主题和媒体放在一起',
-    description: '观澜将近期时评按主题整理，进入主题后还能联读相关通识和名句。',
+    title: '观澜：话题下按事件阅读',
+    description:
+      '事件是观澜的阅读单元，时评、研究和名句围绕事件展开。进入事件可以收藏、划线，也能查原始资料。',
     nextLabel: '打开观澜',
   },
   {
@@ -209,9 +211,9 @@ export const TOUR_STEPS: TourStep[] = [
     path: '/guanlan',
     target: 'guanlan-intro',
     chapter: '认识导航',
-    title: '按主题进入，再按媒体检索',
+    title: '从话题进入事件，再读完整论述',
     description:
-      '从主题卡片出发，或向下按媒体和月份筛选时评。自己导入的全文属于个人阅读空间，不会直接公开给其他访客。',
+      '上方选择话题，下方进入事件精读。事件页按新闻回放、背景、多维立意与思辨翻转组织，原文可按媒体查阅。原有时评目录保留在折叠区。',
   },
   {
     id: 'search',

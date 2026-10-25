@@ -1,4 +1,4 @@
-export type SearchType = 'daily' | 'quote' | 'event' | 'essay';
+export type SearchType = 'daily' | 'quote' | 'event' | 'essay' | 'guanlan-event';
 
 export interface SearchResult {
   id: string;
@@ -13,7 +13,11 @@ export interface SearchDocument extends SearchResult {
 }
 
 /** 同一条内容只做一次大小写归一化；检索到上限后立即停止扫描。 */
-export function searchDocuments(documents: readonly SearchDocument[], query: string, limit = 30): SearchResult[] {
+export function searchDocuments(
+  documents: readonly SearchDocument[],
+  query: string,
+  limit = 30,
+): SearchResult[] {
   const normalized = query.trim().toLowerCase();
   if (!normalized || limit <= 0) return [];
   const results: SearchResult[] = [];

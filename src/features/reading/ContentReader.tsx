@@ -19,10 +19,12 @@ export function ContentReader({
   kind,
   id,
   document: supplied,
+  idPrefix,
 }: {
   kind: ContentKind;
   id: string;
   document?: ArticleDocument;
+  idPrefix?: string;
 }) {
   const [record, setRecord] = useState<ReadingRecord>();
   const [savedId, setSavedId] = useState('');
@@ -169,7 +171,7 @@ export function ContentReader({
       {record && (
         <ArticleContent
           article={record.document}
-          idPrefix={`catalogue-${record.document.id}`}
+          idPrefix={idPrefix || `catalogue-${record.document.id}`}
           annotations={record.annotations}
           busy={busy}
           onSave={(items) => void save(items)}

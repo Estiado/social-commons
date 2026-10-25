@@ -1,8 +1,16 @@
 # 接手记录
 
-更新：2026-10-24。仓库 `Estiado/social-commons`，生产分支 main，Cloudflare Pages。
+更新：2026-10-25。仓库 `Estiado/social-commons`，生产分支 main，Cloudflare Pages。
 
 本轮继续工作见 [扩容清单](CONTENT_EXPANSION_PLAN.md) 与 [来源说明](CONTENT_SOURCES.md)。此前的网站内编辑器、统一选材、观澜合并见 [开发清单](DEVELOPMENT_PLAN.md)。交付证据与发布状态见 `VERIFICATION.md`。
+
+## 2026-10-25 观澜以事件为阅读单元
+
+- 依据用户确认，观澜改为话题下先看事件，时评、名句、通识与研究附在事件里。首页和全站搜索直达事件；原话题、经典文章、50篇近期目录及旧链接保留。
+- 首批3个完整案例：非遗短视频、职场AI、学术酒吧。每篇包含新闻回放、深度背景、现象/社会/思想三个视角、编辑署名的思辨翻转及真实资料来源；没有新增课堂练习。
+- 正文独立模块按需加载，页面/资料筛选/关联阅读与统一文章转换分开维护，详见[事件内容维护](GUANLAN_EVENTS.md)。研究公开摘要的证据范围与第三方PDF性质记在CONTENT_SOURCES.md，不能冒充所有论文全文已读或已有再分发许可。
+- `ReadingAssociations`共用旧话题与新事件工具；个人导入携带event并返回事件材料区，`eventIds`随备份恢复，旧topicIds和划线保持。正文、段落、名句保存和Word/PDF共用现有阅读器。没有改数据库、SMTP、微信或账号设置。
+- 发布、完整检查和正式站验收以VERIFICATION.md为准；不能把本机通过当成生产已发布。
 
 ## 2026-10-24 青年与大学研究扩充
 

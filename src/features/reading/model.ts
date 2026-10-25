@@ -147,6 +147,7 @@ export interface ReadingRecord {
   localRevision?: number;
   /** Personal associations stay in this browser, never in the public catalogue. */
   topicIds?: string[];
+  eventIds?: string[];
 }
 export interface ReadingSummary {
   id: string;
@@ -156,6 +157,7 @@ export interface ReadingSummary {
   annotationCount: number;
   expiresAt: number | null;
   topicIds?: string[];
+  eventIds?: string[];
 }
 
 export function summarize(record: ReadingRecord): ReadingSummary {
@@ -168,6 +170,7 @@ export function summarize(record: ReadingRecord): ReadingSummary {
     annotationCount: record.annotations.length,
     expiresAt: record.expiresAt,
     topicIds: record.topicIds || [],
+    eventIds: record.eventIds || [],
   };
 }
 

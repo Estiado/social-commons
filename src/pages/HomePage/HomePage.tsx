@@ -14,11 +14,9 @@ import { getTodayKnowledge } from '@/data/daily';
 import { EVENTS } from '@/data/events';
 import { QUOTE_CATALOGUE as QUOTES } from '@/data/quotes';
 import { TOPIC_SPECIALS } from '@/data/topicSpecials';
-import { CURATED_COMMENTARIES } from '@/data/curatedCommentaries';
+import { GUANLAN_EVENTS } from '@/data/guanlan/catalogue';
 import type { IQuote } from '@/data/types';
-const latestArticles = [...CURATED_COMMENTARIES]
-  .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
-  .slice(0, 4);
+const latestEvents = [...GUANLAN_EVENTS].sort((a, b) => b.sortDate.localeCompare(a.sortDate));
 
 export default function HomePage() {
   const todayKnowledge = getTodayKnowledge();
@@ -131,48 +129,40 @@ export default function HomePage() {
               data-tour="home-commentaries"
               className="font-serif text-2xl md:text-3xl font-semibold"
             >
-              最新时评
+              事件精读
             </h2>
           </div>
           <Link
             to="/guanlan"
             className="flex items-center gap-1 text-sm text-muted-foreground hover:text-accent transition-colors"
           >
-            全部时评 <ChevronRight className="h-4 w-4" />
+            走进观澜 <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          {latestArticles.map((article) => (
+          {latestEvents.map((event) => (
             <Link
-              key={article.id}
-              to={'/reading/import?' + new URLSearchParams({ url: article.url })}
+              key={event.id}
+              to={'/guanlan/events/' + event.id}
               className="group block border border-border/60 bg-card p-6 rounded-sm hover:border-accent/30 hover:shadow-md transition-all duration-300"
             >
               <div className="flex items-center gap-2 mb-3">
-                {article.source && (
-                  <span className="text-xs px-2 py-0.5 bg-accent/10 text-accent rounded-sm">
-                    {article.source}
-                  </span>
-                )}
-                <span className="text-xs text-muted-foreground">
-                  {new Date(article.publishedAt).toLocaleDateString('zh-CN', {
-                    month: 'short',
-                    day: 'numeric',
-                  })}
+                <span className="text-xs leading-relaxed text-muted-foreground">
+                  {event.dateLabel}
                 </span>
               </div>
               <h3 className="font-serif text-lg font-semibold mb-2 group-hover:text-accent transition-colors line-clamp-2">
-                {article.title}
+                {event.title}
               </h3>
-              {article.recommendation && (
+              {event.summary && (
                 <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-3">
-                  {article.recommendation}
+                  {event.summary}
                 </p>
               )}
-              {article.writingTags && article.writingTags.length > 0 && (
+              {event.keywords.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
-                  {article.writingTags.slice(0, 3).map((tag) => (
+                  {event.keywords.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
                       className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-muted/60 text-muted-foreground rounded-sm"
@@ -199,7 +189,7 @@ export default function HomePage() {
               </span>
             </div>
             <h2 data-tour="home-topics" className="font-serif text-2xl md:text-3xl font-semibold">
-              高考议论文话题
+              按话题读事件
             </h2>
           </div>
           <Link
@@ -215,12 +205,11 @@ export default function HomePage() {
             <Link
               key={topic.id}
               to={'/guanlan/topics/' + topic.id}
-              className="group block border border-border/60 bg-card p-5 rounded-sm hover:border-accent/30 hover:bg-accent/5 transition-all duration-300 text-center"
+              className="group block border border-border/60 px-3 py-2 rounded-sm hover:border-accent/30 hover:bg-accent/5 transition-all duration-300 text-center"
             >
               <p className="font-serif text-base font-medium group-hover:text-accent transition-colors">
                 {topic.name}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">{topic.subtitle}</p>
             </Link>
           ))}
         </div>

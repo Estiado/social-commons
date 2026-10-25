@@ -41,7 +41,7 @@
 | `writing/` | 文稿模型、版本存储、所选内容编排、编辑器与格式转换 |
 | `writing/editorDocument.ts` | 编辑器 JSON 与统一文章块之间转换，不保存来源 HTML |
 | `writing/legacyDrafts.ts` | 把旧包与备注转成独立文稿，重复迁移不覆盖编辑结果 |
-| `TopicReading.tsx`、`CommentaryCatalogue.tsx` | 私人专题关联与公开媒体目录，全文仍属于导入者 |
+| `ReadingAssociations.tsx`、`CommentaryCatalogue.tsx` | 私人话题/事件关联与公开媒体目录，全文仍属于导入者 |
 | `sourceAccess.ts` | 识别验证拦截页，阻止当成文章保存、编排或导出 |
 | `legacyImport.ts` | 只读迁移旧段落、划线、素材包；保留原件与本机修改 |
 | `cloudRepository.ts` | 后续正式账号私有文档保存，目前默认关闭 |
@@ -49,6 +49,7 @@
 
 ## 其他业务模块
 
+- `data/guanlan/`按事件存正文，`catalogue.ts`供首页、话题和搜索使用；`features/guanlan/`负责事件列表、题名出处、附属阅读与文章转换，`pages/GuanlanEventPage/`组织独立事件页。新增事件从[维护说明](GUANLAN_EVENTS.md)开始。
 - `features/essay/`：个人素材增改、备份恢复、站方推荐示例。
 - `features/auth/`：准备好的邮箱验证码界面，待 SMTP 和真实账号验收后启用。
 - `data/`：`daily.ts` 通识，`quotes.ts` 名句，`quoteCommentaries.ts` 已核验评析，`events.ts` 历史，`essay*.ts` 素材，`curatedCommentaries.ts` 近期目录，`topic*.ts` 话题。

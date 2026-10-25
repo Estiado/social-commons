@@ -11,6 +11,7 @@ export type ContentKind =
   | 'preset'
   | 'essay'
   | 'topic'
+  | 'guanlan-event'
   | 'public-article';
 export const SITE_ORIGIN = 'https://social-commons.pages.dev';
 export function contentPath(kind: ContentKind, id: string): string {
@@ -27,7 +28,9 @@ export function contentPath(kind: ContentKind, id: string): string {
             ? `/essay?id=${encoded}`
             : kind === 'topic'
               ? `/topics/${encoded}`
-              : `/guanlan/${encoded}`;
+              : kind === 'guanlan-event'
+                ? `/guanlan/events/${encoded}`
+                : `/guanlan/${encoded}`;
 }
 export const contentUrl = (kind: ContentKind, id: string) =>
   new URL(contentPath(kind, id), SITE_ORIGIN).href;
@@ -271,6 +274,14 @@ export function essayDocument(item: IEssayMaterial): ArticleDocument {
 /** Only the requested catalogue is loaded; opening a quote does not load all
  * history, essays, public articles and private documents. */
 export async function loadContentDocument(kind: ContentKind, id: string): Promise<ArticleDocument> {
+  if (kind === 'guanlan-event') {
+    const [{ getGuanlanEvent }, { guanlanEventDocument }] = await Promise.all([
+      import('../../data/guanlan/index.ts'),
+      import('../guanlan/eventDocument.ts'),
+    ]);
+    const item = await getGuanlanEvent(id);
+    if (item) return guanlanEventDocument(item);
+  }
   if (kind === 'daily') {
     const { DAILY_KNOWLEDGE } = await import('@/data/daily');
     const item = DAILY_KNOWLEDGE.find((item) => item.id === id);

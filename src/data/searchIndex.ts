@@ -1,11 +1,20 @@
-import { DAILY_KNOWLEDGE } from './daily';
-import { QUOTE_CATALOGUE as QUOTES } from './quotes';
-import { EVENTS } from './events';
-import { ESSAY_MATERIALS } from './essay';
-import type { SearchDocument } from '../lib/search';
+import { DAILY_KNOWLEDGE } from './daily.ts';
+import { QUOTE_CATALOGUE as QUOTES } from './quotes.ts';
+import { EVENTS } from './events.ts';
+import { ESSAY_MATERIALS } from './essay.ts';
+import type { SearchDocument } from '../lib/search.ts';
+import { GUANLAN_EVENTS } from './guanlan/catalogue.ts';
 
 // 随搜索弹窗按需加载；索引由模块缓存，不在每次输入时重建全文字符串。
 export const SEARCH_INDEX: SearchDocument[] = [
+  ...GUANLAN_EVENTS.map((item) => ({
+    id: `guanlan-event-${item.id}`,
+    type: 'guanlan-event' as const,
+    title: item.title,
+    subtitle: '观澜 · 事件精读',
+    path: `/guanlan/events/${item.id}`,
+    searchText: [item.title, item.summary, item.question, ...item.keywords].join(' ').toLowerCase(),
+  })),
   ...DAILY_KNOWLEDGE.map((item) => ({
     id: `daily-${item.id}`,
     type: 'daily' as const,

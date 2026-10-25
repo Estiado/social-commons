@@ -1,61 +1,67 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { TOPIC_SPECIALS } from '@/data/topicSpecials';
-import { CURATED_COMMENTARIES } from '@/data/curatedCommentaries';
 import { PRESET_ARTICLES } from '@/data/presetArticles';
+import { eventsForTopic } from '@/data/guanlan/catalogue';
 import { CommentaryCatalogue } from '@/features/reading/CommentaryCatalogue';
-import { commentaryTopics } from '@/features/reading/commentaryTopics';
-import { Button } from '@/components/ui/button';
+import { EventCatalogue } from '@/features/guanlan/EventCatalogue';
 
-const counts = new Map<string, number>();
-for (const article of CURATED_COMMENTARIES)
-  for (const topic of commentaryTopics(article)) counts.set(topic, (counts.get(topic) || 0) + 1);
 export default function GuanlanPage() {
+  const navigate = useNavigate();
+  const featured = TOPIC_SPECIALS.filter((topic) => eventsForTopic(topic.id).length > 0);
   return (
-    <div className="mx-auto max-w-6xl px-5 py-10 md:px-6">
-      <header data-tour="guanlan-intro" className="mb-8">
-        <p className="mb-3 text-xs tracking-widest text-accent">GUANLAN · READING THE WORLD</p>
-        <h1 className="mb-4 font-serif text-4xl font-semibold">观澜</h1>
+    <div className="mx-auto max-w-5xl px-5 py-10 md:px-6">
+      <header data-tour="guanlan-intro" className="mb-8 space-y-4">
+        <p className="text-xs tracking-widest text-accent">GUANLAN · READING THE WORLD</p>
+        <h1 className="font-serif text-4xl font-semibold">观澜</h1>
         <p className="max-w-3xl leading-relaxed text-muted-foreground">
-          从一个主题出发，读时评、期刊研究、通识与名句。比较不同作者的论证，把有出处的文字带进自己的文稿。
+          从一件事出发，读清来龙去脉，比较不同立意，再看看观点的另一面。时评、研究与名句，沿着事件一起读。
         </p>
-        <div className="mt-5 flex flex-wrap gap-3">
-          <Button asChild>
-            <Link to="/reading/import">导入自己的时评</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link to="/reading">打开阅读空间</Link>
-          </Button>
-        </div>
       </header>
-      <section aria-label="观澜主题" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {TOPIC_SPECIALS.map((topic) => (
-          <Link
-            key={topic.id}
-            to={'/guanlan/topics/' + topic.id}
-            className={
-              'rounded-sm border bg-gradient-to-br p-6 transition-colors hover:border-accent ' +
-              topic.color
-            }
+      <nav aria-label="观澜话题" className="space-y-4 border-y py-5">
+        <div className="flex flex-wrap gap-x-5 gap-y-3 text-sm">
+          {featured.map((topic) => (
+            <Link
+              className="text-accent hover:underline"
+              key={topic.id}
+              to={'/guanlan/topics/' + topic.id}
+            >
+              {topic.name}
+              <span className="ml-1 text-xs text-muted-foreground">
+                {eventsForTopic(topic.id).length}
+              </span>
+            </Link>
+          ))}
+        </div>
+        <label className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+          按话题进入
+          <select
+            aria-label="选择观澜话题"
+            className="w-full rounded-sm border bg-background p-2 sm:w-auto"
+            value=""
+            onChange={(event) => {
+              if (event.target.value) navigate('/guanlan/topics/' + event.target.value);
+            }}
           >
-            <h2 className="mb-2 font-serif text-xl font-semibold">{topic.name}</h2>
-            <p className="mb-4 text-sm text-muted-foreground">{topic.subtitle}</p>
-            <p className="text-xs text-accent">
-              {topic.readingFocus === 'research'
-                ? `${topic.relatedDailyIds.length} 篇研究选读`
-                : `${counts.get(topic.id) || 0} 篇时评 · ${topic.relatedDailyIds.length} 条通识`}
-              {' · '}
-              {topic.relatedQuoteIds.length} 篇诗文摘读
-            </p>
-          </Link>
-        ))}
-      </section>
-      <CommentaryCatalogue />
+            <option value="">全部话题与相关资料</option>
+            {TOPIC_SPECIALS.map((topic) => (
+              <option key={topic.id} value={topic.id}>
+                {topic.name} ·{' '}
+                {eventsForTopic(topic.id).length
+                  ? `${eventsForTopic(topic.id).length}篇事件精读`
+                  : '相关资料'}
+              </option>
+            ))}
+          </select>
+        </label>
+      </nav>
+      <EventCatalogue />
+      <details className="my-10 rounded-sm border p-5">
+        <summary className="cursor-pointer font-serif text-xl">全部时评资料 · 按媒体查阅</summary>
+        <CommentaryCatalogue />
+      </details>
       <details className="my-10 rounded-sm border p-5">
         <summary className="cursor-pointer font-serif text-xl">经典文章精读</summary>
-        <p className="my-4 text-sm text-muted-foreground">
-          保留原有经典阅读内容，与近期时评分开标示。
-        </p>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="mt-5 grid gap-3 md:grid-cols-2">
           {PRESET_ARTICLES.map((article) => (
             <Link
               className="rounded-sm border p-4 hover:border-accent"

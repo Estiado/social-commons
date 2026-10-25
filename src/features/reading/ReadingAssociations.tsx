@@ -1,11 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { TopicSpecial } from '@/data/topicSpecials';
+import type { GuanlanEventSummary } from '@/data/guanlan/types';
 import { Button } from '@/components/ui/button';
-import { listGuestArticles, linkArticleToTopic } from './guestRepository';
+import { listGuestArticles, linkArticleToTopic, linkArticleToEvent } from './guestRepository';
 import type { ReadingSummary } from './model';
 
-export function TopicReading({ topic }: { topic: TopicSpecial }) {
+type Props = { topic: TopicSpecial; event?: never } | { event: GuanlanEventSummary; topic?: never };
+
+export function ReadingAssociations({ topic, event }: Props) {
+  const scopeId = event?.id || topic.id;
+  const heading = event ? '我的事件材料' : '我的专题时评';
+  const importPath =
+    '/reading/import?' + new URLSearchParams(event ? { event: event.id } : { topic: topic.id });
   const [articles, setArticles] = useState<ReadingSummary[]>([]);
   const [choosing, setChoosing] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
@@ -23,17 +30,26 @@ export function TopicReading({ topic }: { topic: TopicSpecial }) {
     return () => {
       active = false;
     };
-  }, [topic.id]);
-  const mine = articles.filter((article) => article.topicIds?.includes(topic.id));
+  }, [scopeId]);
+  const mine = articles.filter((article) =>
+    event ? article.eventIds?.includes(event.id) : article.topicIds?.includes(topic.id),
+  );
   const add = async () => {
     setBusy(true);
     setNotice('');
     try {
-      for (const id of selected) await linkArticleToTopic(id, topic.id, topic.relatedTags);
+      for (const id of selected) {
+        if (event) await linkArticleToEvent(id, event);
+        else await linkArticleToTopic(id, topic.id, topic.relatedTags);
+      }
       setArticles(await listGuestArticles());
       setSelected([]);
       setChoosing(false);
-      setNotice('已关联到当前专题，正文仍只保存在你的浏览器。');
+      setNotice(
+        event
+          ? '已关联到当前事件，正文仍只保存在你的浏览器。'
+          : '已关联到当前专题，正文仍只保存在你的浏览器。',
+      );
     } catch (error) {
       setNotice(error instanceof Error ? error.message : '关联未完成，请重试');
     } finally {
@@ -41,14 +57,16 @@ export function TopicReading({ topic }: { topic: TopicSpecial }) {
     }
   };
   return (
-    <section id="my-commentaries" aria-label="我的专题时评" className="my-8 rounded-sm border p-5">
+    <section
+      id={event ? 'my-event-materials' : 'my-commentaries'}
+      aria-label={heading}
+      className="my-8 rounded-sm border p-5"
+    >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-serif text-xl font-semibold">我的专题时评</h2>
+        <h2 className="font-serif text-xl font-semibold">{heading}</h2>
         <div className="flex flex-wrap gap-2">
           <Button asChild size="sm">
-            <Link to={'/reading/import?topic=' + encodeURIComponent(topic.id)}>
-              添加时评到本专题
-            </Link>
+            <Link to={importPath}>{event ? '添加原文到本事件' : '添加时评到本专题'}</Link>
           </Button>
           <Button size="sm" variant="outline" onClick={() => setChoosing(!choosing)}>
             从阅读空间选择
@@ -85,7 +103,7 @@ export function TopicReading({ topic }: { topic: TopicSpecial }) {
             <p className="text-sm">阅读空间还没有文章，可先从链接或正文导入。</p>
           )}
           <Button size="sm" disabled={busy || !selected.length} onClick={() => void add()}>
-            关联到当前专题
+            {event ? '关联到当前事件' : '关联到当前专题'}
           </Button>
         </div>
       )}
@@ -103,7 +121,9 @@ export function TopicReading({ topic }: { topic: TopicSpecial }) {
       </div>
       {!mine.length && (
         <p className="mt-4 text-sm text-muted-foreground">
-          还没有个人时评。添加后会回到本专题，并显示在这里。
+          {event
+            ? '还没有关联的个人材料。添加后会回到本事件，并显示在这里。'
+            : '还没有个人时评。添加后会回到本专题，并显示在这里。'}
         </p>
       )}
     </section>

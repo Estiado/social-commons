@@ -24,6 +24,7 @@ const recordSchema = z
     revision: z.number().int().min(0),
     localRevision: z.number().int().min(0).optional(),
     topicIds: z.array(z.string().max(100)).max(100).optional(),
+    eventIds: z.array(z.string().min(1).max(100)).max(100).optional(),
   })
   .superRefine((record, context) => {
     const blocks = new Map(record.document.blocks.map((block) => [block.id, block]));

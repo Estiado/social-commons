@@ -1,6 +1,18 @@
 # 内容维护与本轮来源
 
-更新：2026-10-24。本轮补充现有栏目，不新增需要账号的系统。具体条目中的出处链接是维护入口，不能用本文件代替原文。
+更新：2026-10-25。本轮补充现有栏目，不新增需要账号的系统。具体条目中的出处链接是维护入口，不能用本文件代替原文。
+
+## 观澜事件精读 · 2026-10-25
+
+新增三个完整事件、十份来源。站内短读并非媒体全文库；50篇2026年7—10月近期目录保持，不把旧报道或论文伪装为新的时评。以下范围属于维护台账，不加入读者赏析正文。
+
+| 事件 | 来源与实际核对范围 |
+| --- | --- |
+| 非遗短视频 | [张涛甫，澎湃，2026-10-23](https://www.thepaper.cn/newsDetail_forward_34273575)，全文及短引“视频可以重播，手艺却得由后来者继承。”；[常沙娜，澎湃，2026-10-20](https://www.thepaper.cn/newsDetail_forward_34236648)，全文；[Barbara Kirshenblatt-Gimblett, Intangible Heritage as Metacultural Production, 2004](https://doi.org/10.1111/j.1350-0775.2004.00458.x)，核对[Stellenbosch Heritage Foundation公开14页电子版](https://www.stellenboschheritage.co.za/wp-content/uploads/Intangible-Heritage.pdf)及印刷页53、58—59。该PDF是基金会公开馆藏，不称出版社原站，不本地镜像。 |
+| 职场AI | [嗡嗡，新周刊，2026-10-13](https://eu.36kr.com/zh/p/4023610911362949)，36氪经授权转载页全文和署名；[孙一洲，澎湃，2026-10-21](https://www.thepaper.cn/newsDetail_forward_34261996)，全文；[Brynjolfsson、Rock、Syverson, AEJ: Macroeconomics 13(1):333–372, 2021](https://www.aeaweb.org/articles?id=10.1257/mac.20180386)，出版站摘要；[Brynjolfsson、Li、Raymond, NBER 31161, 2023年11月修订版](https://www.nber.org/papers/w31161)，原出版站检索摘要，直开有403。只写客服场景平均效益与经验异质性，不混用2025年QJE版数值，不推及所有岗位。36氪未在提取适配器内，从该来源进入粘贴正文模式，不开放任意代理。 |
+| 学术酒吧 | [刘珈宜、史羽梵、孙士雯、张鑫茹，新潮/澎湃号，2024-11-16](https://m.thepaper.cn/newsDetail_forward_29354214)，全文，作者注明学生记者；[覃鑫渊，青年发展论坛2025,35(5):5–13](https://jxst.cbpt.cnki.net/portal/journal/portal/client/paper/8b35dcf51e6045b2054ad17decf3b6b1)，出版页书目/公开摘要，方法为网络民族志、参与式观察与半结构式访谈，不虚构样本数；[王健，北京青年研究2026,35(4):86–93](https://bjqz.cbpt.cnki.net/portal/journal/portal/client/paper/d00fdac81d2ed1b492cfbda25a492bcf)，公开摘要/书目，方法为网络文本分析，不误写成访谈。现象2024年报道与2026-07-10研究日期分开。 |
+
+网站的三层立意和编辑反思是有署名的资料编排；没有制造名家原话、课堂讨论或政府政策新条目。来源URL只保存于格式范围中，读者看到文献题名。旧私人文章和划线不批量改写。
 
 | 栏目 | 之前 | 当前 | 新内容位置 |
 | --- | --- | --- | --- |
