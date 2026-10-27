@@ -9,7 +9,9 @@
 - 俄乌整篇与当日简报实际保存至预览浏览器，刷新后同一ID保留（`eacb9df7-7701-4f19-9bfb-eacf1fd8b6b8`、`91a4564f-4b8d-4274-b765-8d191168ffec`）。没有清空用户数据；预览与正式域名的存储隔离。
 - Taste固定方向为editorial-report，种子573498991，保留品牌字体与纸色。源码检查0 FAIL/0 WARN；实际浏览器截图复查上述三个宽度。Impeccable检查表用于层级、收敛、触摸与异常状态，加载器因缺引擎及C盘默认安装未运行；未把它或独立CDP截图检查器写成已通过。截图`.artifacts/world-desktop.png`、`world-mobile.png`、`briefing-mobile.png`仅在D盘。
 - 附件全文与方法/图表核读边界见CONTENT_SOURCES.md。未修改生产SQL、RLS、邮件、账号或微信提取；本轮没有做新的并发压力测试，静态发布成功不代表任何流量下都不会故障。
-- GitHub推送、CI、Cloudflare及正式站验收待本次代码提交后补记。
+- 功能提交`8ca1450d5775e9bc312a253755ea1d483cd67d84`已推送main，`ls-remote`核对一致；[主分支检查](https://github.com/Estiado/social-commons/actions/runs/40453350122)completed/success，[Cloudflare Pages](https://github.com/Estiado/social-commons/runs/122021095334)明确Deployed successfully。
+- 正式站实际打开每日弹窗和独立简报，完整上下两阕及概念出现；保存后刷新，同一阅读ID`bc1fbe0e-2102-4ff9-9c79-329701477f2f`保留。正式目录实读三条事件，巴以9节点与联合国2030议程7节点加载正常；巴以“最近进展”定位距顶约96px。俄乌9节点此前在本机逐项核读和定位，未把它记作正式站每个节点都点过。
+- 正式风险报告显示4份资料与完整方法说明，实点方法附录的站内提要定位到`b59`，距顶约96px。正式站390px报告和知天下目录无横向溢出；手机菜单知天下入口有效，1440px桌面导航与目录正常。截图`.artifacts/world-live-desktop.png`、`world-live-mobile.png`，抽查控制台无error。没有把原站下载入口记成浏览器下载或PDF逐页验收。
 
 ## 十二篇观澜与全站扩容 · 2026-10-25
 
