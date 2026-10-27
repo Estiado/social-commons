@@ -247,7 +247,6 @@ export default function ReadingLibraryPage() {
     <div className="mx-auto max-w-5xl px-5 py-10 md:px-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="mb-3 text-xs tracking-widest text-accent">MY READING & WRITING SPACE</p>
           <h1 data-tour="reading-intro" className="font-serif text-3xl font-semibold">
             我的阅读空间
           </h1>
@@ -402,7 +401,11 @@ export default function ReadingLibraryPage() {
                 ? `/reading/${item.id}#reading-${match.blockId}`
                 : item.href;
             return (
-              <article key={item.key} className="rounded-sm border bg-card p-5">
+              <article
+                key={item.key}
+                data-page-enter="item"
+                className="rounded-sm border bg-card p-5"
+              >
                 <label className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
                   <input
                     type="checkbox"

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
 import {
   BookOpen,
@@ -17,6 +17,7 @@ import { shouldOfferTour } from '@/features/onboarding/preferences';
 import { useChinaDay } from '@/features/briefing/useChinaDay';
 import { ErrorBoundary } from 'react-error-boundary';
 const DailyBriefDialog = lazy(() => import('@/features/briefing/DailyBriefDialog'));
+const SiteMotion = lazy(() => import('@/features/motion/SiteMotion'));
 const GuidedTour = lazy(() => import('@/features/onboarding/GuidedTour'));
 const GlobalSearch = lazy(() =>
   import('./GlobalSearch').then((module) => ({ default: module.GlobalSearch })),
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
 ];
 
 export function Layout() {
+  const main = useRef<HTMLElement>(null);
   const location = useLocation();
   const feedbackPath = feedbackLink(location.pathname, location.search);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -205,7 +207,7 @@ export function Layout() {
           </nav>
         )}
       </header>
-      <main data-tour-shell className="flex-1">
+      <main ref={main} data-tour-shell className="flex-1">
         <Suspense
           fallback={
             <p role="status" className="p-12 text-center text-muted-foreground">
@@ -216,6 +218,11 @@ export function Layout() {
           <Outlet />
         </Suspense>
       </main>
+      <ErrorBoundary fallback={null}>
+        <Suspense fallback={null}>
+          <SiteMotion root={main} route={location.pathname} paused={briefOpen || tourOpen} />
+        </Suspense>
+      </ErrorBoundary>
       <footer data-tour-shell className="mt-16 border-t border-border/60">
         <div className="mx-auto max-w-6xl px-6 py-10">
           <p className="mb-2 font-serif font-semibold">社科通识</p>

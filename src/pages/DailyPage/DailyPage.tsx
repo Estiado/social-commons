@@ -38,7 +38,6 @@ export default function DailyPage() {
     return <Navigate to={`/daily/${encodeURIComponent(params.get('id')!)}`} replace />;
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
-      <p className="mb-3 text-xs tracking-widest text-accent">DAILY KNOWLEDGE</p>
       <h1 data-tour="daily-intro" className="mb-4 font-serif text-3xl font-semibold">
         日新
       </h1>
@@ -91,7 +90,7 @@ export default function DailyPage() {
       </div>
       <div className="space-y-5">
         {filtered.map(({ item }) => (
-          <article key={item.id} className="rounded-sm border bg-card">
+          <article key={item.id} data-page-enter="item" className="rounded-sm border bg-card">
             <button
               aria-expanded={expanded === item.id}
               className="block w-full p-6 text-left"
@@ -102,7 +101,7 @@ export default function DailyPage() {
               <p className="text-sm leading-relaxed text-muted-foreground">{item.summary}</p>
             </button>
             {expanded === item.id && (
-              <div className="border-t px-6 py-5">
+              <div data-page-enter="panel" className="border-t px-6 py-5">
                 <Link
                   className="mb-5 inline-block text-sm text-accent underline"
                   to={`/daily/${item.id}`}

@@ -32,7 +32,11 @@ export function EventCatalogue({ topicId }: { topicId?: string }) {
       )}
       <div className="space-y-4">
         {visible.map((event) => (
-          <article key={event.id} className="rounded-sm border bg-card p-5 md:p-7">
+          <article
+            key={event.id}
+            data-page-enter="item"
+            className="rounded-sm border bg-card p-5 md:p-7"
+          >
             <p className="text-xs leading-relaxed text-muted-foreground">{event.dateLabel}</p>
             <Link to={'/guanlan/events/' + event.id} className="group block">
               <h3 className="my-3 font-serif text-xl font-semibold leading-relaxed group-hover:text-accent">

@@ -2,6 +2,28 @@
 
 更新：2026-10-27。具体条目中的出处链接是维护入口，不能用本文件代替原文。
 
+## 知天下背景补写与法国事件 · 2026-10-27
+
+四篇长期事件当前39节点。补写正文约1.49万字符，集中在统一编辑稿；不是将链接来源全部复制为全文。直接引语保持短引并单列具体定位，编辑解释不放入引号。
+
+- 俄乌：核对[新华社胡若愚2022年2月23日背景分析](https://www.xinhuanet.com/world/2022-02/23/c_1211584373.htm)、[刘旭2013年11月22日关于暂停协定准备的报道](https://world.people.com.cn/n/2013/1122/c1002-23619418.html)、[新华社2014年2月23日总统与议会争议报道](https://world.people.com.cn/n/2014/0223/c1002-24436618.html)、[国家资料中的独立与地理背景](https://politics.people.com.cn/n/2013/0909/c368733-22856716.html)，补入1991、2013、2014的因果链。旧国家资料不用于当前官员和现状。
+- [欧盟关系说明](https://www.consilium.europa.eu/en/policies/ukraine/)、[北约关系说明](https://www.nato.int/en/what-we-do/partnerships-and-cooperation/relations-with-ukraine)、[OSCE明斯克措施原件](https://www.osce.org/cio/140156)、[联大ES-11/1原始记录](https://digitallibrary.un.org/record/3965290)用于区分联系国协定、成员资格、停火与主权争议。部分UN/OSCE直链访问不稳定，核对过官方索引与书目，不宣称所有PDF端点均已打开。2024年库尔斯克节点采用[央视原报道的新华社刊载页](https://www.news.cn/milpro/20240815/911bddfaf7de43d0ab90179bf41ac669/c.html)，没有拿旧控制范围充当当前地图。
+- 巴以：补查[新华社关键词说明](https://www.xinhuanet.com/2023-10/30/c_1129948133.htm)、[1993年奥斯陆原则宣言原件](https://www.un.org/unispal/document/auto-insert-180015/)和[永久地位议题](https://www.un.org/unispal/permanent-status-issues/)。巴解、法塔赫、自治机构与哈马斯分别解释；临时自治不写成最终和平。2728号决议短引用官方记录核对，未声称本轮逐页读通受限PDF。
+- 2030议程：补查[70/1决议官方入口](https://www.un.org/en/node/182243)和[议程问答](https://www.un.org/sustainabledevelopment/zh/development-agenda/)。17项目标、169项具体目标、国家实施、指标和审议分别说明；不把自愿报告等同制裁制度，不把36%的评估结果改写成36%的国家完成目标。
+
+### 法国2026年9—10月
+
+新增11份来源，正文以中文报道为主，国际资料核查现场、司法及后续安排：
+
+- 孙毅，[10月18日全国抗议报道](https://www1.xinhuanet.com/world/20261018/26bd823cc7d04994b5e5b1bfa49edf9a/c.html)与[10月19日背景分析](https://www3.xinhuanet.com/world/20261019/be40ca8e958b464cb09b6cf2b7abe1c3/c.html)，核读正文。人数标为政府/工会各自估计，区别和平诉求和局部暴力。法比安·张发言采用一句节引，标出发言人、报道作者、日期与“教育问题”部分。
+- 乔本孝，[10月20日局部宵禁报道](https://www.xinhuanet.com/20261020/1d40c941682043448724c71bd02e3135/c.html)，不扩大为法国全国宵禁。
+- Reuters记者Manon Cruz、Dominique Vidalon的[10月8日学校现场报道](https://www.investing.com/news/economy-news/french-teens-march-for-decent-schools-despite-governments-pledge-to-act-4938931)与[10月24日报道](https://www.investing.com/news/world-news/france-mounts-huge-security-operation-to-prevent-protest-violence-4970771)，使用Investing.com刊载页并注明Reuters；不将转载站误署为采写者。
+- AP[10月22日集会禁令司法审查](https://apnews.com/article/cc47cffe54c65934dd7920bc3847c9ae)和[10月24日抗议现场](https://apnews.com/article/france-protests-paris-unrest-ad2fb9206e72e5d1b4ae43fdf7aa96a9)，核查和平游行、暴力、执法与法院角色。
+- Le Monde的[10月26日后续](https://www.lemonde.fr/en/politics/article/2026/10/26/after-october-24-protests-french-government-braces-for-long-fall-of-unrest_6764683_5.html)与[10月27日教育措施消息](https://www.lemonde.fr/en/france/article/2026/10/27/french-government-announces-measures-to-address-student-protests_6765310_7.html)使用可公开访问段落及书目，未绕过订阅、未声称付费全文精读；[教育部门10月26日原始说明](https://www.enseignementsup-recherche.gouv.fr/fr/remplacement-de-la-plateforme-parcoursup-plafonnement-du-nombre-d-eleves-par-classe-etat-des-104451)仅核查措施内容、2027/2028目标和承诺性质，未写成已经落实。
+- [AFP在2023年6月28日的原始报道](https://www.afpbb.com/articles/-/3470207)只用于比较2023年警察枪击少年与此次事件的起点，不混用当年图像、伤亡或视频。10月31日和11月5日动员仍是后续观察事项。
+
+本轮没有下载或镜像这些现代媒体全文、照片或论文。没有把解释性文字冒充受访者原话，链接在网页和导出中显示题名。
+
 ## 知天下与联合国全球风险报告 · 2026-10-27
 
 - 用户提供的`un_2026_global_risk_report.pdf`为20,016,529字节，SHA-256 `794d7401304c63d8555c2e1add98e3738d6746cfbc702d7e5aca9767e952ef9b`。25个PDF物理页面为双页版，不能误记为25页报告正文。全文提取60,642字符，并实际渲染核对物理页12（印刷18—19页）和24（印刷42—43页）的紧迫性与方法资料。副本、提取文本和截图仅在D盘`.artifacts/world-brief-sources`，未提交或上传原附件。

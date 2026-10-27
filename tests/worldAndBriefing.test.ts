@@ -36,8 +36,8 @@ test('简报跨年及北京时间午夜换版，同一日稳定且连续日三�
   }
 });
 
-test('三条长期事件有按日期排序的真实节点、来源归因和可保存的完整阅读模型', async () => {
-  assert.equal(WORLD_STORIES.length, 3);
+test('四条长期事件有前情解释、规范短引、日期节点和可保存的完整阅读模型', async () => {
+  assert.equal(WORLD_STORIES.length, 4);
   let nodes = 0;
   for (const summary of WORLD_STORIES) {
     const story = (await getWorldStory(summary.id))!;
@@ -45,8 +45,22 @@ test('三条长期事件有按日期排序的真实节点、来源归因和可�
     nodes += story.timeline.length;
     assert.equal(new Set(story.timeline.map((point) => point.id)).size, story.timeline.length);
     const sources = new Set(story.sources.map((source) => source.id));
+    assert.ok(story.context.length >= 3 && story.questions.length >= 3);
+    for (const section of [...story.context, ...story.perspectives, ...story.questions]) {
+      assert.ok(section.paragraphs.length && section.sourceIds.length);
+      assert.ok(section.sourceIds.every((id) => sources.has(id)));
+    }
+    for (const excerpt of story.excerpts) {
+      assert.ok(excerpt.text && excerpt.locator && sources.has(excerpt.sourceId));
+    }
     assert.ok(story.sources.some((source) => /新华社|央视|国际在线/u.test(source.publication)));
-    assert.ok(story.sources.some((source) => /联合国/u.test(source.publication)));
+    assert.ok(
+      story.sources.some((source) =>
+        story.id === 'france-protests-2026'
+          ? new URL(source.url).hostname === 'www.enseignementsup-recherche.gouv.fr'
+          : /联合国/u.test(source.publication),
+      ),
+    );
     assert.deepEqual(
       story.timeline.map((point) => point.date),
       story.timeline.map((point) => point.date).toSorted(),
@@ -83,9 +97,50 @@ test('三条长期事件有按日期排序的真实节点、来源归因和可�
       ),
     );
   }
-  assert.equal(nodes, 25);
+  assert.equal(nodes, 39);
   assert.equal(await getWorldStory('__proto__'), undefined);
   assert.equal(await getWorldStory('constructor'), undefined);
+});
+
+test('零基础读者能在正文中找到前因、组织区别与法国最新政策的时间边界', async () => {
+  const ukraine = (await getWorldStory('ukraine'))!;
+  const text = worldStoryDocument(ukraine)
+    .blocks.flatMap((block) => ('text' in block ? [block.text] : []))
+    .join('\n');
+  for (const concept of [
+    '1991年',
+    '2013年11月21日',
+    '亚努科维奇',
+    '联系国协定',
+    '欧盟与北约',
+    '议会',
+    '克里米亚',
+    '顿巴斯',
+  ])
+    assert.ok(text.includes(concept), concept);
+  const document = worldStoryDocument(ukraine);
+  assert.ok(
+    document.blocks.some(
+      (block) => block.type === 'quote' && block.text === ukraine.excerpts[0].text,
+    ),
+  );
+  assert.ok(text.includes('胡若愚') && text.includes('“肇始”部分'));
+  const france = (await getWorldStory('france-protests-2026'))!;
+  const franceText = worldStoryDocument(france)
+    .blocks.flatMap((block) => ('text' in block ? [block.text] : []))
+    .join('\n');
+  for (const phrase of [
+    '2026年9月中旬',
+    '2026年10月26日',
+    '2027年',
+    '尚未来临',
+    'Parcoursup',
+    '局部宵禁',
+    '和平',
+  ])
+    assert.ok(franceText.includes(phrase), phrase);
+  assert.equal(france.timeline.at(-1)?.date, '2026-10-26');
+  assert.ok(france.questions.some((question) => question.title.includes('2023')));
 });
 
 test('简报导出保留整篇诗文与题名链接；风险分析保留调查窗口和方法边界', async () => {

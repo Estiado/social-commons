@@ -14,7 +14,11 @@ export function worldStoryDocument(story: WorldStory) {
     ids.map((id) => {
       const source = sources.get(id);
       if (!source) throw new Error(`知天下 ${story.id} 缺少出处 ${id}`);
-      return referenceParagraph(source.title, source.url, source.publication + ' · ');
+      return referenceParagraph(
+        source.title,
+        source.url,
+        [source.author, source.publication, source.date].filter(Boolean).join(' · ') + ' · ',
+      );
     });
   return createContentDocument(
     story.title + ' · 事件脉络',
@@ -24,6 +28,18 @@ export function worldStoryDocument(story: WorldStory) {
       p('社科通识编辑 · 资料核对至 ' + story.updatedAt),
       h('先了解这件事'),
       ...story.intro.map(p),
+      h('前因与参与者'),
+      ...story.context.flatMap((part) => [
+        h(part.title, 3),
+        ...part.paragraphs.map(p),
+        ...cite(part.sourceIds),
+      ]),
+      h('从原文读起'),
+      ...story.excerpts.flatMap((excerpt) => [
+        { type: 'quote' as const, text: excerpt.text },
+        p(excerpt.locator),
+        ...cite([excerpt.sourceId]),
+      ]),
       h('最近进展'),
       ...story.latest.map(p),
       ...cite(story.timeline.at(-1)?.sourceIds || []),
@@ -42,11 +58,17 @@ export function worldStoryDocument(story: WorldStory) {
         ...view.paragraphs.map(p),
         ...cite(view.sourceIds),
       ]),
+      h('把几个问题讲清楚'),
+      ...story.questions.flatMap((question) => [
+        h(question.title, 3),
+        ...question.paragraphs.map(p),
+        ...cite(question.sourceIds),
+      ]),
       h('接下来关注什么'),
       ...story.watch.map(p),
       h('资料来源'),
       ...story.sources.flatMap((source) => [
-        p(source.publication + ' · ' + source.date),
+        p([source.author, source.publication, source.date].filter(Boolean).join(' · ')),
         referenceParagraph(source.title, source.url),
       ]),
     ],

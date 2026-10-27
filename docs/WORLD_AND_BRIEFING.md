@@ -3,7 +3,7 @@
 ## 阅读入口
 
 - `/world`：长期事件目录，支持标题、简介与关键词检索。
-- `/world/:id`：事件背景、最近进展、术语、时间脉络、来源视角与后续观察。首批俄乌冲突、巴以冲突、联合国2030议程，共25个时间节点。
+- `/world/:id`：事件背景、前因与参与者、原文短引、最近进展、术语、时间脉络、来源视角、问题解答与后续观察。当前俄乌冲突15节点、巴以冲突9节点、联合国2030议程7节点、法国2026年抗议8节点，共39个时间节点。
 - `/briefing`：北京时间当天的简报；`?date=YYYY-MM-DD`打开指定日期，非法日期及未来日期有恢复入口。
 - `/guanlan/events/global-risk-2026`：联合国2026年全球风险报告分析，与三个长期事件互相连接。
 
@@ -19,24 +19,26 @@
 
 ## 文件职责
 
-| 文件                                                  | 职责                                         |
-| ----------------------------------------------------- | -------------------------------------------- |
-| `src/data/world/types.ts`                             | 时间节点、来源、视角的数据合同               |
-| `src/data/world/catalogue.ts`                         | 轻量目录及检索入口                           |
-| `src/data/world/index.ts`                             | 有限清单中的正文动态加载                     |
-| `src/data/world/{ukraine,palestine,un2030}.ts`        | 来源书目、节点顺序和关联，正文引用统一编辑稿 |
-| `src/features/world/storyDocument.ts`                 | 统一阅读、选材与导出模型                     |
-| `src/features/briefing/calendar.ts`、`useChinaDay.ts` | 日期校验、北京时间跨日和恢复前台             |
-| `src/features/briefing/edition.ts`                    | 有日期限制的材料选择；不发网络请求           |
-| `src/features/briefing/document.ts`                   | 简报转统一文章模型                           |
-| `src/features/briefing/DailyBriefDialog.tsx`          | 无障碍弹窗与关闭入口                         |
-| `src/features/motion/ReadingEntrance.tsx`             | 小幅入场、作用域和卸载清理，尊重减少动态效果 |
+| 文件                                                  | 职责                                                       |
+| ----------------------------------------------------- | ---------------------------------------------------------- |
+| `src/data/world/types.ts`                             | 时间节点、来源、视角的数据合同                             |
+| `src/data/world/catalogue.ts`                         | 轻量目录及检索入口                                         |
+| `src/data/world/index.ts`                             | 有限清单中的正文动态加载                                   |
+| `src/data/world/{ukraine,palestine,un2030,france}.ts` | 来源书目、原文短引、节点顺序和关联，本站正文引用统一编辑稿 |
+| `src/features/world/storyDocument.ts`                 | 统一阅读、选材与导出模型                                   |
+| `src/features/briefing/calendar.ts`、`useChinaDay.ts` | 日期校验、北京时间跨日和恢复前台                           |
+| `src/features/briefing/edition.ts`                    | 有日期限制的材料选择；不发网络请求                         |
+| `src/features/briefing/document.ts`                   | 简报转统一文章模型                                         |
+| `src/features/briefing/DailyBriefDialog.tsx`          | 无障碍弹窗与关闭入口                                       |
+| `src/features/motion/ReadingEntrance.tsx`             | 小幅入场、作用域和卸载清理，尊重减少动态效果               |
 
-本站编写正文继续只改`content/站内编辑稿.md`，新组为`world/catalogue`、`world/ukraine`、`world/palestine`、`world/un2030`与`guanlan/globalRisk`；观澜入口文字放在原有`guanlan/catalogue`组。原作者诗文、出处链接和书目信息仍在各自数据模块。操作见[编辑稿维护](EDITORIAL_COPY.md)。
+本站编写正文继续只改`content/站内编辑稿.md`，相关组为`world/catalogue`、`world/ukraine`、`world/palestine`、`world/un2030`、`world/france`与`guanlan/globalRisk`；观澜入口文字放在原有`guanlan/catalogue`组。原作者诗文、出处链接和书目信息仍在各自数据模块。操作见[编辑稿维护](EDITORIAL_COPY.md)。
+
+每篇的`context`解释地理、参与者和制度背景，`questions`回答容易混淆的问题，两者均逐节关联`sourceIds`。`excerpts`只保存核对过的短引、来源ID和具体定位；二手报道引述他人时，在定位中注明发言人及报道作者。引用与本站解释以阅读块区分，导出仍保留出处。不要把编辑摘要写进引号，也不要把历史来源中的当时判断当成今天的定论。
 
 ## 数据和性能边界
 
-正文按事件加载，目录、导航与全站搜索不加载三篇全文。知天下与简报通过既有阅读器保存文章、段落和划线，转成独立文稿后可编辑及导出Word/PDF；没有新增数据库表、迁移私人数据或启用邮件登录。
+正文按事件加载，目录、导航与全站搜索不加载四篇全文。知天下与简报通过既有阅读器保存文章、段落和划线，转成独立文稿后可编辑及导出Word/PDF；没有新增数据库表、迁移私人数据或启用邮件登录。
 
 公开资料仍是静态编译内容。收藏使用内容散列区分版本，不覆盖旧正文和标注。日期节点保留来源实际的年月精度，`date`只负责排序；每个节点和来源视角关联可追溯的书目ID。
 

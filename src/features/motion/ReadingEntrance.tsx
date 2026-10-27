@@ -31,7 +31,7 @@ export function ReadingEntrance({
     { scope: root },
   );
   return (
-    <div ref={root} className={className}>
+    <div ref={root} className={className} data-motion-local>
       {children}
     </div>
   );

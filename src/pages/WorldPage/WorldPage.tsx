@@ -40,7 +40,9 @@ export default function WorldPage() {
           </label>
         </div>
         <p role="status" className="world-count">
-          {normalized ? `找到 ${stories.length} 条事件脉络` : '首批三条 · 资料核对至2026年10月27日'}
+          {normalized
+            ? `找到 ${stories.length} 条事件脉络`
+            : `共 ${WORLD_STORIES.length} 条 · 资料核对至2026年10月27日`}
         </p>
         <div className="world-stories">
           {stories.map((story) => (

@@ -184,12 +184,6 @@ export default function EssayPage() {
     <div className="mx-auto max-w-4xl px-6 py-12">
       {/* 页头 */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 mb-3">
-          <PenTool className="h-4 w-4 text-accent" />
-          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
-            Essay · 议论文素材
-          </span>
-        </div>
         <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">高考议论文素材库</h1>
         <p className="text-muted-foreground max-w-2xl leading-relaxed">
           每个通识概念都可以成为议论文的优质素材。你可以从网上摘抄优秀文段填入，也可以添加自己的词条和分类，积累属于自己的素材库。
@@ -426,6 +420,7 @@ export default function EssayPage() {
           const isExpanded = expandedId === item.id;
           return (
             <article
+              data-page-enter="item"
               key={item.id}
               id={`essay-${item.id}`}
               className="scroll-mt-24 border border-border/60 bg-card rounded-sm overflow-hidden"

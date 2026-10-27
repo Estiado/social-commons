@@ -28,7 +28,6 @@ export default function QuotesPage() {
   const pageCount = Math.ceil(matches.length / PAGE_SIZE);
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
-      <p className="mb-3 text-center text-xs tracking-widest text-accent">WORDS IN CONTEXT</p>
       <h1 data-tour="quotes-intro" className="mb-4 text-center font-serif text-3xl font-semibold">
         撷英
       </h1>
@@ -37,7 +36,11 @@ export default function QuotesPage() {
         {QUOTES.length} 篇摘读 · {QUOTES.filter((quote) => quote.commentary).length}{' '}
         篇附有出处的解读
       </p>
-      <article className="rounded-sm border bg-card p-6 md:p-12">
+      <article
+        key={current.id}
+        data-page-enter="feature"
+        className="rounded-sm border bg-card p-6 md:p-12"
+      >
         <h2 className="mb-6 font-serif text-xl">
           {current.author} · {current.title || current.source}
         </h2>
@@ -94,6 +97,7 @@ export default function QuotesPage() {
       <div className="grid gap-3 md:grid-cols-2">
         {matches.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE).map((quote) => (
           <Link
+            data-page-enter="item"
             to={`/quotes/${quote.id}`}
             className="rounded-sm border p-4 text-sm leading-relaxed hover:border-accent"
             key={quote.id}

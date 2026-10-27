@@ -16,11 +16,14 @@
 | 观澜事件      | `src/data/guanlan/`、`src/features/guanlan/`            | 轻量目录、独立案例正文、来源筛选和统一文章转换                      |
 | 知天下        | `src/data/world/`、`src/features/world/`                | 长期事件目录、按需正文、节点来源及统一文章转换                      |
 | 每日简报      | `src/features/briefing/`                                | 北京日期、编辑材料轮换、弹窗与阅读模型，不自动采集新闻              |
+| 阅读动效      | `src/features/motion/`                                  | 页面作用域、观察器、GSAP清理、减少动态效果和交互反馈                 |
 | 编辑正文      | `content/站内编辑稿.md`、`scripts/editorial-content.ts` | 单一文本来源、引用校验、按模块生成；原句和书目独立保留              |
 
 具体文件职责见 [目录导览](REPOSITORY_GUIDE.md)。
 
 知天下和每日简报的路由、日期规则及内容更新见[维护说明](WORLD_AND_BRIEFING.md)。两者使用`world`、`briefing`内容类型接入原阅读器；全站搜索只索引长期事件摘要，正文独立加载。弹窗先于首次指引；完整导航和指引断点统一为1280px。动效限于短入场并清理GSAP作用域，滚动保持原生。
+
+`SiteMotion`由Layout按需加载，仅增强`main`中的标题和显式标记区域；每页共享IntersectionObserver和MutationObserver，新节点只扫描新增子树。路由切换、弹窗暂停和减少动态效果变化时释放作用域、观察器和临时集合。原有`ReadingEntrance`标明局部动效边界，避免重复入场；正文段落和可编辑区不做位移。详见[阅读动效](READING_MOTION.md)。
 
 ## 本机与云端
 

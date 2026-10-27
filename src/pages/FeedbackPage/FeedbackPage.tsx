@@ -96,6 +96,7 @@ export default function FeedbackPage() {
         {draftNotice}
       </p>
       <form
+        data-page-enter="form"
         className="space-y-5"
         onSubmit={async (event) => {
           event.preventDefault();

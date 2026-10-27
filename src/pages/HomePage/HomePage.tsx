@@ -1,15 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  ArrowRight,
-  Calendar,
-  Landmark,
-  Feather,
-  BookOpen,
-  ChevronRight,
-  Newspaper,
-  Tag,
-} from 'lucide-react';
+import { ArrowRight, Landmark, Feather, BookOpen, ChevronRight, Tag } from 'lucide-react';
 import { getTodayKnowledge } from '@/data/daily';
 import { EVENTS } from '@/data/events';
 import { QUOTE_CATALOGUE as QUOTES } from '@/data/quotes';
@@ -44,23 +35,13 @@ export default function HomePage() {
         </Link>
       </div>
       {/* Hero 区 - 撷英 */}
-      <section className="relative overflow-hidden">
-        {/* 宣纸纹理背景 */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}
-        />
+      <section data-page-enter="section" className="relative overflow-hidden">
         <div className="relative mx-auto max-w-6xl px-6 py-20 md:py-32">
           <div className="max-w-3xl">
-            <div className="flex items-center gap-2 mb-8">
-              <Feather className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
-                今日摘读 ·{' '}
-                {new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
-              </span>
-            </div>
+            <h1 className="mb-3 font-serif text-2xl font-semibold">今日摘读</h1>
+            <p className="mb-8 text-sm text-muted-foreground">
+              {new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
+            </p>
             <blockquote
               data-tour="home-quote"
               className="whitespace-pre-line font-serif text-2xl md:text-4xl font-medium leading-relaxed text-foreground mb-8"
@@ -87,20 +68,12 @@ export default function HomePage() {
             )}
           </div>
         </div>
-        {/* 底部渐变分隔 */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
       </section>
 
       {/* 今日通识 */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
+      <section data-page-enter="section" className="mx-auto max-w-6xl px-6 py-16">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
-                Today · 日新
-              </span>
-            </div>
             <h2 data-tour="home-daily" className="font-serif text-2xl md:text-3xl font-semibold">
               今日日新
             </h2>
@@ -148,15 +121,12 @@ export default function HomePage() {
       </section>
 
       {/* 最新观澜 */}
-      <section className="mx-auto max-w-6xl px-6 py-16 border-t border-border/40">
+      <section
+        data-page-enter="section"
+        className="mx-auto max-w-6xl px-6 py-16 border-t border-border/40"
+      >
         <div className="flex items-end justify-between mb-8">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Newspaper className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
-                Latest · 观澜
-              </span>
-            </div>
             <h2
               data-tour="home-commentaries"
               className="font-serif text-2xl md:text-3xl font-semibold"
@@ -211,15 +181,12 @@ export default function HomePage() {
       </section>
 
       {/* 热门话题 */}
-      <section className="mx-auto max-w-6xl px-6 py-16 border-t border-border/40">
+      <section
+        data-page-enter="section"
+        className="mx-auto max-w-6xl px-6 py-16 border-t border-border/40"
+      >
         <div className="flex items-end justify-between mb-8">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Tag className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
-                Topics · 话题
-              </span>
-            </div>
             <h2 data-tour="home-topics" className="font-serif text-2xl md:text-3xl font-semibold">
               按话题读事件
             </h2>
@@ -248,15 +215,12 @@ export default function HomePage() {
       </section>
 
       {/* 精选事件 */}
-      <section className="mx-auto max-w-6xl px-6 py-16 border-t border-border/40">
+      <section
+        data-page-enter="section"
+        className="mx-auto max-w-6xl px-6 py-16 border-t border-border/40"
+      >
         <div className="flex items-end justify-between mb-8">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Landmark className="h-4 w-4 text-accent" />
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
-                Featured · 群鉴
-              </span>
-            </div>
             <h2 data-tour="home-events" className="font-serif text-2xl md:text-3xl font-semibold">
               群鉴
             </h2>
@@ -316,7 +280,6 @@ export default function HomePage() {
           to="/reading"
           className="rounded-sm border bg-card p-7 transition-colors hover:border-accent/50"
         >
-          <span className="text-xs tracking-widest text-accent">我的阅读空间</span>
           <h2 className="my-3 font-serif text-2xl font-semibold">把读过的文字，整理成自己的文稿</h2>
           <p className="text-sm leading-relaxed text-muted-foreground">
             保存文章与划线，选择需要的材料，编辑后下载 Word 或 PDF。
@@ -330,7 +293,6 @@ export default function HomePage() {
           to="/essay"
           className="rounded-sm border bg-card p-7 transition-colors hover:border-accent/50"
         >
-          <span className="text-xs tracking-widest text-accent">议论文素材</span>
           <h2 className="my-3 font-serif text-2xl font-semibold">
             从一个概念出发，积累有出处的材料
           </h2>
@@ -343,7 +305,7 @@ export default function HomePage() {
         </Link>
       </section>
       {/* 引导区 */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
+      <section data-page-enter="section" className="mx-auto max-w-6xl px-6 py-16">
         <div className="border border-border/60 bg-card p-10 md:p-14 rounded-sm text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-accent/5 rounded-full translate-y-1/2 -translate-x-1/2" />

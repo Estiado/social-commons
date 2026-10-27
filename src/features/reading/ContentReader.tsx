@@ -156,7 +156,7 @@ export function ContentReader({
         <h2 className="font-serif text-3xl font-semibold">{record.document.title}</h2>
       )}
       {notice && (
-        <p role="status" className="text-sm text-accent">
+        <p key={notice} role="status" className="text-sm text-accent">
           {notice}
         </p>
       )}

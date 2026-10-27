@@ -1,0 +1,62 @@
+/* Motion is an enhancement. There is deliberately no hidden initial state. */
+[data-page-enter] {
+  scroll-margin-top: 96px;
+}
+main a,
+main button,
+main summary {
+  -webkit-tap-highlight-color: transparent;
+}
+main a:focus-visible,
+main button:focus-visible,
+main summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+main a:active,
+main button:not(:disabled):active,
+main summary:active {
+  opacity: 0.76;
+}
+[data-page-enter='item'] {
+  transition: background-color 160ms ease-out;
+}
+@media (hover: hover) {
+  a[data-page-enter='item']:hover {
+    background-color: var(--secondary);
+  }
+}
+main [role='status'],
+[data-page-enter='panel'] {
+  animation: reading-confirm 180ms ease-out;
+}
+#mobile-sections {
+  transform-origin: top;
+  animation: reading-menu 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes reading-confirm {
+  from {
+    opacity: 0.65;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes reading-menu {
+  from {
+    opacity: 0.7;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-page-enter],
+  main [role='status'],
+  #mobile-sections {
+    animation: none;
+    transition: none;
+  }
+}

@@ -18,12 +18,6 @@ export default function EventsPage() {
     <div className="mx-auto max-w-6xl px-6 py-12">
       {/* 页头 */}
       <div className="mb-10">
-        <div className="flex items-center gap-2 mb-3">
-          <Landmark className="h-4 w-4 text-accent" />
-          <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
-            Events · 群鉴
-          </span>
-        </div>
         <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">群鉴</h1>
         <p className="text-muted-foreground max-w-2xl leading-relaxed">
           以史为鉴，可以知兴替。每一个历史事件都不止一种叙述。这里汇集各方史料记载、原住民口述传统、后世学者研究，
@@ -47,9 +41,10 @@ export default function EventsPage() {
       <div className="space-y-6">
         {filtered.map((event) => (
           <Link
+            data-page-enter="item"
             key={event.id}
             to={`/events/${event.id}`}
-            className="group block border border-border/60 bg-card rounded-sm overflow-hidden hover:border-accent/30 transition-all duration-300 hover:shadow-md"
+            className="group block border border-border/60 bg-card rounded-sm overflow-hidden hover:border-accent/30"
           >
             <div className="p-8">
               <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -89,7 +84,7 @@ export default function EventsPage() {
                     份电子文献
                   </span>
                 </div>
-                <span className="flex items-center gap-1 text-sm text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="flex items-center gap-1 text-sm text-accent">
                   进入精读 <ArrowRight className="h-4 w-4" />
                 </span>
               </div>
