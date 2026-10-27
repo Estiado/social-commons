@@ -11,6 +11,8 @@ import { TOUR_STEPS } from './steps';
 import './tour.css';
 
 gsap.registerPlugin(ScrollToPlugin, useGSAP);
+// Keep this aligned with Layout's xl navigation breakpoint.
+const DESKTOP_NAVIGATION_WIDTH = 1280;
 interface FocusRect {
   left: number;
   top: number;
@@ -69,7 +71,7 @@ export default function GuidedTour({
 
   useEffect(() => {
     if (!step) return;
-    onMenuChange(step.target.startsWith('nav-') && window.innerWidth < 1024);
+    onMenuChange(step.target.startsWith('nav-') && window.innerWidth < DESKTOP_NAVIGATION_WIDTH);
     if (location.pathname !== step.path) navigate(step.path, { replace: true });
   }, [step, location.pathname, navigate, onMenuChange]);
 
@@ -127,7 +129,7 @@ export default function GuidedTour({
       if (!target) setFocus({ key: focusKey, rect: null, waiting: true });
     }, 7000);
     const resize = () => {
-      onMenuChange(step.target.startsWith('nav-') && window.innerWidth < 1024);
+      onMenuChange(step.target.startsWith('nav-') && window.innerWidth < DESKTOP_NAVIGATION_WIDTH);
       target = undefined;
       find();
     };

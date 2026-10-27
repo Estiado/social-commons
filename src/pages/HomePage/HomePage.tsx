@@ -35,6 +35,14 @@ export default function HomePage() {
   });
   return (
     <div>
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 pt-6 text-sm">
+        <Link to="/briefing" className="min-h-11 py-3 text-accent underline underline-offset-4">
+          阅读今日简报
+        </Link>
+        <Link to="/world" className="min-h-11 py-3 text-foreground underline underline-offset-4">
+          知天下 · 长期事件时间线
+        </Link>
+      </div>
       {/* Hero 区 - 撷英 */}
       <section className="relative overflow-hidden">
         {/* 宣纸纹理背景 */}

@@ -100,5 +100,5 @@ test('观澜全部资料均有可收藏的多段提要，阅读正文与导出�
         );
     }
   }
-  assert.equal(count, 38);
+  assert.equal(count, 42);
 });

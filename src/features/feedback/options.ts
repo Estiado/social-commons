@@ -6,6 +6,8 @@ export const FEEDBACK_PAGES = [
   { value: '/quotes', label: '撷英 · 诗文名句' },
   { value: '/essay', label: '议论文素材' },
   { value: '/guanlan', label: '观澜 · 时评与主题' },
+  { value: '/world', label: '知天下 · 长期事件' },
+  { value: '/briefing', label: '每日简报' },
   { value: '/reading', label: '阅读空间' },
   { value: '/reading/import', label: '文章导入' },
 ];

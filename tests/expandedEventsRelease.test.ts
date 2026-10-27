@@ -17,7 +17,7 @@ import {
 test('新增事件有完整经过和不同来源，全部正文与提要均可进入同一文稿', async () => {
   const previous = new Set(['heritage-short-video', 'ai-at-work', 'academic-bars']);
   const added = GUANLAN_EVENTS.filter((item) => !previous.has(item.id));
-  assert.equal(added.length, 9);
+  assert.equal(added.length, 10);
   for (const summary of added) {
     const event = (await getGuanlanEvent(summary.id))!;
     assert.ok(event.recap.paragraphs.length >= 3, summary.id);

@@ -1,0 +1,327 @@
+.world-page {
+  max-width: 1152px;
+  margin-inline: auto;
+  padding: 48px 24px;
+  color: var(--foreground);
+}
+.world-intro {
+  display: grid;
+  grid-template-columns: 1fr 1.45fr;
+  gap: 48px;
+  align-items: start;
+  padding-block: 16px 56px;
+}
+.world-intro h1 {
+  font: 600 clamp(48px, 7vw, 80px) / 1.2 var(--font-serif);
+  letter-spacing: -0.03em;
+}
+.world-intro p {
+  font-size: 16px;
+  line-height: 1.9;
+  max-width: 36em;
+}
+.world-intro .world-lead {
+  font: 500 28px/1.6 var(--font-serif);
+  margin-bottom: 24px;
+}
+.world-tracks {
+  padding: 32px;
+  background: var(--card);
+}
+.world-list-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+.world-list-heading h2,
+.world-note h2 {
+  font: 600 26px/1.5 var(--font-serif);
+}
+.world-list-heading label {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.world-list-heading input {
+  padding: 12px;
+  min-width: 240px;
+  background: var(--background);
+  border: 1px solid var(--input);
+  border-radius: 2px;
+  color: var(--foreground);
+}
+.world-list-heading input::placeholder {
+  color: var(--foreground);
+  opacity: 0.7;
+}
+.world-count {
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.world-story-row {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr) 100px;
+  gap: 32px;
+  align-items: start;
+  padding-block: 32px;
+}
+.world-period {
+  font-size: 14px;
+  line-height: 1.8;
+  font-variant-numeric: tabular-nums;
+}
+.world-story-row h3 {
+  font: 600 28px/1.5 var(--font-serif);
+  margin-bottom: 12px;
+}
+.world-story-row p {
+  line-height: 1.85;
+  font-size: 16px;
+}
+.world-story-row .world-period p,
+.world-update {
+  font-size: 14px;
+}
+.world-update {
+  margin-top: 14px;
+  line-height: 1.7;
+  font-variant-numeric: tabular-nums;
+}
+.world-read-link {
+  align-self: center;
+  padding-block: 10px;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  color: var(--accent);
+}
+.world-note {
+  margin-top: 48px;
+  padding: 32px;
+  background: var(--secondary);
+}
+.world-note p {
+  max-width: 62ch;
+  font-size: 16px;
+  line-height: 1.9;
+  margin-block: 16px;
+}
+.world-note a {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  margin-top: 14px;
+}
+.world-empty {
+  padding: 40px 0;
+  line-height: 1.8;
+}
+.world-empty button {
+  margin-top: 20px;
+  min-height: 44px;
+  padding: 10px 18px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.world-back {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.world-story-heading {
+  max-width: 780px;
+  padding-block: 32px 48px;
+}
+.world-story-heading h1 {
+  font: 600 clamp(36px, 5.5vw, 56px) / 1.4 var(--font-serif);
+  margin-bottom: 12px;
+}
+.world-story-heading > p {
+  margin-top: 18px;
+  font-size: 16px;
+  line-height: 1.85;
+}
+.world-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 26px;
+}
+.world-jump a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 18px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 14px;
+}
+.world-jump a + a {
+  color: var(--foreground);
+  background: var(--secondary);
+}
+.world-reading-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+.world-wayfinding {
+  position: sticky;
+  top: 96px;
+}
+.world-wayfinding h2 {
+  font: 600 20px/1.5 var(--font-serif);
+  margin-bottom: 14px;
+}
+.world-wayfinding nav a {
+  display: block;
+  font-size: 15px;
+  line-height: 1.65;
+  padding: 9px 0;
+  color: var(--foreground);
+}
+.world-wayfinding nav a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.world-node-select {
+  display: block;
+  font-size: 14px;
+  margin-top: 28px;
+}
+.world-node-select select {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 8px;
+  border: 1px solid var(--input);
+  color: var(--foreground);
+  background: var(--card);
+}
+.world-reading {
+  min-width: 0;
+}
+.world-page a,
+.world-page input,
+.world-page select,
+.world-page button {
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+}
+.world-page a:focus-visible,
+.world-page button:focus-visible,
+.world-page input:focus-visible,
+.world-page select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.world-page ::selection {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+@media (max-width: 900px) {
+  .world-reading-layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .world-wayfinding {
+    position: static;
+    padding: 22px;
+    background: var(--card);
+  }
+  .world-wayfinding nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 20px;
+  }
+  .world-wayfinding h2 {
+    width: 100%;
+  }
+  .world-node-select {
+    margin-top: 18px;
+  }
+  .world-story-row {
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 24px;
+  }
+  .world-read-link {
+    grid-column: 2;
+  }
+}
+@media (max-width: 600px) {
+  .world-page {
+    padding: 32px 20px;
+  }
+  .world-intro {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-block: 8px 36px;
+  }
+  .world-intro h1 {
+    font-size: 48px;
+  }
+  .world-intro .world-lead {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  .world-tracks {
+    padding: 22px 18px;
+  }
+  .world-list-heading {
+    gap: 20px;
+  }
+  .world-list-heading label {
+    display: block;
+    width: 100%;
+  }
+  .world-list-heading input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin-top: 8px;
+  }
+  .world-story-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding-block: 28px;
+  }
+  .world-story-row h3 {
+    font-size: 26px;
+  }
+  .world-story-row .world-period {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+  }
+  .world-read-link {
+    grid-column: auto;
+  }
+  .world-note {
+    padding: 24px;
+    margin-top: 32px;
+  }
+  .world-note h2 {
+    font-size: 24px;
+  }
+  .world-story-heading {
+    padding-block: 24px 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .world-page * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}

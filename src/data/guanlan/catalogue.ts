@@ -146,6 +146,16 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
     summary: EDITORIAL['GUANLAN_EVENTS.gpt-sycophancy.summary'],
     question: EDITORIAL['GUANLAN_EVENTS.gpt-sycophancy.question'],
   },
+  {
+    id: 'global-risk-2026',
+    sortDate: '2026-09-15',
+    dateLabel: '报告发布：2026年9月15日；调查：2月19日至4月24日',
+    topicIds: ['international-global', 'ecology-future', 'tech-ai', 'philosophy-thinking'],
+    keywords: ['联合国', '风险报告', '风险感知', '战争', '气候', '人工智能', '全球治理'],
+    title: EDITORIAL['GUANLAN_EVENTS.global-risk-2026.title'],
+    summary: EDITORIAL['GUANLAN_EVENTS.global-risk-2026.summary'],
+    question: EDITORIAL['GUANLAN_EVENTS.global-risk-2026.question'],
+  },
 ];
 
 export function eventsForTopic(topicId?: string): GuanlanEventSummary[] {

@@ -1,0 +1,182 @@
+.daily-brief-dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(720px, calc(100vw - 32px));
+  max-width: 720px;
+  max-height: calc(100dvh - 48px);
+  padding: 28px;
+  gap: 0;
+  border: 0;
+  border-radius: 4px;
+  background: var(--card);
+  overflow: hidden;
+  color: var(--foreground);
+}
+.brief-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.brief-date,
+.brief-meta {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--foreground);
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+.brief-close {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  margin: -8px -8px 0 0;
+}
+.brief-description {
+  margin: 16px 0 0;
+  color: var(--foreground);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.brief-readings {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin-top: 22px;
+  padding-right: 10px;
+  min-height: 0;
+}
+.brief-readings section {
+  padding: 20px;
+  background: var(--background);
+  margin-bottom: 16px;
+}
+.brief-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: var(--accent);
+}
+.brief-news-title,
+.brief-concept-title {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  line-height: 1.65;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.brief-body {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-top: 12px;
+}
+.brief-poem {
+  white-space: pre-line;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 1.95;
+}
+.brief-attribution {
+  display: block;
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.7;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.brief-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 20px;
+}
+.brief-primary,
+.brief-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  border-radius: 2px;
+}
+.brief-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.brief-secondary {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+}
+.brief-primary:hover {
+  background: var(--accent);
+}
+.brief-secondary:hover,
+.brief-close:hover {
+  background: var(--muted);
+}
+.brief-news-title:hover,
+.brief-concept-title:hover,
+.brief-attribution:hover {
+  color: var(--accent);
+}
+.daily-brief-dialog :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.daily-brief-dialog ::selection {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+.brief-page {
+  max-width: 850px;
+  padding: 40px 24px;
+  margin-inline: auto;
+}
+.brief-page header {
+  margin-block: 24px 36px;
+}
+.brief-page h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(30px, 5vw, 44px);
+  font-weight: 600;
+}
+.brief-page > a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--accent);
+}
+@media (max-width: 600px) {
+  .daily-brief-dialog {
+    padding: 20px;
+    max-height: calc(100dvh - 24px);
+  }
+  .brief-readings {
+    margin-top: 16px;
+    padding-right: 4px;
+  }
+  .brief-readings section {
+    padding: 16px;
+  }
+  .brief-poem {
+    font-size: 17px;
+    line-height: 1.85;
+  }
+  .brief-actions {
+    gap: 8px;
+    padding-top: 16px;
+  }
+  .brief-primary {
+    flex: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .daily-brief-dialog {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -12,10 +12,14 @@ export type ContentKind =
   | 'essay'
   | 'topic'
   | 'guanlan-event'
+  | 'world'
+  | 'briefing'
   | 'public-article';
 export const SITE_ORIGIN = 'https://social-commons.pages.dev';
 export function contentPath(kind: ContentKind, id: string): string {
   const encoded = encodeURIComponent(id);
+  if (kind === 'world') return `/world/${encoded}`;
+  if (kind === 'briefing') return `/briefing?date=${encoded}`;
   return kind === 'daily'
     ? `/daily/${encoded}`
     : kind === 'quote'
@@ -274,6 +278,21 @@ export function essayDocument(item: IEssayMaterial): ArticleDocument {
 /** Only the requested catalogue is loaded; opening a quote does not load all
  * history, essays, public articles and private documents. */
 export async function loadContentDocument(kind: ContentKind, id: string): Promise<ArticleDocument> {
+  if (kind === 'world') {
+    const [{ getWorldStory }, { worldStoryDocument }] = await Promise.all([
+      import('../../data/world/index.ts'),
+      import('../world/storyDocument.ts'),
+    ]);
+    const story = await getWorldStory(id);
+    if (story) return worldStoryDocument(story);
+  }
+  if (kind === 'briefing') {
+    const [{ briefingEdition }, { briefingDocument }] = await Promise.all([
+      import('../briefing/edition.ts'),
+      import('../briefing/document.ts'),
+    ]);
+    return briefingDocument(briefingEdition(id));
+  }
   if (kind === 'guanlan-event') {
     const [{ getGuanlanEvent }, { guanlanEventDocument }] = await Promise.all([
       import('../../data/guanlan/index.ts'),

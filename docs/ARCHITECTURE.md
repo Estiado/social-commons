@@ -2,21 +2,25 @@
 
 ## 分层
 
-| 层 | 位置 | 只负责什么 |
-| --- | --- | --- |
-| 路由与页面 | `src/app.tsx`、`src/pages/` | 选择条目、组织交互；首页之外按需加载 |
-| 阅读领域 | `src/features/reading/` | 统一模型、收藏、索引、独立文稿、导出 |
-| 其他业务 | `src/features/essay/`、`auth/` | 个人素材和后续账号能力 |
-| 内容与公共 UI | `src/data/`、`src/components/` | 内容目录、导航、通用控件 |
-| 服务端 | `server/` | 受限抓取、无状态提取和限流 |
-| 平台入口 | `functions/api/` | Cloudflare Request/Response 适配 |
-| 数据库 | `supabase/` | 新表、RLS、精选元数据及种子 |
-| 内测反馈 | `src/features/feedback/` | 校验主动填写信息，通过受限RPC写入私人收件表并确认回执；本地副本备用 |
-| 使用指引 | `src/features/onboarding/` | 显式路线与目标、按需动画、首次标记；不执行业务写入 |
-| 观澜事件 | `src/data/guanlan/`、`src/features/guanlan/` | 轻量目录、独立案例正文、来源筛选和统一文章转换 |
-| 编辑正文 | `content/站内编辑稿.md`、`scripts/editorial-content.ts` | 单一文本来源、引用校验、按模块生成；原句和书目独立保留 |
+| 层            | 位置                                                    | 只负责什么                                                          |
+| ------------- | ------------------------------------------------------- | ------------------------------------------------------------------- |
+| 路由与页面    | `src/app.tsx`、`src/pages/`                             | 选择条目、组织交互；首页之外按需加载                                |
+| 阅读领域      | `src/features/reading/`                                 | 统一模型、收藏、索引、独立文稿、导出                                |
+| 其他业务      | `src/features/essay/`、`auth/`                          | 个人素材和后续账号能力                                              |
+| 内容与公共 UI | `src/data/`、`src/components/`                          | 内容目录、导航、通用控件                                            |
+| 服务端        | `server/`                                               | 受限抓取、无状态提取和限流                                          |
+| 平台入口      | `functions/api/`                                        | Cloudflare Request/Response 适配                                    |
+| 数据库        | `supabase/`                                             | 新表、RLS、精选元数据及种子                                         |
+| 内测反馈      | `src/features/feedback/`                                | 校验主动填写信息，通过受限RPC写入私人收件表并确认回执；本地副本备用 |
+| 使用指引      | `src/features/onboarding/`                              | 显式路线与目标、按需动画、首次标记；不执行业务写入                  |
+| 观澜事件      | `src/data/guanlan/`、`src/features/guanlan/`            | 轻量目录、独立案例正文、来源筛选和统一文章转换                      |
+| 知天下        | `src/data/world/`、`src/features/world/`                | 长期事件目录、按需正文、节点来源及统一文章转换                      |
+| 每日简报      | `src/features/briefing/`                                | 北京日期、编辑材料轮换、弹窗与阅读模型，不自动采集新闻              |
+| 编辑正文      | `content/站内编辑稿.md`、`scripts/editorial-content.ts` | 单一文本来源、引用校验、按模块生成；原句和书目独立保留              |
 
 具体文件职责见 [目录导览](REPOSITORY_GUIDE.md)。
+
+知天下和每日简报的路由、日期规则及内容更新见[维护说明](WORLD_AND_BRIEFING.md)。两者使用`world`、`briefing`内容类型接入原阅读器；全站搜索只索引长期事件摘要，正文独立加载。弹窗先于首次指引；完整导航和指引断点统一为1280px。动效限于短入场并清理GSAP作用域，滚动保持原生。
 
 ## 本机与云端
 

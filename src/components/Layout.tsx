@@ -14,6 +14,9 @@ import {
 } from 'lucide-react';
 import { feedbackLink } from '@/features/feedback/navigation';
 import { shouldOfferTour } from '@/features/onboarding/preferences';
+import { useChinaDay } from '@/features/briefing/useChinaDay';
+import { ErrorBoundary } from 'react-error-boundary';
+const DailyBriefDialog = lazy(() => import('@/features/briefing/DailyBriefDialog'));
 const GuidedTour = lazy(() => import('@/features/onboarding/GuidedTour'));
 const GlobalSearch = lazy(() =>
   import('./GlobalSearch').then((module) => ({ default: module.GlobalSearch })),
@@ -25,6 +28,7 @@ const NAV_ITEMS = [
   { path: '/quotes', label: '撷英', icon: Feather },
   { path: '/essay', label: '议论文素材', icon: PenTool },
   { path: '/guanlan', label: '观澜', icon: Waves },
+  { path: '/world', label: '知天下', icon: BookOpen },
   { path: '/reading', label: '阅读空间', icon: User },
 ];
 
@@ -33,6 +37,8 @@ export function Layout() {
   const feedbackPath = feedbackLink(location.pathname, location.search);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [briefOpen, setBriefOpen] = useState(true);
+  const day = useChinaDay();
   const [tourOpen, setTourOpen] = useState(() => {
     try {
       return shouldOfferTour(localStorage);
@@ -42,7 +48,7 @@ export function Layout() {
   });
   useEffect(() => {
     const shortcut = (event: KeyboardEvent) => {
-      if (tourOpen) return;
+      if (tourOpen || briefOpen) return;
       if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
         event.preventDefault();
         setSearchOpen(true);
@@ -50,14 +56,26 @@ export function Layout() {
     };
     window.addEventListener('keydown', shortcut);
     return () => window.removeEventListener('keydown', shortcut);
-  }, [tourOpen]);
+  }, [tourOpen, briefOpen]);
+  const openBrief = () => {
+    setMobileOpen(false);
+    setSearchOpen(false);
+    setTourOpen(false);
+    setBriefOpen(true);
+  };
+  const openTour = () => {
+    setBriefOpen(false);
+    setSearchOpen(false);
+    setMobileOpen(false);
+    setTourOpen(true);
+  };
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header
         data-tour-shell
         className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md"
       >
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-6">
           <NavLink to="/" className="group flex shrink-0 items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary font-serif text-lg font-bold text-primary-foreground group-hover:bg-accent">
               通
@@ -71,7 +89,7 @@ export function Layout() {
               </span>
             </span>
           </NavLink>
-          <nav aria-label="主导航" className="hidden items-center gap-1 lg:flex">
+          <nav aria-label="主导航" className="hidden items-center gap-1 xl:flex">
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.path}
@@ -79,13 +97,20 @@ export function Layout() {
                 to={item.path}
                 end={item.end}
                 className={({ isActive }) =>
-                  `flex items-center gap-1.5 whitespace-nowrap rounded-sm px-2 py-2 text-sm ${isActive ? 'bg-accent/5 text-accent' : 'text-muted-foreground hover:text-foreground'}`
+                  `flex min-h-11 items-center whitespace-nowrap rounded-sm px-2 py-2 text-sm ${isActive ? 'bg-accent/5 text-accent' : 'text-muted-foreground hover:text-foreground'}`
                 }
               >
-                <item.icon className="h-4 w-4" />
                 {item.label}
               </NavLink>
             ))}
+            <button
+              type="button"
+              onClick={openBrief}
+              data-tour="nav-briefing"
+              className="min-h-11 whitespace-nowrap px-2 text-sm text-accent"
+            >
+              今日简报
+            </button>
             <button
               aria-label="搜索全站"
               data-tour="nav-search"
@@ -105,7 +130,7 @@ export function Layout() {
               内测反馈
             </NavLink>
           </nav>
-          <nav aria-label="移动端导航" className="flex shrink-0 items-center gap-1 lg:hidden">
+          <nav aria-label="移动端导航" className="flex shrink-0 items-center gap-1 xl:hidden">
             <NavLink
               aria-label="我的阅读空间"
               to="/reading"
@@ -136,7 +161,7 @@ export function Layout() {
           <nav
             id="mobile-sections"
             aria-label="网站栏目菜单"
-            className="grid grid-cols-3 gap-2 border-t px-5 py-4 lg:hidden"
+            className="grid grid-cols-3 gap-2 border-t px-5 py-4 xl:hidden"
           >
             {NAV_ITEMS.map((item) => (
               <NavLink
@@ -152,6 +177,14 @@ export function Layout() {
                 {item.label}
               </NavLink>
             ))}
+            <button
+              type="button"
+              data-tour="nav-briefing"
+              onClick={openBrief}
+              className="rounded-sm border p-3 text-center text-sm text-accent"
+            >
+              今日简报
+            </button>
             <Link
               to={feedbackPath}
               data-tour="nav-feedback"
@@ -164,8 +197,7 @@ export function Layout() {
               type="button"
               className="rounded-sm border p-3 text-center text-sm text-muted-foreground"
               onClick={() => {
-                setMobileOpen(false);
-                setTourOpen(true);
+                openTour();
               }}
             >
               使用指引
@@ -192,17 +224,16 @@ export function Layout() {
             本站内容仅供学习交流，引用请核对原始出处。个人文章与摘录保存在当前浏览器。
           </p>
           <div className="mt-4 flex flex-wrap gap-5 text-sm">
+            <button type="button" className="text-accent underline" onClick={openBrief}>
+              今日简报
+            </button>
             <Link to={feedbackPath} className="text-accent underline">
               内测反馈
             </Link>
             <Link to="/reading?tab=legacy" className="text-muted-foreground underline">
               数据与备份
             </Link>
-            <button
-              type="button"
-              className="text-muted-foreground underline"
-              onClick={() => setTourOpen(true)}
-            >
+            <button type="button" className="text-muted-foreground underline" onClick={openTour}>
               使用指引
             </button>
           </div>
@@ -213,7 +244,48 @@ export function Layout() {
           <GlobalSearch open onOpenChange={setSearchOpen} />
         </Suspense>
       )}
-      {tourOpen && (
+      {briefOpen && (
+        <ErrorBoundary
+          fallbackRender={({ resetErrorBoundary }) => (
+            <div
+              role="status"
+              className="fixed bottom-5 right-5 z-50 max-w-sm bg-card p-6 shadow-lg"
+            >
+              <p>简报暂时无法打开，其他栏目仍可使用。</p>
+              <button
+                className="mt-3 text-accent underline"
+                onClick={() => {
+                  setBriefOpen(false);
+                  resetErrorBoundary();
+                }}
+              >
+                继续浏览
+              </button>
+            </div>
+          )}
+        >
+          <Suspense
+            fallback={
+              <div role="status" className="fixed bottom-5 right-5 z-50 bg-card p-5">
+                <p>正在准备每日简报…</p>
+                <button className="mt-2 text-accent underline" onClick={() => setBriefOpen(false)}>
+                  先浏览网站
+                </button>
+              </div>
+            }
+          >
+            <DailyBriefDialog
+              day={day}
+              onClose={() => setBriefOpen(false)}
+              onNavigate={() => {
+                setBriefOpen(false);
+                setTourOpen(false);
+              }}
+            />
+          </Suspense>
+        </ErrorBoundary>
+      )}
+      {tourOpen && !briefOpen && (
         <Suspense fallback={null}>
           <GuidedTour onClose={() => setTourOpen(false)} onMenuChange={setMobileOpen} />
         </Suspense>

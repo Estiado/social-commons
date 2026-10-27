@@ -5,9 +5,18 @@ import { EVENTS } from './events.ts';
 import { ESSAY_MATERIALS } from './essay.ts';
 import type { SearchDocument } from '../lib/search.ts';
 import { GUANLAN_EVENTS } from './guanlan/catalogue.ts';
+import { WORLD_STORIES } from './world/catalogue.ts';
 
 // 随搜索弹窗按需加载；索引由模块缓存，不在每次输入时重建全文字符串。
 export const SEARCH_INDEX: SearchDocument[] = [
+  ...WORLD_STORIES.map((item) => ({
+    id: 'world-' + item.id,
+    type: 'world' as const,
+    title: item.title,
+    subtitle: '知天下 · 长期事件',
+    path: '/world/' + item.id,
+    searchText: [item.title, item.summary, ...item.keywords].join(' ').toLowerCase(),
+  })),
   ...GUANLAN_EVENTS.map((item) => ({
     id: `guanlan-event-${item.id}`,
     type: 'guanlan-event' as const,

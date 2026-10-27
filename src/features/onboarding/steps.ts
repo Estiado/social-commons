@@ -225,6 +225,24 @@ export const TOUR_STEPS: TourStep[] = [
       '顶部放大镜可以查找站内概念、诗文、历史事件和主题；电脑也能按 Ctrl / Command + K 打开。私人正文请在阅读空间内搜索。',
   },
   {
+    id: 'nav-world',
+    path: '/guanlan',
+    target: 'nav-world',
+    chapter: '认识导航',
+    title: '知天下：沿时间读懂长期事件',
+    description:
+      '俄乌、巴以与联合国长期行动都按节点组织。进入后可先看最近进展，也可从头阅读，并把正文保存到阅读空间。',
+  },
+  {
+    id: 'nav-briefing',
+    path: '/guanlan',
+    target: 'nav-briefing',
+    chapter: '认识导航',
+    title: '今日简报：随时再读一次',
+    description:
+      '每天按北京时间换一组时事、完整诗文和概念。每次打开网站先弹出；关闭后仍可从这里重看，并保存为自己的阅读文稿。',
+  },
+  {
     id: 'feedback',
     path: '/guanlan',
     target: 'nav-feedback',

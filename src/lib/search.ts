@@ -1,4 +1,4 @@
-export type SearchType = 'daily' | 'quote' | 'event' | 'essay' | 'guanlan-event';
+export type SearchType = 'daily' | 'quote' | 'event' | 'essay' | 'guanlan-event' | 'world';
 
 export interface SearchResult {
   id: string;

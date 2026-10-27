@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Calendar, Feather, Landmark, PenTool, Waves, X } from 'lucide-react';
+import { Search, Calendar, Feather, Landmark, PenTool, Waves, X, BookOpen } from 'lucide-react';
 import {
   Command,
   CommandEmpty,
@@ -14,6 +14,13 @@ import { SEARCH_INDEX } from '@/data/searchIndex';
 import { searchDocuments, type SearchType } from '@/lib/search';
 
 const GROUPS = [
+  {
+    type: 'world',
+    heading: '知天下 · 长期事件',
+    label: '知天下',
+    icon: BookOpen,
+    color: 'text-accent',
+  },
   {
     type: 'guanlan-event',
     heading: '观澜 · 事件精读',
@@ -62,7 +69,7 @@ export function GlobalSearch({
       <DialogContent className="p-0 overflow-hidden max-w-2xl">
         <DialogTitle className="sr-only">全站搜索</DialogTitle>
         <DialogDescription className="sr-only">
-          搜索观澜事件、通识、名句、历史事件和议论文素材。
+          搜索知天下、观澜事件、通识、名句、历史事件和议论文素材。
         </DialogDescription>
         {/* 已按正文检索完成；禁用 cmdk 按 ID 再过滤，否则中文命中会被隐藏。 */}
         <Command shouldFilter={false} className="rounded-lg border shadow-md">

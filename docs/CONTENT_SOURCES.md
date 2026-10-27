@@ -1,6 +1,17 @@
 # 内容维护与本轮来源
 
-更新：2026-10-25。本轮补充现有栏目，不新增需要账号的系统。具体条目中的出处链接是维护入口，不能用本文件代替原文。
+更新：2026-10-27。具体条目中的出处链接是维护入口，不能用本文件代替原文。
+
+## 知天下与联合国全球风险报告 · 2026-10-27
+
+- 用户提供的`un_2026_global_risk_report.pdf`为20,016,529字节，SHA-256 `794d7401304c63d8555c2e1add98e3738d6746cfbc702d7e5aca9767e952ef9b`。25个PDF物理页面为双页版，不能误记为25页报告正文。全文提取60,642字符，并实际渲染核对物理页12（印刷18—19页）和24（印刷42—43页）的紧迫性与方法资料。副本、提取文本和截图仅在D盘`.artifacts/world-brief-sources`，未提交或上传原附件。
+- 报告[联合国入口](https://www.un.org/en/global-risk-report)、[UNDRR资料与下载入口](https://www.preventionweb.net/publication/documents-and-publications/un-global-risk-report-2026)与用户原PDF相互核对；[新华社9月16日报道](https://www.xinhuanet.com/20260916/7e49cfe6a05b4e9b905999717ca93726/c.html)确认9月15日发布。[NUS IPUR区域解读](https://ipur.nus.edu.sg/un-global-risk-report-2026-asia-faces-rising-security-and-ai-threats-as-climate-concerns-slip-down-priority-list/)是参与机构视角，未当作独立调查。个别原站有访问限制；下载入口不冒充站内PDF镜像。
+- 采用1,300份保留回答、28项风险、2026年2月19日至4月24日征集的口径。战争紧迫性上升16位是排名变化；36%与76%是受访判断的时间区间分布；86%指风险降低资金不足的受访判断。欧洲与北美50.3%、东亚与东南亚6.7%用于说明样本结构，不声称代表世界人口。风险关联网络不当作已估计的因果关系，2030回溯情景不写成预测。
+- 知天下俄乌脉络查阅新华社2022年历史背景/2月24日报道、联大68/262决议目录、黑海粮食倡议FAQ、安理会2026年2月24日逐字记录，以及[总台10月26日报道](https://news.cri.cn/20261026/4cf2fded-aa82-42fe-9856-911bfef2dfbd.html)。10月25日为拟恢复接触信号，不写成会谈已完成或战争结束。2014年“春”保持原精度，排序键不显示为假定的精确日期。
+- 巴以脉络查阅联合国巴勒斯坦问题历史时间表、央视背景专题、新华社2026年10月7日回顾、安理会2728号决议、央视2025年10月27日节目，以及总台2026年10月7日和联合国10月15日资料。2025年10月10日停火与2026年的脆弱执行分开；不固定滚动变化的伤亡总数，不把单方表态合并为双方共识。
+- 联合国2030议程查阅新华社2016年背景、17项目标原站、2023年峰会、2024年未来契约、[新华社2026年7月8日报道](https://www.xinhuanet.com/20260708/aeee6377f6814a56b3d7256afb47e69f/c.html)及[联合国2026年目标进展报告](https://unstats.un.org/sdgs/report/2026/)。139个可评估目标中36%按轨道或有适度进展，49%进展缓慢、15%倒退；不是36%的国家完成全部目标，也不与SDSN指数混用。
+- 三条脉络共25节点、9组出处视角；新增报告4份站内提要，观澜合计13事件/42份提要。本站文字经humanizer-zh检查重复与套话，事实口径不随润色扩大。原有文学、历史和素材数量未变。
+- 另只读提取用户`github素材库.docx`中的工具与设计参考。保留现有版式，选择GSAP小幅入场，不采用文档内未经复核的星数/性能宣传。参考会话只有内容占位引用，未作为报告事实证据。
 
 ## 本次全站扩容 · 12篇事件版本
 
@@ -8,17 +19,17 @@
 
 ### 九篇新事件的直接材料
 
-| 事件 | 已查阅来源与范围 |
-| --- | --- |
-| 跨平台自我呈现 | [戴瑶，中国青年报，2026-09-10](https://news.youth.cn/sh/202609/t20260910_16861503.htm)全文，1011人调查及化名访谈；Marwick/boyd、Litt、Nissenbaum原出版摘要或作者文献，保留各自研究范围。 |
-| 大学新生社交 | [中国青年报对陈友华的访谈，2026-09-17](https://txs.youth.cn/xw/202609/t20260917_16873961.htm)，1334人调查与专家解释分开；Walton/Cohen 2007原论文摘要、Granovetter 1973出版摘要。没有把美国种族情境等同中国新生总体。 |
-| 西贝争议 | [21财经事件追踪](https://m.21jingji.com/journal/206.html)与[张晓翀、阎侠，新京报贝壳财经回访，2026-09-21](https://m.21jingji.com/article/20260921/herald/870dd5ffdad892e498e4bc56dc218902.html)。后者为21财经转载，未误署为21世纪经济报道原采写；指控、企业口径和专家解释分开。Nelson只作信息分析框架，不冒充研究该企业。 |
-| 跨城观演 | [界面刊载摩天轮暑期资料](https://www.jiemian.com/article/15110227.html)，核读发布正文；明确是单一平台商业资料，非全国普查；Konvalinka等2011仪式研究与Becker书介提供比较，不将火行仪式直接当作演唱会实验。 |
-| 县城旅游 | [杜海燕、王亚赛，澎湃，2026-10-09](https://m.thepaper.cn/newsDetail_forward_34123204)与[郭净净，界面沁阳走访，2026-10-04](https://www.jiemian.com/article/15160824.html)正文；不同平台订单与总人数分开，MacCannell仅作空间分析框架。 |
-| LABUBU衍生品 | [泡泡玛特认证账号发布，2026-08-28](https://www.sina.cn/news/detail/5336858151879471.html)，完整发布页。9月分批发售，不误写为全部9月24日发售；品牌叙事不冒充独立消费效果。Shen/Fishbach/Hsee研究与Pierce等理论不直接推断本系列购买者。 |
-| 乌镇戏剧节 | [梁美琪、王春燕，新快报开幕报道，2026-10-17](https://jg-static.eeo.com.cn/article/info?id=ce8aceac5c5de495e4336e153565b251)，经济观察网转载页正文；不混用8月发布会与开幕时变化后的规模，不预写闭幕结果。Becker与MacCannell是比较框架。 |
-| Facebook实验 | [Kramer等，PNAS 2014](https://doi.org/10.1073/pnas.1320040111)原摘要/论文页；[编辑关注声明](https://pmc.ncbi.nlm.nih.gov/articles/PMC4115552/)原站检索正文；[Michael W. Ross，APA刊物2014评论](https://www.apa.org/monitor/2014/10/research-ethics)。实验2012、发表2014；关注声明不误写成撤稿，情绪词不等于直接测得完整心理状态。PMC直开曾返回验证页，未称所有端点持续可访问。 |
-| GPT迎合回滚 | [OpenAI 2025-04-29说明](https://openai.com/index/sycophancy-in-gpt-4o/)、[5月2日复盘](https://openai.com/index/expanding-on-sycophancy/)及[Sharma等v4摘要](https://arxiv.org/abs/2310.13548v4)。公司自述与研究分开，不用旧研究替代当前模型测评；v4是2025年修订，初稿2023年。 |
+| 事件           | 已查阅来源与范围                                                                                                                                                                                                                                                                                                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 跨平台自我呈现 | [戴瑶，中国青年报，2026-09-10](https://news.youth.cn/sh/202609/t20260910_16861503.htm)全文，1011人调查及化名访谈；Marwick/boyd、Litt、Nissenbaum原出版摘要或作者文献，保留各自研究范围。                                                                                                                                                                                       |
+| 大学新生社交   | [中国青年报对陈友华的访谈，2026-09-17](https://txs.youth.cn/xw/202609/t20260917_16873961.htm)，1334人调查与专家解释分开；Walton/Cohen 2007原论文摘要、Granovetter 1973出版摘要。没有把美国种族情境等同中国新生总体。                                                                                                                                                           |
+| 西贝争议       | [21财经事件追踪](https://m.21jingji.com/journal/206.html)与[张晓翀、阎侠，新京报贝壳财经回访，2026-09-21](https://m.21jingji.com/article/20260921/herald/870dd5ffdad892e498e4bc56dc218902.html)。后者为21财经转载，未误署为21世纪经济报道原采写；指控、企业口径和专家解释分开。Nelson只作信息分析框架，不冒充研究该企业。                                                      |
+| 跨城观演       | [界面刊载摩天轮暑期资料](https://www.jiemian.com/article/15110227.html)，核读发布正文；明确是单一平台商业资料，非全国普查；Konvalinka等2011仪式研究与Becker书介提供比较，不将火行仪式直接当作演唱会实验。                                                                                                                                                                      |
+| 县城旅游       | [杜海燕、王亚赛，澎湃，2026-10-09](https://m.thepaper.cn/newsDetail_forward_34123204)与[郭净净，界面沁阳走访，2026-10-04](https://www.jiemian.com/article/15160824.html)正文；不同平台订单与总人数分开，MacCannell仅作空间分析框架。                                                                                                                                           |
+| LABUBU衍生品   | [泡泡玛特认证账号发布，2026-08-28](https://www.sina.cn/news/detail/5336858151879471.html)，完整发布页。9月分批发售，不误写为全部9月24日发售；品牌叙事不冒充独立消费效果。Shen/Fishbach/Hsee研究与Pierce等理论不直接推断本系列购买者。                                                                                                                                          |
+| 乌镇戏剧节     | [梁美琪、王春燕，新快报开幕报道，2026-10-17](https://jg-static.eeo.com.cn/article/info?id=ce8aceac5c5de495e4336e153565b251)，经济观察网转载页正文；不混用8月发布会与开幕时变化后的规模，不预写闭幕结果。Becker与MacCannell是比较框架。                                                                                                                                         |
+| Facebook实验   | [Kramer等，PNAS 2014](https://doi.org/10.1073/pnas.1320040111)原摘要/论文页；[编辑关注声明](https://pmc.ncbi.nlm.nih.gov/articles/PMC4115552/)原站检索正文；[Michael W. Ross，APA刊物2014评论](https://www.apa.org/monitor/2014/10/research-ethics)。实验2012、发表2014；关注声明不误写成撤稿，情绪词不等于直接测得完整心理状态。PMC直开曾返回验证页，未称所有端点持续可访问。 |
+| GPT迎合回滚    | [OpenAI 2025-04-29说明](https://openai.com/index/sycophancy-in-gpt-4o/)、[5月2日复盘](https://openai.com/index/expanding-on-sycophancy/)及[Sharma等v4摘要](https://arxiv.org/abs/2310.13548v4)。公司自述与研究分开，不用旧研究替代当前模型测评；v4是2025年修订，初稿2023年。                                                                                                   |
 
 新增来源多在现有提取白名单之外，非研究原文入口明确进入粘贴模式，不开放代理、不承诺自动抓取全文。38份站内提要是有归因的短读，不是38篇媒体/论文全文镜像。
 
@@ -50,43 +61,43 @@ q99—q106依次为韩愈《马说》、苏轼《江城子》、秦观《鹊桥�
 
 新增三个完整事件、十份来源。站内短读并非媒体全文库；50篇2026年7—10月近期目录保持，不把旧报道或论文伪装为新的时评。以下范围属于维护台账，不加入读者赏析正文。
 
-| 事件 | 来源与实际核对范围 |
-| --- | --- |
-| 非遗短视频 | [张涛甫，澎湃，2026-10-23](https://www.thepaper.cn/newsDetail_forward_34273575)，全文及短引“视频可以重播，手艺却得由后来者继承。”；[常沙娜，澎湃，2026-10-20](https://www.thepaper.cn/newsDetail_forward_34236648)，全文；[Barbara Kirshenblatt-Gimblett, Intangible Heritage as Metacultural Production, 2004](https://doi.org/10.1111/j.1350-0775.2004.00458.x)，核对[Stellenbosch Heritage Foundation公开14页电子版](https://www.stellenboschheritage.co.za/wp-content/uploads/Intangible-Heritage.pdf)及印刷页53、58—59。该PDF是基金会公开馆藏，不称出版社原站，不本地镜像。 |
-| 职场AI | [嗡嗡，新周刊，2026-10-13](https://eu.36kr.com/zh/p/4023610911362949)，36氪经授权转载页全文和署名；[孙一洲，澎湃，2026-10-21](https://www.thepaper.cn/newsDetail_forward_34261996)，全文；[Brynjolfsson、Rock、Syverson, AEJ: Macroeconomics 13(1):333–372, 2021](https://www.aeaweb.org/articles?id=10.1257/mac.20180386)，出版站摘要；[Brynjolfsson、Li、Raymond, NBER 31161, 2023年11月修订版](https://www.nber.org/papers/w31161)，原出版站检索摘要，直开有403。只写客服场景平均效益与经验异质性，不混用2025年QJE版数值，不推及所有岗位。36氪未在提取适配器内，从该来源进入粘贴正文模式，不开放任意代理。 |
-| 学术酒吧 | [刘珈宜、史羽梵、孙士雯、张鑫茹，新潮/澎湃号，2024-11-16](https://m.thepaper.cn/newsDetail_forward_29354214)，全文，作者注明学生记者；[覃鑫渊，青年发展论坛2025,35(5):5–13](https://jxst.cbpt.cnki.net/portal/journal/portal/client/paper/8b35dcf51e6045b2054ad17decf3b6b1)，出版页书目/公开摘要，方法为网络民族志、参与式观察与半结构式访谈，不虚构样本数；[王健，北京青年研究2026,35(4):86–93](https://bjqz.cbpt.cnki.net/portal/journal/portal/client/paper/d00fdac81d2ed1b492cfbda25a492bcf)，公开摘要/书目，方法为网络文本分析，不误写成访谈。现象2024年报道与2026-07-10研究日期分开。 |
+| 事件       | 来源与实际核对范围                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 非遗短视频 | [张涛甫，澎湃，2026-10-23](https://www.thepaper.cn/newsDetail_forward_34273575)，全文及短引“视频可以重播，手艺却得由后来者继承。”；[常沙娜，澎湃，2026-10-20](https://www.thepaper.cn/newsDetail_forward_34236648)，全文；[Barbara Kirshenblatt-Gimblett, Intangible Heritage as Metacultural Production, 2004](https://doi.org/10.1111/j.1350-0775.2004.00458.x)，核对[Stellenbosch Heritage Foundation公开14页电子版](https://www.stellenboschheritage.co.za/wp-content/uploads/Intangible-Heritage.pdf)及印刷页53、58—59。该PDF是基金会公开馆藏，不称出版社原站，不本地镜像。                              |
+| 职场AI     | [嗡嗡，新周刊，2026-10-13](https://eu.36kr.com/zh/p/4023610911362949)，36氪经授权转载页全文和署名；[孙一洲，澎湃，2026-10-21](https://www.thepaper.cn/newsDetail_forward_34261996)，全文；[Brynjolfsson、Rock、Syverson, AEJ: Macroeconomics 13(1):333–372, 2021](https://www.aeaweb.org/articles?id=10.1257/mac.20180386)，出版站摘要；[Brynjolfsson、Li、Raymond, NBER 31161, 2023年11月修订版](https://www.nber.org/papers/w31161)，原出版站检索摘要，直开有403。只写客服场景平均效益与经验异质性，不混用2025年QJE版数值，不推及所有岗位。36氪未在提取适配器内，从该来源进入粘贴正文模式，不开放任意代理。 |
+| 学术酒吧   | [刘珈宜、史羽梵、孙士雯、张鑫茹，新潮/澎湃号，2024-11-16](https://m.thepaper.cn/newsDetail_forward_29354214)，全文，作者注明学生记者；[覃鑫渊，青年发展论坛2025,35(5):5–13](https://jxst.cbpt.cnki.net/portal/journal/portal/client/paper/8b35dcf51e6045b2054ad17decf3b6b1)，出版页书目/公开摘要，方法为网络民族志、参与式观察与半结构式访谈，不虚构样本数；[王健，北京青年研究2026,35(4):86–93](https://bjqz.cbpt.cnki.net/portal/journal/portal/client/paper/d00fdac81d2ed1b492cfbda25a492bcf)，公开摘要/书目，方法为网络文本分析，不误写成访谈。现象2024年报道与2026-07-10研究日期分开。                   |
 
 网站的三层立意和编辑反思是有署名的资料编排；没有制造名家原话、课堂讨论或政府政策新条目。来源URL只保存于格式范围中，读者看到文献题名。旧私人文章和划线不批量改写。
 
-| 栏目 | 之前 | 当前 | 新内容位置 |
-| --- | --- | --- | --- |
-| 日新 | 100 条 | 114 条 | `knowledge/youthStudies.ts` |
-| 撷英 | 90 个 ID、80 篇推荐作品 | 98 个 ID、88 篇推荐作品 | `quotes/friendshipAndNature.ts` |
-| 已发表解读摘要 | 51 篇去重作品 | 59 篇去重作品 | `src/data/quotes/` |
-| 群鉴 | 10 个主题、30 个视角 | 11 个主题、33 个视角 | `history/naturalSelection.ts` |
-| 议论文素材 | 70 个概念、47 个示例 | 84 个概念、61 个示例 | `essay/youthStudies.ts` |
-| 观澜近期目录 | 50 篇 | 50 篇，轮换7篇 | `commentaries/cultureAndTechnology.ts` |
+| 栏目           | 之前                    | 当前                    | 新内容位置                             |
+| -------------- | ----------------------- | ----------------------- | -------------------------------------- |
+| 日新           | 100 条                  | 114 条                  | `knowledge/youthStudies.ts`            |
+| 撷英           | 90 个 ID、80 篇推荐作品 | 98 个 ID、88 篇推荐作品 | `quotes/friendshipAndNature.ts`        |
+| 已发表解读摘要 | 51 篇去重作品           | 59 篇去重作品           | `src/data/quotes/`                     |
+| 群鉴           | 10 个主题、30 个视角    | 11 个主题、33 个视角    | `history/naturalSelection.ts`          |
+| 议论文素材     | 70 个概念、47 个示例    | 84 个概念、61 个示例    | `essay/youthStudies.ts`                |
+| 观澜近期目录   | 50 篇                   | 50 篇，轮换7篇          | `commentaries/cultureAndTechnology.ts` |
 
 ## 青年与大学研究选读 · 2026-10-24
 
 新增14篇学术研究短读，集中在观澜“青年与大学”，日新和素材库使用同一台账。**本轮核对的是出版站公开摘要、书目信息及部分表格，不冒充逐篇阅读全文。** 每条区分作者解释、研究对象和可支持的范围；不把定性研究当作普遍比例，不从题名推测样本数量。没有新增政府政策、宣传稿或课堂练习。站内录入日统一为2026-10-24，论文实际年份保存在`researchSource.year`；2022—2026年论文不混入7—10月50篇近期媒体目录。
 
-| 条目 | 已核对的原始出版页 | 方法或边界 |
-| --- | --- | --- |
-| d101 / e71 认得与认可 | [项飙、康岚，2025年第4期，1–21页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/d1e2af27446d83938a303387bcb52a6d) | 理论框架；不写成人群调查 |
-| d102 / e72 考研与自我身份 | [孙孝孝，2026年第5期，68–84页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/281d253c23c85aa68faacc5d533699a2) | 不补造摘要未报告的样本数 |
-| d103 / e73 青年的内在性转向 | [阎云翔、康岚，2026年第2期，1–22页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/f36e042a2a69f3cc1a4cc1c807c4b662) | 代际解释；不等于全体青年的统计描述 |
-| d104 / e74 好学生心态与自我价值 | [温丽蔚、江淑玲，2025年第4期，22–37页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/37ecbe49024a5c3b93ae39be3474c6f9) | 深度访谈；两类分析不当作个人诊断 |
-| d105 / e75 松弛感与自我呈现 | [孟志雷、宋一婷，2026年第4期，17–33页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/f3c6c3758c74daf6a30dd3e56ec174ef) | 质性研究、ABC态度模型；不将建议改成实证结果 |
-| d106 / e76 时间的过度道德化 | [孙元涛、祖宇轩，《教育科学》2025,41(3):52–59](https://jykx.lnnu.edu.cn/CN/abstract/abstract502.shtml) | 质性研究；实读公开摘要、两张表；网页上线日与期刊出版日分开 |
-| d107 / e77 校园招聘的体验机制 | [盛春、周蓉，2025年第6期，20–35页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/d252bf25d104cc399cd7559d55d3463f) | 2022—2023年上海10所高校招聘会；就业意愿不等于入职表现 |
-| d108 / e78 实习中的不确定性 | [顾楚丹、文军，华东师大学报2022,54(5):121–132](https://xbzs.ecnu.edu.cn/CN/abstract/abstract11827.shtml) | 劳动过程分析；只核摘要与PDF页首，不补造样本数 |
-| d109 / e79 临时共同体与消费空间 | [王健，《北京青年研究》2026,35(4):86–93](https://bjqz.cbpt.cnki.net/portal/journal/portal/client/paper/d00fdac81d2ed1b492cfbda25a492bcf) | 网络文本分析；不写成访谈或现场实验 |
-| d110 / e80 亲密关系的数字边界 | [路阳，中北大学学报2024,40(6):46–52](https://cjournal.hep.com.cn/1673-1646/CN/1200838558677607036) | 上海14位青年；网页迁移更新日不是论文年份；不使用摘要引言中的宏观单身率 |
-| d111 / e81 算法依恋 | [关茹之、毛春，《视听》2026(1):110–114](https://shit.cbpt.cnki.net/portal/journal/portal/client/paper/89eb8a4573452bd6d2f872cdfc47f60f) | 参与式观察、深度访谈；不写成临床因果实验 |
-| d112 / e82 数字素养与情绪消费 | [葛晨等，上海财经大学学报2026,28(2):109–123](https://qks.sufe.edu.cn/J/CDXB/Article/Details/A0eaXU3Id8-UvVp-G2PS-WJuC-L5KTZyennHUD/CN) | CFPS 2014—2022五轮数据；消费额不等于理性程度 |
-| d113 / e83 本真性与体验消费 | [刘笑明、雷濛，2026年第5期，50–67页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/d4240a8da3f90525ba3dabeb23a7c3ef) | 莫干山、丹寨案例；不推导苦难本身的价值 |
-| d114 / e84 搭子社交的关系边界 | [张健，《新媒体研究》2025(12):104–108](https://www.xmtyj.org.cn/zh/article/doi/10.16604/j.cnki.issn2096-0360.2025.12.009/) | 形态与路径分析；以引用格式确定刊名，不误用网页栏目名称 |
+| 条目                            | 已核对的原始出版页                                                                                                                       | 方法或边界                                                             |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| d101 / e71 认得与认可           | [项飙、康岚，2025年第4期，1–21页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/d1e2af27446d83938a303387bcb52a6d)        | 理论框架；不写成人群调查                                               |
+| d102 / e72 考研与自我身份       | [孙孝孝，2026年第5期，68–84页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/281d253c23c85aa68faacc5d533699a2)           | 不补造摘要未报告的样本数                                               |
+| d103 / e73 青年的内在性转向     | [阎云翔、康岚，2026年第2期，1–22页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/f36e042a2a69f3cc1a4cc1c807c4b662)      | 代际解释；不等于全体青年的统计描述                                     |
+| d104 / e74 好学生心态与自我价值 | [温丽蔚、江淑玲，2025年第4期，22–37页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/37ecbe49024a5c3b93ae39be3474c6f9)   | 深度访谈；两类分析不当作个人诊断                                       |
+| d105 / e75 松弛感与自我呈现     | [孟志雷、宋一婷，2026年第4期，17–33页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/f3c6c3758c74daf6a30dd3e56ec174ef)   | 质性研究、ABC态度模型；不将建议改成实证结果                            |
+| d106 / e76 时间的过度道德化     | [孙元涛、祖宇轩，《教育科学》2025,41(3):52–59](https://jykx.lnnu.edu.cn/CN/abstract/abstract502.shtml)                                   | 质性研究；实读公开摘要、两张表；网页上线日与期刊出版日分开             |
+| d107 / e77 校园招聘的体验机制   | [盛春、周蓉，2025年第6期，20–35页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/d252bf25d104cc399cd7559d55d3463f)       | 2022—2023年上海10所高校招聘会；就业意愿不等于入职表现                  |
+| d108 / e78 实习中的不确定性     | [顾楚丹、文军，华东师大学报2022,54(5):121–132](https://xbzs.ecnu.edu.cn/CN/abstract/abstract11827.shtml)                                 | 劳动过程分析；只核摘要与PDF页首，不补造样本数                          |
+| d109 / e79 临时共同体与消费空间 | [王健，《北京青年研究》2026,35(4):86–93](https://bjqz.cbpt.cnki.net/portal/journal/portal/client/paper/d00fdac81d2ed1b492cfbda25a492bcf) | 网络文本分析；不写成访谈或现场实验                                     |
+| d110 / e80 亲密关系的数字边界   | [路阳，中北大学学报2024,40(6):46–52](https://cjournal.hep.com.cn/1673-1646/CN/1200838558677607036)                                       | 上海14位青年；网页迁移更新日不是论文年份；不使用摘要引言中的宏观单身率 |
+| d111 / e81 算法依恋             | [关茹之、毛春，《视听》2026(1):110–114](https://shit.cbpt.cnki.net/portal/journal/portal/client/paper/89eb8a4573452bd6d2f872cdfc47f60f)  | 参与式观察、深度访谈；不写成临床因果实验                               |
+| d112 / e82 数字素养与情绪消费   | [葛晨等，上海财经大学学报2026,28(2):109–123](https://qks.sufe.edu.cn/J/CDXB/Article/Details/A0eaXU3Id8-UvVp-G2PS-WJuC-L5KTZyennHUD/CN)   | CFPS 2014—2022五轮数据；消费额不等于理性程度                           |
+| d113 / e83 本真性与体验消费     | [刘笑明、雷濛，2026年第5期，50–67页](https://qing.cbpt.cnki.net/portal/journal/portal/client/paper/d4240a8da3f90525ba3dabeb23a7c3ef)     | 莫干山、丹寨案例；不推导苦难本身的价值                                 |
+| d114 / e84 搭子社交的关系边界   | [张健，《新媒体研究》2025(12):104–108](https://www.xmtyj.org.cn/zh/article/doi/10.16604/j.cnki.issn2096-0360.2025.12.009/)               | 形态与路径分析；以引用格式确定刊名，不误用网页栏目名称                 |
 
 其中7篇来自《当代青年研究》。两份PDF已核对真实论文页首、题名与摘要：d108华东师大出版站、d112上海财大出版站；以有题名的原站链接进入共享阅读/文稿模型，不镜像版权未核定的现代论文。其余页面的“下载”按钮不等于已取得文件，不编造PDF地址。CNKI托管页可能要求登录或机构访问全文，本站只提供短读与实际出版入口。
 
@@ -130,7 +141,6 @@ q99—q106依次为韩愈《马说》、苏轼《江城子》、秦观《鹊桥�
 5. 运行 `npm run check`，检查文字保留、私有快照与导出。提交并核验 GitHub、Cloudflare。
 
 私人保存的是当时的文本快照。站内正文修订后，不迁移或覆盖旧划线；新版单独保存，旧件仍在阅读空间。
-
 
 ## 2026-10-23 增补来源
 

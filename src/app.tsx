@@ -19,6 +19,9 @@ const PresetArticleDetailPage = lazy(
 );
 const TopicDetailPage = lazy(() => import('@/pages/TopicDetailPage/TopicDetailPage'));
 const GuanlanEventPage = lazy(() => import('@/pages/GuanlanEventPage/GuanlanEventPage'));
+const WorldPage = lazy(() => import('@/pages/WorldPage/WorldPage'));
+const WorldStoryPage = lazy(() => import('@/pages/WorldStoryPage/WorldStoryPage'));
+const BriefingPage = lazy(() => import('@/pages/BriefingPage/BriefingPage'));
 const FeedbackPage = lazy(() => import('@/pages/FeedbackPage/FeedbackPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage/NotFoundPage'));
 const ArticleImportPage = lazy(() => import('@/pages/ArticleImportPage/ArticleImportPage'));
@@ -46,6 +49,9 @@ export default function App() {
         <Route path="guanlan" element={<GuanlanPage />} />
         <Route path="guanlan/topics/:id" element={<TopicDetailPage />} />
         <Route path="guanlan/events/:id" element={<GuanlanEventPage />} />
+        <Route path="world" element={<WorldPage />} />
+        <Route path="world/:id" element={<WorldStoryPage />} />
+        <Route path="briefing" element={<BriefingPage />} />
         <Route path="guanlan/preset/:id" element={<PresetArticleDetailPage />} />
         <Route path="guanlan/:id" element={<ArticleDetailPage />} />
         <Route path="reading" element={<ReadingLibraryPage />} />
