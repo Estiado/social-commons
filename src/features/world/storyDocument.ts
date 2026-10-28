@@ -7,6 +7,32 @@ type Block = Omit<TextBlock, 'id'>;
 const p = (text: string): Block => ({ type: 'paragraph', text });
 const h = (text: string, level = 2): Block => ({ type: 'heading', text, level });
 
+/** Resolve bookmarks against the same headings used by the reader and exports. */
+export function worldStoryBookmarks(
+  story: WorldStory,
+  document: ReturnType<typeof createContentDocument>,
+) {
+  const chapterBlocks = new Map(
+    document.blocks
+      .filter((block): block is TextBlock => block.type === 'heading')
+      .map((block) => [block.text, block.id]),
+  );
+  const targets = new Map<string, string>();
+  for (const chapter of story.narrative) {
+    const blockId = chapterBlocks.get(chapter.title);
+    if (!blockId) throw new Error(`知天下 ${story.id} 缺少正文章节 ${chapter.id}`);
+    for (const id of chapter.timelineIds) {
+      if (targets.has(id)) throw new Error(`知天下 ${story.id} 重复时间书签 ${id}`);
+      targets.set(id, blockId);
+    }
+  }
+  return story.timeline.map((point) => {
+    const blockId = targets.get(point.id);
+    if (!blockId) throw new Error(`知天下 ${story.id} 未关联时间书签 ${point.id}`);
+    return { ...point, blockId };
+  });
+}
+
 /** One canonical sequence serves timelines, annotations, writing and both exports. */
 export function worldStoryDocument(story: WorldStory) {
   const sources = new Map(story.sources.map((source) => [source.id, source]));
@@ -28,6 +54,14 @@ export function worldStoryDocument(story: WorldStory) {
       p('社科通识编辑 · 资料核对至 ' + story.updatedAt),
       h('先了解这件事'),
       ...story.intro.map(p),
+      ...story.narrative.flatMap((chapter) => [
+        h(chapter.title),
+        ...chapter.paragraphs.map(p),
+        ...cite(chapter.sourceIds),
+      ]),
+      h('最近进展'),
+      ...story.latest.map(p),
+      ...cite(story.timeline.at(-1)?.sourceIds || []),
       h('前因与参与者'),
       ...story.context.flatMap((part) => [
         h(part.title, 3),
@@ -40,18 +74,8 @@ export function worldStoryDocument(story: WorldStory) {
         p(excerpt.locator),
         ...cite([excerpt.sourceId]),
       ]),
-      h('最近进展'),
-      ...story.latest.map(p),
-      ...cite(story.timeline.at(-1)?.sourceIds || []),
       h('读懂关键词'),
       ...story.terms.flatMap((term) => [h(term.term, 3), p(term.definition)]),
-      h('时间脉络'),
-      ...story.timeline.flatMap((point) => [
-        h(point.dateLabel + ' · ' + point.title, 3),
-        ...point.what.map(p),
-        p('这一节点的影响：' + point.why),
-        ...cite(point.sourceIds),
-      ]),
       h('不同视角'),
       ...story.perspectives.flatMap((view) => [
         h(view.title, 3),

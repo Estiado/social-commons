@@ -1,36 +1,19 @@
 import { EDITORIAL } from '../../../.artifacts/editorial/world/palestine.ts';
 import type { WorldStory } from './types';
 import { WORLD_STORIES } from './catalogue.ts';
+
 const story: WorldStory = {
   ...WORLD_STORIES.find((item) => item.id === 'palestine')!,
   ...{
     intro: [EDITORIAL['intro.0'], EDITORIAL['intro.1']],
     latest: [EDITORIAL['latest.0'], EDITORIAL['latest.1']],
     terms: [
-      {
-        term: EDITORIAL['terms.0.term'],
-        definition: EDITORIAL['terms.0.definition'],
-      },
-      {
-        term: EDITORIAL['terms.1.term'],
-        definition: EDITORIAL['terms.1.definition'],
-      },
-      {
-        term: EDITORIAL['terms.2.term'],
-        definition: EDITORIAL['terms.2.definition'],
-      },
-      {
-        term: EDITORIAL['terms.3.term'],
-        definition: EDITORIAL['terms.3.definition'],
-      },
-      {
-        term: EDITORIAL['terms.4.term'],
-        definition: EDITORIAL['terms.4.definition'],
-      },
-      {
-        term: EDITORIAL['terms.5.term'],
-        definition: EDITORIAL['terms.5.definition'],
-      },
+      { term: EDITORIAL['terms.0.term'], definition: EDITORIAL['terms.0.definition'] },
+      { term: EDITORIAL['terms.1.term'], definition: EDITORIAL['terms.1.definition'] },
+      { term: EDITORIAL['terms.2.term'], definition: EDITORIAL['terms.2.definition'] },
+      { term: EDITORIAL['terms.3.term'], definition: EDITORIAL['terms.3.definition'] },
+      { term: EDITORIAL['terms.4.term'], definition: EDITORIAL['terms.4.definition'] },
+      { term: EDITORIAL['terms.5.term'], definition: EDITORIAL['terms.5.definition'] },
     ],
     timeline: [
       {
@@ -38,8 +21,6 @@ const story: WorldStory = {
         date: '1947-11-29',
         dateLabel: '1947年11月29日',
         title: EDITORIAL['timeline.0.title'],
-        what: [EDITORIAL['timeline.0.what.0']],
-        why: EDITORIAL['timeline.0.why'],
         sourceIds: ['un-timeline'],
       },
       {
@@ -47,8 +28,6 @@ const story: WorldStory = {
         date: '1948-05-14',
         dateLabel: '1948年5月起',
         title: EDITORIAL['timeline.1.title'],
-        what: [EDITORIAL['timeline.1.what.0'], EDITORIAL['timeline.1.what.1']],
-        why: EDITORIAL['timeline.1.why'],
         sourceIds: ['cctv-history', 'un-history'],
       },
       {
@@ -56,8 +35,6 @@ const story: WorldStory = {
         date: '1967-06-05',
         dateLabel: '1967年6月',
         title: EDITORIAL['timeline.2.title'],
-        what: [EDITORIAL['timeline.2.what.0'], EDITORIAL['timeline.2.what.1']],
-        why: EDITORIAL['timeline.2.why'],
         sourceIds: ['un-history'],
       },
       {
@@ -65,8 +42,6 @@ const story: WorldStory = {
         date: '1993-09-13',
         dateLabel: '1993年9月13日',
         title: EDITORIAL['timeline.3.title'],
-        what: [EDITORIAL['timeline.3.what.0'], EDITORIAL['timeline.3.what.1']],
-        why: EDITORIAL['timeline.3.why'],
         sourceIds: ['oslo', 'final-status'],
       },
       {
@@ -74,8 +49,6 @@ const story: WorldStory = {
         date: '2007-06-01',
         dateLabel: '2007年6月',
         title: EDITORIAL['timeline.4.title'],
-        what: [EDITORIAL['timeline.4.what.0']],
-        why: EDITORIAL['timeline.4.why'],
         sourceIds: ['xinhua-keywords'],
       },
       {
@@ -83,8 +56,6 @@ const story: WorldStory = {
         date: '2023-10-07',
         dateLabel: '2023年10月7日',
         title: EDITORIAL['timeline.5.title'],
-        what: [EDITORIAL['timeline.5.what.0']],
-        why: EDITORIAL['timeline.5.why'],
         sourceIds: ['xinhua-2026'],
       },
       {
@@ -92,8 +63,6 @@ const story: WorldStory = {
         date: '2024-03-25',
         dateLabel: '2024年3月25日',
         title: EDITORIAL['timeline.6.title'],
-        what: [EDITORIAL['timeline.6.what.0']],
-        why: EDITORIAL['timeline.6.why'],
         sourceIds: ['resolution'],
       },
       {
@@ -101,8 +70,6 @@ const story: WorldStory = {
         date: '2025-10-10',
         dateLabel: '2025年10月10日',
         title: EDITORIAL['timeline.7.title'],
-        what: [EDITORIAL['timeline.7.what.0']],
-        why: EDITORIAL['timeline.7.why'],
         sourceIds: ['ceasefire'],
       },
       {
@@ -110,8 +77,6 @@ const story: WorldStory = {
         date: '2026-10-15',
         dateLabel: '2026年10月15日',
         title: EDITORIAL['timeline.8.title'],
-        what: [EDITORIAL['timeline.8.what.0']],
-        why: EDITORIAL['timeline.8.why'],
         sourceIds: ['un-current', 'cri-current'],
       },
     ],
@@ -220,6 +185,28 @@ const story: WorldStory = {
         date: '常设背景资料',
         url: 'https://www.un.org/unispal/permanent-status-issues/',
       },
+      {
+        id: 'reconstruction-news',
+        title: '联合国机构：加沙重建需要约715亿美元',
+        publication: '新华社',
+        date: '2026-09-25；报告9月24日发布',
+        url: 'https://www.news.cn/20260925/9c1e333cb69d470d87a800edea15254d/c.html',
+        author: '焦倩',
+      },
+      {
+        id: 'reconstruction-data',
+        title: 'Gaza reconstruction needs reach $71.5 billion',
+        publication: '联合国贸易和发展会议',
+        date: '2026-09-24',
+        url: 'https://unctad.org/news/unctad-gaza-reconstruction-needs-reach-715-billion-palestinian-economy-and-public-finances',
+      },
+      {
+        id: 'history-en',
+        title: 'History of the Question of Palestine',
+        publication: '联合国巴勒斯坦问题资料',
+        date: '历史专题',
+        url: 'https://www.un.org/unispal/history/',
+      },
     ],
     relatedEventIds: ['global-risk-2026'],
     context: [
@@ -262,6 +249,79 @@ const story: WorldStory = {
         title: EDITORIAL['questions.2.title'],
         paragraphs: [EDITORIAL['questions.2.paragraphs.0']],
         sourceIds: ['un-current', 'cri-current', 'resolution'],
+      },
+    ],
+    narrative: [
+      {
+        id: 'land-and-statehood',
+        title: EDITORIAL['narrative.0.title'],
+        paragraphs: [
+          EDITORIAL['narrative.0.paragraphs.0'],
+          EDITORIAL['narrative.0.paragraphs.1'],
+          EDITORIAL['narrative.0.paragraphs.2'],
+          EDITORIAL['narrative.0.paragraphs.3'],
+          EDITORIAL['narrative.0.paragraphs.4'],
+        ],
+        sourceIds: ['history-en', 'un-timeline', 'cctv-history'],
+        timelineIds: ['partition', 'war1948'],
+      },
+      {
+        id: 'occupation-and-security',
+        title: EDITORIAL['narrative.1.title'],
+        paragraphs: [
+          EDITORIAL['narrative.1.paragraphs.0'],
+          EDITORIAL['narrative.1.paragraphs.1'],
+          EDITORIAL['narrative.1.paragraphs.2'],
+          EDITORIAL['narrative.1.paragraphs.3'],
+        ],
+        sourceIds: ['history-en', 'final-status', 'cctv-history'],
+        timelineIds: ['war1967'],
+      },
+      {
+        id: 'oslo-and-fragmentation',
+        title: EDITORIAL['narrative.2.title'],
+        paragraphs: [
+          EDITORIAL['narrative.2.paragraphs.0'],
+          EDITORIAL['narrative.2.paragraphs.1'],
+          EDITORIAL['narrative.2.paragraphs.2'],
+          EDITORIAL['narrative.2.paragraphs.3'],
+          EDITORIAL['narrative.2.paragraphs.4'],
+        ],
+        sourceIds: ['oslo', 'xinhua-keywords', 'final-status'],
+        timelineIds: ['oslo', 'division'],
+      },
+      {
+        id: 'war-and-humanitarian-access',
+        title: EDITORIAL['narrative.3.title'],
+        paragraphs: [
+          EDITORIAL['narrative.3.paragraphs.0'],
+          EDITORIAL['narrative.3.paragraphs.1'],
+          EDITORIAL['narrative.3.paragraphs.2'],
+          EDITORIAL['narrative.3.paragraphs.3'],
+          EDITORIAL['narrative.3.paragraphs.4'],
+        ],
+        sourceIds: ['xinhua-2026', 'resolution', 'cri-current', 'un-current'],
+        timelineIds: ['october7', 'resolution2728'],
+      },
+      {
+        id: 'ceasefire-and-rebuilding',
+        title: EDITORIAL['narrative.4.title'],
+        paragraphs: [
+          EDITORIAL['narrative.4.paragraphs.0'],
+          EDITORIAL['narrative.4.paragraphs.1'],
+          EDITORIAL['narrative.4.paragraphs.2'],
+          EDITORIAL['narrative.4.paragraphs.3'],
+          EDITORIAL['narrative.4.paragraphs.4'],
+          EDITORIAL['narrative.4.paragraphs.5'],
+        ],
+        sourceIds: [
+          'ceasefire',
+          'cri-current',
+          'un-current',
+          'reconstruction-news',
+          'reconstruction-data',
+        ],
+        timelineIds: ['ceasefire2025', 'one-year'],
       },
     ],
   },

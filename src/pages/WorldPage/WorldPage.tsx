@@ -4,6 +4,10 @@ import { WORLD_STORIES } from '@/data/world/catalogue';
 import { ReadingEntrance } from '@/features/motion/ReadingEntrance';
 import '@/features/world/world.css';
 
+const checkedAt = WORLD_STORIES.map((story) => story.updatedAt)
+  .sort()
+  .at(-1)!;
+
 export default function WorldPage() {
   const [query, setQuery] = useState('');
   const normalized = query.trim().toLowerCase();
@@ -21,7 +25,7 @@ export default function WorldPage() {
             再看今天发生了什么。
           </p>
           <p>
-            从中文媒体报道进入，用关键时间点串起长期事件。国际文件、不同立场和资料日期，留在每个节点旁边。
+            从中文媒体报道进入，沿着人物、利益与选择读清长期事件。正文连贯讲述，时间书签帮助回到关键阶段；国际资料与不同观点附在相应章节。
           </p>
         </div>
       </header>
@@ -42,7 +46,7 @@ export default function WorldPage() {
         <p role="status" className="world-count">
           {normalized
             ? `找到 ${stories.length} 条事件脉络`
-            : `共 ${WORLD_STORIES.length} 条 · 资料核对至2026年10月27日`}
+            : `共 ${WORLD_STORIES.length} 条 · 资料核对至${checkedAt}`}
         </p>
         <div className="world-stories">
           {stories.map((story) => (
@@ -64,9 +68,9 @@ export default function WorldPage() {
               <Link
                 className="world-read-link"
                 to={'/world/' + story.id}
-                aria-label={'阅读' + story.title + '时间线'}
+                aria-label={'阅读' + story.title + '事件长读'}
               >
-                阅读时间线
+                阅读事件长读
               </Link>
             </article>
           ))}
@@ -81,7 +85,7 @@ export default function WorldPage() {
       <section className="world-note" data-reading-enter>
         <h2>把今日消息放回时间里</h2>
         <p>
-          节点说明“发生了什么”，后面接上它改变了什么。报道、各方表态和机构文件分别署名；未发生的会谈与尚未落实的安排，不提前写成结果。
+          从发生了什么，读到当事者为什么这样选择，以及一次选择怎样改变下一步。报道、各方表态和机构文件分别署名；未发生的会谈与尚未落实的安排，不提前写成结果。
         </p>
         <Link to="/guanlan/events/global-risk-2026">继续阅读：联合国2026年全球风险报告</Link>
       </section>

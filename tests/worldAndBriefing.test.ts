@@ -5,7 +5,7 @@ import { briefingEdition } from '../src/features/briefing/edition.ts';
 import { briefingDocument } from '../src/features/briefing/document.ts';
 import { WORLD_STORIES } from '../src/data/world/catalogue.ts';
 import { getWorldStory } from '../src/data/world/index.ts';
-import { worldStoryDocument } from '../src/features/world/storyDocument.ts';
+import { worldStoryBookmarks, worldStoryDocument } from '../src/features/world/storyDocument.ts';
 import { getGuanlanEvent } from '../src/data/guanlan/index.ts';
 import { guanlanEventDocument } from '../src/features/guanlan/eventDocument.ts';
 import {
@@ -36,8 +36,8 @@ test('简报跨年及北京时间午夜换版，同一日稳定且连续日三�
   }
 });
 
-test('四条长期事件有前情解释、规范短引、日期节点和可保存的完整阅读模型', async () => {
-  assert.equal(WORLD_STORIES.length, 4);
+test('五条长期事件以连贯长读为主，时间书签关联正文，引用可保存导出', async () => {
+  assert.equal(WORLD_STORIES.length, 5);
   let nodes = 0;
   for (const summary of WORLD_STORIES) {
     const story = (await getWorldStory(summary.id))!;
@@ -46,7 +46,12 @@ test('四条长期事件有前情解释、规范短引、日期节点和可保�
     assert.equal(new Set(story.timeline.map((point) => point.id)).size, story.timeline.length);
     const sources = new Set(story.sources.map((source) => source.id));
     assert.ok(story.context.length >= 3 && story.questions.length >= 3);
-    for (const section of [...story.context, ...story.perspectives, ...story.questions]) {
+    for (const section of [
+      ...story.narrative,
+      ...story.context,
+      ...story.perspectives,
+      ...story.questions,
+    ]) {
       assert.ok(section.paragraphs.length && section.sourceIds.length);
       assert.ok(section.sourceIds.every((id) => sources.has(id)));
     }
@@ -67,7 +72,7 @@ test('四条长期事件有前情解释、规范短引、日期节点和可保�
     );
     for (const point of story.timeline) {
       assert.ok(point.date <= story.updatedAt);
-      assert.ok(point.what.join('').trim() && point.why.trim(), point.id);
+      assert.ok(point.title.trim(), point.id);
       assert.ok(
         point.sourceIds.length > 0 && point.sourceIds.every((id) => sources.has(id)),
         point.id,
@@ -78,6 +83,19 @@ test('四条长期事件有前情解释、规范短引、日期节点和可保�
       assert.ok(source.title.length > 5);
     }
     const document = worldStoryDocument(story);
+    const bookmarks = worldStoryBookmarks(story, document);
+    assert.equal(bookmarks.length, story.timeline.length);
+    assert.ok(
+      bookmarks.every((bookmark) =>
+        document.blocks.some((block) => block.id === bookmark.blockId && block.type === 'heading'),
+      ),
+    );
+    assert.equal(
+      story.narrative.flatMap((chapter) => chapter.timelineIds).length,
+      story.timeline.length,
+    );
+    assert.ok(story.narrative.length >= 5);
+    assert.ok(story.narrative.every((chapter) => chapter.paragraphs.length >= 3));
     const roundTrip = editorToDocument(documentToEditor(document), document, document.title);
     assert.deepEqual(
       roundTrip.blocks.flatMap((block) => ('text' in block ? [block.text] : [])),
@@ -97,7 +115,7 @@ test('四条长期事件有前情解释、规范短引、日期节点和可保�
       ),
     );
   }
-  assert.equal(nodes, 39);
+  assert.equal(nodes, 50);
   assert.equal(await getWorldStory('__proto__'), undefined);
   assert.equal(await getWorldStory('constructor'), undefined);
 });
@@ -139,8 +157,32 @@ test('零基础读者能在正文中找到前因、组织区别与法国最新�
     '和平',
   ])
     assert.ok(franceText.includes(phrase), phrase);
-  assert.equal(france.timeline.at(-1)?.date, '2026-10-26');
+  assert.equal(france.timeline.at(-1)?.date, '2026-10-27');
   assert.ok(france.questions.some((question) => question.title.includes('2023')));
+});
+
+test('长读先完整解释经过，书签不重复生成摘要，数据保留时间与分母', async () => {
+  const story = (await getWorldStory('red-sea-shipping'))!;
+  const document = worldStoryDocument(story);
+  const text = document.blocks.flatMap((block) => ('text' in block ? [block.text] : [])).join('\n');
+  assert.ok(text.indexOf(story.narrative[0].title) < text.indexOf('最近进展'));
+  assert.ok(!text.includes('这一节点的影响：'));
+  for (const term of ['2024年', '2.2%', '5.9%', '吨海里', '有效运力', '2026年7月9日'])
+    assert.ok(text.includes(term), term);
+  const bookmarks = worldStoryBookmarks(story, document);
+  assert.equal(
+    bookmarks.find((item) => item.id === 'mecl2026')?.blockId,
+    bookmarks.find((item) => item.id === 'return2026')?.blockId,
+  );
+  const broken = {
+    ...story,
+    narrative: story.narrative.map((chapter) => ({ ...chapter, timelineIds: [] })),
+  };
+  assert.throws(() => worldStoryBookmarks(broken, worldStoryDocument(broken)), /未关联时间书签/);
+  const ukraine = (await getWorldStory('ukraine'))!;
+  const ukraineText = ukraine.narrative.flatMap((chapter) => chapter.paragraphs).join('\n');
+  for (const term of ['2025年12月31日', '5880亿美元', '1950亿美元', '2026年10月'])
+    assert.ok(ukraineText.includes(term), term);
 });
 
 test('简报导出保留整篇诗文与题名链接；风险分析保留调查窗口和方法边界', async () => {

@@ -183,6 +183,18 @@
   font: 600 20px/1.5 var(--font-serif);
   margin-bottom: 14px;
 }
+.world-outline-mobile {
+  display: none;
+}
+.world-wayfinding summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding-block: 10px;
+  font-size: 15px;
+}
+.world-reference-links {
+  margin-top: 12px;
+}
 .world-wayfinding nav a {
   display: block;
   font-size: 15px;
@@ -240,6 +252,12 @@
     position: static;
     padding: 22px;
     background: var(--card);
+  }
+  .world-outline-desktop {
+    display: none;
+  }
+  .world-outline-mobile {
+    display: block;
   }
   .world-wayfinding nav {
     display: flex;

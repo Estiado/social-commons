@@ -1,32 +1,18 @@
 import { EDITORIAL } from '../../../.artifacts/editorial/world/un2030.ts';
 import type { WorldStory } from './types';
 import { WORLD_STORIES } from './catalogue.ts';
+
 const story: WorldStory = {
   ...WORLD_STORIES.find((item) => item.id === 'un-2030')!,
   ...{
     intro: [EDITORIAL['intro.0'], EDITORIAL['intro.1']],
     latest: [EDITORIAL['latest.0'], EDITORIAL['latest.1']],
     terms: [
-      {
-        term: EDITORIAL['terms.0.term'],
-        definition: EDITORIAL['terms.0.definition'],
-      },
-      {
-        term: EDITORIAL['terms.1.term'],
-        definition: EDITORIAL['terms.1.definition'],
-      },
-      {
-        term: EDITORIAL['terms.2.term'],
-        definition: EDITORIAL['terms.2.definition'],
-      },
-      {
-        term: EDITORIAL['terms.3.term'],
-        definition: EDITORIAL['terms.3.definition'],
-      },
-      {
-        term: EDITORIAL['terms.4.term'],
-        definition: EDITORIAL['terms.4.definition'],
-      },
+      { term: EDITORIAL['terms.0.term'], definition: EDITORIAL['terms.0.definition'] },
+      { term: EDITORIAL['terms.1.term'], definition: EDITORIAL['terms.1.definition'] },
+      { term: EDITORIAL['terms.2.term'], definition: EDITORIAL['terms.2.definition'] },
+      { term: EDITORIAL['terms.3.term'], definition: EDITORIAL['terms.3.definition'] },
+      { term: EDITORIAL['terms.4.term'], definition: EDITORIAL['terms.4.definition'] },
     ],
     timeline: [
       {
@@ -34,8 +20,6 @@ const story: WorldStory = {
         date: '2000-09-01',
         dateLabel: '2000年9月',
         title: EDITORIAL['timeline.0.title'],
-        what: [EDITORIAL['timeline.0.what.0']],
-        why: EDITORIAL['timeline.0.why'],
         sourceIds: ['xinhua-background'],
       },
       {
@@ -43,8 +27,6 @@ const story: WorldStory = {
         date: '2015-09-25',
         dateLabel: '2015年9月25日',
         title: EDITORIAL['timeline.1.title'],
-        what: [EDITORIAL['timeline.1.what.0']],
-        why: EDITORIAL['timeline.1.why'],
         sourceIds: ['agenda', 'xinhua-background'],
       },
       {
@@ -52,8 +34,6 @@ const story: WorldStory = {
         date: '2016-01-01',
         dateLabel: '2016年1月',
         title: EDITORIAL['timeline.2.title'],
-        what: [EDITORIAL['timeline.2.what.0']],
-        why: EDITORIAL['timeline.2.why'],
         sourceIds: ['faq', 'goals'],
       },
       {
@@ -61,8 +41,6 @@ const story: WorldStory = {
         date: '2023-09-18',
         dateLabel: '2023年9月18日至19日',
         title: EDITORIAL['timeline.3.title'],
-        what: [EDITORIAL['timeline.3.what.0']],
-        why: EDITORIAL['timeline.3.why'],
         sourceIds: ['summit'],
       },
       {
@@ -70,8 +48,6 @@ const story: WorldStory = {
         date: '2024-09-22',
         dateLabel: '2024年9月22日',
         title: EDITORIAL['timeline.4.title'],
-        what: [EDITORIAL['timeline.4.what.0']],
-        why: EDITORIAL['timeline.4.why'],
         sourceIds: ['pact'],
       },
       {
@@ -79,8 +55,6 @@ const story: WorldStory = {
         date: '2026-07-07',
         dateLabel: '2026年7月7日',
         title: EDITORIAL['timeline.5.title'],
-        what: [EDITORIAL['timeline.5.what.0'], EDITORIAL['timeline.5.what.1']],
-        why: EDITORIAL['timeline.5.why'],
         sourceIds: ['xinhua-progress', 'un-progress'],
       },
       {
@@ -88,8 +62,6 @@ const story: WorldStory = {
         date: '2026-09-15',
         dateLabel: '2026年9月15日',
         title: EDITORIAL['timeline.6.title'],
-        what: [EDITORIAL['timeline.6.what.0']],
-        why: EDITORIAL['timeline.6.why'],
         sourceIds: ['risk-news'],
       },
     ],
@@ -184,6 +156,13 @@ const story: WorldStory = {
         date: '常设问答',
         url: 'https://www.un.org/sustainabledevelopment/zh/development-agenda/',
       },
+      {
+        id: 'progress-release',
+        title: 'For over a decade, the Sustainable Development Goals have delivered results',
+        publication: '联合国2026年可持续发展目标报告发布资料',
+        date: '2026-07-07',
+        url: 'https://www.un.org/sw/node/245382',
+      },
     ],
     relatedEventIds: ['global-risk-2026'],
     context: [
@@ -225,6 +204,72 @@ const story: WorldStory = {
         title: EDITORIAL['questions.2.title'],
         paragraphs: [EDITORIAL['questions.2.paragraphs.0']],
         sourceIds: ['agenda', 'goals'],
+      },
+    ],
+    narrative: [
+      {
+        id: 'from-mdgs-to-sdgs',
+        title: EDITORIAL['narrative.0.title'],
+        paragraphs: [
+          EDITORIAL['narrative.0.paragraphs.0'],
+          EDITORIAL['narrative.0.paragraphs.1'],
+          EDITORIAL['narrative.0.paragraphs.2'],
+          EDITORIAL['narrative.0.paragraphs.3'],
+          EDITORIAL['narrative.0.paragraphs.4'],
+        ],
+        sourceIds: ['xinhua-background', 'agenda', 'goals'],
+        timelineIds: ['mdg', 'adopt'],
+      },
+      {
+        id: 'implementation-chain',
+        title: EDITORIAL['narrative.1.title'],
+        paragraphs: [
+          EDITORIAL['narrative.1.paragraphs.0'],
+          EDITORIAL['narrative.1.paragraphs.1'],
+          EDITORIAL['narrative.1.paragraphs.2'],
+          EDITORIAL['narrative.1.paragraphs.3'],
+          EDITORIAL['narrative.1.paragraphs.4'],
+        ],
+        sourceIds: ['faq', 'agenda', 'goals'],
+        timelineIds: ['begin'],
+      },
+      {
+        id: 'finance-and-shocks',
+        title: EDITORIAL['narrative.2.title'],
+        paragraphs: [
+          EDITORIAL['narrative.2.paragraphs.0'],
+          EDITORIAL['narrative.2.paragraphs.1'],
+          EDITORIAL['narrative.2.paragraphs.2'],
+          EDITORIAL['narrative.2.paragraphs.3'],
+          EDITORIAL['narrative.2.paragraphs.4'],
+        ],
+        sourceIds: ['summit', 'pact', 'faq', 'un-progress'],
+        timelineIds: ['midpoint', 'future-pact'],
+      },
+      {
+        id: 'reading-the-data',
+        title: EDITORIAL['narrative.3.title'],
+        paragraphs: [
+          EDITORIAL['narrative.3.paragraphs.0'],
+          EDITORIAL['narrative.3.paragraphs.1'],
+          EDITORIAL['narrative.3.paragraphs.2'],
+          EDITORIAL['narrative.3.paragraphs.3'],
+          EDITORIAL['narrative.3.paragraphs.4'],
+        ],
+        sourceIds: ['xinhua-progress', 'un-progress', 'progress-release'],
+        timelineIds: ['progress2026'],
+      },
+      {
+        id: 'risk-and-development',
+        title: EDITORIAL['narrative.4.title'],
+        paragraphs: [
+          EDITORIAL['narrative.4.paragraphs.0'],
+          EDITORIAL['narrative.4.paragraphs.1'],
+          EDITORIAL['narrative.4.paragraphs.2'],
+          EDITORIAL['narrative.4.paragraphs.3'],
+        ],
+        sourceIds: ['risk-news', 'un-progress', 'pact'],
+        timelineIds: ['risk2026'],
       },
     ],
   },

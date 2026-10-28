@@ -1,6 +1,21 @@
 # 内容维护与本轮来源
 
-更新：2026-10-27。具体条目中的出处链接是维护入口，不能用本文件代替原文。
+更新：2026-10-28。具体条目中的出处链接是维护入口，不能用本文件代替原文。
+
+## 连贯长读与红海航运 · 2026-10-28
+
+用户提供的`近日_202610280954_19764.docx`为论述组织参考，只读提取了正文。其特点是由当前变化进入人物利益、谈判约束与条件推演；本轮借鉴这种连贯叙事，没有上传附件、照搬编译文，或把人物心理、幕后外交与未来会晤推测改为本站事实。文末英文链接可读，其所链俄文原站不可达；不据此扩展未经独立核对的日程。
+
+原四篇加红海共新增27章、16260字符主文（含标点和拉丁字符），在原有背景与出处基础上解释过程。50个日期现在只是章节书签，不再另写一份平行经过。本站文字按humanizer-zh检查信息范围、归属、连接和套话，原文短引及书目独立保存。
+
+- 俄乌新增[新华社10月27日奥列什基人道停火报道](https://www.news.cn/20261027/bb65d9ef59764dfeb684ee9d02f0a1e0/c.html)，只确认特定地区与用途，不写成全线停火。补查[世界银行等四方RDNA5发布资料](https://www.worldbank.org/en/news/press-release/2026/02/23/updated-ukraine-recovery-and-reconstruction-needs-assessment-released)和[栾海、李东旭的新华社分析](https://www.news.cn/20260224/8ce181ba203a4be884dead4fbd4cc874/c.html)：5880亿美元是按2025年底情况估计的未来十年恢复与重建需求，1950亿美元是直接损失；不相加，不冒充已筹资金。未下载整份RDNA5作全文精读声明。
+- 巴以补查[焦倩的新华社报道](https://www.news.cn/20260925/9c1e333cb69d470d87a800edea15254d/c.html)与[UNCTAD公开发布信息](https://unctad.org/news/unctad-gaza-reconstruction-needs-reach-715-billion-palestinian-economy-and-public-finances)：715亿美元为估计需求；总体经济增长和相对2022年仍低的水平并存。后者直开403，已读官方检索摘要及新华社报道，未冒充原报告全文。历史部分交叉查[联合国历史专题](https://www.un.org/unispal/history/)与既有中文资料。
+- 联合国2030议程补查[2026年报告发布资料](https://www.un.org/sw/node/245382)：139个可评估细项中36%/49%/15%分别按原分类解释；2015—2025年专业卫生人员接生比例80%到87%只说明该项覆盖变化，不代表所有孕产医疗质量。中文FAQ直开受限，沿用已核对背景和可读发布摘要，不反复请求受限端点。
+- 法国补查[INSEE第二季度债务资料](https://www.insee.fr/fr/statistiques/9053525)和[国民账户详细结果](https://www.insee.fr/fr/statistiques/9039499)，核对119.0%债务/GDP、实际GDP环比持平和按消费单位调整的家庭购买力环比-0.6%。区分债务存量、赤字流量、总体与家庭差异；宏观数字不直接证明个人抗议动机。另查[中央社现场采访](https://www.cna.com.tw/news/aopl/202610070013.aspx)的公开摘要，以及[香港电台10月27日学生回应](https://gbcode.rthk.hk/TuniS/news.rthk.hk/rthk/ch/component/k2/1875427-20261027.htm)，补上政府措施未获完全接受的后续。没有使用民调推演未来选举结果。
+
+红海篇登记9份资料：新华社/新华网的[胡塞背景](https://www.news.cn/mil/2023-12/28/c_1212321195.htm)与[2024年红海解局](https://www.news.cn/20240308/eac3fbcbe6f244419e5bd7925f47365b/c.html)，财新[2024年分析公开段落](https://international.caixin.com/m/2024-01-26/102160847.html)及[2026年9月复航报道公开段落](https://companies.caixin.com/m/2026-09-15/102485226.html)，UNCTAD[报告发布资料](https://unctad.org/publication/review-maritime-transport-2025)与[概览图1](https://unctad.org/system/files/official-document/rmt2025overview_en.pdf)，IMO[专题与经核实事件](https://www.imo.org/en/mediacentre/hottopics/pages/red-sea.aspx)、[2026年8月12日声明](https://www.imo.org/en/mediacentre/pressbriefings/pages/statement-on-deadly-ship-attack-in-the-red-sea.aspx)，以及[马士基7月9日MECL原始通告](https://www.maersk.com/news/articles/2026/07/09/structural-changes-to-mecl)。
+
+UNCTAD网页及整份PDF直开403，改读官方可检索发布资料与概览图，不称全部PDF已读。2.2%货量与5.9%吨海里是2024年全球年度数据，非当前红海单线；没有转载付费财新全文。马士基公告只代表特定服务，不推断所有航线恢复。IMO与媒体袭击计数不混算，未把船公司复航等同海域风险归零。所有现代文献均保留原站题名链接，本轮无镜像或付费绕过。
 
 ## 知天下背景补写与法国事件 · 2026-10-27
 

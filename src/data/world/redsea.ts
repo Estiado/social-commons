@@ -1,0 +1,290 @@
+import { EDITORIAL } from '../../../.artifacts/editorial/world/redsea.ts';
+import type { WorldStory } from './types';
+import { WORLD_STORIES } from './catalogue.ts';
+
+const story: WorldStory = {
+  ...WORLD_STORIES.find((item) => item.id === 'red-sea-shipping')!,
+  ...{
+    intro: [EDITORIAL['intro.0'], EDITORIAL['intro.1']],
+    context: [
+      {
+        title: EDITORIAL['context.0.title'],
+        paragraphs: [EDITORIAL['context.0.paragraphs.0']],
+        sourceIds: ['xinhua-explainer', 'unctad-overview'],
+      },
+      {
+        title: EDITORIAL['context.1.title'],
+        paragraphs: [EDITORIAL['context.1.paragraphs.0']],
+        sourceIds: ['imo-area', 'unctad-report'],
+      },
+      {
+        title: EDITORIAL['context.2.title'],
+        paragraphs: [EDITORIAL['context.2.paragraphs.0']],
+        sourceIds: ['maersk-mecl', 'imo-attack', 'caixin-return'],
+      },
+    ],
+    excerpts: [
+      {
+        text: '海员安全至关重要。',
+        sourceId: 'imo-area',
+        locator:
+          '国际海事组织“红海地区”专题页开篇，中文短句；对应英文为“Seafarer safety is paramount.”。',
+      },
+    ],
+    latest: [EDITORIAL['latest.0'], EDITORIAL['latest.1']],
+    terms: [
+      { term: EDITORIAL['terms.0.term'], definition: EDITORIAL['terms.0.definition'] },
+      { term: EDITORIAL['terms.1.term'], definition: EDITORIAL['terms.1.definition'] },
+      { term: EDITORIAL['terms.2.term'], definition: EDITORIAL['terms.2.definition'] },
+      { term: EDITORIAL['terms.3.term'], definition: EDITORIAL['terms.3.definition'] },
+      { term: EDITORIAL['terms.4.term'], definition: EDITORIAL['terms.4.definition'] },
+    ],
+    timeline: [
+      {
+        id: 'yemen2014',
+        date: '2014-09-01',
+        dateLabel: '2014年9月',
+        title: EDITORIAL['timeline.0.title'],
+        sourceIds: ['houthi-history'],
+      },
+      {
+        id: 'ships2023',
+        date: '2023-11-01',
+        dateLabel: '2023年11月起',
+        title: EDITORIAL['timeline.1.title'],
+        sourceIds: ['xinhua-explainer', 'houthi-history'],
+      },
+      {
+        id: 'escort',
+        date: '2023-12-01',
+        dateLabel: '2023年12月',
+        title: EDITORIAL['timeline.2.title'],
+        sourceIds: ['caixin-2024'],
+      },
+      {
+        id: 'strikes2024',
+        date: '2024-01-01',
+        dateLabel: '2024年1月',
+        title: EDITORIAL['timeline.3.title'],
+        sourceIds: ['caixin-2024'],
+      },
+      {
+        id: 'fatalities',
+        date: '2024-03-01',
+        dateLabel: '2024年3月上旬',
+        title: EDITORIAL['timeline.4.title'],
+        sourceIds: ['xinhua-explainer'],
+      },
+      {
+        id: 'report2025',
+        date: '2025-09-24',
+        dateLabel: '2025年9月24日',
+        title: EDITORIAL['timeline.5.title'],
+        sourceIds: ['unctad-overview'],
+      },
+      {
+        id: 'mecl2026',
+        date: '2026-07-09',
+        dateLabel: '2026年7月9日',
+        title: EDITORIAL['timeline.6.title'],
+        sourceIds: ['maersk-mecl'],
+      },
+      {
+        id: 'attack2026',
+        date: '2026-08-12',
+        dateLabel: '2026年8月12日',
+        title: EDITORIAL['timeline.7.title'],
+        sourceIds: ['imo-attack'],
+      },
+      {
+        id: 'return2026',
+        date: '2026-09-15',
+        dateLabel: '2026年9月15日',
+        title: EDITORIAL['timeline.8.title'],
+        sourceIds: ['caixin-return'],
+      },
+    ],
+    narrative: [
+      {
+        id: 'the-corridor',
+        title: EDITORIAL['narrative.0.title'],
+        paragraphs: [
+          EDITORIAL['narrative.0.paragraphs.0'],
+          EDITORIAL['narrative.0.paragraphs.1'],
+          EDITORIAL['narrative.0.paragraphs.2'],
+          EDITORIAL['narrative.0.paragraphs.3'],
+        ],
+        sourceIds: ['xinhua-explainer', 'unctad-report', 'imo-area'],
+        timelineIds: [],
+      },
+      {
+        id: 'yemen-and-gaza',
+        title: EDITORIAL['narrative.1.title'],
+        paragraphs: [
+          EDITORIAL['narrative.1.paragraphs.0'],
+          EDITORIAL['narrative.1.paragraphs.1'],
+          EDITORIAL['narrative.1.paragraphs.2'],
+          EDITORIAL['narrative.1.paragraphs.3'],
+          EDITORIAL['narrative.1.paragraphs.4'],
+        ],
+        sourceIds: ['houthi-history', 'xinhua-explainer', 'imo-area'],
+        timelineIds: ['yemen2014', 'ships2023'],
+      },
+      {
+        id: 'escort-and-escalation',
+        title: EDITORIAL['narrative.2.title'],
+        paragraphs: [
+          EDITORIAL['narrative.2.paragraphs.0'],
+          EDITORIAL['narrative.2.paragraphs.1'],
+          EDITORIAL['narrative.2.paragraphs.2'],
+          EDITORIAL['narrative.2.paragraphs.3'],
+          EDITORIAL['narrative.2.paragraphs.4'],
+        ],
+        sourceIds: ['caixin-2024', 'xinhua-explainer', 'imo-area'],
+        timelineIds: ['escort', 'strikes2024', 'fatalities'],
+      },
+      {
+        id: 'the-cost-chain',
+        title: EDITORIAL['narrative.3.title'],
+        paragraphs: [
+          EDITORIAL['narrative.3.paragraphs.0'],
+          EDITORIAL['narrative.3.paragraphs.1'],
+          EDITORIAL['narrative.3.paragraphs.2'],
+          EDITORIAL['narrative.3.paragraphs.3'],
+          EDITORIAL['narrative.3.paragraphs.4'],
+          EDITORIAL['narrative.3.paragraphs.5'],
+        ],
+        sourceIds: ['unctad-overview', 'unctad-report', 'caixin-2024'],
+        timelineIds: ['report2025'],
+      },
+      {
+        id: 'partial-return',
+        title: EDITORIAL['narrative.4.title'],
+        paragraphs: [
+          EDITORIAL['narrative.4.paragraphs.0'],
+          EDITORIAL['narrative.4.paragraphs.1'],
+          EDITORIAL['narrative.4.paragraphs.2'],
+          EDITORIAL['narrative.4.paragraphs.3'],
+          EDITORIAL['narrative.4.paragraphs.4'],
+        ],
+        sourceIds: ['maersk-mecl', 'caixin-return', 'imo-attack'],
+        timelineIds: ['mecl2026', 'attack2026', 'return2026'],
+      },
+      {
+        id: 'what-changes-the-outlook',
+        title: EDITORIAL['narrative.5.title'],
+        paragraphs: [
+          EDITORIAL['narrative.5.paragraphs.0'],
+          EDITORIAL['narrative.5.paragraphs.1'],
+          EDITORIAL['narrative.5.paragraphs.2'],
+        ],
+        sourceIds: ['imo-area', 'maersk-mecl', 'xinhua-explainer'],
+        timelineIds: [],
+      },
+    ],
+    perspectives: [
+      {
+        title: EDITORIAL['perspectives.0.title'],
+        paragraphs: [EDITORIAL['perspectives.0.paragraphs.0']],
+        sourceIds: ['xinhua-explainer', 'caixin-2024', 'caixin-return'],
+      },
+      {
+        title: EDITORIAL['perspectives.1.title'],
+        paragraphs: [EDITORIAL['perspectives.1.paragraphs.0']],
+        sourceIds: ['imo-area', 'imo-attack'],
+      },
+      {
+        title: EDITORIAL['perspectives.2.title'],
+        paragraphs: [EDITORIAL['perspectives.2.paragraphs.0']],
+        sourceIds: ['unctad-overview', 'maersk-mecl'],
+      },
+    ],
+    questions: [
+      {
+        title: EDITORIAL['questions.0.title'],
+        paragraphs: [EDITORIAL['questions.0.paragraphs.0']],
+        sourceIds: ['unctad-report', 'xinhua-explainer'],
+      },
+      {
+        title: EDITORIAL['questions.1.title'],
+        paragraphs: [EDITORIAL['questions.1.paragraphs.0']],
+        sourceIds: ['maersk-mecl', 'imo-attack'],
+      },
+      {
+        title: EDITORIAL['questions.2.title'],
+        paragraphs: [EDITORIAL['questions.2.paragraphs.0']],
+        sourceIds: ['unctad-overview', 'unctad-report'],
+      },
+    ],
+    watch: [EDITORIAL['watch.0'], EDITORIAL['watch.1'], EDITORIAL['watch.2']],
+    sources: [
+      {
+        id: 'houthi-history',
+        title: '“封锁红海”的也门胡塞武装，什么来头？',
+        publication: '新华网刊载背景资料',
+        date: '2023-12-28',
+        url: 'https://www.news.cn/mil/2023-12/28/c_1212321195.htm',
+      },
+      {
+        id: 'xinhua-explainer',
+        title: '解局丨红海现在有多乱，还会乱多久？',
+        publication: '新华社',
+        date: '2024-03-08',
+        url: 'https://www.news.cn/20240308/eac3fbcbe6f244419e5bd7925f47365b/c.html',
+        author: '王尚、付一鸣、胡若愚',
+      },
+      {
+        id: 'caixin-2024',
+        title: '分析｜红海危机持续冲击贸易供应链 美英空袭为何难遏止胡塞武装？',
+        publication: '财新',
+        date: '2024-01-26',
+        url: 'https://international.caixin.com/m/2024-01-26/102160847.html',
+        author: '胡暄、李蓉茜、罗子琳（实习）',
+      },
+      {
+        id: 'unctad-report',
+        title: 'Review of Maritime Transport 2025: Staying the course in turbulent waters',
+        publication: '联合国贸易和发展会议',
+        date: '2025-09-24；含2024年统计',
+        url: 'https://unctad.org/publication/review-maritime-transport-2025',
+      },
+      {
+        id: 'unctad-overview',
+        title: '2025年海运述评概览：图1的货量与吨海里',
+        publication: '联合国贸易和发展会议',
+        date: '2025-09-24；图1为2024年数据',
+        url: 'https://unctad.org/system/files/official-document/rmt2025overview_en.pdf',
+      },
+      {
+        id: 'imo-area',
+        title: 'Red Sea area：经核实海事事件与海员保护',
+        publication: '国际海事组织（联合国专门机构）',
+        date: '专题资料；核对2026-10-28',
+        url: 'https://www.imo.org/zh/mediacentre/hottopics/pages/red-sea.aspx',
+      },
+      {
+        id: 'imo-attack',
+        title: 'Statement on deadly ship attack in the Red Sea',
+        publication: '国际海事组织（联合国专门机构）',
+        date: '2026-08-12',
+        url: 'https://www.imo.org/en/mediacentre/pressbriefings/pages/statement-on-deadly-ship-attack-in-the-red-sea.aspx',
+      },
+      {
+        id: 'maersk-mecl',
+        title: 'Structural changes to MECL',
+        publication: '马士基客户通告',
+        date: '2026-07-09',
+        url: 'https://www.maersk.com/news/articles/2026/07/09/structural-changes-to-mecl',
+      },
+      {
+        id: 'caixin-return',
+        title: '胡塞武装逼近曼德海峡 船公司却加速重返红海',
+        publication: '财新',
+        date: '2026-09-15',
+        url: 'https://companies.caixin.com/m/2026-09-15/102485226.html',
+      },
+    ],
+    relatedEventIds: ['global-risk-2026'],
+  },
+};
+export default story;

@@ -1,36 +1,19 @@
 import { EDITORIAL } from '../../../.artifacts/editorial/world/ukraine.ts';
 import type { WorldStory } from './types';
 import { WORLD_STORIES } from './catalogue.ts';
+
 const story: WorldStory = {
   ...WORLD_STORIES.find((item) => item.id === 'ukraine')!,
   ...{
     intro: [EDITORIAL['intro.0'], EDITORIAL['intro.1']],
     latest: [EDITORIAL['latest.0'], EDITORIAL['latest.1']],
     terms: [
-      {
-        term: EDITORIAL['terms.0.term'],
-        definition: EDITORIAL['terms.0.definition'],
-      },
-      {
-        term: EDITORIAL['terms.1.term'],
-        definition: EDITORIAL['terms.1.definition'],
-      },
-      {
-        term: EDITORIAL['terms.2.term'],
-        definition: EDITORIAL['terms.2.definition'],
-      },
-      {
-        term: EDITORIAL['terms.3.term'],
-        definition: EDITORIAL['terms.3.definition'],
-      },
-      {
-        term: EDITORIAL['terms.4.term'],
-        definition: EDITORIAL['terms.4.definition'],
-      },
-      {
-        term: EDITORIAL['terms.5.term'],
-        definition: EDITORIAL['terms.5.definition'],
-      },
+      { term: EDITORIAL['terms.0.term'], definition: EDITORIAL['terms.0.definition'] },
+      { term: EDITORIAL['terms.1.term'], definition: EDITORIAL['terms.1.definition'] },
+      { term: EDITORIAL['terms.2.term'], definition: EDITORIAL['terms.2.definition'] },
+      { term: EDITORIAL['terms.3.term'], definition: EDITORIAL['terms.3.definition'] },
+      { term: EDITORIAL['terms.4.term'], definition: EDITORIAL['terms.4.definition'] },
+      { term: EDITORIAL['terms.5.term'], definition: EDITORIAL['terms.5.definition'] },
     ],
     timeline: [
       {
@@ -38,8 +21,6 @@ const story: WorldStory = {
         date: '1991-08-24',
         dateLabel: '1991年8月24日',
         title: EDITORIAL['timeline.0.title'],
-        what: [EDITORIAL['timeline.0.what.0']],
-        why: EDITORIAL['timeline.0.why'],
         sourceIds: ['country'],
       },
       {
@@ -47,8 +28,6 @@ const story: WorldStory = {
         date: '2013-11-21',
         dateLabel: '2013年11月21日',
         title: EDITORIAL['timeline.1.title'],
-        what: [EDITORIAL['timeline.1.what.0']],
-        why: EDITORIAL['timeline.1.why'],
         sourceIds: ['eu-pause', 'eu-agreement'],
       },
       {
@@ -56,8 +35,6 @@ const story: WorldStory = {
         date: '2014-02-22',
         dateLabel: '2014年2月22日',
         title: EDITORIAL['timeline.2.title'],
-        what: [EDITORIAL['timeline.2.what.0'], EDITORIAL['timeline.2.what.1']],
-        why: EDITORIAL['timeline.2.why'],
         sourceIds: ['transition'],
       },
       {
@@ -65,8 +42,6 @@ const story: WorldStory = {
         date: '2014-03-01',
         dateLabel: '2014年春',
         title: EDITORIAL['timeline.3.title'],
-        what: [EDITORIAL['timeline.3.what.0'], EDITORIAL['timeline.3.what.1']],
-        why: EDITORIAL['timeline.3.why'],
         sourceIds: ['territory', 'background'],
       },
       {
@@ -74,8 +49,6 @@ const story: WorldStory = {
         date: '2014-09-05',
         dateLabel: '2014年9月',
         title: EDITORIAL['timeline.4.title'],
-        what: [EDITORIAL['timeline.4.what.0']],
-        why: EDITORIAL['timeline.4.why'],
         sourceIds: ['background', 'minsk'],
       },
       {
@@ -83,8 +56,6 @@ const story: WorldStory = {
         date: '2015-02-12',
         dateLabel: '2015年2月12日',
         title: EDITORIAL['timeline.5.title'],
-        what: [EDITORIAL['timeline.5.what.0']],
-        why: EDITORIAL['timeline.5.why'],
         sourceIds: ['minsk', 'osce-monitor'],
       },
       {
@@ -92,8 +63,6 @@ const story: WorldStory = {
         date: '2022-02-21',
         dateLabel: '2022年2月21日',
         title: EDITORIAL['timeline.6.title'],
-        what: [EDITORIAL['timeline.6.what.0']],
-        why: EDITORIAL['timeline.6.why'],
         sourceIds: ['background'],
       },
       {
@@ -101,8 +70,6 @@ const story: WorldStory = {
         date: '2022-02-24',
         dateLabel: '2022年2月24日',
         title: EDITORIAL['timeline.7.title'],
-        what: [EDITORIAL['timeline.7.what.0']],
-        why: EDITORIAL['timeline.7.why'],
         sourceIds: ['war'],
       },
       {
@@ -110,8 +77,6 @@ const story: WorldStory = {
         date: '2022-03-02',
         dateLabel: '2022年3月2日',
         title: EDITORIAL['timeline.8.title'],
-        what: [EDITORIAL['timeline.8.what.0']],
-        why: EDITORIAL['timeline.8.why'],
         sourceIds: ['invasion-resolution'],
       },
       {
@@ -119,8 +84,6 @@ const story: WorldStory = {
         date: '2022-07-22',
         dateLabel: '2022年7月22日',
         title: EDITORIAL['timeline.9.title'],
-        what: [EDITORIAL['timeline.9.what.0']],
-        why: EDITORIAL['timeline.9.why'],
         sourceIds: ['grain'],
       },
       {
@@ -128,8 +91,6 @@ const story: WorldStory = {
         date: '2022-09-30',
         dateLabel: '2022年9月30日',
         title: EDITORIAL['timeline.10.title'],
-        what: [EDITORIAL['timeline.10.what.0']],
-        why: EDITORIAL['timeline.10.why'],
         sourceIds: ['territory2022'],
       },
       {
@@ -137,8 +98,6 @@ const story: WorldStory = {
         date: '2023-07-17',
         dateLabel: '2023年7月17日',
         title: EDITORIAL['timeline.11.title'],
-        what: [EDITORIAL['timeline.11.what.0']],
-        why: EDITORIAL['timeline.11.why'],
         sourceIds: ['grain'],
       },
       {
@@ -146,8 +105,6 @@ const story: WorldStory = {
         date: '2024-08-06',
         dateLabel: '2024年8月起',
         title: EDITORIAL['timeline.12.title'],
-        what: [EDITORIAL['timeline.12.what.0']],
-        why: EDITORIAL['timeline.12.why'],
         sourceIds: ['kursk'],
       },
       {
@@ -155,8 +112,6 @@ const story: WorldStory = {
         date: '2026-02-24',
         dateLabel: '2026年2月24日',
         title: EDITORIAL['timeline.13.title'],
-        what: [EDITORIAL['timeline.13.what.0']],
-        why: EDITORIAL['timeline.13.why'],
         sourceIds: ['un-debate'],
       },
       {
@@ -164,9 +119,14 @@ const story: WorldStory = {
         date: '2026-10-25',
         dateLabel: '2026年10月25日',
         title: EDITORIAL['timeline.14.title'],
-        what: [EDITORIAL['timeline.14.what.0']],
-        why: EDITORIAL['timeline.14.why'],
         sourceIds: ['latest'],
+      },
+      {
+        id: 'humanitarian-oct27',
+        date: '2026-10-27',
+        dateLabel: '2026年10月27日',
+        title: EDITORIAL['timeline.15.title'],
+        sourceIds: ['humanitarian-oct27'],
       },
     ],
     perspectives: [
@@ -311,6 +271,28 @@ const story: WorldStory = {
         date: '2024-08-15',
         url: 'https://www.news.cn/milpro/20240815/911bddfaf7de43d0ab90179bf41ac669/c.html',
       },
+      {
+        id: 'humanitarian-oct27',
+        title: '俄乌证实在奥列什基地区实施人道停火',
+        publication: '新华社',
+        date: '2026-10-27',
+        url: 'https://www.news.cn/20261027/bb65d9ef59764dfeb684ee9d02f0a1e0/c.html',
+      },
+      {
+        id: 'rdna5',
+        title: 'Updated Ukraine Recovery and Reconstruction Needs Assessment Released',
+        publication: '世界银行、联合国、欧盟委员会与乌克兰政府联合评估',
+        date: '2026-02-23；统计截至2025-12-31',
+        url: 'https://www.worldbank.org/en/news/press-release/2026/02/23/updated-ukraine-recovery-and-reconstruction-needs-assessment-released',
+      },
+      {
+        id: 'xinhua-cost',
+        title: '国际观察｜冲突延宕四年，乌克兰危机哪里走',
+        publication: '新华社',
+        date: '2026-02-24',
+        url: 'https://www.news.cn/20260224/8ce181ba203a4be884dead4fbd4cc874/c.html',
+        author: '栾海、李东旭',
+      },
     ],
     relatedEventIds: ['global-risk-2026'],
     context: [
@@ -352,6 +334,97 @@ const story: WorldStory = {
         title: EDITORIAL['questions.2.title'],
         paragraphs: [EDITORIAL['questions.2.paragraphs.0']],
         sourceIds: ['grain', 'latest'],
+      },
+    ],
+    narrative: [
+      {
+        id: 'independence-and-choice',
+        title: EDITORIAL['narrative.0.title'],
+        paragraphs: [
+          EDITORIAL['narrative.0.paragraphs.0'],
+          EDITORIAL['narrative.0.paragraphs.1'],
+          EDITORIAL['narrative.0.paragraphs.2'],
+          EDITORIAL['narrative.0.paragraphs.3'],
+          EDITORIAL['narrative.0.paragraphs.4'],
+        ],
+        sourceIds: ['country', 'eu-agreement', 'nato', 'invasion-resolution'],
+        timelineIds: ['independence'],
+      },
+      {
+        id: 'kyiv-2013-2014',
+        title: EDITORIAL['narrative.1.title'],
+        paragraphs: [
+          EDITORIAL['narrative.1.paragraphs.0'],
+          EDITORIAL['narrative.1.paragraphs.1'],
+          EDITORIAL['narrative.1.paragraphs.2'],
+          EDITORIAL['narrative.1.paragraphs.3'],
+          EDITORIAL['narrative.1.paragraphs.4'],
+        ],
+        sourceIds: ['eu-pause', 'transition', 'background'],
+        timelineIds: ['eu-pause', 'power-transition'],
+      },
+      {
+        id: 'crimea-donbas-minsk',
+        title: EDITORIAL['narrative.2.title'],
+        paragraphs: [
+          EDITORIAL['narrative.2.paragraphs.0'],
+          EDITORIAL['narrative.2.paragraphs.1'],
+          EDITORIAL['narrative.2.paragraphs.2'],
+          EDITORIAL['narrative.2.paragraphs.3'],
+          EDITORIAL['narrative.2.paragraphs.4'],
+          EDITORIAL['narrative.2.paragraphs.5'],
+        ],
+        sourceIds: ['territory', 'background', 'minsk', 'osce-monitor'],
+        timelineIds: ['donbas', 'minsk-one', 'minsk-two'],
+      },
+      {
+        id: 'full-war-and-spillovers',
+        title: EDITORIAL['narrative.3.title'],
+        paragraphs: [
+          EDITORIAL['narrative.3.paragraphs.0'],
+          EDITORIAL['narrative.3.paragraphs.1'],
+          EDITORIAL['narrative.3.paragraphs.2'],
+          EDITORIAL['narrative.3.paragraphs.3'],
+          EDITORIAL['narrative.3.paragraphs.4'],
+          EDITORIAL['narrative.3.paragraphs.5'],
+        ],
+        sourceIds: ['war', 'invasion-resolution', 'territory2022', 'grain', 'kursk'],
+        timelineIds: [
+          'recognition',
+          'full-war',
+          'un-resolution',
+          'grain-start',
+          'annexation-claims',
+          'grain-end',
+          'kursk',
+        ],
+      },
+      {
+        id: 'costs-and-negotiation',
+        title: EDITORIAL['narrative.4.title'],
+        paragraphs: [
+          EDITORIAL['narrative.4.paragraphs.0'],
+          EDITORIAL['narrative.4.paragraphs.1'],
+          EDITORIAL['narrative.4.paragraphs.2'],
+          EDITORIAL['narrative.4.paragraphs.3'],
+          EDITORIAL['narrative.4.paragraphs.4'],
+          EDITORIAL['narrative.4.paragraphs.5'],
+        ],
+        sourceIds: ['latest', 'rdna5', 'xinhua-cost', 'un-debate'],
+        timelineIds: ['un-debate'],
+      },
+      {
+        id: 'a-limited-opening',
+        title: EDITORIAL['narrative.5.title'],
+        paragraphs: [
+          EDITORIAL['narrative.5.paragraphs.0'],
+          EDITORIAL['narrative.5.paragraphs.1'],
+          EDITORIAL['narrative.5.paragraphs.2'],
+          EDITORIAL['narrative.5.paragraphs.3'],
+          EDITORIAL['narrative.5.paragraphs.4'],
+        ],
+        sourceIds: ['latest', 'humanitarian-oct27'],
+        timelineIds: ['talks-signal', 'humanitarian-oct27'],
       },
     ],
   },

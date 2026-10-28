@@ -1,6 +1,7 @@
 import type { WorldStory } from './types';
 
 const loaders: Record<string, () => Promise<{ default: WorldStory }>> = {
+  'red-sea-shipping': () => import('./redsea.ts'),
   'france-protests-2026': () => import('./france.ts'),
   ukraine: () => import('./ukraine.ts'),
   palestine: () => import('./palestine.ts'),

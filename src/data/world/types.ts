@@ -24,6 +24,13 @@ export interface WorldExplanation {
   sourceIds: string[];
 }
 
+/** The article is read in chapter order. Timeline IDs are navigation bookmarks,
+ * not a second, duplicated account of the same events. */
+export interface WorldChapter extends WorldExplanation {
+  id: string;
+  timelineIds: string[];
+}
+
 /** A short verbatim passage; the quote and source locator stay outside editorial prose. */
 export interface WorldExcerpt {
   text: string;
@@ -37,13 +44,12 @@ export interface WorldTimelinePoint {
   date: string;
   dateLabel: string;
   title: string;
-  what: string[];
-  why: string;
   sourceIds: string[];
 }
 
 export interface WorldStory extends WorldStorySummary {
   intro: string[];
+  narrative: WorldChapter[];
   context: WorldExplanation[];
   excerpts: WorldExcerpt[];
   latest: string[];

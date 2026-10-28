@@ -23,6 +23,8 @@
 
 知天下和每日简报的路由、日期规则及内容更新见[维护说明](WORLD_AND_BRIEFING.md)。两者使用`world`、`briefing`内容类型接入原阅读器；全站搜索只索引长期事件摘要，正文独立加载。弹窗先于首次指引；完整导航和指引断点统一为1280px。动效限于短入场并清理GSAP作用域，滚动保持原生。
 
+知天下主文由`WorldChapter[]`顺序组织，章节与时间书签分工：`narrative`保存连续段落，`timeline`保存导航事实。`worldStoryBookmarks`用Map解析真实阅读块ID，检查缺失及重复关联，不为书签另渲染一套摘要。页面、收藏和Word/PDF保持同一篇文章；旧私人快照仍由内容版本区分。
+
 `SiteMotion`由Layout按需加载，仅增强`main`中的标题和显式标记区域；每页共享IntersectionObserver和MutationObserver，新节点只扫描新增子树。路由切换、弹窗暂停和减少动态效果变化时释放作用域、观察器和临时集合。原有`ReadingEntrance`标明局部动效边界，避免重复入场；正文段落和可编辑区不做位移。详见[阅读动效](READING_MOTION.md)。
 
 ## 本机与云端

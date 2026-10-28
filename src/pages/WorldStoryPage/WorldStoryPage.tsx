@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { getWorldStory } from '@/data/world';
 import type { WorldStory } from '@/data/world/types';
-import { worldStoryDocument } from '@/features/world/storyDocument';
+import { worldStoryBookmarks, worldStoryDocument } from '@/features/world/storyDocument';
 import { ContentReader } from '@/features/reading/ContentReader';
 import type { TextBlock } from '@/features/reading/model';
 import '@/features/world/world.css';
@@ -64,6 +64,25 @@ export default function WorldStoryPage() {
   const headings = document.blocks.filter((block): block is TextBlock => block.type === 'heading');
   const href = (text: string) =>
     '#' + prefix + '-' + headings.find((block) => block.text === text)?.id;
+  const mainTitles = new Set([
+    '先了解这件事',
+    ...story.narrative.map((chapter) => chapter.title),
+    '最近进展',
+  ]);
+  const link = (block: TextBlock) => (
+    <a key={block.id} href={'#' + prefix + '-' + block.id}>
+      {block.text}
+    </a>
+  );
+  const outline = (
+    <nav aria-label="知天下阅读目录">
+      {headings.filter((block) => block.level === 2 && mainTitles.has(block.text)).map(link)}
+      <details className="world-reference-links">
+        <summary>资料与补充</summary>
+        {headings.filter((block) => block.level === 2 && !mainTitles.has(block.text)).map(link)}
+      </details>
+    </nav>
+  );
   return (
     <article className="world-page world-detail">
       <Link to="/world" className="world-back">
@@ -80,35 +99,33 @@ export default function WorldStoryPage() {
         </p>
         <div className="world-jump">
           <a href={href('最近进展')}>先看最近进展</a>
-          <a href={href('时间脉络')}>从头阅读</a>
+          <a href={href('先了解这件事')}>从头阅读</a>
         </div>
       </header>
       <div className="world-reading-layout">
         <aside className="world-wayfinding">
-          <nav aria-label="知天下阅读目录">
+          <div className="world-outline-desktop">
             <h2>阅读目录</h2>
-            {headings
-              .filter((block) => block.level === 2)
-              .map((block) => (
-                <a key={block.id} href={'#' + prefix + '-' + block.id}>
-                  {block.text}
-                </a>
-              ))}
-          </nav>
+            {outline}
+          </div>
+          <details className="world-outline-mobile">
+            <summary>阅读目录</summary>
+            {outline}
+          </details>
           <label className="world-node-select">
-            跳到时间节点
+            按时间定位正文
             <select
-              aria-label="跳到时间节点"
+              aria-label="按时间定位正文"
               defaultValue=""
               onChange={(event) => {
                 if (event.target.value) window.location.hash = event.target.value;
               }}
             >
               <option value="" disabled>
-                选择一个节点
+                选择时间书签
               </option>
-              {story.timeline.map((point) => (
-                <option key={point.id} value={href(point.dateLabel + ' · ' + point.title)}>
+              {worldStoryBookmarks(story, document).map((point) => (
+                <option key={point.id} value={'#' + prefix + '-' + point.blockId}>
                   {point.dateLabel} · {point.title}
                 </option>
               ))}

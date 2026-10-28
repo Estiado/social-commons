@@ -1,6 +1,7 @@
 import { EDITORIAL } from '../../../.artifacts/editorial/world/france.ts';
 import type { WorldStory } from './types';
 import { WORLD_STORIES } from './catalogue.ts';
+
 const story: WorldStory = {
   ...WORLD_STORIES.find((item) => item.id === 'france-protests-2026')!,
   ...{
@@ -32,26 +33,11 @@ const story: WorldStory = {
     ],
     latest: [EDITORIAL['latest.0'], EDITORIAL['latest.1']],
     terms: [
-      {
-        term: EDITORIAL['terms.0.term'],
-        definition: EDITORIAL['terms.0.definition'],
-      },
-      {
-        term: EDITORIAL['terms.1.term'],
-        definition: EDITORIAL['terms.1.definition'],
-      },
-      {
-        term: EDITORIAL['terms.2.term'],
-        definition: EDITORIAL['terms.2.definition'],
-      },
-      {
-        term: EDITORIAL['terms.3.term'],
-        definition: EDITORIAL['terms.3.definition'],
-      },
-      {
-        term: EDITORIAL['terms.4.term'],
-        definition: EDITORIAL['terms.4.definition'],
-      },
+      { term: EDITORIAL['terms.0.term'], definition: EDITORIAL['terms.0.definition'] },
+      { term: EDITORIAL['terms.1.term'], definition: EDITORIAL['terms.1.definition'] },
+      { term: EDITORIAL['terms.2.term'], definition: EDITORIAL['terms.2.definition'] },
+      { term: EDITORIAL['terms.3.term'], definition: EDITORIAL['terms.3.definition'] },
+      { term: EDITORIAL['terms.4.term'], definition: EDITORIAL['terms.4.definition'] },
     ],
     timeline: [
       {
@@ -59,8 +45,6 @@ const story: WorldStory = {
         date: '2026-09-15',
         dateLabel: '2026年9月中旬',
         title: EDITORIAL['timeline.0.title'],
-        what: [EDITORIAL['timeline.0.what.0']],
-        why: EDITORIAL['timeline.0.why'],
         sourceIds: ['xinhua-analysis', 'reuters-schools'],
       },
       {
@@ -68,8 +52,6 @@ const story: WorldStory = {
         date: '2026-10-08',
         dateLabel: '2026年10月8日',
         title: EDITORIAL['timeline.1.title'],
-        what: [EDITORIAL['timeline.1.what.0']],
-        why: EDITORIAL['timeline.1.why'],
         sourceIds: ['reuters-schools'],
       },
       {
@@ -77,8 +59,6 @@ const story: WorldStory = {
         date: '2026-10-17',
         dateLabel: '2026年10月17日',
         title: EDITORIAL['timeline.2.title'],
-        what: [EDITORIAL['timeline.2.what.0'], EDITORIAL['timeline.2.what.1']],
-        why: EDITORIAL['timeline.2.why'],
         sourceIds: ['xinhua-protests'],
       },
       {
@@ -86,8 +66,6 @@ const story: WorldStory = {
         date: '2026-10-18',
         dateLabel: '2026年10月18日',
         title: EDITORIAL['timeline.3.title'],
-        what: [EDITORIAL['timeline.3.what.0']],
-        why: EDITORIAL['timeline.3.why'],
         sourceIds: ['xinhua-analysis'],
       },
       {
@@ -95,8 +73,6 @@ const story: WorldStory = {
         date: '2026-10-19',
         dateLabel: '2026年10月19日至20日',
         title: EDITORIAL['timeline.4.title'],
-        what: [EDITORIAL['timeline.4.what.0']],
-        why: EDITORIAL['timeline.4.why'],
         sourceIds: ['xinhua-curfew'],
       },
       {
@@ -104,8 +80,6 @@ const story: WorldStory = {
         date: '2026-10-22',
         dateLabel: '2026年10月22日',
         title: EDITORIAL['timeline.5.title'],
-        what: [EDITORIAL['timeline.5.what.0']],
-        why: EDITORIAL['timeline.5.why'],
         sourceIds: ['ap-court'],
       },
       {
@@ -113,8 +87,6 @@ const story: WorldStory = {
         date: '2026-10-24',
         dateLabel: '2026年10月24日',
         title: EDITORIAL['timeline.6.title'],
-        what: [EDITORIAL['timeline.6.what.0']],
-        why: EDITORIAL['timeline.6.why'],
         sourceIds: ['ap-protest', 'reuters-oct24'],
       },
       {
@@ -122,9 +94,14 @@ const story: WorldStory = {
         date: '2026-10-26',
         dateLabel: '2026年10月26日',
         title: EDITORIAL['timeline.7.title'],
-        what: [EDITORIAL['timeline.7.what.0']],
-        why: EDITORIAL['timeline.7.why'],
         sourceIds: ['education-response', 'lemonde-plan'],
+      },
+      {
+        id: 'october27',
+        date: '2026-10-27',
+        dateLabel: '2026年10月27日',
+        title: EDITORIAL['timeline.8.title'],
+        sourceIds: ['student-response'],
       },
     ],
     perspectives: [
@@ -256,8 +233,104 @@ const story: WorldStory = {
         date: '2023-06-28',
         url: 'https://www.afpbb.com/articles/-/3470207',
       },
+      {
+        id: 'insee-debt',
+        title: '2026年第二季度末法国公共债务占GDP的119.0%',
+        publication: '法国国家统计与经济研究所 INSEE',
+        date: '2026-09-29；2026年第二季度',
+        url: 'https://www.insee.fr/fr/statistiques/9053525',
+      },
+      {
+        id: 'insee-income',
+        title: '2026年第二季度GDP与家庭购买力详细结果',
+        publication: '法国国家统计与经济研究所 INSEE',
+        date: '2026-08-28；2026年第二季度',
+        url: 'https://www.insee.fr/fr/statistiques/9039499',
+      },
+      {
+        id: 'student-response',
+        title: '法国学生不满政府提出的教育改革方案 誓言继续抗议',
+        publication: '香港电台',
+        date: '2026-10-27',
+        url: 'https://gbcode.rthk.hk/TuniS/news.rthk.hk/rthk/ch/component/k2/1875427-20261027.htm',
+      },
+      {
+        id: 'cna-schools',
+        title: '全法国学生动员示威提翻新校舍等10诉求 教师家长声援',
+        publication: '中央社',
+        date: '2026-10-07',
+        url: 'https://www.cna.com.tw/news/aopl/202610070013.aspx',
+        author: '曾依璇',
+      },
     ],
     relatedEventIds: ['global-risk-2026'],
+    narrative: [
+      {
+        id: 'a-missing-teacher',
+        title: EDITORIAL['narrative.0.title'],
+        paragraphs: [
+          EDITORIAL['narrative.0.paragraphs.0'],
+          EDITORIAL['narrative.0.paragraphs.1'],
+          EDITORIAL['narrative.0.paragraphs.2'],
+          EDITORIAL['narrative.0.paragraphs.3'],
+          EDITORIAL['narrative.0.paragraphs.4'],
+        ],
+        sourceIds: ['xinhua-analysis', 'cna-schools', 'reuters-schools'],
+        timelineIds: ['school-start', 'october8'],
+      },
+      {
+        id: 'public-service-and-budgets',
+        title: EDITORIAL['narrative.1.title'],
+        paragraphs: [
+          EDITORIAL['narrative.1.paragraphs.0'],
+          EDITORIAL['narrative.1.paragraphs.1'],
+          EDITORIAL['narrative.1.paragraphs.2'],
+          EDITORIAL['narrative.1.paragraphs.3'],
+          EDITORIAL['narrative.1.paragraphs.4'],
+        ],
+        sourceIds: ['xinhua-analysis', 'insee-income', 'insee-debt', 'reuters-schools'],
+        timelineIds: [],
+      },
+      {
+        id: 'protest-and-violence',
+        title: EDITORIAL['narrative.2.title'],
+        paragraphs: [
+          EDITORIAL['narrative.2.paragraphs.0'],
+          EDITORIAL['narrative.2.paragraphs.1'],
+          EDITORIAL['narrative.2.paragraphs.2'],
+          EDITORIAL['narrative.2.paragraphs.3'],
+          EDITORIAL['narrative.2.paragraphs.4'],
+        ],
+        sourceIds: ['xinhua-protests', 'xinhua-analysis', 'xinhua-curfew'],
+        timelineIds: ['october17', 'october18', 'october19'],
+      },
+      {
+        id: 'courts-and-the-next-march',
+        title: EDITORIAL['narrative.3.title'],
+        paragraphs: [
+          EDITORIAL['narrative.3.paragraphs.0'],
+          EDITORIAL['narrative.3.paragraphs.1'],
+          EDITORIAL['narrative.3.paragraphs.2'],
+          EDITORIAL['narrative.3.paragraphs.3'],
+          EDITORIAL['narrative.3.paragraphs.4'],
+        ],
+        sourceIds: ['ap-court', 'reuters-oct24', 'ap-protest', 'lemonde-followup'],
+        timelineIds: ['october22', 'october24'],
+      },
+      {
+        id: 'promises-and-acceptance',
+        title: EDITORIAL['narrative.4.title'],
+        paragraphs: [
+          EDITORIAL['narrative.4.paragraphs.0'],
+          EDITORIAL['narrative.4.paragraphs.1'],
+          EDITORIAL['narrative.4.paragraphs.2'],
+          EDITORIAL['narrative.4.paragraphs.3'],
+          EDITORIAL['narrative.4.paragraphs.4'],
+        ],
+        sourceIds: ['education-response', 'lemonde-plan', 'student-response', 'insee-debt'],
+        timelineIds: ['october26', 'october27'],
+      },
+    ],
   },
 };
 export default story;
