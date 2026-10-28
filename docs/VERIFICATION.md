@@ -248,3 +248,6 @@
 - 本轮早先的默认隔离服务占用5180但未响应浏览器；已结束本轮会话并在本机启动同一项目，无结束其他应用进程、换端口或更改系统网络设置。无微信、数据库、账户及SMTP改动。
 - 收尾：8项搜索专项复查、类型、ESLint及最终生产构建通过。真实页面已验证空结果与重新搜索、Ctrl+K、来源筛选和键盘直达独立文章；控制台error为空。手机栏目由横向滚动改为两行，三个筛选保留原生控件和明确标签。该复查不再次运行已通过的97项全套和导出生成。
 - 发布前fetch核对HEAD与origin/main为0/0，本轮未与他人修改分叉；接下来推送后以GitHub检查和Cloudflare状态为准，正式站验收另行补记。
+- 发布完成：功能提交525209e91146699c1a90a8b476e7363b0b885324已推送，ls-remote与本地SHA一致。[GitHub类型/回归/构建](https://github.com/Estiado/social-commons/actions/runs/40698355035/job/122851081281)及[Cloudflare Pages](https://github.com/Estiado/social-commons/runs/122851845184)均completed/success，后者明确Deployed successfully。
+- 正式站新首页搜索已实测：“AI 用电”返回知天下1条，显示分类、完整短摘要及IEA/新华社/UNECE来源；点击直达/world/ai-energy。10月14日时间书签定位到正文b25，距顶部约96px；控制台error为空。截图production-ai-energy.png与search-final.png、search-mobile-final.png存D盘.artifacts/search-design，未提交。用户要求重新加载的本地搜索面板已保留打开。
+- 此次收尾仅补交接记录，不重复全量检查，也不等待文档提交再次触发的相同生产构建。未做新并发压测、邮箱、微信或真实数据库检查，不将页面抽样说成这些项目已验收。
