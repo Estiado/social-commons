@@ -6,7 +6,7 @@
 
 用户提供的`近日_202610280954_19764.docx`为论述组织参考，只读提取了正文。其特点是由当前变化进入人物利益、谈判约束与条件推演；本轮借鉴这种连贯叙事，没有上传附件、照搬编译文，或把人物心理、幕后外交与未来会晤推测改为本站事实。文末英文链接可读，其所链俄文原站不可达；不据此扩展未经独立核对的日程。
 
-原四篇加红海共新增27章、16260字符主文（含标点和拉丁字符），在原有背景与出处基础上解释过程。50个日期现在只是章节书签，不再另写一份平行经过。本站文字按humanizer-zh检查信息范围、归属、连接和套话，原文短引及书目独立保存。
+原四篇加红海共新增27章、约1.63万字符主文（含标点和拉丁字符），在原有背景与出处基础上解释过程。50个日期现在只是章节书签，不再另写一份平行经过。本站文字按humanizer-zh检查信息范围、归属、连接和套话，原文短引及书目独立保存。
 
 - 俄乌新增[新华社10月27日奥列什基人道停火报道](https://www.news.cn/20261027/bb65d9ef59764dfeb684ee9d02f0a1e0/c.html)，只确认特定地区与用途，不写成全线停火。补查[世界银行等四方RDNA5发布资料](https://www.worldbank.org/en/news/press-release/2026/02/23/updated-ukraine-recovery-and-reconstruction-needs-assessment-released)和[栾海、李东旭的新华社分析](https://www.news.cn/20260224/8ce181ba203a4be884dead4fbd4cc874/c.html)：5880亿美元是按2025年底情况估计的未来十年恢复与重建需求，1950亿美元是直接损失；不相加，不冒充已筹资金。未下载整份RDNA5作全文精读声明。
 - 巴以补查[焦倩的新华社报道](https://www.news.cn/20260925/9c1e333cb69d470d87a800edea15254d/c.html)与[UNCTAD公开发布信息](https://unctad.org/news/unctad-gaza-reconstruction-needs-reach-715-billion-palestinian-economy-and-public-finances)：715亿美元为估计需求；总体经济增长和相对2022年仍低的水平并存。后者直开403，已读官方检索摘要及新华社报道，未冒充原报告全文。历史部分交叉查[联合国历史专题](https://www.un.org/unispal/history/)与既有中文资料。
