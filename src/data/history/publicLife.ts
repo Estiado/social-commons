@@ -151,6 +151,10 @@ export const PUBLIC_LIFE_EVENTS: IEvent[] = [
     summary: EDITORIAL['PUBLIC_LIFE_EVENTS.snow-london-1854.summary'],
     summarySources: [
       {
+        title: 'UCLA：宽街地图、神话与调查过程',
+        url: 'https://epi-snow.ph.ucla.edu/Stream2_BSPoutbreak_f.html',
+      },
+      {
         title: 'CDC：斯诺与水泵把手事件150周年',
         url: 'https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5334a1.htm',
       },

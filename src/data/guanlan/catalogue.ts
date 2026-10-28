@@ -4,7 +4,40 @@ import type { GuanlanEventSummary } from './types';
 /** Lightweight entry points; event bodies are requested only on their own pages. */
 export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   {
+    id: 'short-drama-overseas',
+    sourceNames: ['人民日报海外版', '新华网', 'Sensor Tower', 'Adjust官方报告发布页'],
+    title: EDITORIAL['GUANLAN_EVENTS.short-drama-overseas.title'],
+    summary: EDITORIAL['GUANLAN_EVENTS.short-drama-overseas.summary'],
+    question: EDITORIAL['GUANLAN_EVENTS.short-drama-overseas.question'],
+    sortDate: '2026-09-07',
+    dateLabel: '相关报道：2026年9月7日；对照2026年行业报告',
+    topicIds: [
+      'culture-heritage',
+      'tech-ai',
+      'literature-aesthetics',
+      'economy-development',
+      'youth-university',
+    ],
+    keywords: ['微短剧', '短剧出海', '流媒体', 'AI译制', '注意力', '文化传播', '平台'],
+  },
+  {
+    id: 'ai-learning-guardrails',
+    sourceNames: [
+      '新华社',
+      'PNAS',
+      'Journal of Experimental Psychology: Human Learning and Memory',
+    ],
+    title: EDITORIAL['GUANLAN_EVENTS.ai-learning-guardrails.title'],
+    summary: EDITORIAL['GUANLAN_EVENTS.ai-learning-guardrails.summary'],
+    question: EDITORIAL['GUANLAN_EVENTS.ai-learning-guardrails.question'],
+    sortDate: '2025-06-25',
+    dateLabel: '研究发表于2025年6月25日；作为持续学习议题回看',
+    topicIds: ['education-growth', 'tech-ai', 'youth-university', 'philosophy-thinking'],
+    keywords: ['AI学习', '数学', 'GPT', '独立思考', '生成效应', '认知流畅性', '自动化'],
+  },
+  {
     id: 'heritage-short-video',
+    sourceNames: ['澎湃新闻', 'Museum International'],
     title: EDITORIAL['GUANLAN_EVENTS.heritage-short-video.title'],
     summary: EDITORIAL['GUANLAN_EVENTS.heritage-short-video.summary'],
     question: EDITORIAL['GUANLAN_EVENTS.heritage-short-video.question'],
@@ -15,6 +48,7 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'ai-at-work',
+    sourceNames: ['新周刊', 'American Economic Journal: Macroeconomics', '澎湃新闻', 'NBER'],
     title: EDITORIAL['GUANLAN_EVENTS.ai-at-work.title'],
     summary: EDITORIAL['GUANLAN_EVENTS.ai-at-work.summary'],
     question: EDITORIAL['GUANLAN_EVENTS.ai-at-work.question'],
@@ -32,6 +66,7 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'academic-bars',
+    sourceNames: ['新潮', '澎湃号', '青年发展论坛', '北京青年研究'],
     title: EDITORIAL['GUANLAN_EVENTS.academic-bars.title'],
     summary: EDITORIAL['GUANLAN_EVENTS.academic-bars.summary'],
     question: EDITORIAL['GUANLAN_EVENTS.academic-bars.question'],
@@ -48,6 +83,12 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'online-personas',
+    sourceNames: [
+      '中国青年报',
+      'New Media & Society',
+      'Journal of Broadcasting & Electronic Media',
+      'Washington Law Review',
+    ],
     sortDate: '2026-09-10',
     dateLabel: '调查报道：2026年9月10日',
     topicIds: ['youth-university', 'individual-freedom', 'tech-ai', 'philosophy-thinking'],
@@ -58,6 +99,11 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'freshman-belonging',
+    sourceNames: [
+      '中国青年报',
+      'Journal of Personality and Social Psychology',
+      'American Journal of Sociology',
+    ],
     sortDate: '2026-09-17',
     dateLabel: '调查与访谈：2026年9月17日',
     topicIds: ['youth-university', 'education-growth', 'society-fairness', 'individual-freedom'],
@@ -68,6 +114,11 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'xibei-trust',
+    sourceNames: [
+      '21财经·事件追踪',
+      '新京报贝壳财经（21财经转载）',
+      'Journal of Political Economy',
+    ],
     sortDate: '2026-09-21',
     dateLabel: '争议始于2025年9月；回访报道：2026年9月21日',
     topicIds: ['economy-development', 'society-fairness', 'philosophy-thinking'],
@@ -78,6 +129,7 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'concert-cities',
+    sourceNames: ['界面新闻·商业资讯', 'PNAS', 'University of California Press'],
     sortDate: '2026-08-31',
     dateLabel: '观察期：2026年7月1日至8月31日；暑期市场资料',
     topicIds: [
@@ -93,6 +145,7 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'reverse-tourism',
+    sourceNames: ['澎湃新闻·美数课', '界面新闻', 'American Journal of Sociology'],
     sortDate: '2026-10-09',
     dateLabel: '国庆出行与回访报道：2026年10月4日至9日',
     topicIds: ['culture-heritage', 'economy-development', 'ecology-future', 'individual-freedom'],
@@ -103,6 +156,11 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'labubu-collecting',
+    sourceNames: [
+      '新浪新闻·微博发布页',
+      'Journal of Consumer Research',
+      'Academy of Management Review',
+    ],
     sortDate: '2026-09-24',
     dateLabel: '品牌发布：2026年8月28日；产品分批于9月发售',
     topicIds: [
@@ -118,6 +176,11 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'wuzhen-theatre',
+    sourceNames: [
+      '新快报（经济观察网转载）',
+      'University of California Press',
+      'American Journal of Sociology',
+    ],
     sortDate: '2026-10-17',
     dateLabel: '开幕：2026年10月15日；现场报道：10月17日',
     topicIds: ['literature-aesthetics', 'culture-heritage', 'youth-university', 'education-growth'],
@@ -128,6 +191,7 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'facebook-emotion',
+    sourceNames: ['PNAS', 'Monitor on Psychology'],
     sortDate: '2014-07-22',
     dateLabel: '实验：2012年；论文与编辑声明：2014年6月至7月',
     topicIds: ['tech-ai', 'individual-freedom', 'philosophy-thinking', 'society-fairness'],
@@ -138,6 +202,7 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'gpt-sycophancy',
+    sourceNames: ['OpenAI·产品说明', 'OpenAI·技术复盘', 'arXiv:2310.13548（v4）'],
     sortDate: '2025-05-02',
     dateLabel: '更新与回滚：2025年4月；详细复盘：5月2日',
     topicIds: ['tech-ai', 'education-growth', 'youth-university', 'philosophy-thinking'],
@@ -148,6 +213,7 @@ export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   },
   {
     id: 'global-risk-2026',
+    sourceNames: ['United Nations', 'United Nations · 方法附录', '新华社', 'NUS · IPUR'],
     sortDate: '2026-09-15',
     dateLabel: '报告发布：2026年9月15日；调查：2月19日至4月24日',
     topicIds: ['international-global', 'ecology-future', 'tech-ai', 'philosophy-thinking'],

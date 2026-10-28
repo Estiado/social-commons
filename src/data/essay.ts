@@ -1,3 +1,4 @@
+import { ATTENTION_ESSAYS } from './essay/attentionAndSystems.ts';
 import { EDITORIAL } from '../../.artifacts/editorial/essay.ts';
 import type { IEssayMaterial } from './types';
 import { REASONING_ESSAYS } from './essay/reasoning.ts';
@@ -9,6 +10,7 @@ import { YOUTH_ESSAYS } from './essay/youthStudies.ts';
 // 内置概念目录。读者素材在本浏览器保存，站方示例独立维护于 essayExamples.ts。
 
 export const ESSAY_MATERIALS: IEssayMaterial[] = [
+  ...ATTENTION_ESSAYS,
   ...EXPERIENCE_ESSAYS,
   ...YOUTH_ESSAYS,
   ...LEARNING_ESSAYS,

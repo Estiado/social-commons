@@ -1,6 +1,8 @@
 import type { GuanlanEvent } from './types';
 
 const loaders: Record<string, () => Promise<{ default: GuanlanEvent }>> = {
+  'short-drama-overseas': () => import('./shortDrama.ts'),
+  'ai-learning-guardrails': () => import('./aiLearning.ts'),
   'global-risk-2026': () => import('./globalRisk.ts'),
   'heritage-short-video': () => import('./heritage.ts'),
   'ai-at-work': () => import('./aiAtWork.ts'),

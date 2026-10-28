@@ -5,6 +5,7 @@ import { CLASSICAL_PASSAGES } from './quotes/classicalPassages.ts';
 import { EXPANDED_READINGS, QUOTE_ALIASES } from './quotes/expandedReadings.ts';
 import { PUBLISHED_COMMENTARIES } from './quotes/publishedCommentaries.ts';
 import { EXTENDED_CLASSICS, EXTENDED_COMMENTARIES } from './quotes/extendedClassics.ts';
+import { DWELLING_AND_TIME } from './quotes/dwellingAndTime.ts';
 import { TIME_AND_ATTENTION } from './quotes/timeAndAttention.ts';
 import { FRIENDSHIP_READINGS, FRIENDSHIP_COMMENTARIES } from './quotes/friendshipAndNature.ts';
 
@@ -322,6 +323,7 @@ const readingTexts: IQuote[] = [
   ...EXTENDED_CLASSICS,
   ...FRIENDSHIP_READINGS,
   ...TIME_AND_ATTENTION,
+  ...DWELLING_AND_TIME,
 ];
 
 const readings = new Map(

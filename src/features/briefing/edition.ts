@@ -24,8 +24,8 @@ const news = [
   })),
 ].sort((a, b) => b.date.localeCompare(a.date));
 // Complete, sourced classical works; no clipping a long poem into a single slogan.
-const poems = QUOTE_CATALOGUE.filter((item) => /^q10[0-6]$/u.test(item.id));
-const concepts = DAILY_KNOWLEDGE.filter((item) => /^d1(?:1[5-9]|2\d|3[0-2])$/u.test(item.id));
+const poems = QUOTE_CATALOGUE.filter((item) => /^q1(?:0\d|10)$/u.test(item.id));
+const concepts = DAILY_KNOWLEDGE.filter((item) => /^d1(?:1[5-9]|[23]\d)$/u.test(item.id));
 
 export function briefingEdition(day = chinaDay()) {
   const number = dayNumber(day);

@@ -1,3 +1,4 @@
+import { ATTENTION_EXAMPLES } from './essay/attentionAndSystems.ts';
 import { EDITORIAL } from '../../.artifacts/editorial/essayExamples.ts';
 import type { MaterialFields } from '../features/essay/materials';
 import { REASONING_EXAMPLES } from './essay/reasoningExamples.ts';
@@ -14,6 +15,7 @@ export interface EssayExample extends MaterialFields {
 // Site examples are source-based summaries, not unattributed copied passages.
 // The same reviewed data can seed Supabase; visitors cannot edit these entries.
 export const ESSAY_EXAMPLES: EssayExample[] = [
+  ...ATTENTION_EXAMPLES,
   ...EXPERIENCE_EXAMPLES,
   ...YOUTH_EXAMPLES,
   ...LEARNING_EXAMPLES,

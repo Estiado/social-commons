@@ -16,6 +16,7 @@
 | 观澜事件      | `src/data/guanlan/`、`src/features/guanlan/`            | 轻量目录、独立案例正文、来源筛选和统一文章转换                      |
 | 知天下        | `src/data/world/`、`src/features/world/`                | 长期事件目录、按需正文、节点来源及统一文章转换                      |
 | 每日简报      | `src/features/briefing/`                                | 北京日期、编辑材料轮换、弹窗与阅读模型，不自动采集新闻              |
+| 全站搜索      | `src/lib/search.ts`、`src/data/searchIndex.ts`、`src/components/GlobalSearch.tsx` | 一次构建公开索引，多词、排序、摘要与元数据筛选；不包含私人文稿、不查询后端 |
 | 阅读动效      | `src/features/motion/`                                  | 页面作用域、观察器、GSAP清理、减少动态效果和交互反馈                 |
 | 编辑正文      | `content/站内编辑稿.md`、`scripts/editorial-content.ts` | 单一文本来源、引用校验、按模块生成；原句和书目独立保留              |
 

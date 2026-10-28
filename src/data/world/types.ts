@@ -7,6 +7,8 @@ export interface WorldStorySummary {
   updatedAt: string;
   latestEventDate: string;
   keywords: string[];
+  /** Registered media/institutions for lightweight public search; bodies stay lazy. */
+  sourceNames?: string[];
 }
 
 export interface WorldSource {

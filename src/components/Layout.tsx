@@ -117,9 +117,10 @@ export function Layout() {
               aria-label="搜索全站"
               data-tour="nav-search"
               onClick={() => setSearchOpen(true)}
-              className="p-2 text-muted-foreground"
+              className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-sm px-2 text-sm text-foreground/80 hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
             >
               <Search className="h-4 w-4" />
+              <span>搜索</span>
             </button>
             <NavLink
               to={feedbackPath}
@@ -207,6 +208,27 @@ export function Layout() {
           </nav>
         )}
       </header>
+      {location.pathname === '/' && (
+        <div className="mx-auto w-full max-w-7xl px-6 pt-6 sm:pt-8">
+          <button
+            type="button"
+            aria-label="打开全站搜索"
+            onClick={() => setSearchOpen(true)}
+            className="flex min-h-14 w-full items-center gap-3 rounded-sm border border-border bg-card px-4 text-left text-foreground/75 hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:min-h-16 sm:px-5"
+          >
+            <Search className="h-5 w-5 shrink-0" />
+            <span className="min-w-0 flex-1 text-sm sm:text-base">
+              搜索事件、名句、概念与写作素材
+            </span>
+            <span className="hidden text-xs text-foreground/60 md:inline">
+              支持栏目、标签与来源筛选
+            </span>
+            <kbd className="hidden shrink-0 rounded-sm border px-1.5 py-1 text-xs text-foreground/65 lg:inline">
+              Ctrl / ⌘ K
+            </kbd>
+          </button>
+        </div>
+      )}
       <main ref={main} data-tour-shell className="flex-1">
         <Suspense
           fallback={
@@ -247,9 +269,35 @@ export function Layout() {
         </div>
       </footer>
       {searchOpen && (
-        <Suspense fallback={null}>
-          <GlobalSearch open onOpenChange={setSearchOpen} />
-        </Suspense>
+        <ErrorBoundary
+          fallbackRender={() => (
+            <div
+              role="alert"
+              className="fixed bottom-5 left-5 right-5 z-50 rounded-sm border bg-card p-4 text-sm shadow-md sm:left-auto sm:max-w-sm"
+            >
+              <p>搜索暂时未加载，请检查网络后刷新页面。</p>
+              <button
+                className="mt-2 min-h-11 px-2 text-accent underline"
+                onClick={() => setSearchOpen(false)}
+              >
+                关闭提示
+              </button>
+            </div>
+          )}
+        >
+          <Suspense
+            fallback={
+              <div
+                role="status"
+                className="fixed bottom-5 right-5 z-50 rounded-sm border bg-card px-5 py-4 text-sm shadow-md"
+              >
+                正在准备搜索…
+              </div>
+            }
+          >
+            <GlobalSearch open onOpenChange={setSearchOpen} />
+          </Suspense>
+        </ErrorBoundary>
       )}
       {briefOpen && (
         <ErrorBoundary

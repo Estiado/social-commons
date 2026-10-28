@@ -38,7 +38,7 @@ import {
 } from '../src/features/reading/backup.ts';
 
 test('观澜事件保留三层视角、真实署名及有效关联，未知路径不能命中对象原型', async () => {
-  assert.equal(new Set(GUANLAN_EVENTS.map((item) => item.id)).size, 13);
+  assert.equal(new Set(GUANLAN_EVENTS.map((item) => item.id)).size, 15);
   const topics = new Set(TOPIC_SPECIALS.map((item) => item.id));
   for (const summary of GUANLAN_EVENTS) {
     const event = (await getGuanlanEvent(summary.id))!;
@@ -180,7 +180,7 @@ test('个人事件关联、旧话题和摘录一起持久化，备份可恢复�
   await linkArticleToEvent(document.id, GUANLAN_EVENTS[0]);
   await linkArticleToEvent(document.id, GUANLAN_EVENTS[0]);
   const linked = await linkArticleToEvent(document.id, GUANLAN_EVENTS[1]);
-  assert.deepEqual(linked.eventIds, ['heritage-short-video', 'ai-at-work']);
+  assert.deepEqual(linked.eventIds, [GUANLAN_EVENTS[0].id, GUANLAN_EVENTS[1].id]);
   assert.ok(linked.topicIds?.includes('legacy-topic'));
   assert.equal(new Set(linked.topicIds).size, linked.topicIds?.length);
   assert.deepEqual(linked.annotations, annotated.annotations);

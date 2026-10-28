@@ -8,6 +8,8 @@ export interface GuanlanEventSummary {
   dateLabel: string;
   topicIds: string[];
   keywords: string[];
+  /** Registered media/institutions for lightweight public search; bodies stay lazy. */
+  sourceNames?: string[];
 }
 
 export interface EventSource {
