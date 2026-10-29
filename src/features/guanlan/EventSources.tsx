@@ -16,8 +16,13 @@ export function EventSources({
     (source) => !publication || source.publication === publication,
   );
   return (
-    <section aria-label="按媒体查阅事件资料" className="my-12 border-t pt-7">
-      <h2 className="font-serif text-2xl font-semibold">原文与电子文献</h2>
+    <details aria-label="按媒体查阅事件资料" className="my-12 border-t pt-5">
+      <summary>
+        <h2 className="inline font-serif text-2xl font-semibold">原文与电子文献</h2>
+        <span className="ml-3 text-sm text-muted-foreground">
+          {event.sources.length}份，展开查阅
+        </span>
+      </summary>
       <label className="my-5 flex flex-wrap items-center gap-3 text-sm">
         按媒体或期刊查阅
         <select
@@ -37,7 +42,8 @@ export function EventSources({
       </p>
       <div className="grid gap-4 md:grid-cols-2">
         {sources.map((source) => (
-          <article key={source.id} className="rounded-sm border bg-card p-5">
+          <details key={source.id} className="rounded-sm border bg-card p-5">
+            <summary className="font-serif text-lg leading-relaxed">{source.title}</summary>
             <p className="text-xs leading-relaxed text-muted-foreground">
               {source.kind} · {source.date} · {source.publication}
             </p>
@@ -84,9 +90,9 @@ export function EventSources({
                 {source.importMode === 'paste' ? '粘贴这篇正文到事件 →' : '导入这篇原文到事件 →'}
               </Link>
             )}
-          </article>
+          </details>
         ))}
       </div>
-    </section>
+    </details>
   );
 }

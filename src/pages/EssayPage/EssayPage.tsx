@@ -13,6 +13,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { ESSAY_MATERIALS } from '@/data/essay';
+import { knowledgeGroup } from '@/data/knowledgeCategories';
 import { ConceptMaterials } from '@/features/essay/ConceptMaterials';
 import { ContentReader } from '@/features/reading/ContentReader';
 import { essayDocument } from '@/features/reading/contentDocuments';
@@ -63,8 +64,8 @@ export default function EssayPage() {
   // 一级分类
   const primaryCategories = useMemo(() => {
     const primaries = new Set<string>();
-    allMaterials.forEach((m) => primaries.add(m.category.split(' · ')[0]));
-    customCategories.forEach((c) => primaries.add(c.split(' · ')[0]));
+    allMaterials.forEach((m) => primaries.add(knowledgeGroup(m.category)));
+    customCategories.forEach((c) => primaries.add(knowledgeGroup(c)));
     return ['全部', ...Array.from(primaries)];
   }, [allMaterials, customCategories]);
 
@@ -73,16 +74,16 @@ export default function EssayPage() {
     if (activePrimary === '全部') return [];
     const subs = new Set<string>();
     allMaterials
-      .filter((m) => m.category.startsWith(activePrimary))
+      .filter((m) => knowledgeGroup(m.category) === activePrimary)
       .forEach((m) => {
         const parts = m.category.split(' · ');
-        if (parts[1]) subs.add(parts[1]);
+        if (parts[0]) subs.add(parts[0]);
       });
     customCategories
-      .filter((c) => c.startsWith(activePrimary))
+      .filter((c) => knowledgeGroup(c) === activePrimary)
       .forEach((c) => {
         const parts = c.split(' · ');
-        if (parts[1]) subs.add(parts[1]);
+        if (parts[0]) subs.add(parts[0]);
       });
     return ['全部', ...Array.from(subs)];
   }, [activePrimary, allMaterials, customCategories]);
@@ -92,8 +93,8 @@ export default function EssayPage() {
     return allMaterials.filter((m) => {
       // 分类筛选
       if (activePrimary !== '全部') {
-        if (!m.category.startsWith(activePrimary)) return false;
-        if (activeSub !== '全部' && m.category !== `${activePrimary} · ${activeSub}`) return false;
+        if (knowledgeGroup(m.category) !== activePrimary) return false;
+        if (activeSub !== '全部' && m.category.split(' · ')[0] !== activeSub) return false;
       }
       // 搜索
       if (searchQuery.trim()) {
@@ -184,7 +185,7 @@ export default function EssayPage() {
     <div className="mx-auto max-w-4xl px-6 py-12">
       {/* 页头 */}
       <div className="mb-8">
-        <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">高考议论文素材库</h1>
+        <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">议论文素材</h1>
         <p className="text-muted-foreground max-w-2xl leading-relaxed">
           每个通识概念都可以成为议论文的优质素材。你可以从网上摘抄优秀文段填入，也可以添加自己的词条和分类，积累属于自己的素材库。
         </p>
@@ -249,26 +250,31 @@ export default function EssayPage() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-serif text-lg font-semibold">添加自定义词条</h3>
             <button
+              aria-label="关闭添加词条"
               onClick={() => setShowAddForm(false)}
-              className="text-muted-foreground hover:text-foreground"
+              className="flex size-11 items-center justify-center text-muted-foreground hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label className="text-xs mb-1 block">概念名称 *</Label>
+              <Label htmlFor="essay-concept" className="text-xs mb-1 block">
+                概念名称 *
+              </Label>
               <Input
+                id="essay-concept"
                 placeholder="如：沉默的螺旋"
                 value={newConcept}
                 onChange={(e) => setNewConcept(e.target.value)}
               />
             </div>
             <div>
-              <Label className="text-xs mb-1 block">
+              <Label htmlFor="essay-category" className="text-xs mb-1 block">
                 分类 *（格式：一级 · 二级，如"传播学 · 舆论学"）
               </Label>
               <Input
+                id="essay-category"
                 placeholder="传播学 · 舆论学"
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
@@ -276,8 +282,11 @@ export default function EssayPage() {
             </div>
           </div>
           <div className="mt-4">
-            <Label className="text-xs mb-1 block">概念描述</Label>
+            <Label htmlFor="essay-description" className="text-xs mb-1 block">
+              概念描述
+            </Label>
             <Textarea
+              id="essay-description"
               placeholder="简要说明这个概念的含义和适用场景..."
               value={newDescription}
               onChange={(e) => setNewDescription(e.target.value)}
@@ -285,8 +294,11 @@ export default function EssayPage() {
             />
           </div>
           <div className="mt-4">
-            <Label className="text-xs mb-1 block">适用话题（用逗号分隔）</Label>
+            <Label htmlFor="essay-topics" className="text-xs mb-1 block">
+              适用话题（用逗号分隔）
+            </Label>
             <Input
+              id="essay-topics"
               placeholder="如：舆论力量, 群体心理, 独立思考"
               value={newTopics}
               onChange={(e) => setNewTopics(e.target.value)}
@@ -294,16 +306,22 @@ export default function EssayPage() {
           </div>
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label className="text-xs mb-1 block">素材标题</Label>
+              <Label htmlFor="essay-material-title" className="text-xs mb-1 block">
+                素材标题
+              </Label>
               <Input
+                id="essay-material-title"
                 placeholder="如：示例：某事件中的沉默螺旋"
                 value={newMaterialTitle}
                 onChange={(e) => setNewMaterialTitle(e.target.value)}
               />
             </div>
             <div>
-              <Label className="text-xs mb-1 block">素材来源</Label>
+              <Label htmlFor="essay-material-source" className="text-xs mb-1 block">
+                素材来源
+              </Label>
               <Input
+                id="essay-material-source"
                 placeholder="如：人民日报评论"
                 value={newMaterialSource}
                 onChange={(e) => setNewMaterialSource(e.target.value)}
@@ -311,8 +329,11 @@ export default function EssayPage() {
             </div>
           </div>
           <div className="mt-4">
-            <Label className="text-xs mb-1 block">素材正文（可从网上摘抄优秀文段）</Label>
+            <Label htmlFor="essay-material-content" className="text-xs mb-1 block">
+              素材正文（可从网上摘抄优秀文段）
+            </Label>
             <Textarea
+              id="essay-material-content"
               placeholder="粘贴你摘抄的文段..."
               value={newMaterialContent}
               onChange={(e) => setNewMaterialContent(e.target.value)}
@@ -339,14 +360,16 @@ export default function EssayPage() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-serif text-lg font-semibold">添加自定义分类标签</h3>
             <button
+              aria-label="关闭添加标签"
               onClick={() => setShowTagForm(false)}
-              className="text-muted-foreground hover:text-foreground"
+              className="flex size-11 items-center justify-center text-muted-foreground hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
           <div className="flex gap-3">
             <Input
+              aria-label="新分类标签"
               placeholder="格式：一级 · 二级，如：传播学 · 舆论学"
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
@@ -379,7 +402,7 @@ export default function EssayPage() {
 
       <div className="mb-5 flex flex-wrap items-end gap-3">
         <label className="flex min-w-0 flex-1 flex-col gap-1 text-xs text-muted-foreground">
-          学科分类
+          所属领域
           <select
             className="w-full rounded-sm border bg-background p-2 text-sm text-foreground"
             value={activePrimary}
@@ -392,7 +415,7 @@ export default function EssayPage() {
         </label>
         {subCategories.length > 1 && (
           <label className="flex min-w-0 flex-1 flex-col gap-1 text-xs text-muted-foreground">
-            细分主题
+            细分学科
             <select
               className="w-full rounded-sm border bg-background p-2 text-sm text-foreground"
               value={activeSub}

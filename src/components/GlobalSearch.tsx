@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { SEARCH_INDEX } from '@/data/searchIndex';
 import {
   searchDocuments,
+  searchFacets,
   searchHighlights,
   type SearchFilters,
   type SearchType,
@@ -77,23 +78,7 @@ export function GlobalSearch({
     for (const item of allMatches) tally.set(item.type, (tally.get(item.type) || 0) + 1);
     return tally;
   }, [allMatches]);
-  const facets = useMemo(() => {
-    // Offer real catalogue values, including the active choice even when it has no matches.
-    const scope = filters.type
-      ? SEARCH_INDEX.filter((item) => item.type === filters.type)
-      : SEARCH_INDEX;
-    const unique = (values: (string | undefined)[]) =>
-      [...new Set(values.filter((value): value is string => Boolean(value)))].sort((a, b) =>
-        a.localeCompare(b, 'zh-CN'),
-      );
-    return {
-      categories: unique(scope.map((item) => item.category)),
-      tags: unique(scope.flatMap((item) => item.tags || [])),
-      sources: unique(
-        scope.flatMap((item) => (item.sourceNames?.length ? item.sourceNames : [item.source])),
-      ),
-    };
-  }, [filters.type]);
+  const facets = useMemo(() => searchFacets(SEARCH_INDEX, query, filters), [filters, query]);
   const updateQuery = (value: string) => {
     setQuery(value.slice(0, 200));
     setVisibleCount(PAGE_SIZE);
@@ -112,7 +97,7 @@ export function GlobalSearch({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="flex h-[min(88dvh,820px)] max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl max-sm:max-w-[calc(100%-1rem)]"
+        className="global-search-dialog flex h-[min(88dvh,820px)] max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl max-sm:max-w-[calc(100%-1rem)]"
       >
         <button
           type="button"
@@ -186,7 +171,7 @@ export function GlobalSearch({
                 className="flex min-h-11 items-center gap-2 rounded-sm text-sm text-foreground/80 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-ring"
               >
                 <SlidersHorizontal className="h-4 w-4" />
-                分类、标签与来源
+                领域、主题与来源
                 {hasFilters && <span className="text-accent">已筛选</span>}
               </button>
               {hasFilters && (
@@ -200,12 +185,21 @@ export function GlobalSearch({
               )}
             </div>
             {advanced && (
-              <div id="global-search-filters" className="grid grid-cols-3 gap-2 pt-2 sm:gap-3">
+              <div
+                id="global-search-filters"
+                className="search-filters grid grid-cols-3 gap-2 pt-2 sm:gap-3"
+              >
                 {(
                   [
-                    ['category', '所属分类', facets.categories],
-                    ['tag', '内容标签', facets.tags],
-                    ['source', '作者或来源', facets.sources],
+                    ['category', '所属领域', facets.categories],
+                    ['tag', '阅读主题', facets.tags],
+                    ['source', '媒体或期刊', facets.sources],
+                    ...(filters.type === 'quote'
+                      ? [
+                          ['author', '作者', facets.authors] as const,
+                          ['work', '作品', facets.works] as const,
+                        ]
+                      : []),
                   ] as const
                 ).map(([key, label, values]) => (
                   <label

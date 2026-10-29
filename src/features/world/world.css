@@ -178,6 +178,10 @@
 .world-wayfinding {
   position: sticky;
   top: 96px;
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
 .world-wayfinding h2 {
   font: 600 20px/1.5 var(--font-serif);
@@ -250,6 +254,8 @@
   }
   .world-wayfinding {
     position: static;
+    max-height: none;
+    overflow: visible;
     padding: 22px;
     background: var(--card);
   }

@@ -3,10 +3,15 @@ import { Link } from 'react-router-dom';
 import { eventsForTopic } from '@/data/guanlan/catalogue';
 import { TOPIC_SPECIALS } from '@/data/topicSpecials';
 import { Input } from '@/components/ui/input';
+import { TOPIC_GROUPS } from '@/data/navigationTaxonomy';
 
-export function EventCatalogue({ topicId }: { topicId?: string }) {
+export function EventCatalogue({ topicId, groupId }: { topicId?: string; groupId?: string }) {
   const [query, setQuery] = useState('');
-  const events = eventsForTopic(topicId);
+  const group = TOPIC_GROUPS.find((item) => item.id === groupId);
+  const events = eventsForTopic(topicId).filter(
+    (event) =>
+      !group || event.topicIds.some((id) => (group.topicIds as readonly string[]).includes(id)),
+  );
   const normalized = query.trim().toLocaleLowerCase();
   const visible = events.filter((event) =>
     [event.title, event.summary, event.question, ...event.keywords]

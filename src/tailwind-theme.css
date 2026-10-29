@@ -21,7 +21,7 @@
   --secondary: hsl(36 22% 88%);
   --secondary-foreground: hsl(0 0% 17%);
   --muted: hsl(36 22% 88%);
-  --muted-foreground: hsl(30 8% 45%);
+  --muted-foreground: hsl(30 8% 36%);
   --accent: hsl(6 64% 40%);
   --accent-foreground: hsl(40 30% 96%);
   --info: hsl(200 20% 37%);
@@ -61,7 +61,7 @@
     'Microsoft Yahei', 'Arial', 'Hiragino Sans GB', 'sans-serif',
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-serif:
-    'Noto Serif SC', 'Geist', 'Geist Fallback', ui-serif, Georgia, Cambria, 'Times New Roman',
+    'Noto Serif SC', 'Songti SC', 'STSong', 'SimSun', ui-serif, Georgia, Cambria, 'Times New Roman',
     Times, serif;
   --font-mono: Source Code Pro, monospace;
   --radius: 0.25rem;

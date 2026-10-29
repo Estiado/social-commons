@@ -7,6 +7,7 @@ import { normalizeSearch, type SearchDocument } from '../lib/search.ts';
 import { GUANLAN_EVENTS } from './guanlan/catalogue.ts';
 import { WORLD_STORIES } from './world/catalogue.ts';
 import { TOPIC_SPECIALS } from './topicSpecials.ts';
+import { navigationCategory, navigationThemes } from './navigationTaxonomy.ts';
 
 const topicNames = new Map(TOPIC_SPECIALS.map((topic) => [topic.id, topic.name]));
 const subject = (category: string) => category.split('·')[0].trim();
@@ -48,6 +49,7 @@ const documents: SearchDocument[] = [
     category: subject(item.category),
     tags: [item.title.split('：')[0], ...item.category.split('·').map((part) => part.trim())],
     source: item.researchSource?.journal || sourceLabel(item.source),
+    sourceNames: item.researchSource?.journal ? [item.researchSource.journal] : [],
     summary: item.summary,
     excerptText: item.content,
     path: `/daily/${encodeURIComponent(item.id)}`,
@@ -63,6 +65,9 @@ const documents: SearchDocument[] = [
     category: '诗文与名句',
     tags: [item.author, item.source.replace(/[《》]/gu, '')],
     source: item.author,
+    sourceNames: [],
+    author: item.author,
+    work: item.source,
     summary: item.text,
     excerptText: [item.text, item.commentary?.text].filter(Boolean).join('\n\n'),
     path: `/quotes/${encodeURIComponent(item.id)}`,
@@ -119,12 +124,9 @@ const documents: SearchDocument[] = [
 
 export const SEARCH_INDEX: SearchDocument[] = documents.map((document) => ({
   ...document,
-  sourceNames: document.sourceNames?.length
-    ? document.sourceNames
-    : document.source
-      ? [document.source]
-      : [],
-  tags: [...new Set(document.tags.filter(Boolean))],
+  sourceNames: document.sourceNames || [],
+  category: navigationCategory(document.category || '', document.type),
+  tags: navigationThemes([document.title, document.category || '', ...document.tags]),
   searchText: normalizeSearch(
     [
       document.searchText,

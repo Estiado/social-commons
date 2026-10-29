@@ -4,7 +4,7 @@ import { ArrowRight, Landmark, Feather, BookOpen, ChevronRight, Tag } from 'luci
 import { getTodayKnowledge } from '@/data/daily';
 import { EVENTS } from '@/data/events';
 import { QUOTE_CATALOGUE as QUOTES } from '@/data/quotes';
-import { TOPIC_SPECIALS } from '@/data/topicSpecials';
+import { TOPIC_GROUPS } from '@/data/navigationTaxonomy';
 import { GUANLAN_EVENTS } from '@/data/guanlan/catalogue';
 import type { IQuote } from '@/data/types';
 import { nameCatalogueReferences } from '@/features/reading/references';
@@ -36,7 +36,7 @@ export default function HomePage() {
       </div>
       {/* Hero 区 - 撷英 */}
       <section data-page-enter="section" className="relative overflow-hidden">
-        <div className="relative mx-auto max-w-6xl px-6 py-20 md:py-32">
+        <div className="relative mx-auto max-w-6xl px-6 py-10 md:py-16">
           <div className="max-w-3xl">
             <h1 className="mb-3 font-serif text-2xl font-semibold">今日摘读</h1>
             <p className="mb-8 text-sm text-muted-foreground">
@@ -44,7 +44,7 @@ export default function HomePage() {
             </p>
             <blockquote
               data-tour="home-quote"
-              className="whitespace-pre-line font-serif text-2xl md:text-4xl font-medium leading-relaxed text-foreground mb-8"
+              className="whitespace-pre-line font-serif text-2xl md:text-3xl font-medium leading-[1.8] text-foreground mb-6"
             >
               {heroQuote.text.length > 100 ? `${heroQuote.text.slice(0, 96)}……` : heroQuote.text}
             </blockquote>
@@ -200,10 +200,10 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {TOPIC_SPECIALS.map((topic) => (
+          {TOPIC_GROUPS.map((topic) => (
             <Link
               key={topic.id}
-              to={'/guanlan/topics/' + topic.id}
+              to={'/guanlan?group=' + topic.id}
               className="group block border border-border/60 px-3 py-2 rounded-sm hover:border-accent/30 hover:bg-accent/5 transition-all duration-300 text-center"
             >
               <p className="font-serif text-base font-medium group-hover:text-accent transition-colors">
@@ -234,7 +234,7 @@ export default function HomePage() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {EVENTS.map((event) => (
+          {EVENTS.slice(0, 3).map((event) => (
             <Link
               key={event.id}
               to={`/events/${event.id}`}

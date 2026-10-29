@@ -70,16 +70,15 @@ export default function DailyPage() {
           细分类
           <select
             aria-label="通识细分类"
+            disabled={category === '全部'}
             className="max-w-48 rounded-sm border bg-background p-2"
             value={subject}
             onChange={(event) => setSubject(event.target.value)}
           >
-            <option value="">全部学科</option>
+            <option value="">{category === '全部' ? '先选择领域' : '全部学科'}</option>
             {[
               ...new Set(
-                catalogue
-                  .filter((entry) => category === '全部' || entry.group === category)
-                  .map((entry) => entry.primary),
+                catalogue.filter((entry) => entry.group === category).map((entry) => entry.primary),
               ),
             ].map((name) => (
               <option key={name}>{name}</option>

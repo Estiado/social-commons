@@ -83,6 +83,13 @@ export default function WorldStoryPage() {
       </details>
     </nav>
   );
+  const bookmarkGroups = new Map<string, ReturnType<typeof worldStoryBookmarks>>();
+  for (const point of worldStoryBookmarks(story, document)) {
+    const year = point.date.slice(0, 4);
+    const group = bookmarkGroups.get(year) || [];
+    group.push(point);
+    bookmarkGroups.set(year, group);
+  }
   return (
     <article className="world-page world-detail">
       <Link to="/world" className="world-back">
@@ -112,25 +119,31 @@ export default function WorldStoryPage() {
             <summary>阅读目录</summary>
             {outline}
           </details>
-          <label className="world-node-select">
-            按时间定位正文
-            <select
-              aria-label="按时间定位正文"
-              defaultValue=""
-              onChange={(event) => {
-                if (event.target.value) window.location.hash = event.target.value;
-              }}
-            >
-              <option value="" disabled>
-                选择时间书签
-              </option>
-              {worldStoryBookmarks(story, document).map((point) => (
-                <option key={point.id} value={'#' + prefix + '-' + point.blockId}>
-                  {point.dateLabel} · {point.title}
-                </option>
-              ))}
-            </select>
-          </label>
+          <details className="world-node-select">
+            <summary>按时间定位正文</summary>
+            {[...bookmarkGroups].map(([year, points]) => (
+              <details key={year} className="world-bookmark-group">
+                <summary>
+                  {year}年 · {points.length}个节点
+                </summary>
+                <ol>
+                  {points.map((point) => (
+                    <li key={point.id}>
+                      <a
+                        href={'#' + prefix + '-' + point.blockId}
+                        className="block py-2 text-sm underline"
+                      >
+                        <span className="block text-xs text-muted-foreground">
+                          {point.dateLabel}
+                        </span>
+                        {point.title}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            ))}
+          </details>
         </aside>
         <div className="world-reading">
           <ContentReader key={id} kind="world" id={id} document={document} idPrefix={prefix} />

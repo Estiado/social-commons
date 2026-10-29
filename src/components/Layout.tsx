@@ -16,6 +16,7 @@ import { feedbackLink } from '@/features/feedback/navigation';
 import { shouldOfferTour } from '@/features/onboarding/preferences';
 import { useChinaDay } from '@/features/briefing/useChinaDay';
 import { ErrorBoundary } from 'react-error-boundary';
+import { RouteArrival } from './RouteArrival';
 const DailyBriefDialog = lazy(() => import('@/features/briefing/DailyBriefDialog'));
 const SiteMotion = lazy(() => import('@/features/motion/SiteMotion'));
 const GuidedTour = lazy(() => import('@/features/onboarding/GuidedTour'));
@@ -38,6 +39,12 @@ export function Layout() {
   const location = useLocation();
   const feedbackPath = feedbackLink(location.pathname, location.search);
   const [searchOpen, setSearchOpen] = useState(false);
+  const searchOpener = useRef<HTMLElement | null>(null);
+  const changeSearch = (open: boolean) => {
+    if (open) searchOpener.current = document.activeElement as HTMLElement | null;
+    setSearchOpen(open);
+    if (!open) requestAnimationFrame(() => searchOpener.current?.focus({ preventScroll: true }));
+  };
   const [mobileOpen, setMobileOpen] = useState(false);
   const [briefOpen, setBriefOpen] = useState(true);
   const day = useChinaDay();
@@ -53,7 +60,7 @@ export function Layout() {
       if (tourOpen || briefOpen) return;
       if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
         event.preventDefault();
-        setSearchOpen(true);
+        changeSearch(true);
       }
     };
     window.addEventListener('keydown', shortcut);
@@ -73,6 +80,10 @@ export function Layout() {
   };
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <RouteArrival paused={tourOpen} />
+      <a data-tour-shell className="skip-link" href="#main-content">
+        跳到正文
+      </a>
       <header
         data-tour-shell
         className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md"
@@ -116,7 +127,7 @@ export function Layout() {
             <button
               aria-label="搜索全站"
               data-tour="nav-search"
-              onClick={() => setSearchOpen(true)}
+              onClick={() => changeSearch(true)}
               className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-sm px-2 text-sm text-foreground/80 hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
             >
               <Search className="h-4 w-4" />
@@ -145,7 +156,7 @@ export function Layout() {
               aria-label="搜索全站"
               data-tour="nav-search"
               className="shrink-0 p-2"
-              onClick={() => setSearchOpen(true)}
+              onClick={() => changeSearch(true)}
             >
               <Search className="h-5 w-5" />
             </button>
@@ -209,27 +220,33 @@ export function Layout() {
         )}
       </header>
       {location.pathname === '/' && (
-        <div className="mx-auto w-full max-w-7xl px-6 pt-6 sm:pt-8">
+        <div data-tour-shell className="mx-auto w-full max-w-7xl px-6 pt-6 sm:pt-8">
           <button
             type="button"
             aria-label="打开全站搜索"
-            onClick={() => setSearchOpen(true)}
+            onClick={() => changeSearch(true)}
             className="flex min-h-14 w-full items-center gap-3 rounded-sm border border-border bg-card px-4 text-left text-foreground/75 hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:min-h-16 sm:px-5"
           >
             <Search className="h-5 w-5 shrink-0" />
             <span className="min-w-0 flex-1 text-sm sm:text-base">
               搜索事件、名句、概念与写作素材
             </span>
-            <span className="hidden text-xs text-foreground/60 md:inline">
+            <span className="hidden text-xs text-foreground/75 md:inline">
               支持栏目、标签与来源筛选
             </span>
-            <kbd className="hidden shrink-0 rounded-sm border px-1.5 py-1 text-xs text-foreground/65 lg:inline">
+            <kbd className="hidden shrink-0 rounded-sm border px-1.5 py-1 text-xs text-foreground/75 lg:inline">
               Ctrl / ⌘ K
             </kbd>
           </button>
         </div>
       )}
-      <main ref={main} data-tour-shell className="flex-1">
+      <main
+        ref={main}
+        id="main-content"
+        tabIndex={-1}
+        data-tour-shell
+        className="flex-1 outline-none"
+      >
         <Suspense
           fallback={
             <p role="status" className="p-12 text-center text-muted-foreground">
@@ -295,7 +312,7 @@ export function Layout() {
               </div>
             }
           >
-            <GlobalSearch open onOpenChange={setSearchOpen} />
+            <GlobalSearch open onOpenChange={changeSearch} />
           </Suspense>
         </ErrorBoundary>
       )}

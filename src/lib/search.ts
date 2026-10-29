@@ -10,6 +10,8 @@ export interface SearchResult {
   tags?: string[];
   source?: string;
   sourceNames?: string[];
+  author?: string;
+  work?: string;
   summary?: string;
 }
 
@@ -25,6 +27,54 @@ export interface SearchFilters {
   category?: string;
   tag?: string;
   source?: string;
+  author?: string;
+  work?: string;
+}
+
+function matchesFilter(document: SearchDocument, key: keyof SearchFilters, value: string) {
+  if (key === 'tag') return document.tags?.includes(value) || false;
+  if (key === 'source') return document.sourceNames?.includes(value) || document.source === value;
+  return document[key] === value;
+}
+
+/** One pass builds contextual options. A facet ignores only its own filter, so
+ * selecting an author never removes the other authors of matching works. */
+export function searchFacets(
+  documents: readonly SearchDocument[],
+  query: string,
+  filters: SearchFilters,
+) {
+  const sets = {
+    category: new Set<string>(),
+    tag: new Set<string>(),
+    source: new Set<string>(),
+    author: new Set<string>(),
+    work: new Set<string>(),
+  };
+  const terms = searchTerms(query);
+  const active = Object.entries(filters).filter((entry) => Boolean(entry[1])) as [
+    keyof SearchFilters,
+    string,
+  ][];
+  for (const document of documents) {
+    if (!terms.every((term) => document.searchText.includes(term))) continue;
+    const mismatches = active.filter(([key, value]) => !matchesFilter(document, key, value));
+    if (mismatches.length > 1) continue;
+    for (const key of Object.keys(sets) as (keyof typeof sets)[]) {
+      if (mismatches.length && mismatches[0][0] !== key) continue;
+      const values =
+        key === 'tag' ? document.tags : key === 'source' ? document.sourceNames : [document[key]];
+      for (const value of values || []) if (value) sets[key].add(value);
+    }
+  }
+  const sorted = (set: Set<string>) => [...set].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+  return {
+    categories: sorted(sets.category),
+    tags: sorted(sets.tag),
+    sources: sorted(sets.source),
+    authors: sorted(sets.author),
+    works: sorted(sets.work),
+  };
 }
 
 export function normalizeSearch(value: string): string {
@@ -62,6 +112,8 @@ export function searchDocuments(
     if (filters.type && document.type !== filters.type) continue;
     if (filters.category && document.category !== filters.category) continue;
     if (filters.tag && !document.tags?.includes(filters.tag)) continue;
+    if (filters.author && document.author !== filters.author) continue;
+    if (filters.work && document.work !== filters.work) continue;
     if (
       filters.source &&
       document.source !== filters.source &&

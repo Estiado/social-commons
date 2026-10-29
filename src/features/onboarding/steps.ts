@@ -263,3 +263,17 @@ export const TOUR_STEPS: TourStep[] = [
     nextLabel: '完成指引',
   },
 ];
+
+// The short route keeps the homepage → history → workspace → materials path.
+// The complete route remains available without maintaining duplicate step text.
+const QUICK_IDS = new Set([
+  'home',
+  'history',
+  'history-reader',
+  'workspace-card',
+  'workspace-select',
+  'essay-card',
+  'essay-search',
+  'feedback-form',
+]);
+export const QUICK_TOUR_STEPS = TOUR_STEPS.filter((step) => QUICK_IDS.has(step.id));

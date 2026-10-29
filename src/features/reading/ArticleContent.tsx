@@ -11,6 +11,7 @@ import { readingTextSegments } from './textSegments';
 import { ReadingResource } from './ReadingResource';
 import { articleImageUrl } from './export/assets';
 import { DOCUMENT_FONTS } from './typography';
+import { ReadingHierarchy } from './ReadingHierarchy';
 
 function linkedText(text: string): ReactNode[] {
   const pieces: ReactNode[] = [];
@@ -198,7 +199,7 @@ export function ArticleContent({
     <>
       <div
         ref={root}
-        className="font-serif text-[17px] leading-[1.95] break-words"
+        className="reading-prose font-serif text-[17px] leading-[1.95] break-words"
         style={
           article.typography
             ? {
@@ -209,70 +210,80 @@ export function ArticleContent({
             : undefined
         }
       >
-        {article.blocks.map((block) => {
-          if (block.type === 'image') return <ArticleFigure key={block.id} {...block} />;
-          const saved = annotationsByBlock.get(block.id) || [];
-          const wholeSaved = saved.some((item) => item.kind === 'paragraph');
-          const Heading = `h${Math.min(6, Math.max(2, block.level || 2))}` as
-            | 'h2'
-            | 'h3'
-            | 'h4'
-            | 'h5'
-            | 'h6';
-          const text = <MarkedText block={block} annotations={saved} query={searchQuery} />;
-          const attributes = {
-            'data-reading-text': true,
-            'data-block-id': block.id,
-            className: 'whitespace-pre-wrap',
-          };
-          return (
-            <div
-              key={block.id}
-              id={`${idPrefix}-${block.id}`}
-              data-tour={block.id === firstParagraphId ? 'reader-paragraph' : undefined}
-              className="group relative my-5 scroll-mt-24 rounded-sm hover:bg-accent/[0.025]"
-            >
-              {block.type === 'heading' ? (
-                <Heading
-                  {...attributes}
-                  className={`font-semibold ${block.level && block.level <= 2 ? 'text-2xl' : 'text-xl'}`}
-                >
-                  {text}
-                </Heading>
-              ) : block.type === 'quote' ? (
-                <blockquote
-                  {...attributes}
-                  className="border-l-2 border-accent/40 pl-5 text-muted-foreground whitespace-pre-wrap"
-                >
-                  {text}
-                </blockquote>
-              ) : block.type === 'list-item' ? (
-                <div className="flex gap-3">
-                  <span aria-hidden="true">•</span>
+        <ReadingHierarchy
+          blocks={article.blocks}
+          legacyCatalogue={['社科通识 · 群鉴', '社科通识 · 日新'].includes(article.source)}
+          renderBlock={(block, displayLevel) => {
+            if (block.type === 'image') return <ArticleFigure key={block.id} {...block} />;
+            const saved = annotationsByBlock.get(block.id) || [];
+            const wholeSaved = saved.some((item) => item.kind === 'paragraph');
+            const Heading = `h${Math.min(6, Math.max(2, displayLevel || block.level || 2))}` as
+              | 'h2'
+              | 'h3'
+              | 'h4'
+              | 'h5'
+              | 'h6';
+            const text = <MarkedText block={block} annotations={saved} query={searchQuery} />;
+            const attributes = {
+              id: `${idPrefix}-${block.id}-text`,
+              'data-reading-text': true,
+              'data-block-id': block.id,
+              className: 'whitespace-pre-wrap',
+            };
+            const Container = block.type === 'heading' ? 'summary' : 'div';
+            return (
+              <Container
+                key={block.id}
+                id={`${idPrefix}-${block.id}`}
+                data-tour={block.id === firstParagraphId ? 'reader-paragraph' : undefined}
+                className="group relative my-5 scroll-mt-24 rounded-sm hover:bg-accent/[0.025]"
+              >
+                {block.type === 'heading' ? (
+                  <Heading
+                    {...attributes}
+                    className={`font-semibold ${(displayLevel || block.level || 2) <= 2 ? 'text-2xl' : 'text-xl'}`}
+                  >
+                    {text}
+                  </Heading>
+                ) : block.type === 'quote' ? (
+                  <blockquote
+                    {...attributes}
+                    className="border-l-2 border-accent/40 pl-5 text-muted-foreground whitespace-pre-wrap"
+                  >
+                    {text}
+                  </blockquote>
+                ) : block.type === 'list-item' ? (
+                  <div className="flex gap-3">
+                    <span aria-hidden="true">•</span>
+                    <p {...attributes}>{text}</p>
+                  </div>
+                ) : (
                   <p {...attributes}>{text}</p>
-                </div>
-              ) : (
-                <p {...attributes}>{text}</p>
-              )}
-              {onSave && (
-                <button
-                  type="button"
-                  aria-label={wholeSaved ? '取消收藏本段' : '收藏本段'}
-                  title={wholeSaved ? '取消收藏本段' : '收藏本段'}
-                  disabled={busy}
-                  className={`my-1 inline-flex items-center gap-1.5 rounded px-2 py-1 font-sans text-xs transition-opacity lg:absolute lg:-right-2 lg:top-0 lg:translate-x-full lg:opacity-0 lg:group-hover:opacity-100 lg:focus:opacity-100 ${wholeSaved ? 'text-accent lg:opacity-100' : 'text-muted-foreground hover:text-accent'}`}
-                  onClick={() =>
-                    onSave([createAnnotation(article, block.id, 0, block.text.length, 'paragraph')])
-                  }
-                >
-                  {wholeSaved ? <BookmarkCheck size={14} /> : <Bookmark size={14} />}
-                  {wholeSaved ? '已收藏' : '收藏'}
-                </button>
-              )}
-              {block.resource && <ReadingResource resource={block.resource} />}
-            </div>
-          );
-        })}
+                )}
+                {onSave && (
+                  <button
+                    type="button"
+                    aria-label={wholeSaved ? '取消收藏本段' : '收藏本段'}
+                    aria-describedby={`${idPrefix}-${block.id}-text`}
+                    title={wholeSaved ? '取消收藏本段' : '收藏本段'}
+                    disabled={busy}
+                    className={`my-1 inline-flex min-h-11 items-center gap-1.5 rounded px-2 py-1 font-sans text-xs transition-opacity lg:absolute lg:-right-2 lg:top-0 lg:translate-x-full lg:opacity-0 lg:group-hover:opacity-100 lg:focus:opacity-100 ${wholeSaved ? 'text-accent lg:opacity-100' : 'text-muted-foreground hover:text-accent'}`}
+                    onClick={(event) => {
+                      if (block.type === 'heading') event.preventDefault();
+                      onSave([
+                        createAnnotation(article, block.id, 0, block.text.length, 'paragraph'),
+                      ]);
+                    }}
+                  >
+                    {wholeSaved ? <BookmarkCheck size={14} /> : <Bookmark size={14} />}
+                    {wholeSaved ? '已收藏' : '收藏'}
+                  </button>
+                )}
+                {block.resource && <ReadingResource resource={block.resource} />}
+              </Container>
+            );
+          }}
+        />
       </div>
       {selection && onSave && (
         <div

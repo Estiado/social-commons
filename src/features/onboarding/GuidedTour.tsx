@@ -7,7 +7,7 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { useGSAP } from '@gsap/react';
 import { Button } from '@/components/ui/button';
 import { markTourSeen } from './preferences';
-import { TOUR_STEPS } from './steps';
+import { QUICK_TOUR_STEPS, TOUR_STEPS } from './steps';
 import './tour.css';
 
 gsap.registerPlugin(ScrollToPlugin, useGSAP);
@@ -31,6 +31,9 @@ export default function GuidedTour({
   const location = useLocation();
   const panel = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
+  const progress = useRef<HTMLDivElement>(null);
+  const [mode, setMode] = useState<'quick' | 'full'>('quick');
+  const steps = mode === 'quick' ? QUICK_TOUR_STEPS : TOUR_STEPS;
   const [index, setIndex] = useState(-1);
   const [focus, setFocus] = useState<{
     key: string;
@@ -39,11 +42,19 @@ export default function GuidedTour({
   } | null>(null);
   const [retry, setRetry] = useState(0);
   const maskId = 'tour-' + useId().replace(/:/g, '');
-  const step = TOUR_STEPS[index];
+  const step = steps[index];
   const focusKey = `${index}:${retry}:${location.pathname}`;
   const rect = focus?.key === focusKey ? focus.rect : null;
   const waiting = focus?.key === focusKey && focus.waiting;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const [reduced, setReduced] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReduced(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
   const close = () => {
     try {
       markTourSeen(localStorage);
@@ -84,18 +95,26 @@ export default function GuidedTour({
       if (!target?.isConnected) return;
       const bounds = target.getBoundingClientRect();
       const top = Math.max(8, bounds.top - 8);
+      const tip = panel.current?.getBoundingClientRect();
+      const overlapping = tip && bounds.right > tip.left && bounds.left < tip.right;
+      const bottomLimit = overlapping ? tip.top - 16 : window.innerHeight - 16;
+      const height = Math.max(0, Math.min(bounds.bottom + 8, bottomLimit) - top);
       setFocus({
         key: focusKey,
         waiting: false,
-        rect: {
-          left: Math.max(8, bounds.left - 8),
-          top,
-          width: Math.min(bounds.width + 16, window.innerWidth - 16),
-          height: Math.max(24, Math.min(bounds.height + 16, window.innerHeight - top - 275)),
-        },
+        rect:
+          height < 24
+            ? null
+            : {
+                left: Math.max(8, bounds.left - 8),
+                top,
+                width: Math.min(bounds.width + 16, window.innerWidth - 16),
+                height,
+              },
       });
     };
     const refresh = () => {
+      if (tween?.isActive()) return;
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(measure);
     };
@@ -117,7 +136,6 @@ export default function GuidedTour({
         },
         duration: reduced ? 0 : 0.65,
         ease: 'power2.inOut',
-        onUpdate: refresh,
         onComplete: measure,
       });
       refresh();
@@ -150,14 +168,30 @@ export default function GuidedTour({
   useGSAP(
     () => {
       if (!panel.current) return;
-      gsap.fromTo(
+      const sequence = gsap.timeline({
+        defaults: { ease: 'power3.out', duration: reduced ? 0 : 0.28 },
+      });
+      sequence.fromTo(
         panel.current,
-        { opacity: 0, y: reduced ? 0 : 12 },
-        { opacity: 1, y: 0, duration: reduced ? 0 : 0.3, ease: 'power2.out' },
+        { opacity: 0.82, y: reduced ? 0 : 14 },
+        { opacity: 1, y: 0, clearProps: 'transform,opacity' },
       );
+      if (!reduced)
+        sequence.from(
+          '[data-tour-copy]',
+          { y: 4, opacity: 0.78, stagger: 0.035, clearProps: 'transform,opacity' },
+          '<0.06',
+        );
+      if (progress.current)
+        sequence.fromTo(
+          progress.current,
+          { scaleX: Math.max(0, index / steps.length) },
+          { scaleX: (index + 1) / steps.length, duration: reduced ? 0 : 0.3 },
+          '<',
+        );
       heading.current?.focus({ preventScroll: true });
     },
-    { dependencies: [index], scope: panel, revertOnUpdate: true },
+    { dependencies: [index, mode, reduced], scope: panel, revertOnUpdate: true },
   );
 
   return createPortal(
@@ -198,7 +232,7 @@ export default function GuidedTour({
       {rect && (
         <div
           aria-hidden="true"
-          className="tour-focus pointer-events-none absolute rounded-lg border-2 border-amber-200"
+          className="tour-focus pointer-events-none absolute rounded-lg border-2 border-accent"
           style={rect}
         />
       )}
@@ -212,13 +246,13 @@ export default function GuidedTour({
       >
         <div className="mb-4 flex items-center justify-between gap-4">
           <span className="text-xs font-medium tracking-wide text-accent">
-            {step ? `${step.chapter} · ${index + 1} / ${TOUR_STEPS.length}` : '欢迎来到社科通识'}
+            {step ? `${step.chapter} · ${index + 1} / ${steps.length}` : '欢迎来到社科通识'}
           </span>
           <button
             type="button"
             onClick={close}
             aria-label="关闭使用指引"
-            className="rounded-sm p-1 text-muted-foreground hover:bg-muted"
+            className="flex size-11 items-center justify-center rounded-sm text-muted-foreground hover:bg-muted"
           >
             <X size={18} />
           </button>
@@ -239,14 +273,40 @@ export default function GuidedTour({
           ref={heading}
           tabIndex={-1}
           id="tour-title"
+          data-tour-copy
           className="mb-3 font-serif text-xl font-semibold leading-snug outline-none"
         >
           {step?.title || '跟着页面走一遍，就知道怎么用'}
         </h2>
-        <p id="tour-description" className="text-sm leading-relaxed text-muted-foreground">
+        <p
+          id="tour-description"
+          data-tour-copy
+          className="text-sm leading-relaxed text-muted-foreground"
+        >
           {step?.description ||
-            '我们会从首页向下浏览，进入群鉴、阅读空间和议论文素材，再认识顶部导航与内测反馈。大约两三分钟，可以随时跳过，也能在页脚重新打开。'}
+            '从首页开始，看看怎样读懂一件事、留下摘录、整理成文稿。可以随时跳过，之后在页脚重新打开。'}
         </p>
+        {index < 0 && (
+          <div role="group" aria-label="选择指引路线" className="mt-5 grid grid-cols-2 gap-3">
+            {(
+              [
+                ['quick', '简短路线', '8 步，先会用'],
+                ['full', '完整导览', '27 步，逐页认识'],
+              ] as const
+            ).map(([value, title, detail]) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={mode === value}
+                onClick={() => setMode(value)}
+                className={`rounded-sm border p-3 text-left ${mode === value ? 'border-accent bg-accent/5' : 'border-border'}`}
+              >
+                <span className="block text-sm font-medium">{title}</span>
+                <span className="mt-1 block text-xs text-muted-foreground">{detail}</span>
+              </button>
+            ))}
+          </div>
+        )}
         {waiting && (
           <p role="status" className="mt-3 text-xs text-accent">
             页面还未准备好。
@@ -259,8 +319,9 @@ export default function GuidedTour({
         {step && (
           <div aria-hidden="true" className="mt-5 h-1 overflow-hidden rounded-full bg-muted">
             <div
-              className="h-full bg-accent transition-[width] duration-300 motion-reduce:transition-none"
-              style={{ width: `${((index + 1) / TOUR_STEPS.length) * 100}%` }}
+              ref={progress}
+              className="h-full origin-left bg-accent"
+              style={{ transform: `scaleX(${(index + 1) / steps.length})` }}
             />
           </div>
         )}
@@ -280,9 +341,7 @@ export default function GuidedTour({
             </Button>
           )}
           <Button
-            onClick={() =>
-              index === TOUR_STEPS.length - 1 ? close() : setIndex((value) => value + 1)
-            }
+            onClick={() => (index === steps.length - 1 ? close() : setIndex((value) => value + 1))}
           >
             {index < 0 ? '开始浏览' : step.nextLabel || '下一步'}
             {index < 0 ? <ArrowDown size={16} /> : <ArrowRight size={16} />}
