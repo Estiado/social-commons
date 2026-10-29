@@ -1,0 +1,3 @@
+config.local.json
+live/*
+!live/config.json

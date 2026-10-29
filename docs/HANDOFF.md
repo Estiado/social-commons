@@ -1,8 +1,16 @@
 # 接手记录
 
-更新：2026-10-28。仓库 `Estiado/social-commons`，生产分支 main，Cloudflare Pages。
+更新：2026-10-29。仓库 `Estiado/social-commons`，生产分支 main，Cloudflare Pages。
 
 本轮继续工作见 [扩容清单](CONTENT_EXPANSION_PLAN.md) 与 [来源说明](CONTENT_SOURCES.md)。此前的网站内编辑器、统一选材、观澜合并见 [开发清单](DEVELOPMENT_PLAN.md)。交付证据与发布状态见 `VERIFICATION.md`。
+
+## 2026-10-29 Impeccable产品初始化
+
+- 新增根目录`PRODUCT.md`，按`impeccable:product-schema 1`记录已确认事实。用户本轮确认高中生与大学生并重、教师作为辅助用户；平台为既有Web项目，未重选技术栈。
+- 用户另行选择新增首页/展示页先做效果图，已仅写入`.impeccable/config.json`的`buildPath: comp`。功能界面及文档仍按技能规则直接编码；此偏好不授权启动任何页面改版。
+- 分类归并、全站所有层级的展开/折叠均列为“已确认但暂停”，包括观澜时评及资料、知天下时间节点和关键名词，不能只针对一个栏目，也不能因初始化而恢复实施。
+- `.impeccable/live/config.json`仅登记Vite的`index.html`入口。D盘引擎`detect-csp`返回shape:null/signals:[]，已记录检查；未启动live、注入脚本或修改CSP。live运行态与本机配置已忽略，仅通用配置入库。实际启动与交互仍待用户后续调用live时验收。
+- 未新增`DESIGN.md`、视觉配色或字体方案；源码、站内正文、数据库和页面功能均保持。产品事实以PRODUCT.md及用户后续确认为准，旧PRODUCT_BLUEPRINT.md仍是讨论建议。
 
 ## 2026-10-28 各栏目扩充与全站搜索
 

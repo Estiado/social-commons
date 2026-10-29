@@ -1,5 +1,12 @@
 # 验证记录 · 2026-10-20—28
 
+## Impeccable init · 2026-10-29
+
+- 两轮结构化回答分别确认主要受众（高中与大学并重，教师辅助）及未来新增首页/展示页先做效果图。PRODUCT.md记录产品事实；buildPath只写配置，不在产品文档重复存一份流程设置。
+- 已复用本会话加载的Impeccable上下文，按init流程读取现有交接、架构、阅读与搜索说明，无覆盖既有PRODUCT.md或流程配置。文件创建前确认均不存在。
+- D盘已有引擎执行detect-csp，返回shape:null、signals:[]；仅创建通用live入口配置。没有启动live服务、注入页面、修改CSP或弱化安全策略；不能把配置存在称为live已经实测。
+- 变更仅PRODUCT.md、Impeccable通用配置/忽略规则及维护记录。分类归并和全站可折叠层级继续暂停，无源码、内容或数据库修改。本轮`scripts/dev.ps1 check`一次通过97/97，类型、ESLint、构建、函数与导出生成均通过，日志在D盘`.artifacts/impeccable-init-check.log`。本次为文档及配置初始化，未做网页改版或live浏览器验收；不等待文档提交触发的重复部署。
+
 ## 知天下连贯长读与红海航运 · 2026-10-28
 
 - 完整`scripts/dev.ps1 check`本轮运行一次，通过93/93。日志`.artifacts/world-longreads-check.log`：类型、ESLint、全部测试、生产构建、Cloudflare函数与Word/PDF生成通过。导出脚本生成10页PDF和DOCX，不代表本轮已经用Word逐页验排版；原有PDF按需包大块警告仍保留。
