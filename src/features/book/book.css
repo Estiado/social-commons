@@ -727,7 +727,8 @@
   height: 27%;
   left: 0;
   bottom: -2%;
-  opacity: 0.15;
+  opacity: 0.5;
+  filter: blur(8px);
   pointer-events: none;
   mask-image: linear-gradient(transparent, #000 58%);
   z-index: 2;
@@ -1084,5 +1085,32 @@
   }
   .book-library-link span {
     display: none;
+  }
+}
+[data-book-glyph] {
+  display: inline-block;
+}
+.book-contents.is-merging .book-mist {
+  z-index: 4;
+}
+.book-mist-control {
+  z-index: 5;
+}
+@media (max-height: 760px) and (min-width: 601px) {
+  .book-contents {
+    min-height: calc(100svh - 153px);
+  }
+  .book-contents-ink {
+    min-height: calc(100svh - 153px);
+    padding-block: 32px 48px;
+  }
+  .book-masthead {
+    font-size: clamp(40px, 9vh, 64px);
+  }
+  .book-chapter-link {
+    font-size: clamp(21px, 3.6vh, 28px);
+  }
+  .book-contents-nav {
+    padding-top: 30px;
   }
 }

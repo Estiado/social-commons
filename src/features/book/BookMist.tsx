@@ -17,6 +17,7 @@ export function BookMist() {
     const element = canvas.current!;
     const gl = element.getContext('webgl', {
       alpha: true,
+      premultipliedAlpha: false,
       antialias: false,
       depth: false,
       powerPreference: 'low-power',
@@ -57,17 +58,17 @@ export function BookMist() {
     gl.enableVertexAttribArray(position);
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
     const uniform = (name: string) => gl.getUniformLocation(program, name);
-    gl.uniform3f(uniform('baseColor'), 0.953, 0.941, 0.91);
-    gl.uniform3f(uniform('lowlightColor'), 0.66, 0.72, 0.69);
-    gl.uniform3f(uniform('midtoneColor'), 0.91, 0.93, 0.89);
-    gl.uniform3f(uniform('highlightColor'), 1, 0.997, 0.965);
+    gl.uniform3f(uniform('baseColor'), 0.99, 0.995, 0.98);
+    gl.uniform3f(uniform('lowlightColor'), 0.88, 0.91, 0.89);
+    gl.uniform3f(uniform('midtoneColor'), 0.98, 0.99, 0.97);
+    gl.uniform3f(uniform('highlightColor'), 1, 1, 0.995);
     gl.uniform1f(uniform('zoom'), 2.3);
     gl.uniform1f(uniform('blurFactor'), 0.55);
     const time = uniform('iTime');
     const resolution = uniform('iResolution');
     let frame = 0;
     let visible = true;
-    let previous = 0;
+    let previous = -Infinity;
     const draw = (now: number) => {
       frame = 0;
       if (now - previous >= 1000 / 24) {
@@ -87,7 +88,7 @@ export function BookMist() {
       element.height = Math.max(1, Math.min(190, Math.round(entry.contentRect.height * 0.6)));
       gl.viewport(0, 0, element.width, element.height);
       gl.uniform2f(resolution, element.width, element.height);
-      previous = 0;
+      previous = -Infinity;
       resume();
     });
     resize.observe(element);

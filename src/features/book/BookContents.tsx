@@ -16,8 +16,12 @@ export default function BookContents() {
         />
       </div>
       <div className="book-contents-ink">
-        <h1 className="book-masthead book-floating-type" data-book-letter>
-          社科通识
+        <h1 className="book-masthead book-floating-type" data-book-letter aria-label="社科通识">
+          {Array.from('社科通识').map((character, index) => (
+            <span key={index} data-book-glyph aria-hidden="true">
+              {character}
+            </span>
+          ))}
         </h1>
         <nav
           className="book-contents-nav"
@@ -28,8 +32,13 @@ export default function BookContents() {
             id="book-contents-heading"
             className="book-directory-heading book-floating-type"
             data-book-letter
+            aria-label="目录"
           >
-            目录
+            {Array.from('目录').map((character, index) => (
+              <span key={index} data-book-glyph aria-hidden="true">
+                {character}
+              </span>
+            ))}
           </h2>
           <div className="book-chapter-columns">
             {BOOK_CHAPTERS.map((chapter) => (
@@ -38,9 +47,16 @@ export default function BookContents() {
                 to={chapter.path}
                 className="book-chapter-link book-floating-type"
                 data-book-letter
+                aria-label={chapter.label}
                 data-tour={'home-' + (chapter.id === 'guanlan' ? 'topics' : chapter.id)}
               >
-                <span>{chapter.label}</span>
+                <span aria-hidden="true">
+                  {Array.from(chapter.label).map((character, index) => (
+                    <span key={index} data-book-glyph>
+                      {character}
+                    </span>
+                  ))}
+                </span>
                 <span className="book-link-mark" aria-hidden="true" />
               </Link>
             ))}

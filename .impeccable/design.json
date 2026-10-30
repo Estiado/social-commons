@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-30T05:43:03.2896942Z",
+  "generatedAt": "2026-10-30T06:41:29.7231780Z",
   "title": "Design System: 社科通识 · 书页预览",
   "extensions": {
     "colorMeta": {
@@ -128,8 +128,13 @@
       },
       {
         "name": "mist",
-        "value": "24fps maximum; opacity .15",
-        "purpose": "低分辨率薄雾，减少动态效果时静止"
+        "value": "24fps maximum; opacity .5",
+        "purpose": "50%不透明的细薄云雾，减少动态效果时静止"
+      },
+      {
+        "name": "cloud-merge",
+        "value": "2800–2960ms sine.inOut, glyph stagger 18ms",
+        "purpose": "按真实云层位置逐字沿曲线飘入并模糊淡出"
       }
     ],
     "breakpoints": [

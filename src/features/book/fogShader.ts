@@ -1,7 +1,7 @@
 /** Adapted from tengbao/vanta FOG, f8b351906688b56f0fc744e53bde81fc3c56f150.
  * Copyright 2020 Teng Bao. MIT; see public/book/licenses/VANTA.txt.
  * Original effect by Patricio Gonzalez Vivo; noise based on Morgan McGuire.
- * Changes: standalone WebGL precision, four octaves; bounded canvas, palette and timing in BookMist.
+ * Changes: standalone precision, four octaves and density-based straight alpha; bounded canvas, palette and timing in BookMist.
  */
 export const fogFragment = `precision mediump float;
 uniform vec2 iResolution;
@@ -89,7 +89,8 @@ void main() {
               clamp(length(r.x),0.0,1.0));
 
   vec3 finalColor = mix(baseColor, color, f*f*f+.6*f*f+.5*f);
-  gl_FragColor = vec4(finalColor,1.0);
+  float density = smoothstep(.08, .65, f * 1.6 + length(r) * .15);
+  gl_FragColor = vec4(clamp(finalColor, 0., 1.), .18 + .82 * density);
 }
 
 `;

@@ -2,10 +2,12 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { useGSAP } from '@gsap/react';
 import { BOOK_CHAPTERS } from './chapters';
+import { cloudPath } from './cloudPath';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger, MotionPathPlugin);
 
 /** Fold geometry adapted from Codrops BookBlock (2013), MIT. See public/book/licenses/BOOKBLOCK.txt.
  * Native scrolling, editable content, private router state and save guards remain outside this scope.
@@ -92,6 +94,7 @@ export function BookMotion({ children }: { children: ReactNode }) {
       const finish = () => {
         busy.current = false;
         expectedLocation.current = null;
+        element.querySelector('.book-contents')?.classList.remove('is-merging');
         stage.current?.replaceChildren();
         gsap.set(stage.current, { autoAlpha: 0 });
         const ink = element.querySelectorAll('[data-book-letter]');
@@ -99,6 +102,8 @@ export function BookMotion({ children }: { children: ReactNode }) {
           gsap.set(ink, {
             clearProps: 'transform,opacity,filter',
           });
+        const glyphs = element.querySelectorAll('[data-book-glyph]');
+        if (glyphs.length) gsap.set(glyphs, { clearProps: 'transform,opacity,filter,willChange' });
       };
       cancelTurn.current = () => {
         sequence?.kill();
@@ -221,32 +226,47 @@ export function BookMotion({ children }: { children: ReactNode }) {
           return;
         }
         const letters = [...element.querySelectorAll<HTMLElement>('[data-book-letter]')];
-        const rest = letters.filter((node) => node !== link);
-        const scene = element.querySelector('.book-contents')!.getBoundingClientRect();
-        const sink = rest.map((node) => ({
-          node,
-          distance: Math.max(
-            70,
-            scene.top + scene.height * 0.69 - node.getBoundingClientRect().bottom,
-          ),
-        }));
+        gsap.killTweensOf(letters);
+        const rest = [...element.querySelectorAll<HTMLElement>('[data-book-glyph]')].filter(
+          (node) => !link.contains(node),
+        );
+        const scene = element.querySelector('.book-contents')!;
+        const band = element.querySelector('.book-mist')!.getBoundingClientRect();
+        // Read every glyph before writing transforms; endpoints use the cloud, not a percentage of the page.
+        const sink = rest.map((node, index) => {
+          const bounds = node.getBoundingClientRect();
+          return {
+            node,
+            path: cloudPath(
+              { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 },
+              band,
+              index,
+            ),
+          };
+        });
+        scene.classList.add('is-merging');
+        gsap.set(rest, { willChange: 'transform,opacity,filter' });
         sequence = gsap
           .timeline({ onComplete: () => turnPaper(true) })
-          .to(link, { y: -85, z: 120, opacity: 0, duration: 0.55, ease: 'power2.in' }, 0);
-        sink.forEach(({ node, distance }, index) =>
-          sequence!.to(
-            node,
-            {
-              y: distance,
-              scale: 0.38,
-              rotationX: 64,
-              opacity: 0.08,
-              duration: 0.8,
-              ease: 'power2.inOut',
-            },
-            0.04 + index * 0.018,
-          ),
-        );
+          .to(link, { y: -85, z: 65, opacity: 0, duration: 1.3, ease: 'sine.inOut' }, 0);
+        sink.forEach(({ node, path }, index) => {
+          const start = 0.08 + index * 0.018;
+          const duration = 2.8 + (index % 3) * 0.08;
+          sequence!
+            .to(node, { motionPath: { path, curviness: 1.3 }, duration, ease: 'sine.inOut' }, start)
+            .to(
+              node,
+              {
+                opacity: 0,
+                filter: 'blur(14px)',
+                scale: 0.78,
+                rotationX: 8,
+                duration: duration * 0.7,
+                ease: 'sine.inOut',
+              },
+              start + duration * 0.3,
+            );
+        });
       });
       const escape = contextSafe((event: KeyboardEvent) => {
         if (event.key !== 'Escape' || !busy.current) return;
