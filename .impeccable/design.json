@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-30T05:43:03.2896942Z",
+  "title": "Design System: 社科通识 · 书页预览",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "displayName": "纸白",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0.0067 89.7)",
+          "oklch(27% 0.0080 89.7)",
+          "oklch(39% 0.0093 89.7)",
+          "oklch(51% 0.0107 89.7)",
+          "oklch(63% 0.0102 89.7)",
+          "oklch(75% 0.0089 89.7)",
+          "oklch(87% 0.0076 89.7)",
+          "oklch(95% 0.0067 89.7)"
+        ]
+      },
+      "ink": {
+        "displayName": "墨色",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0.0098 148.8)",
+          "oklch(27% 0.0117 148.8)",
+          "oklch(39% 0.0137 148.8)",
+          "oklch(51% 0.0156 148.8)",
+          "oklch(63% 0.0150 148.8)",
+          "oklch(75% 0.0130 148.8)",
+          "oklch(87% 0.0111 148.8)",
+          "oklch(95% 0.0098 148.8)"
+        ]
+      },
+      "muted-ink": {
+        "displayName": "次级墨色",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0.0114 134.0)",
+          "oklch(27% 0.0137 134.0)",
+          "oklch(39% 0.0160 134.0)",
+          "oklch(51% 0.0183 134.0)",
+          "oklch(63% 0.0175 134.0)",
+          "oklch(75% 0.0152 134.0)",
+          "oklch(87% 0.0130 134.0)",
+          "oklch(95% 0.0114 134.0)"
+        ]
+      },
+      "accent": {
+        "displayName": "赭色",
+        "role": "primary",
+        "tonalRamp": [
+          "oklch(15% 0.0420 42.7)",
+          "oklch(27% 0.0504 42.7)",
+          "oklch(39% 0.0588 42.7)",
+          "oklch(51% 0.0672 42.7)",
+          "oklch(63% 0.0644 42.7)",
+          "oklch(75% 0.0560 42.7)",
+          "oklch(87% 0.0476 42.7)",
+          "oklch(95% 0.0420 42.7)"
+        ]
+      },
+      "page": {
+        "displayName": "内页白",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0.0049 91.5)",
+          "oklch(27% 0.0059 91.5)",
+          "oklch(39% 0.0069 91.5)",
+          "oklch(51% 0.0079 91.5)",
+          "oklch(63% 0.0076 91.5)",
+          "oklch(75% 0.0066 91.5)",
+          "oklch(87% 0.0056 91.5)",
+          "oklch(95% 0.0049 91.5)"
+        ]
+      },
+      "selected": {
+        "displayName": "选中淡绿",
+        "role": "secondary",
+        "tonalRamp": [
+          "oklch(15% 0.0152 124.3)",
+          "oklch(27% 0.0182 124.3)",
+          "oklch(39% 0.0212 124.3)",
+          "oklch(51% 0.0243 124.3)",
+          "oklch(63% 0.0233 124.3)",
+          "oklch(75% 0.0202 124.3)",
+          "oklch(87% 0.0172 124.3)",
+          "oklch(95% 0.0152 124.3)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "竖排品牌",
+        "purpose": "首页品牌；手机42–48px"
+      },
+      "chapter": {
+        "displayName": "竖排章目",
+        "purpose": "六章目录"
+      },
+      "body": {
+        "displayName": "正文预览",
+        "purpose": "正常方向、连续阅读"
+      }
+    },
+    "shadows": [
+      {
+        "name": "floating-type",
+        "value": "0 26px 20px #484b3422",
+        "purpose": "浮在纸面上方的竖排字"
+      },
+      {
+        "name": "paper",
+        "value": "0 24px 50px #51462b19,0 3px 0 #d9d2c3,0 6px 0 #eee9dd",
+        "purpose": "跨页纸张，仅用于物理纸叠"
+      }
+    ],
+    "motion": [
+      {
+        "name": "category",
+        "value": "720ms power3.inOut",
+        "purpose": "分类标题迁移"
+      },
+      {
+        "name": "paper-turn",
+        "value": "1050ms sine.inOut",
+        "purpose": "首页文字离场后翻页"
+      },
+      {
+        "name": "mist",
+        "value": "24fps maximum; opacity .15",
+        "purpose": "低分辨率薄雾，减少动态效果时静止"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "width-380",
+        "value": "380px"
+      },
+      {
+        "name": "width-600",
+        "value": "600px"
+      },
+      {
+        "name": "width-700",
+        "value": "700px"
+      },
+      {
+        "name": "width-900",
+        "value": "900px"
+      },
+      {
+        "name": "width-1100",
+        "value": "1100px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "翻开阅读",
+      "kind": "button",
+      "refersTo": "category",
+      "description": "读入当前真实篇目",
+      "html": "<button class=\"read\">翻开阅读</button>",
+      "css": ".read{font:500 17px/1.5 \"Noto Serif SC\",serif;color:#80513e;background:transparent;border:0;padding:12px 0;min-height:44px}.read:focus-visible{outline:2px solid #80513e;outline-offset:5px}"
+    },
+    {
+      "name": "分类行",
+      "kind": "custom",
+      "refersTo": "category",
+      "description": "分类名与篇数，作为下一层目录入口",
+      "html": "<button class=\"category\"><span>社会与心理</span><small>36 篇</small></button>",
+      "css": ".category{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:62px;padding:16px 4px;border:0;background:transparent;color:#303831;font:500 21px/1.4 \"Noto Serif SC\",serif}.category small{font:13px sans-serif;color:#62695e}.category:hover{color:#80513e}.category:focus-visible{outline:2px solid #80513e;outline-offset:5px}"
+    },
+    {
+      "name": "检索",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "查询当前栏目，明确可访问名称",
+      "html": "<label class=\"search\"><input aria-label=\"搜索日新\" placeholder=\"查找篇目、关键词\"></label>",
+      "css": ".search{display:block;background:#e9e5d9b8;padding:0 14px}.search input{box-sizing:border-box;min-height:46px;width:100%;padding:12px 0;background:transparent;border:0;color:#303831;font:15px sans-serif}.search:focus-within{outline:2px solid #80513e;outline-offset:2px}"
+    },
+    {
+      "name": "章节导航",
+      "kind": "nav",
+      "description": "平直文字，当前栏目用赭色下划线",
+      "html": "<nav class=\"chapters\"><a href=\"#daily\">日新</a><a href=\"#events\" aria-current=\"page\">群鉴</a><a href=\"#quotes\">撷英</a></nav>",
+      "css": ".chapters{display:flex;gap:34px;font:15px/1.5 \"Noto Serif SC\",serif}.chapters a{display:inline-flex;align-items:center;min-height:44px;color:#303831;text-decoration:none}.chapters [aria-current]{color:#80513e;text-decoration:underline;text-underline-offset:9px}"
+    },
+    {
+      "name": "选中篇目",
+      "kind": "custom",
+      "refersTo": "entry-selected",
+      "description": "在列表中明确当前预览",
+      "html": "<button class=\"entry\" aria-pressed=\"true\">计划谬误</button>",
+      "css": ".entry{width:100%;text-align:left;border:0;background:#d9e0ce99;color:#303831;padding:16px 9px;font:500 18px/1.6 \"Noto Serif SC\",serif;min-height:58px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "书页之间",
+    "overview": "这是 codex/book-preview 分支的设计系统。米白纸面、墨色竖排和真实古籍扫描共同建立阅读环境。物理感来自纸张弧度、侧光、书缝与明确的运动关系；工具仍以可读、可操作为准。生产站沿用 main，不能把本文件当成推广授权。",
+    "keyCharacteristics": [
+      "真实字形与语义文字分工：古籍扫描构成纸面，标题和操作均为活文字。",
+      "目录层层进入，分类名称保持空间连续；正文自然滚动。",
+      "强烈表达集中于首页离场和翻页，编辑与保存保持安静可靠。"
+    ],
+    "rules": [],
+    "dos": [
+      "Do 保留真实来源、稳定ID、原生选字、收藏、划线、备份与导出。",
+      "Do 用字体、布局、光线和连续运动表达书页关系。",
+      "Do 在手机、键盘和减少动态效果下提供完整路径。"
+    ],
+    "donts": [
+      "Don't 用生成汉字代替古籍扫描，或把私有网站代码当成已获授权源码。",
+      "Don't 给正文加滚动锁定、强制分页或不必要的舞台动画。",
+      "Don't 将预览合并到main，或将预览连接到正式服务。"
+    ]
+  }
+}

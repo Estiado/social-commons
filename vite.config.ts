@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, type Plugin, type ViteDevServer } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { articleApiPlugin } from './scripts/vite-article-api.ts';
@@ -21,6 +21,27 @@ function editorialContentPlugin(): Plugin {
         if (path.resolve(file) === source) await server.restart();
       });
     },
+  };
+}
+
+// Match the preview-only Pages middleware during local development as well.
+function bookPreviewApiFence(): Plugin {
+  const install = (server: Pick<ViteDevServer, 'middlewares'>) => {
+    server.middlewares.use((request, response, next) => {
+      if (!request.url?.startsWith('/api/')) return next();
+      response.writeHead(503, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-store',
+      });
+      response.end(
+        JSON.stringify({ error: '独立预览版暂不连接远程服务，可使用粘贴导入并在本浏览器保存。' }),
+      );
+    });
+  };
+  return {
+    name: 'book-preview-api-fence',
+    configureServer: install,
+    configurePreviewServer: install,
   };
 }
 
@@ -119,6 +140,7 @@ function collectRoutePaths(srcDir: string): string[] {
 
 export default defineConfig(({ command }) => ({
   plugins: [
+    bookPreviewApiFence(),
     editorialContentPlugin(),
     react(),
     tailwindcss(),

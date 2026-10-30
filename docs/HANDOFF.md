@@ -1,6 +1,13 @@
 # 接手记录
 
-更新：2026-10-29。仓库 `Estiado/social-commons`，生产分支 main，Cloudflare Pages。
+更新：2026-10-30。仓库 `Estiado/social-commons`，生产分支 main，Cloudflare Pages。
+
+## 2026-10-30 独立书页预览
+
+- 用户三条设计要求已收齐并授权执行，仅在 `codex/book-preview` 实现。正式main保持原版，不能合并或推广。设计与实际来源见[书页方案](BOOK_DESIGN_PLAN.md)。
+- 首页保留真实古籍纸面与浮字；栏目增加跨页、分类→篇目目录和连续标题迁移；慢翻页、底部可暂停薄雾。私人编辑/保存导航与正文原生滚动保留。昆虫卷纸仍是待选概念。
+- 完整检查106/106；实际浏览器验证四尺寸、分类回退、保存刷新、私人查询状态和减少动态效果。最新finish reviewer为ship，范围与未验收项目见[书页预览验收](BOOK_PREVIEW_VERIFICATION.md)。
+- 预览禁用Supabase并阻断API。当前本机生产构建4183，开发5183；独立远端预览只在确认成功后记录。入口为`src/features/book/`，不要把静态生成的素材或正式站用户数据混入本轮。
 
 ## 2026-10-29 全站精修、短指引与层级整理
 
