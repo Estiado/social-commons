@@ -123,18 +123,23 @@
       },
       {
         "name": "paper-turn",
-        "value": "1050ms sine.inOut",
-        "purpose": "首页文字离场后翻页"
+        "value": "3150ms sine.inOut + 120ms closing blend",
+        "purpose": "首页之后的公开导航，连续弯曲纸页与投影"
       },
       {
         "name": "mist",
-        "value": "24fps maximum; opacity .5",
-        "purpose": "50%不透明的细薄云雾，减少动态效果时静止"
+        "value": "24fps maximum; opacity .75; volumetric clouds",
+        "purpose": "75%不透明的低矮体积云，减少动态效果时静止"
       },
       {
         "name": "cloud-merge",
-        "value": "2800–2960ms sine.inOut, glyph stagger 18ms",
+        "value": "2950ms sine.inOut, glyph stagger 18ms",
         "purpose": "按真实云层位置逐字沿曲线飘入并模糊淡出"
+      },
+      {
+        "name": "home-title",
+        "value": "1200ms lift then 2450ms shared-title arrival",
+        "purpose": "首页所选词条逐字成为栏目标题；此段不翻页"
       }
     ],
     "breakpoints": [

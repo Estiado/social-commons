@@ -31,7 +31,6 @@
 .book-motion-root {
   position: relative;
   min-height: 100svh;
-  perspective: 1600px;
   overflow-x: clip;
 }
 .book-header {
@@ -659,7 +658,7 @@
     transform: none;
   }
 }
-/* Paper material and fold geometry, adapted from Codrops BookBlock (MIT). */
+/* One inert overlay: DOM title transfer at home; a continuous WebGL mesh on later turns. */
 .book-turn-stage {
   position: fixed;
   inset: 0;
@@ -668,58 +667,30 @@
   visibility: hidden;
   opacity: 0;
   overflow: hidden;
-  perspective: 1800px;
 }
 .book-turn-frame {
   position: absolute;
-  perspective: 1800px;
 }
-.book-turn-stationary {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
-  background: var(--paper);
-}
-.book-turn-panel {
-  position: absolute;
-  left: 100%;
-  top: 0;
+.book-paper-canvas {
+  display: block;
   width: 100%;
   height: 100%;
-  transform-origin: left center;
-  transform-style: preserve-3d;
 }
-.book-turn-hinge {
-  left: 50%;
-  width: 16.666667%;
-}
-.book-turn-front,
-.book-turn-back {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  backface-visibility: hidden;
+.book-home-ghost {
   background: var(--paper);
 }
-.book-turn-back {
-  transform: rotateY(180deg);
-  background: linear-gradient(90deg, #d4cdbd, #f8f5ed 22%, #f1eee5 80%, #c8c0af);
-  box-shadow: -12px 6px 28px #30383117;
-}
-.book-turn-front::after {
-  content: '';
+.book-travelling-glyph {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, #5b514013, transparent 22%, transparent 83%, #5b51400c);
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  writing-mode: horizontal-tb;
+  transform-origin: center;
+  text-shadow: 0 30px 22px #484b3428;
 }
-.book-turn-copy {
-  position: absolute !important;
-  margin: 0 !important;
-  max-width: none !important;
-  pointer-events: none !important;
+.book-is-arriving .book-catalogue {
+  opacity: 0;
+  transform-origin: center 65%;
 }
 .book-mist {
   position: absolute;
@@ -727,10 +698,11 @@
   height: 27%;
   left: 0;
   bottom: -2%;
-  opacity: 0.5;
-  filter: blur(8px);
+  opacity: var(--book-cloud-opacity, 0.75);
+  filter: blur(2px);
+  background: url(/book/clouds-fallback.webp) center / 100% 100% no-repeat;
   pointer-events: none;
-  mask-image: linear-gradient(transparent, #000 58%);
+  mask-image: linear-gradient(transparent, #000 16%);
   z-index: 2;
 }
 .book-mist-control {
@@ -1113,4 +1085,8 @@
   .book-contents-nav {
     padding-top: 30px;
   }
+}
+
+.book-mist.has-webgl {
+  background-image: none;
 }

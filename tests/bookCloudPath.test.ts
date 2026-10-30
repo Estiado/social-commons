@@ -12,7 +12,7 @@ test('falling glyphs land within the real cloud band on desktop, short screens a
       const center = { x: 30 + i * 9, y: 120 + i * 8 };
       const path = cloudPath(center, band, i);
       const endY = center.y + path.at(-1)!.y;
-      assert.ok(endY >= band.top + band.height * 0.35 && endY <= band.top + band.height * 0.65);
+      assert.ok(endY >= band.top + band.height * 0.68 && endY <= band.top + band.height * 0.84);
       assert.deepEqual(path[0], { x: 0, y: 0 });
       assert.ok(path.every((point) => Number.isFinite(point.x) && Number.isFinite(point.y)));
     }

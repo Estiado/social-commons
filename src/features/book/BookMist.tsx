@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { fogFragment } from './fogShader';
 
-/** Vanta's licensed FOG shader, bounded to a small low-resolution canvas. No Three runtime. */
+/** Vanta CLOUDS volume, bounded to a small canvas. Background image is the static WebGL fallback. */
 export function BookMist() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [paused, setPaused] = useState(
@@ -46,6 +46,7 @@ export function BookMist() {
       gl.deleteProgram(program);
       return;
     }
+    element.classList.add('has-webgl');
     gl.useProgram(program);
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -58,12 +59,6 @@ export function BookMist() {
     gl.enableVertexAttribArray(position);
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
     const uniform = (name: string) => gl.getUniformLocation(program, name);
-    gl.uniform3f(uniform('baseColor'), 0.99, 0.995, 0.98);
-    gl.uniform3f(uniform('lowlightColor'), 0.88, 0.91, 0.89);
-    gl.uniform3f(uniform('midtoneColor'), 0.98, 0.99, 0.97);
-    gl.uniform3f(uniform('highlightColor'), 1, 1, 0.995);
-    gl.uniform1f(uniform('zoom'), 2.3);
-    gl.uniform1f(uniform('blurFactor'), 0.55);
     const time = uniform('iTime');
     const resolution = uniform('iResolution');
     let frame = 0;
@@ -73,7 +68,7 @@ export function BookMist() {
       frame = 0;
       if (now - previous >= 1000 / 24) {
         previous = now;
-        gl.uniform1f(time, now * 0.00009);
+        gl.uniform1f(time, now * 0.00012);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
       }
       if (!paused && visible && !document.hidden) frame = requestAnimationFrame(draw);
@@ -103,6 +98,7 @@ export function BookMist() {
       resize.disconnect();
       intersection.disconnect();
       document.removeEventListener('visibilitychange', resume);
+      element.classList.remove('has-webgl');
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
       shaders.forEach((shader) => gl.deleteShader(shader));

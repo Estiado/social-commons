@@ -146,6 +146,7 @@ export function Layout() {
         <main
           ref={main}
           id="main-content"
+          data-book-path={location.pathname}
           tabIndex={-1}
           className={
             home ? 'book-home-main' : catalogue ? 'book-catalogue-main' : 'book-reading-main'
@@ -153,7 +154,7 @@ export function Layout() {
         >
           <Suspense
             fallback={
-              <div className="book-loading" role="status">
+              <div className="book-loading" data-book-loading role="status">
                 正在翻开书页…
               </div>
             }

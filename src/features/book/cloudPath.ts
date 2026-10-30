@@ -10,7 +10,7 @@ export function cloudPath(center: { x: number; y: number }, band: CloudBand, ind
   const drift = Math.sin(index * 1.45) * 24;
   const pull = (band.left + band.width / 2 - center.x) * 0.045;
   const x = drift + pull;
-  const y = band.top + band.height * (0.48 + Math.sin(index * 0.9) * 0.1) - center.y;
+  const y = band.top + band.height * (0.76 + Math.sin(index * 0.9) * 0.06) - center.y;
   return [
     { x: 0, y: 0 },
     { x: x * 0.45 + 8, y: y * 0.15 },

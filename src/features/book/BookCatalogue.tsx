@@ -129,6 +129,7 @@ export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
       className="book-catalogue"
       aria-labelledby="chapter-heading"
       data-book-scene
+      data-book-ready={status === 'ready'}
     >
       <header className="book-catalogue-heading">
         <Link to="/" className="book-back-link">

@@ -1,96 +1,42 @@
-/** Adapted from tengbao/vanta FOG, f8b351906688b56f0fc744e53bde81fc3c56f150.
- * Copyright 2020 Teng Bao. MIT; see public/book/licenses/VANTA.txt.
- * Original effect by Patricio Gonzalez Vivo; noise based on Morgan McGuire.
- * Changes: standalone precision, four octaves and density-based straight alpha; bounded canvas, palette and timing in BookMist.
+/** Adapted from tengbao/vanta CLOUDS noise and volumetric integration, fixed ref
+ * f8b351906688b56f0fc744e53bde81fc3c56f150. MIT; public/book/licenses/VANTA.txt.
+ * Changes: orthographic low cloud bank, 32 bounded steps, three noise octaves,
+ * transparent sky, ivory lighting and slow drift. No Three runtime or sky backdrop.
  */
 export const fogFragment = `precision mediump float;
 uniform vec2 iResolution;
-uniform vec2 iMouse;
 uniform float iTime;
-
-uniform float blurFactor;
-uniform vec3 baseColor;
-uniform vec3 lowlightColor;
-uniform vec3 midtoneColor;
-uniform vec3 highlightColor;
-uniform float zoom;
-
-float random (in vec2 _st) {
-  return fract(sin(dot(_st.xy,
-                     vec2(0.129898,0.78233)))*
-        437.585453123);
+float hash(float p){p=fract(p*.011);p*=p+7.5;p*=p+p;return fract(p);}
+float noise(vec3 x){
+ vec3 p=floor(x);vec3 f=fract(x);f=f*f*(3.-2.*f);
+ float n=p.x+p.y*57.+113.*p.z;
+ return mix(mix(mix(hash(n),hash(n+1.),f.x),mix(hash(n+57.),hash(n+58.),f.x),f.y),
+ mix(mix(hash(n+113.),hash(n+114.),f.x),mix(hash(n+170.),hash(n+171.),f.x),f.y),f.z);
 }
-
-// Based on Morgan McGuire @morgan3d
-// https://www.shadertoy.com/view/4dS3Wd
-float noise (in vec2 _st) {
-  vec2 i = floor(_st);
-  vec2 f = fract(_st);
-
-  // Four corners in 2D of a tile
-  float a = random(i);
-  float b = random(i + vec2(1.0, 0.0));
-  float c = random(i + vec2(0.0, 1.0));
-  float d = random(i + vec2(1.0, 1.0));
-
-  vec2 u = f * f * (3.0 - 2.0 * f);
-
-  return mix(a, b, u.x) +
-          (c - a)* u.y * (1.0 - u.x) +
-          (d - b) * u.x * u.y;
+float density(vec3 p){
+ vec3 q=p*1.6+vec3(iTime*.16,0.,iTime*.06);
+ float f=.5*noise(q)+.25*noise(q*2.02)+.125*noise(q*4.1);
+ return clamp(1.5-p.y-1.1*f,0.,1.);
 }
-
-#define NUM_OCTAVES 4
-
-float fbm ( in vec2 _st) {
-  float v = 0.0;
-  float a = blurFactor;
-  vec2 shift = vec2(100.0);
-  // Rotate to reduce axial bias
-  mat2 rot = mat2(cos(0.5), sin(0.5),
-                  -sin(0.5), cos(0.50));
-  for (int i = 0; i < NUM_OCTAVES; ++i) {
-      v += a * noise(_st);
-      _st = rot * _st * 2.0 + shift;
-      a *= (1. - blurFactor);
-  }
-  return v;
-}
-
-void main() {
-  vec2 st = gl_FragCoord.xy / iResolution.xy*3.;
-  st.x *= 0.7 * iResolution.x / iResolution.y ; // Still keep it more landscape than square
-  st *= zoom;
-
-  // st += st * abs(sin(iTime*0.1)*3.0);
-  vec3 color = vec3(0.0);
-
-  vec2 q = vec2(0.);
-  q.x = fbm( st + 0.00*iTime);
-  q.y = fbm( st + vec2(1.0));
-
-  vec2 dir = vec2(0.15,0.126);
-  vec2 r = vec2(0.);
-  r.x = fbm( st + 1.0*q + vec2(1.7,9.2)+ dir.x*iTime );
-  r.y = fbm( st + 1.0*q + vec2(8.3,2.8)+ dir.y*iTime);
-
-  float f = fbm(st+r);
-
-  color = mix(baseColor,
-              lowlightColor,
-              clamp((f*f)*4.0,0.0,1.0));
-
-  color = mix(color,
-              midtoneColor,
-              clamp(length(q),0.0,1.0));
-
-  color = mix(color,
-              highlightColor,
-              clamp(length(r.x),0.0,1.0));
-
-  vec3 finalColor = mix(baseColor, color, f*f*f+.6*f*f+.5*f);
-  float density = smoothstep(.08, .65, f * 1.6 + length(r) * .15);
-  gl_FragColor = vec4(clamp(finalColor, 0., 1.), .18 + .82 * density);
-}
-
-`;
+void main(){
+ vec2 uv=gl_FragCoord.xy/iResolution;
+ // Keep cloud size stable across wide desktops and portrait phones.
+ float width=max(3.4,iResolution.x/iResolution.y*2.1);
+ vec3 ro=vec3((uv.x-.5)*width,(uv.y-.28)*2.8,3.7);
+ vec4 sum=vec4(0.);
+ vec3 sun=normalize(vec3(-.7,1.,.5));
+ for(int i=0;i<32;i++){
+   vec3 p=ro+vec3(0.,0.,-float(i)*.16);
+   float den=density(p);
+   if(den>.015){
+     float dif=clamp((den-density(p+sun*.28))/.32,0.,1.);
+     vec3 col=mix(vec3(.64,.69,.67),vec3(1.,.985,.95),.38+.62*dif);
+     float alpha=den*.22;
+     sum.rgb+=(1.-sum.a)*col*alpha;
+     sum.a+=(1.-sum.a)*alpha;
+   }
+   if(sum.a>.985)break;
+ }
+ // Straight alpha matches the canvas context and lets real book ink show through.
+ gl_FragColor=vec4(sum.rgb/max(sum.a,.001),sum.a);
+}`;

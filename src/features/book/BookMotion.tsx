@@ -5,13 +5,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { useGSAP } from '@gsap/react';
 import { BOOK_CHAPTERS } from './chapters';
-import { cloudPath } from './cloudPath';
+import { homeArrival } from './homeArrival';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, MotionPathPlugin);
 
-/** Fold geometry adapted from Codrops BookBlock (2013), MIT. See public/book/licenses/BOOKBLOCK.txt.
- * Native scrolling, editable content, private router state and save guards remain outside this scope.
- */
+/** Public-route scene choreography. Native scrolling, private router state and save guards remain outside this scope. */
 export function BookMotion({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -91,7 +89,14 @@ export function BookMotion({ children }: { children: ReactNode }) {
       let sequence: gsap.core.Timeline | undefined;
       let destination = '';
       let navigated = false;
+      let generation = 0;
+      let disposeScene: (() => void) | undefined;
+      let captureFrame = 0;
       const finish = () => {
+        generation++;
+        disposeScene?.();
+        disposeScene = undefined;
+        cancelAnimationFrame(captureFrame);
         busy.current = false;
         expectedLocation.current = null;
         element.querySelector('.book-contents')?.classList.remove('is-merging');
@@ -115,71 +120,93 @@ export function BookMotion({ children }: { children: ReactNode }) {
           navigate(destination);
         }
       };
-      const turnPaper = contextSafe((home: boolean) => {
-        const main = element.querySelector<HTMLElement>('main')!;
-        const bounds = main.getBoundingClientRect();
-        const width = bounds.width;
-        const height = Math.min(bounds.height, window.innerHeight - Math.max(0, bounds.top));
-        const frame = document.createElement('div');
-        frame.className = 'book-turn-frame';
-        Object.assign(frame.style, {
-          left: bounds.left + 'px',
-          top: Math.max(0, bounds.top) + 'px',
-          width: width + 'px',
-          height: height + 'px',
-        });
-        const copy = (offset: number) => {
-          const node = main.cloneNode(true) as HTMLElement;
-          node.removeAttribute('id');
-          node.querySelectorAll('[id]').forEach((child) => child.removeAttribute('id'));
-          node.querySelectorAll('canvas, .book-mist-control').forEach((child) => child.remove());
-          node.inert = true;
-          node.classList.add('book-turn-copy');
-          Object.assign(node.style, {
-            width: width + 'px',
-            left: -offset + 'px',
-            top: Math.min(0, bounds.top) + 'px',
+      const turnPaper = contextSafe(() => {
+        const turnId = ++generation;
+        // The renderer is loaded only for a later public-page turn, never for the home arrival.
+        void Promise.all([import('./PaperTurn'), import('./paperSnapshot')])
+          .then(([{ createPaperTurn }, { paperSnapshot }]) => {
+            if (!busy.current || generation !== turnId) return;
+            const main = element.querySelector<HTMLElement>('main')!;
+            const r = main.getBoundingClientRect();
+            const bounds = new DOMRect(
+              r.left,
+              Math.max(0, r.top),
+              r.width,
+              Math.max(80, innerHeight - Math.max(0, r.top)),
+            );
+            const frame = document.createElement('div');
+            frame.className = 'book-turn-frame';
+            Object.assign(frame.style, {
+              left: bounds.left + 'px',
+              top: bounds.top + 'px',
+              width: bounds.width + 'px',
+              height: bounds.height + 'px',
+            });
+            stage.current!.replaceChildren(frame);
+            const direction = destination === '/' ? -1 : 1;
+            const renderer = createPaperTurn(frame, paperSnapshot(main, bounds), bounds, direction);
+            if (!renderer) {
+              arrive();
+              finish();
+              return;
+            }
+            disposeScene = renderer.dispose;
+            renderer.canvas.addEventListener(
+              'webglcontextlost',
+              () => {
+                if (busy.current && generation === turnId) {
+                  sequence?.kill();
+                  arrive();
+                  finish();
+                }
+              },
+              { once: true },
+            );
+            gsap.set(stage.current, { autoAlpha: 1 });
+            const model = { progress: 0 };
+            let captureAttempts = 0;
+            const captureDestination = () => {
+              if (!busy.current || generation !== turnId) return;
+              const currentMain = element.querySelector<HTMLElement>('main')!;
+              if (
+                currentMain.dataset.bookPath ===
+                  new URL(destination, window.location.href).pathname &&
+                currentMain.querySelector('h1') &&
+                !currentMain.querySelector(
+                  '[data-book-loading], .book-catalogue[data-book-ready="false"]',
+                )
+              ) {
+                renderer.setDestination(paperSnapshot(currentMain, bounds));
+              } else if (captureAttempts++ < 55)
+                captureFrame = requestAnimationFrame(captureDestination);
+            };
+            sequence = gsap
+              .timeline({ onComplete: finish })
+              .to(
+                model,
+                {
+                  progress: 1,
+                  duration: 3.15,
+                  ease: 'sine.inOut',
+                  onUpdate: () => {
+                    renderer.draw(model.progress);
+                    if (model.progress >= 0.3 && !navigated) {
+                      arrive();
+                      captureFrame = requestAnimationFrame(captureDestination);
+                    }
+                  },
+                },
+                0,
+              )
+              .to(frame, { opacity: 0, duration: 0.12, ease: 'sine.inOut' }, 3.06);
+          })
+          .catch((error) => {
+            console.warn('[book-turn] Render unavailable', error);
+            if (busy.current && generation === turnId) {
+              arrive();
+              finish();
+            }
           });
-          return node;
-        };
-        const stationary = document.createElement('div');
-        stationary.className = 'book-turn-stationary';
-        stationary.append(copy(0));
-        frame.append(stationary);
-        const panels: HTMLDivElement[] = [];
-        let parent: HTMLElement = frame;
-        for (let index = 0; index < 3; index++) {
-          const panel = document.createElement('div');
-          panel.className = 'book-turn-panel' + (index === 0 ? ' book-turn-hinge' : '');
-          const front = document.createElement('div');
-          front.className = 'book-turn-front';
-          front.append(copy(width / 2 + (index * width) / 6));
-          const back = document.createElement('div');
-          back.className = 'book-turn-back';
-          panel.append(front, back);
-          parent.append(panel);
-          panels.push(panel);
-          parent = panel;
-        }
-        stage.current!.replaceChildren(frame);
-        gsap.set(stage.current, { autoAlpha: 1 });
-        const duration = home ? 1.05 : 0.85;
-        sequence = gsap
-          .timeline({ onComplete: finish })
-          .to(panels[0], { rotationY: -172, duration, ease: 'sine.inOut' }, 0)
-          .to(
-            panels.slice(1),
-            { rotationY: -24, duration: duration * 0.45, stagger: 0.07, ease: 'sine.out' },
-            0,
-          )
-          .to(
-            panels.slice(1),
-            { rotationY: 0, duration: duration * 0.45, stagger: 0.04, ease: 'sine.inOut' },
-            duration * 0.5,
-          )
-          .call(arrive, [], duration * 0.43)
-          .to(stationary, { opacity: 0, duration: 0.28 }, duration * 0.45)
-          .to(frame, { opacity: 0, duration: 0.2 }, duration * 0.85);
       });
       const click = contextSafe((event: MouseEvent) => {
         if (
@@ -221,52 +248,15 @@ export function BookMotion({ children }: { children: ReactNode }) {
             .catch(() => {});
           void import('./BookCatalogue');
         }
-        if (current.pathname !== '/') {
-          turnPaper(false);
+        if (current.pathname !== '/' || !link.matches('.book-chapter-link')) {
+          turnPaper();
           return;
         }
         const letters = [...element.querySelectorAll<HTMLElement>('[data-book-letter]')];
         gsap.killTweensOf(letters);
-        const rest = [...element.querySelectorAll<HTMLElement>('[data-book-glyph]')].filter(
-          (node) => !link.contains(node),
-        );
-        const scene = element.querySelector('.book-contents')!;
-        const band = element.querySelector('.book-mist')!.getBoundingClientRect();
-        // Read every glyph before writing transforms; endpoints use the cloud, not a percentage of the page.
-        const sink = rest.map((node, index) => {
-          const bounds = node.getBoundingClientRect();
-          return {
-            node,
-            path: cloudPath(
-              { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 },
-              band,
-              index,
-            ),
-          };
-        });
-        scene.classList.add('is-merging');
-        gsap.set(rest, { willChange: 'transform,opacity,filter' });
-        sequence = gsap
-          .timeline({ onComplete: () => turnPaper(true) })
-          .to(link, { y: -85, z: 65, opacity: 0, duration: 1.3, ease: 'sine.inOut' }, 0);
-        sink.forEach(({ node, path }, index) => {
-          const start = 0.08 + index * 0.018;
-          const duration = 2.8 + (index % 3) * 0.08;
-          sequence!
-            .to(node, { motionPath: { path, curviness: 1.3 }, duration, ease: 'sine.inOut' }, start)
-            .to(
-              node,
-              {
-                opacity: 0,
-                filter: 'blur(14px)',
-                scale: 0.78,
-                rotationX: 8,
-                duration: duration * 0.7,
-                ease: 'sine.inOut',
-              },
-              start + duration * 0.3,
-            );
-        });
+        gsap.set(letters, { clearProps: 'transform,filter,opacity' });
+        const home = homeArrival(element, stage.current!, link, arrive, finish);
+        disposeScene = home.dispose;
       });
       const escape = contextSafe((event: KeyboardEvent) => {
         if (event.key !== 'Escape' || !busy.current) return;
@@ -285,11 +275,23 @@ export function BookMotion({ children }: { children: ReactNode }) {
         }
       });
       reduced.addEventListener('change', reduceTurn);
+      const resizeTurn = contextSafe(() => {
+        if (busy.current) {
+          sequence?.kill();
+          arrive();
+          finish();
+        }
+      });
+      window.addEventListener('resize', resizeTurn);
       return () => {
         sequence?.kill();
+        generation++;
+        disposeScene?.();
+        cancelAnimationFrame(captureFrame);
         element.removeEventListener('click', click, true);
         window.removeEventListener('keydown', escape);
         reduced.removeEventListener('change', reduceTurn);
+        window.removeEventListener('resize', resizeTurn);
         stage.current?.replaceChildren();
         busy.current = false;
       };
