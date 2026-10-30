@@ -24,7 +24,12 @@ export function homeArrival(
   )!;
   for (const canvas of ghost.querySelectorAll('canvas')) {
     const original = source.querySelector('canvas');
-    if (original) canvas.getContext('2d')?.drawImage(original, 0, 0);
+    if (original) {
+      const gl = original.getContext('webgl');
+      // WebGL drawing buffers may be cleared after presentation. Refresh before freezing this scene.
+      if (gl && !gl.isContextLost()) gl.drawArrays(gl.TRIANGLES, 0, 6);
+      canvas.getContext('2d')?.drawImage(original, 0, 0);
+    }
   }
   ghost.querySelector('.book-mist-control')?.remove();
   Object.assign(ghost.style, {

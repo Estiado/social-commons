@@ -128,8 +128,8 @@
       },
       {
         "name": "mist",
-        "value": "24fps maximum; opacity .75; volumetric clouds",
-        "purpose": "75%不透明的低矮体积云，减少动态效果时静止"
+        "value": "24fps maximum; 640x256; opacity .75 with alpha cap .69",
+        "purpose": "云海沿书页纵深铺展，透出字迹；减少动态效果时静止"
       },
       {
         "name": "cloud-merge",
@@ -140,6 +140,11 @@
         "name": "home-title",
         "value": "1200ms lift then 2450ms shared-title arrival",
         "purpose": "首页所选词条逐字成为栏目标题；此段不翻页"
+      },
+      {
+        "name": "cloud-flow",
+        "value": "160x96 ping-pong advection, pointer impulses, vorticity and dissipation",
+        "purpose": "鼠标推开并卷动云海，离开后缓慢回流；ref瞬态值不触发逐帧React渲染"
       }
     ],
     "breakpoints": [

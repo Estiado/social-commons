@@ -695,14 +695,15 @@
 .book-mist {
   position: absolute;
   width: 100%;
-  height: 27%;
+  height: 56%;
+  top: 46%;
   left: 0;
-  bottom: -2%;
+  bottom: auto;
   opacity: var(--book-cloud-opacity, 0.75);
   filter: blur(2px);
   background: url(/book/clouds-fallback.webp) center / 100% 100% no-repeat;
   pointer-events: none;
-  mask-image: linear-gradient(transparent, #000 16%);
+  mask-image: linear-gradient(transparent, #000 15%);
   z-index: 2;
 }
 .book-mist-control {
