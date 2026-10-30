@@ -21,7 +21,9 @@ export function RouteArrival({ paused }: { paused: boolean }) {
     const apply = () => {
       const heading = document.querySelector<HTMLElement>('main h1');
       if (heading) {
-        document.title = `${heading.textContent?.trim()} · 社科通识`;
+        const title = heading.textContent?.trim();
+        document.title =
+          title === '社科通识' ? '社科通识 · 阅读、思辨与写作' : `${title} · 社科通识`;
         if (focusPending && !document.querySelector('[aria-modal="true"]')) {
           document.querySelector<HTMLElement>('main')?.focus({ preventScroll: true });
           focusPending = false;

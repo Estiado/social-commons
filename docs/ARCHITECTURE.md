@@ -4,6 +4,8 @@
 
 ## 分层
 
+书页实验仅在`codex/book-preview`：`src/features/book/`负责外壳、按需目录、分类与动效；`BookMist`使用有许可的独立WebGL片元着色器，正文模型不变。`IS_BOOK_PREVIEW`禁用Supabase，根Pages middleware与本地Vite插件阻断API；这是预览隔离，不能作为正式服务的默认发布配置。见[方案](BOOK_DESIGN_PLAN.md)及[验收](BOOK_PREVIEW_VERIFICATION.md)。
+
 本轮显示层新增`navigationTaxonomy.ts`（不改来源/URL的导航归并）、`reading/hierarchy.ts`（线性显示树）、`ReadingHierarchy.tsx`（原生details与自动展开定位）和`RouteArrival.tsx`（路由起点/返回位置/标题/焦点）。显示树不持久化；收藏与Word/PDF继续读取完整原始块。旧群鉴/日新的扁平标题兼容明确限于站内目录，私人文章不推断标题父子关系。
 
 | 层            | 位置                                                    | 只负责什么                                                          |

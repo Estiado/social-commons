@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 import { Routes, Route, Navigate, useParams } from 'react-router-dom';
-import { Layout } from '@/components/Layout';
-import HomePage from '@/pages/HomePage/HomePage';
+import { Layout } from '@/features/book/BookLayout';
+import HomePage from '@/features/book/BookContents';
 
 // 首页直接加载；其余页面只在访问时下载，避免首屏解析阅读器和导出库。
 const DailyPage = lazy(() => import('@/pages/DailyPage/DailyPage'));
