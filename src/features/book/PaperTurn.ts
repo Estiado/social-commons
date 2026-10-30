@@ -2,22 +2,25 @@ import { paperIndices, paperMesh } from './paperMesh';
 
 // Original renderer; the unlicensed visual reference's source is not used.
 const vertex = `attribute vec3 position; attribute vec3 normal; attribute vec2 uv;
-uniform float aspect;
+uniform float aspect; uniform mediump float singlePage; uniform mediump float direction;
 varying vec2 vUv; varying vec3 vNormal; varying vec3 vPosition;
 void main(){
  vUv=uv; vNormal=normal; vPosition=position;
- float perspective=1.-position.z/4.5;
- gl_Position=vec4(position.x,position.y*2./aspect,-position.z*.15,perspective);
+ vec3 point=position;
+ if(singlePage>.5){ point.x=2.*point.x-direction; point.z*=2.; }
+ float perspective=1.-point.z/(singlePage>.5?9.:4.5);
+ gl_Position=vec4(point.x,point.y*2./aspect,-point.z*.15,perspective);
 }`;
 const fragment = `precision mediump float;
 uniform sampler2D source; uniform sampler2D destination;
-uniform float progress; uniform float mode; uniform float direction;
+uniform float progress; uniform float mode; uniform float direction; uniform float singlePage;
 varying vec2 vUv; varying vec3 vNormal; varying vec3 vPosition;
 void main(){
  vec2 uv=vUv;
  if(mode<.5){gl_FragColor=texture2D(destination,uv);return;}
  if(mode<1.5){
    float side=direction>0.?1.-step(.5,uv.x):step(.5,uv.x);
+   if(singlePage>.5)side=0.;
    // The old left page stays opaque until the moving sheet physically covers it.
    // Cross-fading two text pages here creates the doubled headings the user rejected.
    gl_FragColor=vec4(texture2D(source,uv).rgb,side);return;
@@ -30,6 +33,7 @@ void main(){
  bool front=gl_FrontFacing==(direction>0.);
  vec2 faceUv=vec2(.5+direction*.5*uv.x,uv.y);
  vec2 backUv=vec2(.5-direction*.5*uv.x,uv.y);
+ if(singlePage>.5){ faceUv.x=direction>0.?uv.x:1.-uv.x; backUv.x=1.-faceUv.x; }
  vec3 color=front?texture2D(source,faceUv).rgb:texture2D(destination,backUv).rgb;
  vec3 n=normalize(vNormal)*(front?1.:-1.);
  float diffuse=abs(dot(n,normalize(vec3(-.5,.6,1.3))));
@@ -107,6 +111,8 @@ export function createPaperTurn(
   gl.uniform1i(uniform('source'), 0);
   gl.uniform1i(uniform('destination'), 1);
   gl.uniform1f(uniform('direction'), direction);
+  // The mobile catalogue is one page: its spine is the outer edge, not the screen center.
+  gl.uniform1f(uniform('singlePage'), bounds.width <= 700 ? 1 : 0);
   const aspect = bounds.height / (bounds.width / 2);
   gl.uniform1f(uniform('aspect'), aspect);
   const dynamic = gl.createBuffer()!;
