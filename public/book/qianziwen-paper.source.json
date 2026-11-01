@@ -1,0 +1,37 @@
+{
+  "asset": "qianziwen-paper.webp",
+  "title": "《千字文》清道光二十六年刻本：纸面曲面视觉",
+  "author": "周兴嗣",
+  "edition": "1846年刻本",
+  "sourceInstitution": "中国国家图书馆（据Commons文件说明）",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:NLC892-312002092935-327932_千字文_清道光二十六年刻本.pdf",
+  "sourceFile": "https://upload.wikimedia.org/wikipedia/commons/f/f2/NLC892-312002092935-327932_%E5%8D%83%E5%AD%97%E6%96%87_%E6%B8%85%E9%81%93%E5%85%89%E4%BA%8C%E5%8D%81%E5%85%AD%E5%B9%B4%E5%88%BB%E6%9C%AC.pdf",
+  "license": "Public domain; PD-scan; PD-old-100-expired",
+  "sourceSha256": "7a9c7ea222a0bfe8a026e89d017218afcf5e7ab65101e8e0fdf48aa12e39a13a",
+  "sourcePages": [
+    {
+      "pdfPage": 3,
+      "cropNormalized": [
+        0.067,
+        0.365,
+        0.398,
+        0.887
+      ]
+    },
+    {
+      "pdfPage": 4,
+      "cropNormalized": [
+        0.529,
+        0.365,
+        0.92,
+        0.884
+      ]
+    }
+  ],
+  "processing": "Source pixel crops, local contrast normalization, inverse symmetric curved-surface projection, tonal treatment, shallow depth-of-field; no generated or retyped characters.",
+  "generator": "scripts/build-book-paper.py",
+  "dimensions": [
+    2400,
+    1400
+  ]
+}

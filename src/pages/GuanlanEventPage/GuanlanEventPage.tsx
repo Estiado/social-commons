@@ -91,9 +91,15 @@ export default function GuanlanEventPage() {
           </a>
         ))}
       </nav>
-      <ContentReader key={id} kind="guanlan-event" id={id} document={document} idPrefix={prefix} />
-      <EventSources key={id} event={event} anchors={sourceAnchors} />
-      <EventRelatedReadings key={id} event={event} />
+      <ContentReader
+        key={`reader-${id}`}
+        kind="guanlan-event"
+        id={id}
+        document={document}
+        idPrefix={prefix}
+      />
+      <EventSources key={`sources-${id}`} event={event} anchors={sourceAnchors} />
+      <EventRelatedReadings key={`related-${id}`} event={event} />
       <ReadingAssociations event={event} />
     </article>
   );

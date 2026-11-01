@@ -9,6 +9,8 @@ dist-ssr
 .idea
 .artifacts/
 .wrangler/
+output/playwright/
+.playwright-cli/
 .env
 .env.*
 !.env.example

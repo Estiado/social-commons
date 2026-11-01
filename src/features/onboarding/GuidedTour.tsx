@@ -7,7 +7,7 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { useGSAP } from '@gsap/react';
 import { Button } from '@/components/ui/button';
 import { markTourSeen } from './preferences';
-import { QUICK_TOUR_STEPS, TOUR_STEPS } from './steps';
+import { QUICK_TOUR_STEPS, TOUR_STEPS, type TourStep } from './steps';
 import './tour.css';
 
 gsap.registerPlugin(ScrollToPlugin, useGSAP);
@@ -23,9 +23,11 @@ interface FocusRect {
 export default function GuidedTour({
   onClose,
   onMenuChange,
+  routes,
 }: {
   onClose(): void;
   onMenuChange(open: boolean): void;
+  routes?: { quick: TourStep[]; full: TourStep[] };
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,7 +35,9 @@ export default function GuidedTour({
   const heading = useRef<HTMLHeadingElement>(null);
   const progress = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<'quick' | 'full'>('quick');
-  const steps = mode === 'quick' ? QUICK_TOUR_STEPS : TOUR_STEPS;
+  const quickSteps = routes?.quick ?? QUICK_TOUR_STEPS;
+  const fullSteps = routes?.full ?? TOUR_STEPS;
+  const steps = mode === 'quick' ? quickSteps : fullSteps;
   const [index, setIndex] = useState(-1);
   const [focus, setFocus] = useState<{
     key: string;
@@ -290,8 +294,8 @@ export default function GuidedTour({
           <div role="group" aria-label="选择指引路线" className="mt-5 grid grid-cols-2 gap-3">
             {(
               [
-                ['quick', '简短路线', '8 步，先会用'],
-                ['full', '完整导览', '27 步，逐页认识'],
+                ['quick', '简短路线', `${quickSteps.length} 步，先会用`],
+                ['full', '完整导览', `${fullSteps.length} 步，逐页认识`],
               ] as const
             ).map(([value, title, detail]) => (
               <button
