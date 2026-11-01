@@ -1,0 +1,25 @@
+{
+  "font": {
+    "name": "Noto Serif CJK SC SemiBold",
+    "ref": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+    "license": "OFL-1.1"
+  },
+  "text": {
+    "source": "https://zh.wikisource.org/wiki/千字文",
+    "order": "天地玄黃宇宙洪荒日月盈昃辰宿列張寒來暑往秋收冬藏閏餘成歲律呂調陽雲騰致雨露結為霜金生麗水玉出崑岡劍號巨闕珠稱夜光果珍李柰菜重芥薑",
+    "edition": "Common traditional variants 黃/呂/崑/果珍; public-domain original text, not modern annotations.",
+    "layout": "4 characters per column, right-to-left before whole-plate mirror"
+  },
+  "glyph": {
+    "sample": "玄",
+    "mirrored": true,
+    "outlineUnits": 1000
+  },
+  "files": {
+    "design\\type-study\\source\\great-wall-jinshanling-original.jpg": "48356979d2df283b8be846e4955006db0322f50e1c37291c47ca0e298d881c76",
+    ".artifacts\\material-originals\\NotoSerifCJKsc-SemiBold.otf": "d627b53dbcde61e07de1498d2623a8b287f78585ffbc90cc0618d0caaa2ed6b0",
+    "public\\type-study\\materials\\wood-color.jpg": "460dd08d240f4a1f02982415048c3c5c200f385db212da18dc7e2df68bf4d0be",
+    "public\\type-study\\materials\\wood-normal.jpg": "9bf7ddf5721e225c20290f1772ae37f9bdfd49658f6d458259eb794e2149d3cf",
+    "public\\type-study\\materials\\wood-roughness.jpg": "a2ca9ae89dfe7b8e2e5e92f0aa43467845417de8a50205b5852ef0d57c7624f9"
+  }
+}

@@ -1,20 +1,11 @@
 import { Link } from 'react-router-dom';
 import { BOOK_CHAPTERS } from './chapters';
-import { BookMist } from './BookMist';
+import { BookTypeField } from './BookTypeField';
+import './type-home.css';
 
 export default function BookContents() {
   return (
     <section className="book-contents" aria-label="社科通识总目录" data-book-scene>
-      <div className="book-landscape" aria-hidden="true">
-        <img
-          className="book-paper-photo"
-          src="/book/qianziwen-paper.webp"
-          width="2400"
-          height="1400"
-          alt=""
-          fetchPriority="high"
-        />
-      </div>
       <div className="book-contents-ink">
         <h1 className="book-masthead book-floating-type" data-book-letter aria-label="社科通识">
           {Array.from('社科通识').map((character, index) => (
@@ -63,7 +54,7 @@ export default function BookContents() {
           </div>
         </nav>
       </div>
-      <BookMist />
+      <BookTypeField />
     </section>
   );
 }
