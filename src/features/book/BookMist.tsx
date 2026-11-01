@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { fogFragment } from './fogShader';
-import { createCloudFlow } from './cloudFlow';
+import { createCloudMass } from './cloudMass';
+import { registerMistSnapshot } from './mistSnapshot';
 
-/** A low sea of mist above the book, with a bounded GPU flow field and a static fallback. */
+/** Layered volumetric clouds, with inertial world-space displacement and a static fallback. */
 export function BookMist() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [paused, setPaused] = useState(
@@ -27,11 +28,16 @@ export function BookMist() {
     const gl = element.getContext('webgl', {
       alpha: true,
       premultipliedAlpha: false,
+      // Keeps the small presented bitmap valid during asynchronous DOM cloning.
+      preserveDrawingBuffer: true,
       antialias: false,
       depth: false,
       powerPreference: 'low-power',
     });
-    if (!gl) return;
+    if (!gl) {
+      element.dataset.bookMistState = 'fallback';
+      return;
+    }
     const shaders: WebGLShader[] = [];
     const compile = (type: number, code: string) => {
       const shader = gl.createShader(type)!;
@@ -52,6 +58,7 @@ export function BookMist() {
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       shaders.forEach((shader) => gl.deleteShader(shader));
       gl.deleteProgram(program);
+      element.dataset.bookMistState = 'fallback';
       return;
     }
     const buffer = gl.createBuffer();
@@ -63,45 +70,67 @@ export function BookMist() {
     );
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-    const flow = createCloudFlow(gl, vertex);
-    if (!flow) {
-      gl.deleteBuffer(buffer);
-      shaders.forEach((shader) => gl.deleteShader(shader));
-      gl.deleteProgram(program);
-      return;
-    }
+    const masses = createCloudMass();
     element.classList.add('has-webgl');
     const uniform = (name: string) => gl.getUniformLocation(program, name);
     const time = uniform('iTime'),
       resolution = uniform('iResolution'),
       aspect = uniform('iAspect');
     gl.useProgram(program);
-    gl.uniform1i(uniform('iFlow'), 1);
     let frame = 0,
       visible = true,
       previous = -Infinity,
       elapsed = 12;
     let rect = element.getBoundingClientRect();
+    const present = () => {
+      gl.useProgram(program);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+      gl.viewport(0, 0, element.width, element.height);
+      gl.uniform2f(resolution, element.width, element.height);
+      gl.uniform1f(aspect, rect.width / Math.max(1, rect.height));
+      gl.uniform3fv(uniform('cloudCenters[0]'), masses.centers);
+      gl.uniform3fv(uniform('cloudOffsets[0]'), masses.offsets);
+      gl.uniform1f(time, elapsed);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      element.dataset.bookMistReady = 'true';
+      element.dataset.bookMistState = 'ready';
+    };
+    const unregister = registerMistSnapshot(element, () => {
+      if (gl.isContextLost()) return null;
+      present();
+      const image = document.createElement('canvas');
+      image.width = element.width;
+      image.height = element.height;
+      image.getContext('2d')!.drawImage(element, 0, 0);
+      return image;
+    });
     const draw = (now: number) => {
       frame = 0;
       if (now - previous >= 1000 / 24) {
         const dt = Number.isFinite(previous) ? Math.min(2, (now - previous) / (1000 / 24)) : 1;
         previous = now;
         const input = pointer.current;
-        if (!pausedRef.current) {
+        if (!pausedRef.current && !scene.closest('[data-book-transition-active]')) {
           elapsed += dt * 0.041;
           const dx = Math.max(-0.025, Math.min(0.025, input.dx * 0.65));
           const dy = Math.max(-0.025, Math.min(0.025, input.dy * 0.65));
-          flow.step(input.x, input.y, dx, dy, rect.width / rect.height, dt);
+          // Project the pointer ray onto the cloud surface, using the fogShader camera.
+          if (input.inside && Math.hypot(dx, dy) > 0.0001) {
+            const py = input.y * 2 - 1;
+            const rayY = -0.456 * 1.65 + 0.89 * py;
+            const rayZ = -0.89 * 1.65 - 0.456 * py;
+            const distance = 0.85 / Math.max(0.05, -rayY);
+            const x = (input.x * 2 - 1) * (rect.width / rect.height) * distance;
+            const z = 4 + rayZ * distance;
+            masses.push(x, z, dx * 38, dy * 38);
+          }
+          masses.step(dt / 24);
           input.dx *= 0.12;
           input.dy *= 0.12;
         }
-        gl.useProgram(program);
-        gl.viewport(0, 0, element.width, element.height);
-        gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, flow.texture);
-        gl.uniform1f(time, elapsed);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        present();
       }
       if (!pausedRef.current && visible && !document.hidden) frame = requestAnimationFrame(draw);
     };
@@ -139,8 +168,8 @@ export function BookMist() {
     window.addEventListener('scroll', updateRect, { passive: true });
     const resize = new ResizeObserver(() => {
       updateRect();
-      element.width = Math.max(1, Math.min(640, Math.round(rect.width * 0.6)));
-      element.height = Math.max(1, Math.min(256, Math.round(rect.height * 0.6)));
+      element.width = Math.max(1, Math.min(720, Math.round(rect.width * 0.55)));
+      element.height = Math.max(1, Math.min(360, Math.round(rect.height * 0.55)));
       gl.useProgram(program);
       gl.uniform2f(resolution, element.width, element.height);
       gl.uniform1f(aspect, rect.width / rect.height);
@@ -158,6 +187,7 @@ export function BookMist() {
       visible = false;
       cancelAnimationFrame(frame);
       element.classList.remove('has-webgl');
+      element.dataset.bookMistState = 'fallback';
     };
     element.addEventListener('webglcontextlost', lost);
     return () => {
@@ -171,7 +201,7 @@ export function BookMist() {
       document.removeEventListener('visibilitychange', resume);
       element.removeEventListener('webglcontextlost', lost);
       element.classList.remove('has-webgl');
-      flow.dispose();
+      unregister();
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
       shaders.forEach((shader) => gl.deleteShader(shader));
@@ -179,7 +209,12 @@ export function BookMist() {
   }, []);
   return (
     <>
-      <canvas ref={canvas} className="book-mist" aria-hidden="true" />
+      <canvas
+        ref={canvas}
+        className="book-mist"
+        data-book-mist-state="pending"
+        aria-hidden="true"
+      />
       <button
         className="book-mist-control"
         type="button"

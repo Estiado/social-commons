@@ -1,5 +1,34 @@
 # 独立书页预览验收
 
+## 最终实拍与卷纸验收 · 2026-11-01
+
+此节为当前版本；下方的88×16、52%薄雾、二维速度场及110项测试均是旧版记录。
+
+### 自动检查
+
+- 最终完整 `npm run check` 112/112，0失败，类型、ESLint、Vite生产构建、Cloudflare函数与PDF/DOCX生成均成功。日志 `.artifacts/book-preview/check-real-photo-release.log`。导出仍是模型与文件生成验证，不是新增逐页排版验收。
+- 5项新回归检查真实卷纸弧长、平展端点、UV/正反向、有穷法线以及云团推开/回聚/持续输入边界。删除3项旧纸页几何测试；不是同一实现的两套重复验收。
+- 最终 Impeccable detector：49条 advisory（色值10、字号39），0 primary。结合已固定的纸色、真实照片材质与响应字号复核，不将这些提示冒充49个用户故障。详细报告见 [audit](BOOK_PREVIEW_AUDIT_2026-11-01.md)。
+
+### 实际浏览器
+
+- 最终生产构建本机4183，Playwright CLI / Edge（Chromium）。11组结果 `.artifacts/book-preview/accept-real-photo-result.json`，pageerror `[]`：云团uniform真实响应且暂停冻结；首页词条→标题；跨章完整书框与卷纸；分类进退；选中d134→正文→Back参数恢复；快速多次导航最后意图胜出；当前标签取消；返回首页无残留；768×1024、390×844、1440×600无横向溢出；Escape/resize/减少动态效果；无结果恢复。
+- 实际中间帧已看：`output/playwright/roll-qa-chapter-mid.png`、`roll-qa-category-mid.png`、`roll-qa-size-390-mid.png`、`roll-qa-home-back-end.png`；稳定帧 `roll-qa-daily-stable.png`。目录是整张照片底板，移动纸沿原始照片alpha裁切，未复现旧矩形裁断、右半页横向拉伸、双标题或临时层泄漏。
+- 最终补测 `.artifacts/book-preview/audit-photo-browser.json`：检索框有名称；Tab进入分类按钮，2px可见焦点；结束后main聚焦、inert=false、stage=0。完整目录、返回与分页点击高44px。720×500半宽等效重排无横向溢出；这是重排模拟，不冒充浏览器原生200%缩放或真机测试。
+- 对真实照片底色与关键次级文字位置采样，最低对比度分别4.68、4.78、4.81及5.75；方法和位置在 `.artifacts/book-preview/audit-photo-contrast.json`。明确不等于全图片像素/所有页面的WCAG AA认证。
+- 无WebGL静态回退与原导航曾在本轮实测，`.artifacts/book-preview/no-webgl-final.json`；它早于最终照片替换，未把它标为最终照片的独立真机验收。最终减少动态效果包含于11组流程。
+- 首页帧回调采样133次，median16.7ms、p9516.9ms，Intel Arc硬件，记录 `cloud-frame-audit.json`。这是首页rAF回调节奏；体积雾本身限24fps，不能推导全程动画60fps。
+
+### 当前实现与边界
+
+- 首页独有冷白体积雾（场景30%起、高72%，最大约91%遮挡），六组弹簧云团，有界推动、抬升、回聚。它是视觉近似，不是完整大气物理求解器。
+- 使用用户最后提供的整本照片作实拍底板；原图、重建脚本、全书/手机素材和图片来源说明均入库。与真实卖家彩绘边构图参考分开，不声称用户照片已有独立CC0许可。
+- Paperlab固定ref `41914833cb9ae12b32a8cbbdee4723f5b12158af`，Apache-2.0许可与NOTICE保留。新增 `html-to-image@1.11.13`（MIT）按需加载；无Three/编辑器整库依赖。仅公开DOM进入本机瞬态纹理，不发送截图，不截取私人阅读空间。
+- 原生手机触控、Safari/Firefox、屏幕阅读器、原生200%缩放、长时显存及所有正文操作未在本轮全量复验。保留原合同测试，不将其写为新的真实数据库或设备验收。
+- 发布前远端main核对为 `bdf9a1d594e5ac31fd4c769885b39c4f21d58f62`。仅推 `codex/book-preview`，草稿PR #6；部署结果另在实际成功后记录，不能将本机通过当成远端上线。
+
+## 历史验收
+
 ## 书页为云海基底与鼠标流动 · 2026-10-30
 
 - 用户否定底边云带，要求沿书页纵深铺开、字迹透出及鼠标流体。云面改为46%位置开始、56%高的浅层云海；高精度体积噪声从远至近铺开。CSS75%配合材质alpha上限0.69，最多约52%遮挡。五个纵深横截面的平均alpha均为77–100/255、最大176/255，证实云不只聚在底边；这是实际像素值，不等同于每个字的人眼可读性认证。

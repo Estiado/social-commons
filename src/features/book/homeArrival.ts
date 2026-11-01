@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { cloudPath } from './cloudPath';
+import { captureMist } from './mistSnapshot';
 
 /** One continuous scene: the selected live word becomes the chapter title while the book appears.
  * The temporary ghost is inert and aria-hidden; original React content is never reparented. */
@@ -25,10 +26,8 @@ export function homeArrival(
   for (const canvas of ghost.querySelectorAll('canvas')) {
     const original = source.querySelector('canvas');
     if (original) {
-      const gl = original.getContext('webgl');
-      // WebGL drawing buffers may be cleared after presentation. Refresh before freezing this scene.
-      if (gl && !gl.isContextLost()) gl.drawArrays(gl.TRIANGLES, 0, 6);
-      canvas.getContext('2d')?.drawImage(original, 0, 0);
+      const image = captureMist(original);
+      if (image) canvas.getContext('2d')?.drawImage(image, 0, 0);
     }
   }
   ghost.querySelector('.book-mist-control')?.remove();

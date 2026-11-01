@@ -91,17 +91,25 @@ export function BookMotion({ children }: { children: ReactNode }) {
       let navigated = false;
       let generation = 0;
       let disposeScene: (() => void) | undefined;
-      let captureFrame = 0;
+      let arrivalFrame = 0;
       const finish = () => {
         generation++;
         disposeScene?.();
         disposeScene = undefined;
-        cancelAnimationFrame(captureFrame);
+        cancelAnimationFrame(arrivalFrame);
         busy.current = false;
+        delete element.dataset.bookTransitionActive;
         expectedLocation.current = null;
         element.querySelector('.book-contents')?.classList.remove('is-merging');
         stage.current?.replaceChildren();
         gsap.set(stage.current, { autoAlpha: 0 });
+        const main = element.querySelector('main');
+        if (main) {
+          main.inert = false;
+          main.removeAttribute('aria-busy');
+          gsap.set(main, { clearProps: 'opacity' });
+          if (navigated) (main as HTMLElement).focus({ preventScroll: true });
+        }
         const ink = element.querySelectorAll('[data-book-letter]');
         if (ink.length)
           gsap.set(ink, {
@@ -122,91 +130,161 @@ export function BookMotion({ children }: { children: ReactNode }) {
       };
       const turnPaper = contextSafe(() => {
         const turnId = ++generation;
-        // The renderer is loaded only for a later public-page turn, never for the home arrival.
-        void Promise.all([import('./PaperTurn'), import('./paperSnapshot')])
-          .then(([{ createPaperTurn }, { paperSnapshot }]) => {
-            if (!busy.current || generation !== turnId) return;
-            const main = element.querySelector<HTMLElement>('main')!;
-            const r = main.getBoundingClientRect();
-            const bounds = new DOMRect(
-              r.left,
-              Math.max(0, r.top),
-              r.width,
-              Math.max(80, innerHeight - Math.max(0, r.top)),
+        const main = element.querySelector<HTMLElement>('main')!;
+        const valid = () => busy.current && generation === turnId;
+        void (async () => {
+          const [{ createRollTurn }, { domSnapshot }] = await Promise.all([
+            import('./RollTurn'),
+            import('./domSnapshot'),
+          ]);
+          if (!valid()) return;
+          // Both routes share viewport coordinates, including all margins, controls and paper edges.
+          // The old main's inset and scroll position never define the next page's frame.
+          const bounds = new DOMRect(0, 0, innerWidth, innerHeight);
+          const capture = async () => {
+            let timeout: ReturnType<typeof setTimeout> | undefined;
+            try {
+              return await Promise.race([
+                domSnapshot(element, bounds, valid),
+                new Promise<never>((_, reject) => {
+                  timeout = setTimeout(
+                    () => reject(new Error('Snapshot preparation exceeded budget')),
+                    2400,
+                  );
+                }),
+              ]);
+            } finally {
+              clearTimeout(timeout);
+            }
+          };
+          const surfaceRect = () => {
+            const surface =
+              main.querySelector<HTMLElement>('.book-catalogue, .book-contents') || main;
+            const rect = surface.getBoundingClientRect();
+            if (!surface.matches('.book-catalogue')) return rect;
+            const photograph = surface.querySelector<HTMLElement>('.book-photo-base');
+            if (photograph) return photograph.getBoundingClientRect();
+            const edge = getComputedStyle(surface, '::before');
+            const left = parseFloat(edge.left) || 0,
+              top = parseFloat(edge.top) || 0;
+            const right = parseFloat(edge.right) || 0,
+              bottom = parseFloat(edge.bottom) || 0;
+            return new DOMRect(
+              rect.left + left,
+              rect.top + top,
+              rect.width - left - right,
+              rect.height - top - bottom,
             );
-            const frame = document.createElement('div');
-            frame.className = 'book-turn-frame';
-            Object.assign(frame.style, {
-              left: bounds.left + 'px',
-              top: bounds.top + 'px',
-              width: bounds.width + 'px',
-              height: bounds.height + 'px',
-            });
-            stage.current!.replaceChildren(frame);
-            const direction = destination === '/' ? -1 : 1;
-            const renderer = createPaperTurn(frame, paperSnapshot(main, bounds), bounds, direction);
-            if (!renderer) {
-              arrive();
-              finish();
+          };
+          const sourceRect = surfaceRect();
+          const source = await capture();
+          if (!valid()) return;
+          const frame = document.createElement('div');
+          frame.className = 'book-turn-frame';
+          Object.assign(frame.style, { inset: '0' });
+          stage.current!.replaceChildren(frame);
+          const reverse = destination === '/' || /\/[^/]+\//.test(window.location.pathname);
+          const photograph = main.querySelector<HTMLImageElement>('.book-photo-base img');
+          if (photograph && (!photograph.complete || !photograph.naturalWidth)) {
+            arrive();
+            finish();
+            return;
+          }
+          const renderer = createRollTurn(
+            frame,
+            source,
+            bounds,
+            reverse ? -1 : 1,
+            photograph
+              ? { image: photograph, bounds: photograph.getBoundingClientRect() }
+              : undefined,
+          );
+          if (!renderer) {
+            arrive();
+            finish();
+            return;
+          }
+          disposeScene = renderer.dispose;
+          renderer.draw(0);
+          gsap.set(stage.current, { autoAlpha: 1 });
+          renderer.canvas.addEventListener(
+            'webglcontextlost',
+            () => {
+              if (valid()) {
+                sequence?.kill();
+                arrive();
+                finish();
+              }
+            },
+            { once: true },
+          );
+          arrive();
+          const started = performance.now();
+          const reveal = async () => {
+            if (!valid()) return;
+            const photo = main.querySelector<HTMLImageElement>('.book-photo-base img');
+            const ready =
+              main.dataset.bookPath === new URL(destination, window.location.href).pathname &&
+              main.querySelector('h1') &&
+              !main.querySelector(
+                '[data-book-loading], .book-catalogue[data-book-ready="false"], .book-mist[data-book-mist-state="pending"]',
+              ) &&
+              (!photo || photo.complete);
+            if (!ready) {
+              if (performance.now() - started > 1800) {
+                finish();
+                return;
+              }
+              arrivalFrame = requestAnimationFrame(
+                () =>
+                  void reveal().catch((error) => {
+                    console.warn('[book-roll] Destination capture unavailable', error);
+                    if (valid()) finish();
+                  }),
+              );
               return;
             }
-            disposeScene = renderer.dispose;
-            renderer.canvas.addEventListener(
-              'webglcontextlost',
-              () => {
-                if (busy.current && generation === turnId) {
-                  sequence?.kill();
-                  arrive();
-                  finish();
-                }
-              },
-              { once: true },
+            const target = await capture();
+            if (!valid()) return;
+            const targetRect = surfaceRect();
+            const left = Math.max(0, Math.min(sourceRect.left, targetRect.left));
+            const top = Math.max(0, Math.min(sourceRect.top, targetRect.top));
+            const right = Math.min(innerWidth, Math.max(sourceRect.right, targetRect.right));
+            const bottom = Math.min(innerHeight, Math.max(sourceRect.bottom, targetRect.bottom));
+            renderer.setSheet(
+              new DOMRect(left, top, Math.max(1, right - left), Math.max(1, bottom - top)),
             );
-            gsap.set(stage.current, { autoAlpha: 1 });
+            renderer.setDestination(target);
             const model = { progress: 0 };
-            let captureAttempts = 0;
-            const captureDestination = () => {
-              if (!busy.current || generation !== turnId) return;
-              const currentMain = element.querySelector<HTMLElement>('main')!;
-              if (
-                currentMain.dataset.bookPath ===
-                  new URL(destination, window.location.href).pathname &&
-                currentMain.querySelector('h1') &&
-                !currentMain.querySelector(
-                  '[data-book-loading], .book-catalogue[data-book-ready="false"]',
-                )
-              ) {
-                renderer.setDestination(paperSnapshot(currentMain, bounds));
-              } else if (captureAttempts++ < 55)
-                captureFrame = requestAnimationFrame(captureDestination);
-            };
-            sequence = gsap
-              .timeline({ onComplete: finish })
-              .to(
-                model,
-                {
-                  progress: 1,
-                  duration: 3.15,
-                  ease: 'sine.inOut',
-                  onUpdate: () => {
-                    renderer.draw(model.progress);
-                    if (model.progress >= 0.3 && !navigated) {
-                      arrive();
-                      captureFrame = requestAnimationFrame(captureDestination);
-                    }
-                  },
-                },
-                0,
-              )
-              .to(frame, { opacity: 0, duration: 0.12, ease: 'sine.inOut' }, 3.06);
-          })
-          .catch((error) => {
-            console.warn('[book-turn] Render unavailable', error);
-            if (busy.current && generation === turnId) {
-              arrive();
-              finish();
-            }
-          });
+            // Full cross-chapter sweep; abbreviated reader round trips retain native reading pace.
+            const duration =
+              /\/[^/]+\//.test(destination + '/') &&
+              !BOOK_CHAPTERS.some((c) => c.path === destination)
+                ? 1.35
+                : reverse && destination !== '/'
+                  ? 1.35
+                  : 2.55;
+            sequence = gsap.timeline({ onComplete: finish }).to(model, {
+              progress: 1,
+              duration,
+              ease: 'sine.inOut',
+              onUpdate: () => renderer.draw(model.progress),
+            });
+          };
+          arrivalFrame = requestAnimationFrame(
+            () =>
+              void reveal().catch((error) => {
+                console.warn('[book-roll] Destination capture unavailable', error);
+                if (valid()) finish();
+              }),
+          );
+        })().catch((error) => {
+          console.warn('[book-roll] Snapshot unavailable; native navigation retained', error);
+          if (valid()) {
+            arrive();
+            finish();
+          }
+        });
       });
       const click = contextSafe((event: MouseEvent) => {
         if (
@@ -227,17 +305,35 @@ export function BookMotion({ children }: { children: ReactNode }) {
         const privatePath = /^\/(reading|editor|feedback)(\/|$)/;
         if (
           url.origin !== current.origin ||
-          url.pathname === current.pathname ||
           url.hash ||
           privatePath.test(url.pathname) ||
           privatePath.test(current.pathname) ||
           link.closest('[contenteditable="true"]')
         )
           return;
+        if (url.pathname === current.pathname) {
+          if (busy.current) {
+            event.preventDefault();
+            cancelTurn.current();
+            navigate(url.pathname + url.search);
+          }
+          return;
+        }
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         event.preventDefault();
-        if (busy.current) return;
+        if (busy.current) {
+          // Latest valid public intent wins, before or after the previous route has mounted.
+          cancelTurn.current();
+          navigate(url.pathname + url.search);
+          return;
+        }
         busy.current = true;
+        element.dataset.bookTransitionActive = 'true';
+        const main = element.querySelector<HTMLElement>('main');
+        if (main) {
+          main.inert = true;
+          main.setAttribute('aria-busy', 'true');
+        }
         destination = url.pathname + url.search;
         expectedLocation.current = destination;
         navigated = false;
@@ -287,7 +383,7 @@ export function BookMotion({ children }: { children: ReactNode }) {
         sequence?.kill();
         generation++;
         disposeScene?.();
-        cancelAnimationFrame(captureFrame);
+        cancelAnimationFrame(arrivalFrame);
         element.removeEventListener('click', click, true);
         window.removeEventListener('keydown', escape);
         reduced.removeEventListener('change', reduceTurn);

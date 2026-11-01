@@ -4,7 +4,9 @@
 
 ## 分层
 
-书页实验仅在`codex/book-preview`：`src/features/book/`负责外壳、按需目录、分类与动效；`BookMist`使用有许可的独立WebGL片元着色器，正文模型不变。`IS_BOOK_PREVIEW`禁用Supabase，根Pages middleware与本地Vite插件阻断API；这是预览隔离，不能作为正式服务的默认发布配置。见[方案](BOOK_DESIGN_PLAN.md)及[验收](BOOK_PREVIEW_VERIFICATION.md)。
+书页实验仅在`codex/book-preview`：`src/features/book/`负责外壳、按需目录、分类与动效，正文模型不变。`BookMist/fogShader/cloudMass`仅为首页提供冷白体积云与有界云团弹簧；`homeArrival`处理词条成为章节标题。`BookMotion`管理公开导航事务和中断，按需加载`RollTurn/rollGeometry`连续卷纸以及`domSnapshot/snapshotFonts`公开DOM纹理。后者不接管私人文稿；字体嵌入只取已加载且当前文字使用的子集，捕获超时回退原导航。`mistSnapshot`由雾渲染器自己提交当前帧，外部不能任意重画其GL程序。
+
+目录底板是`design/book/open-book-reference.jpg`的整书照片合成；`scripts/build-book-photo.py`可重建`public/book/materials/`内的全书和手机单叶。真实轮廓也作为卷纸蒙版，文字和检索仍为HTML。Apache-2.0卷纸适配、MIT快照库和图片来源分别登记，不能把软件许可套用于用户照片。`IS_BOOK_PREVIEW`禁用Supabase，根Pages middleware与本地Vite插件阻断API；这是预览隔离，不能作为正式服务的默认发布配置。见[方案](BOOK_DESIGN_PLAN.md)、[验收](BOOK_PREVIEW_VERIFICATION.md)及[最终audit](BOOK_PREVIEW_AUDIT_2026-11-01.md)。
 
 本轮显示层新增`navigationTaxonomy.ts`（不改来源/URL的导航归并）、`reading/hierarchy.ts`（线性显示树）、`ReadingHierarchy.tsx`（原生details与自动展开定位）和`RouteArrival.tsx`（路由起点/返回位置/标题/焦点）。显示树不持久化；收藏与Word/PDF继续读取完整原始块。旧群鉴/日新的扁平标题兼容明确限于站内目录，私人文章不推断标题父子关系。
 

@@ -1,6 +1,18 @@
 # 接手记录
 
-更新：2026-10-30。仓库 `Estiado/social-commons`，生产分支 main，Cloudflare Pages。
+更新：2026-11-01。仓库 `Estiado/social-commons`，生产分支 main，Cloudflare Pages。
+
+## 2026-11-01 实拍整书、冷白云海与连续卷纸
+
+此节取代下方早期预览的材质、雾场和翻页参数；下文保留为历史记录。
+
+- 最新用户方向：首页才有清冷、干净、层叠的云海；书页若隐若现。目录落地页不加雾、不做山势或山脊。彩绘刷边先不加文案。正式站保持原版，只同步 `codex/book-preview` 与草稿 PR #6。
+- 用户最后提供的完整古书照片已作为整张底板；原件在 `design/book/open-book-reference.jpg`，处理脚本 `scripts/build-book-photo.py`，成品 `public/book/materials/book-photo.webp` 与手机单叶。蒙版、纸内局部去字、彩绘页块与接触阴影均为像素处理，没有用绘制平面冒充实拍，也未使用 Photoshop 应用。真实纸层、书缝与不规则轮廓保留。来源边界见 `public/book/licenses/BOOK-MATERIALS.md`。
+- 首页体积雾沿场景纵深覆盖：起点30%、高度72%，CSS .95 × 材质 alpha 上限 .96，最大约91%遮挡；这不是每处均为91%。六组有界弹簧云团受指针推动、抬升、回聚，不再使用二维液体擦除速度场。最大720×360、24fps，指针与暂停用 ref；离屏、后台、减少动态效果暂停，静态同图回退。
+- 用户后来授权尝试 Paperlab 连续卷纸，取代此前 B。`rollGeometry.ts` 适配固定 Apache-2.0 源码；`RollTurn.ts` 使用原生 WebGL，不安装整套编辑器/Three。跨章2.55秒、正文往返1.35秒；首页所选词条仍直接成为下一页标题，此段不卷页。
+- `domSnapshot.ts` 按真实 DOM 布局保留字体、图标、输入和行分隔；公开根节点限定、私人路由排除、生成号取消、原始图片轮廓蒙版、同一视口坐标。旧 `PaperTurn/paperMesh/paperSnapshot/cloudFlow` 已删除。每次转场源、目标捕获各限2.4秒，失败使用正常导航；不以残缺贴图强行翻页。
+- 快速再导航以最新意图为准；转场正文 inert，结束恢复并聚焦 main；Escape、resize、Back、减少动态效果会释放纹理/缓冲/临时层。分类仅迁移一个标题，避免绝对定位所有列表造成重影。
+- 最终完整 check 112/112，11组浏览器流程无 pageerror，三尺寸无横向溢出；另核查键盘焦点和720px半宽重排。最终 Impeccable audit 16/20，0项已复现 P0/P1；49条源码提示经语境复核。细节与限制见 [最终 audit](BOOK_PREVIEW_AUDIT_2026-11-01.md) 和 [验收](BOOK_PREVIEW_VERIFICATION.md)。不能据此声称 Safari、真机触控、全站 WCAG 或全程60fps已验收。
 
 ## 2026-10-30 独立书页预览
 

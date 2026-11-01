@@ -1,17 +1,23 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Search } from 'lucide-react';
 import gsap from 'gsap';
-import { Flip } from 'gsap/Flip';
 import { useGSAP } from '@gsap/react';
 import type { BookChapter, BookEntry } from './chapters';
 import { filterBookEntries } from './chapters';
 import { loadBookCatalogue } from './catalogue';
 
-gsap.registerPlugin(Flip, useGSAP);
+gsap.registerPlugin(useGSAP);
 const PAGE_SIZE = 8;
 const ALL = '~all';
+const singlePage = () => window.matchMedia('(max-width: 700px)').matches;
+const subscribePageWidth = (changed: () => void) => {
+  const media = window.matchMedia('(max-width: 700px)');
+  media.addEventListener('change', changed);
+  return () => media.removeEventListener('change', changed);
+};
 export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
+  const narrow = useSyncExternalStore(subscribePageWidth, singlePage, () => false);
   const [params, setParams] = useSearchParams();
   const [entries, setEntries] = useState<BookEntry[]>([]);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
@@ -19,7 +25,7 @@ export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
   const root = useRef<HTMLElement>(null);
   const preview = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
-  const pending = useRef<ReturnType<typeof Flip.getState> | null>(null);
+  const pending = useRef<{ node: HTMLElement; rect: DOMRect } | null>(null);
   const pendingId = useRef('');
   const pendingFocus = useRef(false);
   const query = params.get('q') || '';
@@ -55,7 +61,22 @@ export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
     pendingId.current = name || group;
     pendingFocus.current = true;
     if (label && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      pending.current = Flip.getState(label);
+      pending.current?.node.remove();
+      const rect = label.getBoundingClientRect();
+      const style = getComputedStyle(label);
+      const node = document.createElement('span');
+      node.textContent = label.textContent;
+      node.setAttribute('aria-hidden', 'true');
+      node.className = 'book-category-traveller';
+      Object.assign(node.style, {
+        left: `${rect.left}px`,
+        top: `${rect.top}px`,
+        font: style.font,
+        color: style.color,
+        lineHeight: style.lineHeight,
+      });
+      document.body.append(node);
+      pending.current = { node, rect };
     }
     change(
       {
@@ -85,25 +106,43 @@ export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
         focus();
         return;
       }
-      const labels = root.current!.querySelectorAll('[data-category-label]');
-      Flip.from(state, {
-        targets: labels,
-        scale: true,
-        duration: 0.72,
-        ease: 'power3.inOut',
-        absolute: true,
-        onComplete: focus,
-      });
+      const target = overview
+        ? root.current!.querySelector<HTMLElement>(
+            `[data-flip-id="${CSS.escape(pendingId.current)}"]`,
+          )
+        : heading.current;
+      if (!target) {
+        state.node.remove();
+        focus();
+        return;
+      }
+      const rect = target.getBoundingClientRect();
+      const controls = root.current!.querySelectorAll('.book-category-back');
       const rows = root.current!.querySelectorAll('.book-entry-list li');
-      if (rows.length)
-        gsap.from(rows, {
-          opacity: 0.2,
-          y: 8,
-          duration: 0.4,
-          stagger: 0.035,
-          delay: 0.2,
-          clearProps: 'opacity,transform',
-        });
+      gsap.set(target, { visibility: 'hidden' });
+      // One independent glyph layer; live controls and the new directory heading wait for it.
+      const delayed = overview ? [heading.current!] : [...controls, ...rows];
+      const timeline = gsap.timeline({
+        onComplete: () => {
+          state.node.remove();
+          focus();
+        },
+      });
+      timeline
+        .to(state.node, {
+          left: rect.left,
+          top: rect.top,
+          fontSize: getComputedStyle(target).fontSize,
+          duration: 0.68,
+          ease: 'power3.inOut',
+        })
+        .set(target, { clearProps: 'visibility' })
+        .from(delayed, { opacity: 0, duration: 0.24, clearProps: 'opacity' }, 0.64);
+      return () => {
+        timeline.kill();
+        state.node.remove();
+        target.style.removeProperty('visibility');
+      };
     },
     { scope: root, dependencies: [group], revertOnUpdate: true },
   );
@@ -131,6 +170,14 @@ export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
       data-book-scene
       data-book-ready={status === 'ready'}
     >
+      <div className="book-photo-base" aria-hidden="true">
+        <img
+          src={narrow ? '/book/materials/book-photo-left.webp' : '/book/materials/book-photo.webp'}
+          width={narrow ? 1280 : 2560}
+          height="1700"
+          alt=""
+        />
+      </div>
       <header className="book-catalogue-heading">
         <Link to="/" className="book-back-link">
           <ArrowLeft size={17} />
@@ -325,7 +372,9 @@ export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
               </Link>
             </article>
           ) : (
-            <p className="book-preview-empty">从左页选择一篇</p>
+            <p className="book-preview-empty">
+              {filtered.length ? '请选择一篇阅读' : '清空筛选后继续浏览'}
+            </p>
           )}
         </div>
       </div>
