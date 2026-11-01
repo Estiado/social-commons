@@ -1,7 +1,7 @@
 # 接手记录
 
 ## 活字首页独立分支（2026-11-01）
-本分支 codex/type-preview 从365a255隔离。用户纠正为整屏首页，素材介绍页已撤销。当前木纹仍待纪录片选材，不宣称最终定稿。旧版备份与新入口、验证和待办见 [活字首页](TYPE_HOME_PREVIEW.md)。不得推旧预览或main。
+本分支 codex/type-preview 从365a255隔离。用户纠正为整屏首页，素材介绍页已撤销。当前已采用真实木纹与获认可备选的旧活字窄边试用，未宣称最终视觉定稿。旧版备份与新入口、验证和待办见 [活字首页](TYPE_HOME_PREVIEW.md)。不得推旧预览或main。
 
 
 更新：2026-11-01。仓库 `Estiado/social-commons`，生产分支 main，Cloudflare Pages。
