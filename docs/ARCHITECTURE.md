@@ -4,6 +4,8 @@
 
 ## 分层
 
+2026-11-01补充：`readerArrival`仅管理公开目录“翻开阅读”的篇名与同色纸面衔接；按需预备所选阅读器、测量真实字形、等待真实正文、处理中断并释放临时节点。`BookMotion`仍拥有导航事务，私人链接和popstate在事件发生时同步取消，正文领域模型及入口保持稳定。
+
 书页实验仅在`codex/book-preview`：`src/features/book/`负责外壳、按需目录、分类与动效，正文模型不变。`BookMist/fogShader/cloudMass`仅为首页提供有限高度的冷色山岚、指针低通与过阻尼回流；`homeArrival`处理词条成为章节标题。`BookMotion`管理公开导航事务和中断，桌面完整书本按需加载`BookLeafTurn/leafGeometry`绑定单页以及`domSnapshot/snapshotFonts`公开目录墨层。目录SVG只解码一次，透明墨层与原实拍图合成；活动页不携带书身边框。手机、短屏、正文和首页往返直接使用顺序纸色交接，不光栅化长文。私人路由不截图、不预备其字体；公开字体只嵌入已加载且当前文字使用的子集，捕获超时回退原导航。`mistSnapshot`由雾渲染器自己提交当前帧，外部不能任意重画其GL程序。
 
 目录底板是`design/book/open-book-reference.jpg`的整书照片合成；`scripts/build-book-photo.py`可重建`public/book/materials/`内的全书和手机单叶。单页轮廓从该实拍提取并平滑，书身和厚页块固定，文字和检索仍为HTML。旧Apache-2.0卷纸来源、当前独立单页几何、MIT快照库和图片来源分开登记，不能把软件许可套用于用户照片或参考视频。`IS_BOOK_PREVIEW`禁用Supabase，根Pages middleware与本地Vite插件阻断API；这是预览隔离，不能作为正式服务的默认发布配置。见[方案](BOOK_DESIGN_PLAN.md)、[验收](BOOK_PREVIEW_VERIFICATION.md)及[最终audit](BOOK_PREVIEW_AUDIT_2026-11-01.md)。

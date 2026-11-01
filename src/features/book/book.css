@@ -672,6 +672,19 @@
 .book-turn-frame {
   position: absolute;
 }
+.book-reader-paper {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  opacity: 0;
+}
+.book-reader-glyph {
+  position: absolute;
+  display: block;
+  line-height: 1;
+  white-space: pre;
+  transform-origin: 0 0;
+}
 .book-category-traveller {
   position: fixed;
   z-index: 72;

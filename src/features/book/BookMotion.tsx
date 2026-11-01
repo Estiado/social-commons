@@ -6,6 +6,7 @@ import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { useGSAP } from '@gsap/react';
 import { BOOK_CHAPTERS } from './chapters';
 import { homeArrival } from './homeArrival';
+import { readerArrival } from './readerArrival';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, MotionPathPlugin);
 
@@ -378,6 +379,14 @@ export function BookMotion({ children }: { children: ReactNode }) {
         const url = new URL(link.href);
         const current = new URL(window.location.href);
         const privatePath = /^\/(reading|editor|feedback)(\/|$)/;
+        // A lazy private route may commit after the paper's navigation callback. Cancel at
+        // user intent, so the pending public arrival can never override that newer link.
+        if (
+          busy.current &&
+          url.origin === current.origin &&
+          (privatePath.test(url.pathname) || url.hash)
+        )
+          cancelTurn.current();
         if (
           url.origin !== current.origin ||
           url.hash ||
@@ -386,7 +395,8 @@ export function BookMotion({ children }: { children: ReactNode }) {
           link.closest('[contenteditable="true"]')
         )
           return;
-        if (url.pathname === current.pathname) {
+        const opensReader = link.matches('.book-read-entry');
+        if (url.pathname === current.pathname && !(opensReader && url.search !== current.search)) {
           if (busy.current) {
             event.preventDefault();
             cancelTurn.current();
@@ -412,6 +422,10 @@ export function BookMotion({ children }: { children: ReactNode }) {
         destination = url.pathname + url.search;
         expectedLocation.current = destination;
         navigated = false;
+        if (opensReader) {
+          disposeScene = readerArrival(element, stage.current!, link, arrive, finish).dispose;
+          return;
+        }
         const chapter = BOOK_CHAPTERS.find((item) => item.path === url.pathname);
         if (chapter) {
           void import('./catalogue')
@@ -454,6 +468,10 @@ export function BookMotion({ children }: { children: ReactNode }) {
         }
       });
       window.addEventListener('resize', resizeTurn);
+      const pop = () => {
+        if (busy.current) cancelTurn.current();
+      };
+      window.addEventListener('popstate', pop);
       return () => {
         sequence?.kill();
         generation++;
@@ -463,6 +481,7 @@ export function BookMotion({ children }: { children: ReactNode }) {
         window.removeEventListener('keydown', escape);
         reduced.removeEventListener('change', reduceTurn);
         window.removeEventListener('resize', resizeTurn);
+        window.removeEventListener('popstate', pop);
         stage.current?.replaceChildren();
         busy.current = false;
       };
