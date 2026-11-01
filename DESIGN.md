@@ -7,7 +7,6 @@ colors:
   muted-ink: '#62695e'
   accent: '#80513e'
   page: '#faf8f2'
-  selected: '#d9e0ce99'
 typography:
   display:
     fontFamily: 'Noto Serif SC, Songti SC, serif'
@@ -41,13 +40,13 @@ components:
     padding: '16px 4px'
     height: '62px'
   input:
-    backgroundColor: '#e9e5d9b8'
+    backgroundColor: 'transparent'
     textColor: '{colors.ink}'
     rounded: '{rounded.control}'
     padding: '12px 14px'
   entry-selected:
-    backgroundColor: '{colors.selected}'
-    textColor: '{colors.ink}'
+    backgroundColor: 'transparent'
+    textColor: '{colors.accent}'
     padding: '16px 9px'
 ---
 
@@ -67,7 +66,7 @@ components:
 
 ## Colors
 
-纸白 #f3f0e8 是主背景；栏目文字直接呈现在局部去除旧墨的真实书页照片上。墨绿 #303831 用于主要文字，次级墨色 #62695e 用于来源和计数，赭色 #80513e 用于焦点、当前栏目和阅读入口。选择态为半透明淡绿 #d9e0ce99。首页云层为冷白、极浅蓝灰，不把山水照片或山脊造型带入栏目页。
+纸白 #f3f0e8 是主背景；栏目文字直接呈现在局部去除旧墨的真实书页照片上。墨绿 #303831 用于主要文字，次级墨色 #62695e 用于来源和计数，赭色 #80513e 用于焦点、当前栏目和阅读入口。选择态用赭色与细下划线，不铺实色块。首页云层为冷白、极浅蓝灰，不把山水照片或山脊造型带入栏目页。
 
 在纸白实色上的文字对比度：主文字10.62:1、次级文字4.98:1、赭色5.83:1；这些是明确实色组合的计算，不代表所有图片像素及混合状态均已测试。
 
@@ -100,6 +99,8 @@ components:
 分类行是文字加篇数，不为每一类添加图标或卡片。选择后分类文字成为篇目页标题；返回时恢复分类分页。篇目显示选中态，右页始终是真实条目的摘要与原链接。
 
 搜索有可访问名称。使用指引提供预览版8步和16步路径；减少动态效果下的必要焦点转移仍执行。云雾有暂停按钮。
+
+六个栏目共用印刷墨层：标题、分类、篇目、检索、预览与页码在整书照片上使用 `mix-blend-mode: multiply`。搜索为透明底与细下划线，选中行不铺面板；键盘焦点保留2px轮廓。目录滚动条为半透明墨色细条。混合只限书页内，不削弱公共导航或私人工作台的可读性。
 
 公开路由使用翻页。私人阅读空间、编辑器、反馈、修饰键链接和页内锚点由原导航处理；另一次导航优先于尚未结束的翻页。Escape结束当前转场。
 

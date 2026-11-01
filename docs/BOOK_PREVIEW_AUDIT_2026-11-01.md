@@ -1,12 +1,12 @@
 # 书页预览最终技术 audit
 
-2026-11-01，Asia/Shanghai。范围：`codex/book-preview` 当前书页实现、公开目录与转场。依据 Impeccable audit 五维标准；不是全站WCAG、跨浏览器或真机认证。审核完成后未再修改UI代码。
+2026-11-01，Asia/Shanghai。范围：`codex/book-preview` 当前书页实现、公开目录与转场。依据 Impeccable audit 五维标准；不是全站WCAG、跨浏览器或真机认证。用户新增正片叠底反馈后已补改并重新检查，修订前和增量证据分开记录。
 
 ## Implementation integrity verdict
 
 **通过本轮限定范围。** 总目录是中文竖排、真实古籍基底与冷白云海；目录是用户照片的整本实拍，正文仍是原HTML阅读器，信息和来源未被装饰取代。首页词条成为下一页标题；之后连续卷纸使用相同视口坐标与照片alpha轮廓。原来的矩形截断、手机目标半页拉伸、busy吞掉新导航、分类双标题和旧雾层快照缺失已替换或修复，最终流程未复现。
 
-源码 detector 49条 advisory、0 primary：色值10、字号39。这些是材料色和响应字号的系统提示，按用户明确指定的纸色/冷雾/照片语境核对，不直接认定为49个设计缺陷。保留一项低优先级标尺整理建议。
+源码 detector 最终47条 advisory、0 primary：色值8、字号39。这些是材料色和响应字号的系统提示，按用户明确指定的纸色/冷雾/照片语境核对，不直接认定为47个设计缺陷。保留一项低优先级标尺整理建议。
 
 ## Audit Health Score
 
@@ -27,13 +27,15 @@
 
 - 位置：`src/features/book/book.css` 的材质和断点规则；`DESIGN.md`。
 - 类别：Theming。
-- 证据：最终 detector 色值10、字号39条 advisory；规则意图与当前画面已复核。局部颜色用于照片/云层/材质，不应机械替换成通用卡片色。
+- 证据：最终 detector 色值8、字号39条 advisory；规则意图与当前画面已复核。局部颜色用于照片/云层/材质，不应机械替换成通用卡片色。
 - 影响：后续维护同一断点时需要对照规则，增加样式漂移机会；当前未复现阅读或切换故障。
 - 标准：设计系统维护；不是已确认WCAG违反。
 - 建议：保留材质特例，逐步将常用响应字号整理进设计标尺；不要趁审计重做用户已确认方向。
 - 后续命令：`$impeccable document`，最终再用 `$impeccable polish`。
 
 ## 最终验证证据
+
+- 正片叠底增量：`accept-printed-ink.json`实测六栏均multiply、搜索底透明、选中行透明且保留aria-pressed/下划线、2px焦点；手机无溢出，stage=0/inert=false，错误和卷纸警告均为空。实际查看 `printed-ink-overview/selected/roll-mid/mobile.png` 后，另修复经典滚动条留下的快照透明黑边；最终完整check再次112/112（`check-printed-gutter.log`），`printed-ink-gutter-fixed.json`为0错误/stage=0。最终中帧 `printed-ink-gutter-fixed-mid.png` 已看，右侧黑边消失。47条advisory来自最后的 `audit-printed-final-detector.json`。没有用修订前的画面代替此次验证。
 
 - `npm run check`：112测试全部通过，类型、ESLint、生产构建、函数和导出生成成功；`.artifacts/book-preview/check-real-photo-release.log`。
 - 11组实际浏览器流程：`.artifacts/book-preview/accept-real-photo-result.json`，pageerror为空。涵盖云团/暂停、首页共享标题、跨章、分类进退、选中篇目/正文/Back、快速导航、返首页、三种尺寸、Escape/resize/减少动态、空结果恢复。

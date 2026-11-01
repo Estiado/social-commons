@@ -4,11 +4,15 @@
 
 此节为当前版本；下方的88×16、52%薄雾、二维速度场及110项测试均是旧版记录。
 
+用户随后指出搜索框贴板生硬，补改六栏共用透明检索与细线、选中墨色下划线、标题/正文/目录/页码正片叠底、透明墨色细滚动条。完整check另跑112/112，日志 `check-printed-ink.log`；中帧发现经典滚动条会留下15px透明纹理，在GL下变黑，已将快照视口先填纸色后再合成DOM。不把修订前报告充作此次增量验证。
+
+六栏增量浏览器结果 `accept-printed-ink.json`：全部multiply、搜索底全透明、无溢出；选中态透明且aria-pressed=true、下划线可见；2px焦点保留，结束stage=0/inert=false；390px无溢出。pageerror与卷纸警告均为空。最终滚动条补底后完整check再次112/112（`check-printed-gutter.log`），`printed-ink-gutter-fixed.json`记录0错误、stage=0，实际查看 `printed-ink-gutter-fixed-mid.png` 未再出现右侧黑边；最终detector为47条advisory、0 primary（`audit-printed-final-detector.json`）。
+
 ### 自动检查
 
 - 最终完整 `npm run check` 112/112，0失败，类型、ESLint、Vite生产构建、Cloudflare函数与PDF/DOCX生成均成功。日志 `.artifacts/book-preview/check-real-photo-release.log`。导出仍是模型与文件生成验证，不是新增逐页排版验收。
 - 5项新回归检查真实卷纸弧长、平展端点、UV/正反向、有穷法线以及云团推开/回聚/持续输入边界。删除3项旧纸页几何测试；不是同一实现的两套重复验收。
-- 最终 Impeccable detector：49条 advisory（色值10、字号39），0 primary。结合已固定的纸色、真实照片材质与响应字号复核，不将这些提示冒充49个用户故障。详细报告见 [audit](BOOK_PREVIEW_AUDIT_2026-11-01.md)。
+- 最终 Impeccable detector：47条 advisory（色值8、字号39），0 primary。结合已固定的纸色、真实照片材质与响应字号复核，不将这些提示冒充47个用户故障。详细报告见 [audit](BOOK_PREVIEW_AUDIT_2026-11-01.md)。
 
 ### 实际浏览器
 

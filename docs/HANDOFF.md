@@ -12,7 +12,7 @@
 - 用户后来授权尝试 Paperlab 连续卷纸，取代此前 B。`rollGeometry.ts` 适配固定 Apache-2.0 源码；`RollTurn.ts` 使用原生 WebGL，不安装整套编辑器/Three。跨章2.55秒、正文往返1.35秒；首页所选词条仍直接成为下一页标题，此段不卷页。
 - `domSnapshot.ts` 按真实 DOM 布局保留字体、图标、输入和行分隔；公开根节点限定、私人路由排除、生成号取消、原始图片轮廓蒙版、同一视口坐标。旧 `PaperTurn/paperMesh/paperSnapshot/cloudFlow` 已删除。每次转场源、目标捕获各限2.4秒，失败使用正常导航；不以残缺贴图强行翻页。
 - 快速再导航以最新意图为准；转场正文 inert，结束恢复并聚焦 main；Escape、resize、Back、减少动态效果会释放纹理/缓冲/临时层。分类仅迁移一个标题，避免绝对定位所有列表造成重影。
-- 最终完整 check 112/112，11组浏览器流程无 pageerror，三尺寸无横向溢出；另核查键盘焦点和720px半宽重排。最终 Impeccable audit 16/20，0项已复现 P0/P1；49条源码提示经语境复核。细节与限制见 [最终 audit](BOOK_PREVIEW_AUDIT_2026-11-01.md) 和 [验收](BOOK_PREVIEW_VERIFICATION.md)。不能据此声称 Safari、真机触控、全站 WCAG 或全程60fps已验收。
+- 用户最新反馈搜索贴板生硬后，六栏统一透明搜索与细线、墨色下划线选中态，标题/目录/正文预览/页码正片叠底，保留焦点和细滚动条。最终完整 check 再次112/112；11组基础流程及此次增量浏览器证据分开。Impeccable audit 16/20，0项已复现 P0/P1；47条源码提示经语境复核。细节与限制见 [最终 audit](BOOK_PREVIEW_AUDIT_2026-11-01.md) 和 [验收](BOOK_PREVIEW_VERIFICATION.md)。不能据此声称 Safari、真机触控、全站 WCAG 或全程60fps已验收。
 
 ## 2026-10-30 独立书页预览
 

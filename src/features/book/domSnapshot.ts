@@ -125,6 +125,11 @@ export async function domSnapshot(root: HTMLElement, bounds: DOMRect, current = 
   const ratio = Math.min(1.5, devicePixelRatio || 1, 1800 / bounds.width);
   result.width = Math.round(bounds.width * ratio);
   result.height = Math.round(bounds.height * ratio);
-  result.getContext('2d')!.drawImage(image, 0, 0, result.width, result.height);
+  const context = result.getContext('2d')!;
+  // A classic browser scrollbar leaves the public root narrower than the viewport.
+  // Keep that gutter paper-coloured when this opaque snapshot becomes a GL texture.
+  context.fillStyle = '#f3f0e8';
+  context.fillRect(0, 0, result.width, result.height);
+  context.drawImage(image, 0, 0, result.width, result.height);
   return result;
 }

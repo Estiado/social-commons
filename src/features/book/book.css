@@ -348,7 +348,8 @@
   transform: translateX(3px);
 }
 .book-entry-list button:hover {
-  background: #e9eade;
+  color: var(--paper-accent);
+  background: transparent;
 }
 .book-pagination {
   display: flex;
@@ -775,6 +776,16 @@
   max-width: none;
   object-fit: fill;
 }
+.book-catalogue-heading,
+.book-catalogue-spread {
+  /* Printed ink shares the photograph's light and paper colour, without a pasted panel. */
+  mix-blend-mode: multiply;
+}
+.book-index-page,
+.book-preview-page {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--paper-ink) 30%, transparent) transparent;
+}
 .book-catalogue-heading {
   margin: 0 0 36px;
 }
@@ -819,8 +830,11 @@
   padding: 6px 10px 16px;
 }
 .book-index-search {
-  background: #e9e5d9b8;
-  border-radius: 2px;
+  background: transparent;
+  padding-inline: 2px;
+  border-bottom: 1px solid color-mix(in srgb, var(--paper-ink) 22%, transparent);
+  border-radius: 0;
+  caret-color: var(--paper-accent);
 }
 .book-index-stage {
   display: flex;
@@ -913,7 +927,12 @@
   padding: 16px 9px;
 }
 .book-entry-list .is-selected {
-  background: #d9e0ce99;
+  background: transparent;
+  color: var(--paper-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.32em;
+  text-decoration-color: color-mix(in srgb, var(--paper-accent) 55%, transparent);
 }
 .book-read-entry {
   font-size: 17px;
