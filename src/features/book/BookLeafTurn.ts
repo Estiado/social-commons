@@ -7,7 +7,7 @@ varying vec2 vUv;varying vec3 vNormal;varying float vSampleY;
 void main(){vUv=uv;vNormal=normal;vSampleY=position.y;
  if(mode<1.5){gl_Position=vec4(position.xy,0.,1.);return;}
  float lift=position.z;vec2 point;
- if(mode<2.5){point=vec2(position.x-lift*.32*direction,position.y+lift*.09)+shadowOffset;}
+ if(mode<2.5){point=vec2(position.x+lift*.32*direction,position.y+lift*.09)+shadowOffset;}
  else{float foreshorten=1./(1.+lift*.12);point=vec2(position.x*foreshorten,(position.y-.5)*foreshorten+.5-lift*.08);}
  gl_Position=vec4(pageFrame.x+point.x*pageFrame.z,pageFrame.y-point.y*pageFrame.w,-lift*.5,1.);
 }`;

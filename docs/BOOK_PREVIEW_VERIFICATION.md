@@ -5,6 +5,7 @@
 此节取代下方卷纸版记录。用户新视频已作为行为参考：书身和厚页块固定，活动页的透明墨层与纸面照片分开，正反向均2.55秒；旧 `RollTurn/rollGeometry` 已删除。活动页不携带书边、厚纸层和页脚，纸色及色斑取自同一实拍；照片纸面轮廓经取样平滑，柔影落在底页上。手机、短屏、正文与总目录往返依次经过纸色交接，旧新文字不相互淡显。准备超时或无WebGL也使用同一平滑交接，不再直接硬切。
 
 - 完整 `npm run check`：**113/113，0失败**，类型、ESLint、生产构建、函数和导出生成通过；日志 `.artifacts/book-preview/check-delivery.log`。新增照片轮廓共享书缝、行序与不翻转回归；原导出模型检查不等于新增逐页排版验收。
+- 最后仅修正投影方向，使其与左上光源一致；另经生产构建 `build-shadow-direction.log` 和实际单页中帧 `release-shadow-matched.png` 复核，结果 `shadow-matched.json` 为stage=0/inert=false。没有将此增量说成再次运行全套本地check。
 - 最终生产构建13组流程：`.artifacts/book-preview/accept-release-confirmed.json`。山岚推力最大0.0978（旧强推曾达2.2），暂停冻结；首页共享标题；正反单页；分类进退；选中篇目→正文实际滚动327px→Back恢复；快速再导航；返首页；768×1024/390×844/1440×600无横向溢出；Escape/resize/减少动态；键盘与无结果恢复；六栏700px右页无需内部滚动。`errors=[]`，结束stage=0/inert=false。
 - 上述流程曾记录1次准备预算超时，随后补强为纸色回退。最终故障注入 `.artifacts/book-preview/fault-book-release.json`：模拟无WebGL、SVG解码延迟3.2秒，两种情况均到达群鉴、stage=0/inert=false/opacity=1、无脚本错误；延迟场景按预期记录预算警告。这是模拟故障，不是真实设备/网络验收。
 - 早期自动化用800ms判断总长880ms的分类迁移，产生一次“Category leaked”误判；已改为等待迁移层真实消失。另一次截取前帧耗时使后帧采样点错过，已改为每次转场仅采一个中帧。原失败记录保留，不宣称首次全部通过。
