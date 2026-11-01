@@ -3,6 +3,7 @@
   --paper-ink: #303831;
   --paper-muted: #62695e;
   --paper-accent: #80513e;
+  --book-index-meta-size: 13px;
   --background: var(--paper);
   --foreground: var(--paper-ink);
   --muted-foreground: var(--paper-muted);
@@ -305,7 +306,7 @@
   outline: none;
 }
 .book-result-count {
-  font-size: 13px;
+  font-size: var(--book-index-meta-size);
   color: var(--paper-muted);
   margin: 20px 0 10px;
 }
@@ -358,7 +359,7 @@
   justify-content: center;
   padding-top: 22px;
   color: var(--paper-muted);
-  font-size: 13px;
+  font-size: var(--book-index-meta-size);
 }
 .book-pagination button {
   display: grid;
@@ -685,9 +686,18 @@
   white-space: pre;
   transform-origin: 0 0;
 }
+.book-category-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  contain: paint;
+  pointer-events: none;
+}
 .book-category-traveller {
-  position: fixed;
-  z-index: 72;
+  position: absolute;
+  display: block;
+  transform-origin: 0 0;
   pointer-events: none;
   white-space: nowrap;
 }
@@ -860,6 +870,8 @@
   }
 }
 .book-index-page {
+  position: relative;
+  overflow-anchor: none;
   min-width: 0;
   padding: 6px 10px 16px;
 }
@@ -873,9 +885,8 @@
 .book-index-stage {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  min-height: 100px;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 8px;
   padding-top: 20px;
 }
 .book-category-title {
@@ -889,9 +900,27 @@
   gap: 8px;
   align-items: center;
   color: var(--paper-muted);
-  font-size: 13px;
-  min-height: 36px;
+  font-size: var(--book-index-meta-size);
+  min-height: 44px;
   width: fit-content;
+}
+.book-quote-path {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  color: var(--paper-muted);
+  font-size: var(--book-index-meta-size);
+}
+.book-quote-path button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+}
+.book-quote-path button:hover {
+  color: var(--paper-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .book-category-list {
   list-style: none;
@@ -935,6 +964,10 @@
   text-decoration: underline;
   text-underline-offset: 6px;
   font-size: 14px;
+}
+.book-browse-all [data-category-label] {
+  font-family: var(--font-serif);
+  font-weight: 500;
 }
 .book-preview-page {
   background: transparent;

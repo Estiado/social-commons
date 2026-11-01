@@ -45,17 +45,23 @@ const loaders: Record<BookChapterId, () => Promise<BookEntry[]>> = {
     );
   },
   quotes: async () => {
-    const { QUOTE_CATALOGUE } = await import('@/data/quotes');
-    return QUOTE_CATALOGUE.map((item) =>
-      entry({
+    const [{ QUOTE_CATALOGUE }, { quoteIndexFor }] = await Promise.all([
+      import('@/data/quotes'),
+      import('./quoteDirectory'),
+    ]);
+    return QUOTE_CATALOGUE.map((item) => {
+      const index = quoteIndexFor(item.author, item.title || item.source);
+      return entry({
         id: item.id,
         title: item.title || item.source,
         summary: item.text,
-        groups: [item.author],
+        groups: [...new Set([index.author, item.author])],
+        quoteIndex: index,
+        keywords: [index.region, index.period],
         metadata: item.author + ' · ' + item.source,
         path: '/quotes/' + encodeURIComponent(item.id),
-      }),
-    );
+      });
+    });
   },
   essay: async () => {
     const { ESSAY_MATERIALS } = await import('@/data/essay');

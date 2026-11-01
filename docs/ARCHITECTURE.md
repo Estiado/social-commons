@@ -4,6 +4,8 @@
 
 ## 分层
 
+目录内导航：`quoteDirectory.ts`只持有编目元数据及纯函数，生成撷英中外/时期/作者树，不改公共文章模型或旧ID。`catalogueArrival.ts`只处理左页内临时文字与清理，`BookCatalogue`拥有层级、检索、分页和焦点。其他章节保留原业务分类，临时层不追加到body，也不进入跨章节截图。
+
 2026-11-01补充：`readerArrival`仅管理公开目录“翻开阅读”的篇名与同色纸面衔接；按需预备所选阅读器、测量真实字形、等待真实正文、处理中断并释放临时节点。`BookMotion`仍拥有导航事务，私人链接和popstate在事件发生时同步取消，正文领域模型及入口保持稳定。
 
 书页实验仅在`codex/book-preview`：`src/features/book/`负责外壳、按需目录、分类与动效，正文模型不变。`BookMist/fogShader/cloudMass`仅为首页提供有限高度的冷色山岚、指针低通与过阻尼回流；`homeArrival`处理词条成为章节标题。`BookMotion`管理公开导航事务和中断，桌面完整书本按需加载`BookLeafTurn/leafGeometry`绑定单页以及`domSnapshot/snapshotFonts`公开目录墨层。目录SVG只解码一次，透明墨层与原实拍图合成；活动页不携带书身边框。手机、短屏、正文和首页往返直接使用顺序纸色交接，不光栅化长文。私人路由不截图、不预备其字体；公开字体只嵌入已加载且当前文字使用的子集，捕获超时回退原导航。`mistSnapshot`由雾渲染器自己提交当前帧，外部不能任意重画其GL程序。

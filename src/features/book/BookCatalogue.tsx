@@ -6,6 +6,12 @@ import { useGSAP } from '@gsap/react';
 import type { BookChapter, BookEntry } from './chapters';
 import { filterBookEntries } from './chapters';
 import { loadBookCatalogue } from './catalogue';
+import { quoteDirectory } from './quoteDirectory';
+import {
+  captureCatalogueDeparture,
+  catalogueArrival,
+  type CatalogueDeparture,
+} from './catalogueArrival';
 
 gsap.registerPlugin(useGSAP);
 const PAGE_SIZE = 8;
@@ -25,23 +31,33 @@ export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
   const root = useRef<HTMLElement>(null);
   const preview = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
-  const pending = useRef<{ node: HTMLElement; rect: DOMRect } | null>(null);
-  const pendingId = useRef('');
-  const pendingFocus = useRef(false);
+  const indexPane = useRef<HTMLDivElement>(null);
+  const indexView = useRef<HTMLDivElement>(null);
+  const pending = useRef<{
+    departure?: CatalogueDeparture;
+    returning: boolean;
+    key: string;
+  } | null>(null);
+  const directoryPages = useRef(new Map<string, number>());
   const query = params.get('q') || '';
   const group = params.get('category') || '';
-  const overview = !group;
   const filtered = useMemo(() => filterBookEntries(entries, query, ''), [entries, query]);
+  const quoteIndex = useMemo(
+    () => (chapter.id === 'quotes' ? quoteDirectory(filtered, group) : null),
+    [chapter.id, filtered, group],
+  );
+  const overview = quoteIndex ? !quoteIndex.works : !group;
   const facets = useMemo(() => {
+    if (quoteIndex) return quoteIndex.facets;
     const counts = new Map<string, number>();
     filtered.forEach((entry) =>
       entry.groups.forEach((name) => counts.set(name, (counts.get(name) || 0) + 1)),
     );
-    return [...counts].map(([name, count]) => ({ name, count }));
-  }, [filtered]);
+    return [...counts].map(([name, count]) => ({ name, key: name, count }));
+  }, [filtered, quoteIndex]);
   const matches = useMemo(
-    () => filterBookEntries(entries, query, group === ALL ? '' : group),
-    [entries, query, group],
+    () => quoteIndex?.matches || filterBookEntries(entries, query, group === ALL ? '' : group),
+    [entries, query, group, quoteIndex],
   );
   const pageSize = overview ? 6 : PAGE_SIZE;
   const pageCount = Math.max(1, Math.ceil((overview ? facets.length : matches.length) / pageSize));
@@ -57,94 +73,55 @@ export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
     );
     setParams(next, { replace, preventScrollReset: true });
   };
-  const chooseCategory = (name: string, label?: HTMLElement) => {
-    pendingId.current = name || group;
-    pendingFocus.current = true;
-    if (label && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      pending.current?.node.remove();
-      const rect = label.getBoundingClientRect();
-      const style = getComputedStyle(label);
-      const node = document.createElement('span');
-      node.textContent = label.textContent;
-      node.setAttribute('aria-hidden', 'true');
-      node.className = 'book-category-traveller';
-      Object.assign(node.style, {
-        left: `${rect.left}px`,
-        top: `${rect.top}px`,
-        font: style.font,
-        color: style.color,
-        lineHeight: style.lineHeight,
-      });
-      document.body.append(node);
-      pending.current = { node, rect };
-    }
+  const chooseCategory = (name: string, label?: HTMLElement, returning = false) => {
+    directoryPages.current.set(group, page);
+    pending.current = {
+      departure: captureCatalogueDeparture(label),
+      returning,
+      key: quoteIndex?.key || group,
+    };
     change(
       {
         category: name,
-        page: name ? '' : params.get('directoryPage') || '',
-        directoryPage: name ? (page ? String(page) : '') : '',
+        page: returning
+          ? String(directoryPages.current.get(name) ?? Number(params.get('directoryPage') || 0))
+          : '',
+        directoryPage: !quoteIndex && !returning && page ? String(page) : '',
         selected: '',
       },
-      !name,
+      returning,
     );
   };
   useGSAP(
     () => {
       const state = pending.current;
       pending.current = null;
-      if (!pendingFocus.current) return;
-      pendingFocus.current = false;
+      const pane = indexPane.current!;
+      // Old lists must not carry their scroll offset or anchoring into a new hierarchy level.
+      pane.scrollTop = 0;
+      if (pane.getBoundingClientRect().top < 0)
+        pane.scrollIntoView({ block: 'start', behavior: 'instant' });
+      if (!state) return;
+      const returnLabel = state.returning
+        ? pane.querySelector<HTMLElement>(`[data-flip-id="${CSS.escape(state.key)}"]`)
+        : null;
       const focus = () => {
-        const target = overview
-          ? root.current
-              ?.querySelector<HTMLElement>(`[data-flip-id="${CSS.escape(pendingId.current)}"]`)
-              ?.closest('button')
-          : heading.current;
+        const rect = returnLabel?.getBoundingClientRect();
+        const bounds = pane.getBoundingClientRect();
+        const visible =
+          rect && rect.top >= bounds.top && rect.bottom <= Math.min(bounds.bottom, innerHeight);
+        const target = visible ? returnLabel?.closest('button') : heading.current;
         target?.focus({ preventScroll: true });
       };
-      if (!state || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        focus();
-        return;
-      }
-      const target = overview
-        ? root.current!.querySelector<HTMLElement>(
-            `[data-flip-id="${CSS.escape(pendingId.current)}"]`,
-          )
-        : heading.current;
-      if (!target) {
-        state.node.remove();
-        focus();
-        return;
-      }
-      const rect = target.getBoundingClientRect();
-      const controls = root.current!.querySelectorAll('.book-category-back');
-      const rows = root.current!.querySelectorAll('.book-entry-list li');
-      gsap.set(target, { visibility: 'hidden' });
-      // One independent glyph layer; live controls and the new directory heading wait for it.
-      const delayed = overview ? [heading.current!] : [...controls, ...rows];
-      const timeline = gsap.timeline({
-        onComplete: () => {
-          state.node.remove();
-          focus();
-        },
-      });
-      timeline
-        .to(state.node, {
-          left: rect.left,
-          top: rect.top,
-          fontSize: getComputedStyle(target).fontSize,
-          duration: 0.68,
-          ease: 'power3.inOut',
-        })
-        .set(target, { clearProps: 'visibility' })
-        .from(delayed, { opacity: 0, duration: 0.24, clearProps: 'opacity' }, 0.64);
-      return () => {
-        timeline.kill();
-        state.node.remove();
-        target.style.removeProperty('visibility');
-      };
+      return catalogueArrival(
+        pane,
+        indexView.current!,
+        state.returning ? returnLabel : heading.current,
+        state.departure,
+        focus,
+      );
     },
-    { scope: root, dependencies: [group], revertOnUpdate: true },
+    { scope: root, dependencies: [group, page], revertOnUpdate: true },
   );
   useEffect(() => {
     let active = true;
@@ -195,7 +172,7 @@ export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
         </Link>
       </header>
       <div className="book-catalogue-spread">
-        <div className="book-index-page">
+        <div ref={indexPane} className="book-index-page">
           <div className="book-index-controls" data-tour="book-index-controls">
             <label className="book-index-search">
               <Search size={17} aria-hidden="true" />
@@ -208,153 +185,193 @@ export default function BookCatalogue({ chapter }: { chapter: BookChapter }) {
               />
             </label>
           </div>
-          <div className="book-index-stage">
-            {!overview && (
-              <button
-                className="book-category-back"
-                onClick={() => chooseCategory('', heading.current || undefined)}
+          <div
+            key={group + ':' + page}
+            ref={indexView}
+            className="book-index-view"
+            data-book-directory={group || 'root'}
+          >
+            <div className="book-index-stage">
+              {quoteIndex && quoteIndex.ancestors.length > 0 && (
+                <nav className="book-quote-path" aria-label="撷英目录路径">
+                  {quoteIndex.ancestors.map((ancestor, i) => (
+                    <button
+                      key={ancestor.key}
+                      onClick={() =>
+                        chooseCategory(ancestor.key, heading.current || undefined, true)
+                      }
+                    >
+                      {i === 0 ? (
+                        <ArrowLeft size={14} aria-hidden="true" />
+                      ) : (
+                        <span aria-hidden="true">/</span>
+                      )}
+                      {ancestor.name}
+                    </button>
+                  ))}
+                </nav>
+              )}
+              {!quoteIndex && !overview && (
+                <button
+                  className="book-category-back"
+                  onClick={() => chooseCategory('', heading.current || undefined, true)}
+                >
+                  <ArrowLeft size={15} />
+                  返回分类目录
+                </button>
+              )}
+              <h2
+                ref={heading}
+                tabIndex={-1}
+                className="book-category-title"
+                data-category-label
+                data-flip-id={quoteIndex?.key || (overview ? undefined : group)}
               >
-                <ArrowLeft size={15} />
-                返回{chapter.id === 'quotes' ? '作者' : '分类'}目录
-              </button>
-            )}
-            <h2
-              ref={heading}
-              tabIndex={-1}
-              className="book-category-title"
-              data-category-label
-              data-flip-id={overview ? undefined : group}
-            >
-              {overview
-                ? chapter.id === 'quotes'
-                  ? '作者目录'
-                  : '分类目录'
-                : group === ALL
-                  ? '全部篇目'
-                  : group}
-            </h2>
-          </div>
-          {status === 'loading' && (
-            <p className="book-index-notice" role="status">
-              正在翻到这一章…
-            </p>
-          )}
-          {status === 'error' && (
-            <div className="book-index-notice" role="alert">
-              <p>篇目未能加载。</p>
-              <button
-                onClick={() => {
-                  setStatus('loading');
-                  setAttempt((value) => value + 1);
-                }}
-              >
-                重新加载
-              </button>
+                {quoteIndex
+                  ? quoteIndex.title
+                  : overview
+                    ? '分类目录'
+                    : group === ALL
+                      ? '全部篇目'
+                      : group}
+              </h2>
             </div>
-          )}
-          {status === 'ready' && (
-            <>
-              <p className="book-result-count" role="status">
-                {overview
-                  ? `${facets.length} 个${chapter.id === 'quotes' ? '作者' : '分类'}，${filtered.length} 篇`
-                  : `${matches.length} 篇`}
+            {status === 'loading' && (
+              <p className="book-index-notice" role="status">
+                正在翻到这一章…
               </p>
-              {overview ? (
-                <>
-                  <ul className="book-category-list" aria-label={chapter.label + '分类'}>
-                    {facets.slice(page * pageSize, (page + 1) * pageSize).map((facet) => (
-                      <li key={facet.name}>
+            )}
+            {status === 'error' && (
+              <div className="book-index-notice" role="alert">
+                <p>篇目未能加载。</p>
+                <button
+                  onClick={() => {
+                    setStatus('loading');
+                    setAttempt((value) => value + 1);
+                  }}
+                >
+                  重新加载
+                </button>
+              </div>
+            )}
+            {status === 'ready' && (
+              <>
+                <p className="book-result-count" role="status">
+                  {overview
+                    ? quoteIndex && !group
+                      ? `${facets.length} 卷，${matches.length} 篇`
+                      : `${facets.length} 个${quoteIndex?.unit || '分类'}，${quoteIndex ? matches.length : filtered.length} 篇`
+                    : `${matches.length} 篇`}
+                </p>
+                {overview ? (
+                  <>
+                    <ul className="book-category-list" aria-label={chapter.label + '分类'}>
+                      {facets.slice(page * pageSize, (page + 1) * pageSize).map((facet) => (
+                        <li key={facet.key}>
+                          <button
+                            onClick={(event) =>
+                              chooseCategory(
+                                facet.key,
+                                event.currentTarget.querySelector<HTMLElement>(
+                                  '[data-category-label]',
+                                )!,
+                              )
+                            }
+                          >
+                            <span data-category-label data-flip-id={facet.key}>
+                              {facet.name}
+                            </span>
+                            <span className="book-category-count">
+                              {facet.count} 篇 <ArrowRight size={16} />
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                    {(!quoteIndex || !group) && (
+                      <button
+                        className="book-browse-all"
+                        onClick={(event) =>
+                          chooseCategory(
+                            ALL,
+                            event.currentTarget.querySelector<HTMLElement>(
+                              '[data-category-label]',
+                            )!,
+                          )
+                        }
+                      >
+                        浏览
+                        <span data-category-label data-flip-id={ALL}>
+                          全部篇目
+                        </span>
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <ul className="book-entry-list" aria-label={chapter.label + '篇目'}>
+                    {visible.map((item) => (
+                      <li key={item.id}>
                         <button
-                          onClick={(event) =>
-                            chooseCategory(
-                              facet.name,
-                              event.currentTarget.querySelector<HTMLElement>(
-                                '[data-category-label]',
-                              )!,
-                            )
-                          }
+                          type="button"
+                          aria-pressed={selected?.id === item.id}
+                          className={selected?.id === item.id ? 'is-selected' : ''}
+                          onClick={() => {
+                            change({ selected: item.id });
+                            if (window.matchMedia('(max-width: 700px)').matches)
+                              preview.current?.scrollIntoView({
+                                behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
+                                  .matches
+                                  ? 'instant'
+                                  : 'smooth',
+                                block: 'start',
+                              });
+                          }}
                         >
-                          <span data-category-label data-flip-id={facet.name}>
-                            {facet.name}
-                          </span>
-                          <span className="book-category-count">
-                            {facet.count} 篇 <ArrowRight size={16} />
-                          </span>
+                          {item.title}
+                          <ArrowRight size={16} aria-hidden="true" />
                         </button>
                       </li>
                     ))}
                   </ul>
+                )}
+                {!filtered.length && (
+                  <div className="book-index-notice">
+                    <p>没有找到匹配篇目。</p>
+                    <button onClick={() => change({ q: '', category: '', page: '', selected: '' })}>
+                      清空筛选
+                    </button>
+                  </div>
+                )}
+                {(!overview || !!group) && !matches.length && filtered.length > 0 && (
+                  <div className="book-index-notice">
+                    <p>这个分类下没有匹配篇目。</p>
+                    <button onClick={() => chooseCategory('', undefined, true)}>
+                      返回分类目录
+                    </button>
+                  </div>
+                )}
+                <nav className="book-pagination" aria-label={overview ? '分类分页' : '篇目分页'}>
                   <button
-                    className="book-browse-all"
-                    onClick={(event) => chooseCategory(ALL, event.currentTarget)}
-                    data-category-label
-                    data-flip-id={ALL}
+                    aria-label={overview ? '上一页分类' : '上一页篇目'}
+                    disabled={!page}
+                    onClick={() => change({ page: String(page - 1), selected: '' })}
                   >
-                    浏览全部篇目
+                    <ArrowLeft size={17} />
                   </button>
-                </>
-              ) : (
-                <ul className="book-entry-list" aria-label={chapter.label + '篇目'}>
-                  {visible.map((item) => (
-                    <li key={item.id}>
-                      <button
-                        type="button"
-                        aria-pressed={selected?.id === item.id}
-                        className={selected?.id === item.id ? 'is-selected' : ''}
-                        onClick={() => {
-                          change({ selected: item.id });
-                          if (window.matchMedia('(max-width: 700px)').matches)
-                            preview.current?.scrollIntoView({
-                              behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
-                                .matches
-                                ? 'instant'
-                                : 'smooth',
-                              block: 'start',
-                            });
-                        }}
-                      >
-                        {item.title}
-                        <ArrowRight size={16} aria-hidden="true" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {!filtered.length && (
-                <div className="book-index-notice">
-                  <p>没有找到匹配篇目。</p>
-                  <button onClick={() => change({ q: '', category: '', page: '', selected: '' })}>
-                    清空筛选
+                  <span>
+                    {page + 1} / {pageCount}
+                  </span>
+                  <button
+                    aria-label={overview ? '下一页分类' : '下一页篇目'}
+                    disabled={page + 1 >= pageCount}
+                    onClick={() => change({ page: String(page + 1), selected: '' })}
+                  >
+                    <ArrowRight size={17} />
                   </button>
-                </div>
-              )}
-              {!overview && !matches.length && filtered.length > 0 && (
-                <div className="book-index-notice">
-                  <p>这个分类下没有匹配篇目。</p>
-                  <button onClick={() => chooseCategory('')}>返回分类目录</button>
-                </div>
-              )}
-              <nav className="book-pagination" aria-label={overview ? '分类分页' : '篇目分页'}>
-                <button
-                  aria-label={overview ? '上一页分类' : '上一页篇目'}
-                  disabled={!page}
-                  onClick={() => change({ page: String(page - 1), selected: '' })}
-                >
-                  <ArrowLeft size={17} />
-                </button>
-                <span>
-                  {page + 1} / {pageCount}
-                </span>
-                <button
-                  aria-label={overview ? '下一页分类' : '下一页篇目'}
-                  disabled={page + 1 >= pageCount}
-                  onClick={() => change({ page: String(page + 1), selected: '' })}
-                >
-                  <ArrowRight size={17} />
-                </button>
-              </nav>
-            </>
-          )}
+                </nav>
+              </>
+            )}
+          </div>
         </div>
         <div ref={preview} className="book-preview-page" aria-live="polite" aria-atomic="true">
           {selected ? (

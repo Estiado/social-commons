@@ -18,6 +18,7 @@ export interface BookEntry {
   metadata: string;
   path: string;
   searchText: string;
+  quoteIndex?: { region: string; period: string; author: string };
 }
 
 export function chapterForPath(pathname: string) {
