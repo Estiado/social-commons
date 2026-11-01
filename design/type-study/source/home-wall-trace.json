@@ -168,7 +168,22 @@
       773
     ]
   ],
-  "transform": "1600px wide; baseline perspective correction; vertical relief 2.8; descending layout slope 250; 5px feather",
+  "transform": {
+    "size": [
+      1600,
+      1000
+    ],
+    "sourceX": 3350,
+    "sourceWidth": 298,
+    "baselineY": 800,
+    "baselineSlope": 28,
+    "offsetY": 155,
+    "relief": 6,
+    "layoutSlope": 250,
+    "feather": 3,
+    "edgeOpacity": 0.34,
+    "fadeDepth": 300
+  },
   "generated": false,
   "mountainsIncluded": false
 }

@@ -1,6 +1,6 @@
 :is(.book-site-home, .type-home-ghost) {
-  --paper: #f3eddf;
-  --paper-ink: #211b15;
+  --paper: #f7f2e8;
+  --paper-ink: #402f25;
   background: var(--paper);
 }
 :is(.book-site-home, .type-home-ghost) .book-header {
@@ -9,7 +9,15 @@
 :is(.book-site-home, .type-home-ghost) .book-contents {
   min-height: 100svh;
   height: 100svh;
-  background: radial-gradient(ellipse at 45% 20%, #f8f1e4 0, transparent 72%), var(--paper);
+  background: linear-gradient(
+    to bottom,
+    #f8f4ec 0%,
+    #f3ecde 32%,
+    #e8dbc4 53%,
+    #cdb594 77%,
+    #aa8a65 100%
+  );
+  color: var(--paper-ink);
 }
 :is(.book-site-home, .type-home-ghost) .book-contents-ink {
   display: block;
@@ -24,17 +32,17 @@
 }
 :is(.book-site-home, .type-home-ghost) .book-masthead {
   position: absolute;
-  right: 12%;
-  top: 4.5%;
-  font-size: clamp(64px, 7.3vw, 116px);
+  right: 14%;
+  top: 6%;
+  font-size: clamp(60px, 6.65vw, 106px);
   font-weight: 600;
-  letter-spacing: 0.035em;
+  letter-spacing: 0.105em;
   line-height: 1.08;
   text-shadow: none;
 }
 :is(.book-site-home, .type-home-ghost) .book-contents-nav {
   position: absolute;
-  top: 7.2%;
+  top: 9%;
   left: 5.7%;
   padding: 0;
   display: flex;
@@ -54,11 +62,13 @@
 :is(.book-site-home, .type-home-ghost) .book-chapter-columns {
   display: flex;
   flex-direction: row;
+  direction: ltr;
   gap: 0;
 }
 :is(.book-site-home, .type-home-ghost) .book-chapter-link {
   font-size: clamp(24px, 1.9vw, 32px);
-  font-weight: 600;
+  font-weight: 500;
+  color: #4b382a;
   letter-spacing: 0.13em;
   line-height: 1.25;
   min-height: 0;
@@ -75,6 +85,9 @@
   top: 0;
   height: 52px;
   border-left: 1px solid #a99c874d;
+}
+:is(.book-site-home, .type-home-ghost) .book-chapter-link[href='/essay'] {
+  font-weight: 600;
 }
 :is(.book-site-home, .type-home-ghost) .book-link-mark {
   display: none;
@@ -127,8 +140,8 @@
 }
 @media (max-width: 1000px) {
   :is(.book-site-home, .type-home-ghost) .book-masthead {
-    right: 7%;
-    font-size: clamp(60px, 9vw, 86px);
+    right: 9%;
+    font-size: clamp(56px, 8.3vw, 80px);
   }
   :is(.book-site-home, .type-home-ghost) .book-contents-nav {
     left: 5%;
@@ -147,8 +160,8 @@
 @media (max-width: 700px) {
   :is(.book-site-home, .type-home-ghost) .book-masthead {
     top: 7%;
-    right: 7%;
-    font-size: clamp(46px, 10vw, 62px);
+    right: 9%;
+    font-size: clamp(43px, 9.4vw, 58px);
   }
   :is(.book-site-home, .type-home-ghost) .book-contents-nav {
     top: 9%;
@@ -187,11 +200,11 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  backdrop-filter: blur(2.4px);
+  backdrop-filter: blur(1.2px);
   mask-image: linear-gradient(
     to bottom,
-    #000 0%,
-    #000b 22%,
+    #0008 0%,
+    #0005 22%,
     transparent 52%,
     transparent 87%,
     #0007 100%

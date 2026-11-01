@@ -48,23 +48,7 @@ for i,c in enumerate(text):
  height.paste(relief,(x,y))
 atlas.save(out/'qianziwen-type-atlas.webp',quality=88)
 height.save(out/'qianziwen-type-height.webp',quality=85)
-profile=json.loads((root/'design/type-study/source/great-wall-trace.json').read_text(encoding='utf-8'))['profile']
-points=[((x-1605)/1180*1600,80+(y-1040)*.9+((x-1605)/1180*1600)*.14) for x,y in profile]
-mask=Image.new('L',(1600,1000));ImageDraw.Draw(mask).polygon(points+[(1600,1000),(0,1000)],fill=255)
-mask=mask.filter(ImageFilter.GaussianBlur(12))
-rgba=Image.new('RGBA',mask.size,(255,255,255,255));rgba.putalpha(mask);rgba.save(out/'type-field-wall-mask.png')
-(root/'design/type-study/source/type-field-atlas.json').write_text(json.dumps({'source':'https://zh.wikisource.org/wiki/千字文','characters':text,'count':1000,'layout':'source vertical columns, reflected as one forme; column 0 at left after reflection','atlasSize':4096,'cell':128,'grid':[40,25],'glyphsMirrored':True,'wood':'Poly Haven Wood Table 001, CC0','boundary':'actual Jinshanling photo trace, Gaussian feather 5px'},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+from type_boundary import build_boundary
+build_boundary(root)
+(root/'design/type-study/source/type-field-atlas.json').write_text(json.dumps({'source':'https://zh.wikisource.org/wiki/千字文','characters':text,'count':1000,'layout':'source vertical columns, reflected as one forme; column 0 at left after reflection','atlasSize':4096,'cell':128,'grid':[40,25],'glyphsMirrored':True,'wood':'Poly Haven Wood Table 001, CC0','boundary':'actual Jinshanling photo trace; home-wall-trace.json owns relief, feather and opacity ramp'},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print('Built 1000 real mirrored glyphs, relief atlas and feathered real-wall boundary.')
-
-# The homepage uses the clear foreground battlements from the same selected
-# photograph, with a measured affine correction and a narrow soft edge.
-home_trace=root/'design/type-study/source/home-wall-trace.json'
-if home_trace.exists():
- profile=json.loads(home_trace.read_text(encoding='utf-8'))['profile']
- points=[]
- for x,y in profile:
-  t=(x-3350)/298
-  points.append((1600*t,155+(y-(800-28*t))*2.8+250*t))
- mask=Image.new('L',(1600,1000));ImageDraw.Draw(mask).polygon(points+[(1600,1000),(0,1000)],fill=255)
- mask=mask.filter(ImageFilter.GaussianBlur(5));rgba=Image.new('RGBA',mask.size,'white');rgba.putalpha(mask)
- rgba.save(out/'type-field-wall-mask.png')

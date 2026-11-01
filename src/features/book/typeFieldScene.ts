@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { advanceLift } from './typeMotion';
+import { advanceLift, TYPE_MOTION } from './typeMotion';
 import { boundaryAt } from './typeBoundary';
 
 export interface TypeFieldScene {
@@ -25,7 +25,7 @@ export async function createTypeFieldScene(
   active: () => boolean = () => true,
 ): Promise<TypeFieldScene> {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#33251a');
+  scene.background = new THREE.Color('#483528');
   const camera = new THREE.PerspectiveCamera(47, 1, 0.1, 140);
   camera.position.set(0, 9, 11);
   camera.lookAt(0, 0, 4);
@@ -52,7 +52,7 @@ export async function createTypeFieldScene(
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.35));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 0.98;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
 
@@ -68,13 +68,16 @@ export async function createTypeFieldScene(
     map: wood,
     normalMap: normal,
     normalScale: new THREE.Vector2(0.65, 0.65),
-    color: '#82715b',
+    color: '#95836d',
+    emissive: '#493522',
+    emissiveIntensity: 0.18,
     roughness: 0.98,
   });
   const faceMaterial = new THREE.MeshStandardMaterial({
     map: atlas,
     bumpMap: height,
     bumpScale: 0.13,
+    color: '#d8c4a4',
     roughness: 0.96,
   });
   faceMaterial.onBeforeCompile = (shader) => {
@@ -88,7 +91,9 @@ export async function createTypeFieldScene(
   const columns = 40,
     rows = 25,
     count = columns * rows;
-  const bodyGeometry = new RoundedBoxGeometry(0.99, 2.6, 1.11, 1, 0.025);
+  // Fixed longer sorts remain seated below the bed even at the largest lift.
+  const bodyHeight = 3.6;
+  const bodyGeometry = new RoundedBoxGeometry(0.99, bodyHeight, 1.11, 1, 0.025);
   const faceGeometry = new THREE.PlaneGeometry(0.96, 0.99);
   faceGeometry.rotateX(-Math.PI / 2);
   const tiles = new Float32Array(count * 2);
@@ -137,7 +142,7 @@ export async function createTypeFieldScene(
   function updateMatrices() {
     for (let i = 0; i < count; i++) {
       const p = position(i);
-      dummy.position.set(p.x, -1.31 + lifts[i], p.z);
+      dummy.position.set(p.x, -bodyHeight / 2 - 0.01 + lifts[i], p.z);
       dummy.rotation.set(0, Math.sin(i * 3.7) * 0.012, 0);
       dummy.updateMatrix();
       bodies.setMatrixAt(i, dummy.matrix);
@@ -148,15 +153,20 @@ export async function createTypeFieldScene(
     bodies.instanceMatrix.needsUpdate = faces.instanceMatrix.needsUpdate = true;
   }
   const groundGeometry = new THREE.PlaneGeometry(200, 200),
-    groundMaterial = new THREE.MeshStandardMaterial({ color: '#20160f', roughness: 1 });
+    groundMaterial = new THREE.MeshStandardMaterial({
+      color: '#59432e',
+      roughness: 1,
+      emissive: '#352719',
+      emissiveIntensity: 0.12,
+    });
   const ground = new THREE.Mesh(groundGeometry, groundMaterial);
   ground.rotation.x = -Math.PI / 2;
   ground.position.y = -1.6;
   ground.receiveShadow = true;
   scene.add(ground);
   resources.push(groundGeometry, groundMaterial);
-  scene.add(new THREE.HemisphereLight('#fff1d5', '#37271e', 2.3));
-  const sun = new THREE.DirectionalLight('#ffdfab', 3.5);
+  scene.add(new THREE.HemisphereLight('#fff1d5', '#48382b', 2.7));
+  const sun = new THREE.DirectionalLight('#f0d4ad', 2.6);
   sun.position.set(-12, 24, 12);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
@@ -216,8 +226,8 @@ export async function createTypeFieldScene(
       const p = position(i),
         distance = Math.hypot(p.x - hit.x, p.z - hit.z);
       const border = i % rows < 2 ? 0 : Math.min(1, ((i % rows) - 1) / 2);
-      const influence = locked[i] ? 0 : Math.max(0, 1 - distance / 2.6);
-      targets[i] = Math.max(base[i], Math.pow(influence, 1.5) * 0.99 * border);
+      const influence = locked[i] ? 0 : Math.max(0, 1 - distance / TYPE_MOTION.radius);
+      targets[i] = Math.max(base[i], Math.pow(influence, 1.5) * TYPE_MOTION.maxLift * border);
     }
     resume();
   }
@@ -239,7 +249,7 @@ export async function createTypeFieldScene(
     camera.updateMatrixWorld();
     for (let i = 0; i < count; i++) {
       const p = position(i);
-      const upper = new THREE.Vector3(p.x, 0, p.z - 2.32).project(camera);
+      const upper = new THREE.Vector3(p.x, TYPE_MOTION.maxLift, p.z - 1.16).project(camera);
       const x = (upper.x + 1) / 2,
         y = (1 - upper.y) / 2;
       locked[i] = y < boundaryAt(x) ? 1 : 0;
