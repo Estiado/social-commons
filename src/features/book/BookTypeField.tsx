@@ -28,6 +28,9 @@ export function BookTypeField() {
       owner.current?.point((event.clientX - r.left) / r.width, (event.clientY - r.top) / r.height);
     };
     const leave = () => owner.current?.leave();
+    const pointerLeave = (event: PointerEvent) => {
+      if (event.pointerType !== 'touch') leave();
+    };
     const down = (event: PointerEvent) => {
       if (event.pointerType === 'touch') touch = { x: event.clientX, y: event.clientY };
     };
@@ -51,7 +54,7 @@ export function BookTypeField() {
       leave();
     };
     root.addEventListener('pointermove', move, { passive: true });
-    root.addEventListener('pointerleave', leave);
+    root.addEventListener('pointerleave', pointerLeave);
     root.addEventListener('pointerdown', down, { passive: true });
     root.addEventListener('pointerup', up, { passive: true });
     root.addEventListener('pointercancel', cancel);
@@ -83,7 +86,7 @@ export function BookTypeField() {
       owner.current = null;
       delete (element as HTMLCanvasElement & { typeScene?: TypeFieldScene }).typeScene;
       root.removeEventListener('pointermove', move);
-      root.removeEventListener('pointerleave', leave);
+      root.removeEventListener('pointerleave', pointerLeave);
       root.removeEventListener('pointerdown', down);
       root.removeEventListener('pointerup', up);
       root.removeEventListener('pointercancel', cancel);

@@ -122,6 +122,7 @@ export async function createTypeFieldScene(
     [20, 19, 0.55],
   ])
     base[c * rows + r] = h;
+  const restPose = base.slice();
   for (let i = 0; i < count; i++) {
     color.setHSL(0.085, 0.18, 0.67 + ((i * 37) % 11) / 70);
     bodies.setColorAt(i, color);
@@ -242,9 +243,8 @@ export async function createTypeFieldScene(
       const x = (upper.x + 1) / 2,
         y = (1 - upper.y) / 2;
       locked[i] = y < boundaryAt(x) ? 1 : 0;
-      if (locked[i]) {
-        base[i] = targets[i] = lifts[i] = 0;
-      }
+      base[i] = locked[i] ? 0 : restPose[i];
+      targets[i] = lifts[i] = base[i];
     }
 
     draw();

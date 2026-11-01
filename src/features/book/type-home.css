@@ -180,3 +180,20 @@
     padding-inline: 20px;
   }
 }
+
+/* Keep the same photographic focus falloff as the supplied homepage reference. */
+:is(.book-site-home, .type-home-ghost) .book-type-landscape::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  backdrop-filter: blur(2.4px);
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000b 22%,
+    transparent 52%,
+    transparent 87%,
+    #0007 100%
+  );
+}

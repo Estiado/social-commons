@@ -31,3 +31,9 @@
 - 《了不起的匠人》第12集《东源村的修谱师》：浙江在线2016报道，候选；报道照片有水印，只作参考，未作正式材质。
 
 生产构建补测：减少动态已等待media事件，active=0、framePending=false；鼠标邻域14个字模响应，最大约0.99字宽；章节到达0画布/ghost且main非inert。证据type-home-prod-qa.json。
+
+## 实拍磨损试用与手机修复
+用户已将Declan Sun的高清旧活字实拍确认为取材备选。现只取约5px纹理细边与积墨明暗，保持新宋体字形和原构图；不是纪录片截帧，原件、许可和裁切坐标均保留。此为试用版，不能等同最终视觉确认。轻微景深跟随参考图，不影响目录。
+
+合成手机试验曾发现pointerup紧接touch pointerleave，导致回落立即覆盖升起。已将触摸离开与鼠标离开分开，保留700ms轻点脉冲；拖动取消仍走原生滚页。无WebGL已实测同场景静态图显示，原生合成滑动scrollY=104。原型首次手机轻点结果active=0为失败证据，不冒充通过；修复后需以最新QA结果为准。
+补测通过：手机轻点15个邻域字模响应，脉冲结束active=0/framePending=false；桌面→手机→桌面静止构图的SHA256完全一致。最终完整检查见type-home-release-check.log。用户认可的实拍磨损材质作为本轮试用，仍不是最终审美定稿。新站独立地址 https://codex-type-preview.social-commons.pages.dev/，正式与旧预览不更新。
