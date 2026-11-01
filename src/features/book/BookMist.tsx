@@ -82,6 +82,7 @@ export function BookMist() {
       previous = -Infinity,
       elapsed = 12;
     let rect = element.getBoundingClientRect();
+    const drift = { x: 0, y: 0 };
     const present = () => {
       gl.useProgram(program);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -108,14 +109,17 @@ export function BookMist() {
     });
     const draw = (now: number) => {
       frame = 0;
-      if (now - previous >= 1000 / 24) {
-        const dt = Number.isFinite(previous) ? Math.min(2, (now - previous) / (1000 / 24)) : 1;
+      if (now - previous >= 1000 / 30) {
+        const dt = Number.isFinite(previous) ? Math.min(2, (now - previous) / (1000 / 30)) : 1;
         previous = now;
         const input = pointer.current;
         if (!pausedRef.current && !scene.closest('[data-book-transition-active]')) {
-          elapsed += dt * 0.041;
-          const dx = Math.max(-0.025, Math.min(0.025, input.dx * 0.65));
-          const dy = Math.max(-0.025, Math.min(0.025, input.dy * 0.65));
+          elapsed += dt * 0.028;
+          const smoothing = 1 - Math.exp((-5 * dt) / 30);
+          drift.x += (Math.max(-0.012, Math.min(0.012, input.dx * 0.32)) - drift.x) * smoothing;
+          drift.y += (Math.max(-0.012, Math.min(0.012, input.dy * 0.32)) - drift.y) * smoothing;
+          const dx = drift.x;
+          const dy = drift.y;
           // Project the pointer ray onto the cloud surface, using the fogShader camera.
           if (input.inside && Math.hypot(dx, dy) > 0.0001) {
             const py = input.y * 2 - 1;
@@ -124,11 +128,11 @@ export function BookMist() {
             const distance = 0.85 / Math.max(0.05, -rayY);
             const x = (input.x * 2 - 1) * (rect.width / rect.height) * distance;
             const z = 4 + rayZ * distance;
-            masses.push(x, z, dx * 38, dy * 38);
+            masses.push(x, z, dx * 24, dy * 24);
           }
-          masses.step(dt / 24);
-          input.dx *= 0.12;
-          input.dy *= 0.12;
+          masses.step(dt / 30);
+          input.dx *= 0.55;
+          input.dy *= 0.55;
         }
         present();
       }

@@ -36,3 +36,11 @@ https://detail.youzan.com/show/goods?alias=271ht30cesmzv35&from_source=gbox_seo
 
 The final interface text is live HTML. The painted edge intentionally has no copy.
 `book-photo.webp` is the complete plate; `book-photo-left.webp` is the responsive single leaf.
+
+## Active leaf material
+
+The bound leaf samples the same photographic paper and its illumination; its ink is a
+separate transparent HTML snapshot. Binding, painted page blocks and surrounding page
+furniture are not an additional photographed book pasted onto the moving sheet. A crop
+inside the retouched paper repairs dark edge pixels. The user's MP4 is a motion reference
+only and is not distributed with the site; its originating page and code were not supplied.

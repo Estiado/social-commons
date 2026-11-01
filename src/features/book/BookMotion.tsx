@@ -19,6 +19,27 @@ export function BookMotion({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
   const previousLocation = useRef(location);
+  useEffect(() => {
+    if (/^\/(reading|editor|feedback)(\/|$)/.test(location.pathname)) return;
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      void (async () => {
+        await document.fonts.ready;
+        if (cancelled || !root.current) return;
+        const { snapshotFonts } = await import('./snapshotFonts');
+        if (
+          !cancelled &&
+          root.current &&
+          !/^\/(reading|editor|feedback)(\/|$)/.test(window.location.pathname)
+        )
+          await snapshotFonts(root.current);
+      })().catch(() => {});
+    }, 250);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [location.pathname]);
   // A workspace link, browser Back or another navigation wins over an unfinished turn.
   useEffect(() => {
     const before = previousLocation.current;
@@ -93,6 +114,8 @@ export function BookMotion({ children }: { children: ReactNode }) {
       let disposeScene: (() => void) | undefined;
       let arrivalFrame = 0;
       const finish = () => {
+        sequence?.clear();
+        sequence = undefined;
         generation++;
         disposeScene?.();
         disposeScene = undefined;
@@ -132,9 +155,58 @@ export function BookMotion({ children }: { children: ReactNode }) {
         const turnId = ++generation;
         const main = element.querySelector<HTMLElement>('main')!;
         const valid = () => busy.current && generation === turnId;
+        const nextUrl = new URL(destination, window.location.href);
+        const nextBook =
+          BOOK_CHAPTERS.some((c) => c.path === nextUrl.pathname) &&
+          !['id', 'view', 'group'].some((key) => nextUrl.searchParams.has(key));
+        const photoRect = main.querySelector('.book-photo-base')?.getBoundingClientRect();
+        const completeBook =
+          !!photoRect &&
+          photoRect.left >= 0 &&
+          photoRect.top >= 0 &&
+          photoRect.right <= innerWidth &&
+          photoRect.bottom <= innerHeight + 1;
+        const paperArrival = () => {
+          // Reading and the contents are different spaces. Pass through paper in sequence,
+          // without rasterizing a long article or layering old and new text over each other.
+          sequence?.kill();
+          cancelAnimationFrame(arrivalFrame);
+          const surface = stage.current?.querySelector('canvas') ? stage.current! : main;
+          if (surface !== main) gsap.set(main, { opacity: 0 });
+          sequence = gsap
+            .timeline()
+            .to(surface, { opacity: 0, duration: 0.24, ease: 'power1.inOut' })
+            .call(() => {
+              stage.current?.replaceChildren();
+              gsap.set(stage.current, { autoAlpha: 0 });
+              arrive();
+              const started = performance.now();
+              const reveal = () => {
+                if (!valid()) return;
+                const ready =
+                  main.dataset.bookPath === nextUrl.pathname &&
+                  main.querySelector('h1') &&
+                  !main.querySelector(
+                    '[data-book-loading], .book-mist[data-book-mist-state="pending"]',
+                  );
+                if (!ready && performance.now() - started < 1800) {
+                  arrivalFrame = requestAnimationFrame(reveal);
+                  return;
+                }
+                sequence = gsap
+                  .timeline({ onComplete: finish })
+                  .to(main, { opacity: 1, duration: 0.48, ease: 'power2.out' });
+              };
+              arrivalFrame = requestAnimationFrame(reveal);
+            });
+        };
+        if (!completeBook || !nextBook || innerWidth <= 700) {
+          paperArrival();
+          return;
+        }
         void (async () => {
-          const [{ createRollTurn }, { domSnapshot }] = await Promise.all([
-            import('./RollTurn'),
+          const [{ createBookLeafTurn }, { domSnapshot }] = await Promise.all([
+            import('./BookLeafTurn'),
             import('./domSnapshot'),
           ]);
           if (!valid()) return;
@@ -183,14 +255,20 @@ export function BookMotion({ children }: { children: ReactNode }) {
           frame.className = 'book-turn-frame';
           Object.assign(frame.style, { inset: '0' });
           stage.current!.replaceChildren(frame);
-          const reverse = destination === '/' || /\/[^/]+\//.test(window.location.pathname);
+          const fromChapter = BOOK_CHAPTERS.findIndex((c) => c.path === window.location.pathname);
+          const toChapter = BOOK_CHAPTERS.findIndex(
+            (c) => c.path === new URL(destination, window.location.href).pathname,
+          );
+          const reverse =
+            fromChapter >= 0 && toChapter >= 0
+              ? toChapter < fromChapter
+              : destination === '/' || /\/[^/]+\//.test(window.location.pathname);
           const photograph = main.querySelector<HTMLImageElement>('.book-photo-base img');
           if (photograph && (!photograph.complete || !photograph.naturalWidth)) {
-            arrive();
-            finish();
+            paperArrival();
             return;
           }
-          const renderer = createRollTurn(
+          const renderer = createBookLeafTurn(
             frame,
             source,
             bounds,
@@ -200,8 +278,7 @@ export function BookMotion({ children }: { children: ReactNode }) {
               : undefined,
           );
           if (!renderer) {
-            arrive();
-            finish();
+            paperArrival();
             return;
           }
           disposeScene = renderer.dispose;
@@ -212,8 +289,10 @@ export function BookMotion({ children }: { children: ReactNode }) {
             () => {
               if (valid()) {
                 sequence?.kill();
-                arrive();
-                finish();
+                gsap.set(main, { opacity: 0 });
+                stage.current?.replaceChildren();
+                gsap.set(stage.current, { autoAlpha: 0 });
+                paperArrival();
               }
             },
             { once: true },
@@ -232,14 +311,15 @@ export function BookMotion({ children }: { children: ReactNode }) {
               (!photo || photo.complete);
             if (!ready) {
               if (performance.now() - started > 1800) {
-                finish();
+                paperArrival();
                 return;
               }
               arrivalFrame = requestAnimationFrame(
                 () =>
                   void reveal().catch((error) => {
+                    if (!valid()) return;
                     console.warn('[book-roll] Destination capture unavailable', error);
-                    if (valid()) finish();
+                    if (valid()) paperArrival();
                   }),
               );
               return;
@@ -254,16 +334,10 @@ export function BookMotion({ children }: { children: ReactNode }) {
             renderer.setSheet(
               new DOMRect(left, top, Math.max(1, right - left), Math.max(1, bottom - top)),
             );
-            renderer.setDestination(target);
+            renderer.setDestination(target, !!main.querySelector('.book-photo-base'));
             const model = { progress: 0 };
             // Full cross-chapter sweep; abbreviated reader round trips retain native reading pace.
-            const duration =
-              /\/[^/]+\//.test(destination + '/') &&
-              !BOOK_CHAPTERS.some((c) => c.path === destination)
-                ? 1.35
-                : reverse && destination !== '/'
-                  ? 1.35
-                  : 2.55;
+            const duration = 2.55;
             sequence = gsap.timeline({ onComplete: finish }).to(model, {
               progress: 1,
               duration,
@@ -274,15 +348,16 @@ export function BookMotion({ children }: { children: ReactNode }) {
           arrivalFrame = requestAnimationFrame(
             () =>
               void reveal().catch((error) => {
+                if (!valid()) return;
                 console.warn('[book-roll] Destination capture unavailable', error);
-                if (valid()) finish();
+                if (valid()) paperArrival();
               }),
           );
         })().catch((error) => {
-          console.warn('[book-roll] Snapshot unavailable; native navigation retained', error);
+          if (!valid()) return;
+          console.warn('[book-roll] Snapshot unavailable; paper arrival retained', error);
           if (valid()) {
-            arrive();
-            finish();
+            paperArrival();
           }
         });
       });

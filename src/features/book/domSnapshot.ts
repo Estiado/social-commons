@@ -10,11 +10,13 @@ export async function domSnapshot(root: HTMLElement, bounds: DOMRect, current = 
     current() && !/^\/(reading|editor|feedback)(\/|$)/.test(location.pathname);
   if (!permitted()) throw new Error('Public snapshot cancelled');
   const rect = root.getBoundingClientRect();
+  const photograph = root.querySelector<HTMLImageElement>('.book-photo-base img');
   // Freeze owner-produced WebGL pixels before html-to-image clones the canvas.
   const mist = root.querySelector<HTMLCanvasElement>('.book-mist');
   if (mist) captureMist(mist);
   // In a cold route, glyph subsets must finish loading before their matching faces are embedded.
   await document.fonts.ready;
+  if (!permitted()) throw new Error('Public snapshot cancelled');
   const embedded = await snapshotFonts(root);
   if (!permitted()) throw new Error('Public snapshot cancelled');
   const lines: { node: HTMLElement; id: string; text: string[] }[] = [];
@@ -63,7 +65,7 @@ export async function domSnapshot(root: HTMLElement, bounds: DOMRect, current = 
       width: bounds.width,
       height: bounds.height,
       pixelRatio: Math.min(1.5, devicePixelRatio || 1, 1800 / bounds.width),
-      backgroundColor: '#f3f0e8',
+      backgroundColor: photograph ? 'transparent' : '#f3f0e8',
       skipFonts: !embedded,
       fontEmbedCSS: embedded,
       style: {
@@ -78,7 +80,9 @@ export async function domSnapshot(root: HTMLElement, bounds: DOMRect, current = 
         if (!permitted()) throw new Error('Public snapshot cancelled');
         return (
           !(node instanceof Element) ||
-          !node.matches('.book-turn-stage, .book-section-menu, .book-mist-control')
+          !node.matches(
+            '.book-turn-stage, .book-section-menu, .book-mist-control, .book-photo-base, .book-footer',
+          )
         );
       },
     });
@@ -121,7 +125,9 @@ export async function domSnapshot(root: HTMLElement, bounds: DOMRect, current = 
     'data:image/svg+xml;charset=utf-8,' +
     encodeURIComponent(new XMLSerializer().serializeToString(xml));
   await image.decode();
-  const result = document.createElement('canvas');
+  const result = document.createElement('canvas') as HTMLCanvasElement & {
+    inkLayer?: HTMLCanvasElement;
+  };
   const ratio = Math.min(1.5, devicePixelRatio || 1, 1800 / bounds.width);
   result.width = Math.round(bounds.width * ratio);
   result.height = Math.round(bounds.height * ratio);
@@ -130,6 +136,35 @@ export async function domSnapshot(root: HTMLElement, bounds: DOMRect, current = 
   // Keep that gutter paper-coloured when this opaque snapshot becomes a GL texture.
   context.fillStyle = '#f3f0e8';
   context.fillRect(0, 0, result.width, result.height);
-  context.drawImage(image, 0, 0, result.width, result.height);
+  if (photograph) {
+    // The moving leaf carries ink, never the photographed book block or its outer frame.
+    const layer = document.createElement('canvas');
+    layer.width = result.width;
+    layer.height = result.height;
+    layer.getContext('2d')!.drawImage(image, 0, 0, layer.width, layer.height);
+    result.inkLayer = layer;
+    const photo = photograph.getBoundingClientRect();
+    const x = (photo.left - bounds.left) * ratio,
+      y = (photo.top - bounds.top) * ratio;
+    const width = photo.width * ratio,
+      height = photo.height * ratio;
+    context.drawImage(photograph, x, y, width, height);
+    // One SVG decode supplies both layers. Compose the live photograph underneath its ink,
+    // instead of decoding an entire photographed book a second time on every navigation.
+    context.save();
+    context.beginPath();
+    context.rect(0, 0, result.width, result.height);
+    context.rect(x, y, width, height);
+    context.clip('evenodd');
+    context.drawImage(layer, 0, 0);
+    context.restore();
+    context.save();
+    context.beginPath();
+    context.rect(x, y, width, height);
+    context.clip();
+    context.globalCompositeOperation = 'multiply';
+    context.drawImage(layer, 0, 0);
+    context.restore();
+  } else context.drawImage(image, 0, 0, result.width, result.height);
   return result;
 }

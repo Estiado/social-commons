@@ -27,17 +27,19 @@ export function createCloudMass() {
         offsets.fill(0, at, at + 3);
         velocities.fill(0, at, at + 3);
       }
-      const energy = Math.min(1.8, Math.hypot(dx, dz));
-      velocities[at] += Math.max(-2.4, Math.min(2.4, dx * 3));
-      velocities[at + 1] += energy * 0.7;
-      velocities[at + 2] += Math.max(-2.4, Math.min(2.4, dz * 3));
-      for (let i = at; i < at + 3; i++) velocities[i] = Math.max(-4, Math.min(4, velocities[i]));
+      const energy = Math.min(0.6, Math.hypot(dx, dz));
+      velocities[at] += Math.tanh(dx * 0.7) * 0.12;
+      velocities[at + 1] += energy * 0.045;
+      velocities[at + 2] += Math.tanh(dz * 0.7) * 0.12;
+      // Soft velocity saturation avoids the visible stop of a clamped cloud block.
+      for (let i = at; i < at + 3; i++) velocities[i] = 0.55 * Math.tanh(velocities[i] / 0.55);
     },
     step(seconds: number) {
       const dt = Math.min(0.05, Math.max(0, seconds));
       for (let i = 0; i < offsets.length; i++) {
-        velocities[i] = (velocities[i] - offsets[i] * 1.8 * dt) * Math.exp(-1.5 * dt);
-        offsets[i] = Math.max(-2.2, Math.min(2.2, offsets[i] + velocities[i] * dt));
+        const restoring = offsets[i] * (0.52 + 1.6 * offsets[i] ** 2);
+        velocities[i] = (velocities[i] - restoring * dt) * Math.exp(-2.05 * dt);
+        offsets[i] += velocities[i] * dt;
       }
     },
   };

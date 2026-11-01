@@ -1,6 +1,6 @@
 /** Vanta CLOUDS value noise / volume lighting, fixed MIT ref
  * f8b351906688b56f0fc744e53bde81fc3c56f150; public/book/licenses/VANTA.txt.
- * Transparent sky, warm light and a lower cloud sea keep the approved paper world.
+ * Transparent sky and cool, separated mist ribbons keep the paper visible.
  * Six world-space spring masses displace the volume, not a screen-space density mask. */
 export const fogFragment = `precision highp float;
 uniform vec2 iResolution;
@@ -22,11 +22,14 @@ float density(vec3 p){
    float weight=exp(-dot(d*vec3(.6,.85,.6),d*vec3(.6,.85,.6)));
    p-=cloudOffsets[i]*weight;
  }
- vec3 q=p-vec3(.012,.0003,.022)*(iTime+1000.);
+ vec3 q=p*vec3(.4,1.6,.65)-vec3(.008,0.,.012)*(iTime+1000.);
  float f=.5*noise(q);q*=2.02;
  f+=.25*noise(q);q*=2.03;f+=.125*noise(q);q*=2.01;
  f+=.0625*noise(q);
- return clamp(-.38-p.y+1.75*f,0.,1.);
+ // Finite-height layers, with air between them; density must not become a solid floor.
+ float lower=exp(-pow((p.y+.23-.12*noise(q*.48))/.24,2.));
+ float upper=.55*exp(-pow((p.y-.28-.1*noise(q*.37+7.))/.15,2.));
+ return (lower+upper)*smoothstep(.27,.68,f)*.64;
 }
 void main(){
  vec2 uv=gl_FragCoord.xy/iResolution;
@@ -43,13 +46,13 @@ void main(){
    float den=density(pos);
    if(den>.01){
      float dif=clamp((den-density(pos+.35*sun))/.6,0.,1.);
-     vec3 col=mix(vec3(.993,.998,1.),vec3(.79,.84,.88),den*.68);
-     col*=.98+dif*.22;
-     float alpha=den*.39;
+     vec3 col=mix(vec3(.95,.97,.98),vec3(.83,.88,.91),den*.6);
+     col*=.99+dif*.09;
+     float alpha=den*.24;
      sum.rgb+=(1.-sum.a)*col*alpha;sum.a+=(1.-sum.a)*alpha;
    }
    t+=max(.085,.035*t);
  }
  float horizon=smoothstep(.02,.28,1.-uv.y);
- gl_FragColor=vec4(sum.rgb/max(sum.a,.001),min(.96,sum.a)*horizon);
+ gl_FragColor=vec4(sum.rgb/max(sum.a,.001),min(.62,sum.a)*horizon);
 }`;
