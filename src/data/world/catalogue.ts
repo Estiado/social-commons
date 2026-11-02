@@ -2,6 +2,28 @@ import { EDITORIAL } from '../../../.artifacts/editorial/world/catalogue.ts';
 import type { WorldStorySummary } from './types';
 export const WORLD_STORIES: WorldStorySummary[] = [
   {
+    id: 'weather-prediction',
+    title: EDITORIAL['weather.title'],
+    summary: EDITORIAL['weather.summary'],
+    category: '社会与公共生活',
+    period: '1963—2026年；科学与业务实践跟踪',
+    updatedAt: '2026-11-02',
+    latestEventDate: '2026-05-12',
+    keywords: [
+      '天气预报',
+      '混沌',
+      '不确定性',
+      '概率',
+      'AI',
+      'GenCast',
+      '盘古',
+      'GraphCast',
+      'AIFS',
+      '集合预报',
+    ],
+    sourceNames: ['新华社', '中国科学报', 'Nature', 'Science', 'ECMWF', 'MIT'],
+  },
+  {
     id: 'ai-energy',
     sourceNames: ['国际能源署（IEA）', '新华社', '联合国欧洲经济委员会（UNECE）'],
     title: EDITORIAL['5.title'],

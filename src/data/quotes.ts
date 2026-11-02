@@ -1,3 +1,4 @@
+import { POSSIBILITY_READINGS } from './quotes/possibilityAndPerspective.ts';
 import { EDITORIAL } from '../../.artifacts/editorial/quotes.ts';
 import type { IQuote } from './types';
 import { QUOTE_COMMENTARIES } from './quoteCommentaries.ts';
@@ -318,6 +319,7 @@ const QUOTE_TEXTS: Omit<IQuote, 'commentary'>[] = [
 ];
 
 const readingTexts: IQuote[] = [
+  ...POSSIBILITY_READINGS,
   ...QUOTE_TEXTS,
   ...CLASSICAL_PASSAGES,
   ...EXTENDED_CLASSICS,

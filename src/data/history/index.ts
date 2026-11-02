@@ -1,4 +1,5 @@
 import type { IEvent } from '../types';
+import { CONTINGENCY_EVENTS } from './contingency.ts';
 import { PUBLIC_LIFE_EVENTS } from './publicLife.ts';
 import { MAYFLOWER_EVENT } from './colonial.ts';
 import { ENLIGHTENMENT_EVENT } from './enlightenment.ts';
@@ -9,6 +10,7 @@ import { EVIDENCE_AND_MEDIA_EVENTS } from './evidenceAndMedia.ts';
 import { NATURAL_SELECTION_EVENT } from './naturalSelection.ts';
 
 export const HISTORY_EVENTS: IEvent[] = [
+  ...CONTINGENCY_EVENTS,
   ...EVIDENCE_AND_MEDIA_EVENTS,
   NATURAL_SELECTION_EVENT,
   ...RIGHTS_EVENTS,

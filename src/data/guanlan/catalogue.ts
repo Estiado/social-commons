@@ -4,6 +4,28 @@ import type { GuanlanEventSummary } from './types';
 /** Lightweight entry points; event bodies are requested only on their own pages. */
 export const GUANLAN_EVENTS: GuanlanEventSummary[] = [
   {
+    id: 'kakeya-proof',
+    title: EDITORIAL['GUANLAN_EVENTS.kakeya-proof.title'],
+    summary: EDITORIAL['GUANLAN_EVENTS.kakeya-proof.summary'],
+    question: EDITORIAL['GUANLAN_EVENTS.kakeya-proof.question'],
+    sortDate: '2026-10-11',
+    dateLabel: '原证明：2025年2月24日；简化证明v2：2026年10月11日',
+    topicIds: ['education-growth', 'philosophy-thinking', 'youth-university'],
+    keywords: ['王虹', '扎尔', '挂谷猜想', '数学', '维数', '积累', '合作'],
+    sourceNames: ['高等研究院（IAS）', 'arXiv'],
+  },
+  {
+    id: 'resume-label-audit',
+    title: EDITORIAL['GUANLAN_EVENTS.resume-label-audit.title'],
+    summary: EDITORIAL['GUANLAN_EVENTS.resume-label-audit.summary'],
+    question: EDITORIAL['GUANLAN_EVENTS.resume-label-audit.question'],
+    sortDate: '2024-10-31',
+    dateLabel: '研究会议：2024年10月；大学报道：2024年10月31日',
+    topicIds: ['tech-ai', 'youth-university', 'society-fairness'],
+    keywords: ['AI', '简历', '招聘', '标签', '偏见', '算法审计', '姓名'],
+    sourceNames: ['华盛顿大学', 'AIES', 'PMLR'],
+  },
+  {
     id: 'short-drama-overseas',
     sourceNames: ['人民日报海外版', '新华网', 'Sensor Tower', 'Adjust官方报告发布页'],
     title: EDITORIAL['GUANLAN_EVENTS.short-drama-overseas.title'],

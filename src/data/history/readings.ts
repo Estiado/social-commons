@@ -10,6 +10,12 @@ export interface HistoryReading {
 /** A local file is listed only after its signature and text have been checked.
  * Author-hosted papers without a redistribution licence keep their source URL. */
 export const HISTORY_READINGS: Record<string, HistoryReading> = {
+  'lorenz-paper': {
+    title: '洛伦兹：Deterministic Nonperiodic Flow',
+    url: 'https://doi.org/10.1175/1520-0469(1963)020%3C0130:DNF%3E2.0.CO;2',
+    format: '网页',
+    edition: '1963年原刊，第130—141页；美国气象学会出版页',
+  },
   'darwin-wallace-paper': {
     title: '达尔文—华莱士1858年联合发表论文',
     url: 'https://darwin-online.org.uk/converted/pdf/1858_species_F350.pdf',

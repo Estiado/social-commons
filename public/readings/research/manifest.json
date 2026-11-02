@@ -1,0 +1,37 @@
+[
+  {
+    "file": "kakeya-wang-zahl-2025.pdf",
+    "pages": 127,
+    "authors": [
+      "Hong Wang",
+      "Joshua Zahl"
+    ],
+    "title": "Volume estimates for unions of convex sets, and the Kakeya set conjecture in three dimensions",
+    "source": "https://arxiv.org/pdf/2502.17655",
+    "publication": "https://arxiv.org/abs/2502.17655",
+    "bytes": 4020917,
+    "sha256": "631e8b2118e3d03ded2d5fe79f9acdf74353877d143e9887a3c31278cd13ed01",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "checkedAt": "2026-11-02",
+    "modified": false
+  },
+  {
+    "file": "kakeya-streamlined-2026.pdf",
+    "pages": 49,
+    "authors": [
+      "Larry Guth",
+      "Hong Wang",
+      "Joshua Zahl"
+    ],
+    "title": "A streamlined proof of the Kakeya set conjecture in R³",
+    "source": "https://arxiv.org/pdf/2601.14411v2",
+    "publication": "https://arxiv.org/abs/2601.14411v2",
+    "bytes": 552919,
+    "sha256": "3e5cf60cfbc1daa9acfbc0e4d7553d6b9fcb2ac313c375960aeeeacca77f8823",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "checkedAt": "2026-11-02",
+    "modified": false
+  }
+]

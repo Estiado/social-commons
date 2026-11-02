@@ -1,3 +1,4 @@
+import { CHOICE_KNOWLEDGE } from './knowledge/choiceAndLabels.ts';
 import { ATTENTION_KNOWLEDGE } from './knowledge/attentionAndSystems.ts';
 import { EDITORIAL } from '../../.artifacts/editorial/daily.ts';
 import type { IDailyKnowledge } from './types';
@@ -10,6 +11,7 @@ import { YOUTH_KNOWLEDGE } from './knowledge/youthStudies.ts';
 // EXPORTS: DAILY_KNOWLEDGE, getTodayKnowledge
 
 export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
+  ...CHOICE_KNOWLEDGE,
   ...ATTENTION_KNOWLEDGE,
   ...EXPERIENCE_KNOWLEDGE,
   ...YOUTH_KNOWLEDGE,

@@ -36,8 +36,8 @@ test('简报跨年及北京时间午夜换版，同一日稳定且连续日三�
   }
 });
 
-test('六条长期事件以连贯长读为主，时间书签关联正文，引用可保存导出', async () => {
-  assert.equal(WORLD_STORIES.length, 6);
+test('七条长期事件以连贯长读为主，时间书签关联正文，引用可保存导出', async () => {
+  assert.equal(WORLD_STORIES.length, 7);
   let nodes = 0;
   for (const summary of WORLD_STORIES) {
     const story = (await getWorldStory(summary.id))!;
@@ -61,9 +61,11 @@ test('六条长期事件以连贯长读为主，时间书签关联正文，引�
     assert.ok(story.sources.some((source) => /新华社|央视|国际在线/u.test(source.publication)));
     assert.ok(
       story.sources.some((source) =>
-        story.id === 'france-protests-2026'
-          ? new URL(source.url).hostname === 'www.enseignementsup-recherche.gouv.fr'
-          : /联合国/u.test(source.publication),
+        story.id === 'weather-prediction'
+          ? new URL(source.url).hostname === 'www.ecmwf.int'
+          : story.id === 'france-protests-2026'
+            ? new URL(source.url).hostname === 'www.enseignementsup-recherche.gouv.fr'
+            : /联合国/u.test(source.publication),
       ),
     );
     assert.deepEqual(
@@ -115,7 +117,7 @@ test('六条长期事件以连贯长读为主，时间书签关联正文，引�
       ),
     );
   }
-  assert.equal(nodes, 57);
+  assert.equal(nodes, 66);
   assert.equal(await getWorldStory('__proto__'), undefined);
   assert.equal(await getWorldStory('constructor'), undefined);
 });

@@ -1,4 +1,12 @@
-# 验证记录 · 2026-10-20—29
+# 验证记录 · 2026-10-20—11-02
+
+## 正式站内容扩充 · 2026-11-02
+
+- 在独立工作区、分支`codex/production-content-20261102`从生产main的`bdf9a1d`开始；发布前GitHub API再次确认main仍为该SHA。未切换或写入书本／活字预览工作区，未运行生产数据库操作。示例SQL仅重新生成96条，未在Supabase执行。
+- `scripts/dev.ps1 check`最终退出0：103/103测试通过，类型、ESLint、生产构建、Cloudflare函数打包与DOCX/PDF生成通过。日志`.artifacts/content-check.log`；修订提要后14项相关测试另通过，日志`content-targeted.log`。导出生成10页PDF（6461806字节）和DOCX（10767字节），不代表Word人工逐页验收。
+- 本地真实浏览器：`/essay?id=e114`能显示《被命名的世界》选段和朝文道cwd署名；新手欢迎可跳过。`/guanlan/events/kakeya-proof`显示新正文和两份有标题的本站PDF入口。`/world/weather-prediction`显示五章主文与各补充层级；390×844抽查无横向溢出，目录默认收起。截图`.artifacts/content-weather-mobile.png`仅在D盘，不提交。
+- 两份PDF解析为127页、49页，字节数与SHA-256写入公开manifest，许可与原始署名随文件保留。未独立复核完整数学证明。微信原帖未能独立读取，选段只依据用户提供文本；不称已经核读原帖。研究摘要与全文的核读范围见本轮扩容记录。
+- 本段于发布前写入。GitHub推送、CI、Cloudflare部署及正式站抽查结果将在确认后补记；以上本地检查不能证明已经上线。
 
 ## 全站精修与分类层级 · 2026-10-29
 
