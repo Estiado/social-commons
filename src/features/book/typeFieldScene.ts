@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { advanceLift, TYPE_MOTION } from './typeMotion';
 import { boundaryAt } from './typeBoundary';
+import { edgeResponse } from './typeFieldEdge';
+import { blendTypeIntoPaper, createPaperUniforms } from './typePaperMaterial';
 
 export interface TypeFieldScene {
   capture(): HTMLCanvasElement;
@@ -13,6 +15,10 @@ export interface TypeFieldScene {
   inspect(): {
     count: number;
     active: number;
+    visible: number;
+    edgeActive: number;
+    maxEdgeLift: number;
+    edgeSamples: Array<{ index: number; x: number; y: number; lift: number; limit: number }>;
     maxLift: number;
     paused: boolean;
     framePending: boolean;
@@ -25,7 +31,7 @@ export async function createTypeFieldScene(
   active: () => boolean = () => true,
 ): Promise<TypeFieldScene> {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#483528');
+  const paperUniforms = createPaperUniforms();
   const camera = new THREE.PerspectiveCamera(47, 1, 0.1, 140);
   camera.position.set(0, 9, 11);
   camera.lookAt(0, 0, 4);
@@ -45,10 +51,11 @@ export async function createTypeFieldScene(
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
-    alpha: false,
+    alpha: true,
     preserveDrawingBuffer: true,
     powerPreference: 'high-performance',
   });
+  renderer.setClearColor(0x000000, 0);
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.35));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -80,13 +87,8 @@ export async function createTypeFieldScene(
     color: '#d8c4a4',
     roughness: 0.96,
   });
-  faceMaterial.onBeforeCompile = (shader) => {
-    shader.vertexShader = 'attribute vec2 typeTile;\n' + shader.vertexShader;
-    shader.vertexShader = shader.vertexShader.replace(
-      '#include <uv_vertex>',
-      '#include <uv_vertex>\nvMapUv=(vMapUv*.98+.01+typeTile)/32.;\nvBumpMapUv=(vBumpMapUv*.98+.01+typeTile)/32.;',
-    );
-  };
+  blendTypeIntoPaper(bodyMaterial, paperUniforms);
+  blendTypeIntoPaper(faceMaterial, paperUniforms, true);
   resources.push(bodyMaterial, faceMaterial);
   const columns = 40,
     rows = 25,
@@ -96,12 +98,17 @@ export async function createTypeFieldScene(
   const bodyGeometry = new RoundedBoxGeometry(0.99, bodyHeight, 1.11, 1, 0.025);
   const faceGeometry = new THREE.PlaneGeometry(0.96, 0.99);
   faceGeometry.rotateX(-Math.PI / 2);
+  const paperDepths = new Float32Array(count);
+  const paperAttribute = new THREE.InstancedBufferAttribute(paperDepths, 1);
+  bodyGeometry.setAttribute('paperDepth', paperAttribute);
+  faceGeometry.setAttribute('paperDepth', paperAttribute);
   const tiles = new Float32Array(count * 2);
   for (let i = 0; i < count; i++) {
     tiles[i * 2] = i % 32;
     tiles[i * 2 + 1] = 31 - Math.floor(i / 32);
   }
-  faceGeometry.setAttribute('typeTile', new THREE.InstancedBufferAttribute(tiles, 2));
+  const tileAttribute = new THREE.InstancedBufferAttribute(tiles, 2);
+  faceGeometry.setAttribute('typeTile', tileAttribute);
   const bodies = new THREE.InstancedMesh(bodyGeometry, bodyMaterial, count),
     faces = new THREE.InstancedMesh(faceGeometry, faceMaterial, count);
   bodies.castShadow = bodies.receiveShadow = true;
@@ -111,7 +118,10 @@ export async function createTypeFieldScene(
   bodies.frustumCulled = faces.frustumCulled = false;
   scene.add(bodies, faces);
   resources.push(bodyGeometry, faceGeometry, bodies, faces);
-  const locked = new Uint8Array(count);
+  const visibleIndices: number[] = [];
+  const limits = new Float32Array(count),
+    depths = new Float32Array(count);
+  const projected = Array.from({ length: count }, () => ({ x: 0, y: 0 }));
   const lifts = new Float32Array(count),
     base = new Float32Array(count),
     targets = new Float32Array(count);
@@ -140,31 +150,35 @@ export async function createTypeFieldScene(
     };
   }
   function updateMatrices() {
-    for (let i = 0; i < count; i++) {
-      const p = position(i);
+    for (let slot = 0; slot < visibleIndices.length; slot++) {
+      const i = visibleIndices[slot],
+        p = position(i);
       dummy.position.set(p.x, -bodyHeight / 2 - 0.01 + lifts[i], p.z);
       dummy.rotation.set(0, Math.sin(i * 3.7) * 0.012, 0);
       dummy.updateMatrix();
-      bodies.setMatrixAt(i, dummy.matrix);
+      bodies.setMatrixAt(slot, dummy.matrix);
       dummy.position.y = 0.007 + lifts[i];
       dummy.updateMatrix();
-      faces.setMatrixAt(i, dummy.matrix);
+      faces.setMatrixAt(slot, dummy.matrix);
     }
     bodies.instanceMatrix.needsUpdate = faces.instanceMatrix.needsUpdate = true;
   }
-  const groundGeometry = new THREE.PlaneGeometry(200, 200),
+  // Individual static bed tiles follow the occupied sorts, never an infinite rectangle.
+  const groundGeometry = new THREE.PlaneGeometry(1.04, 1.16),
     groundMaterial = new THREE.MeshStandardMaterial({
       color: '#59432e',
       roughness: 1,
       emissive: '#352719',
       emissiveIntensity: 0.12,
     });
-  const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-  ground.rotation.x = -Math.PI / 2;
-  ground.position.y = -1.6;
+  groundGeometry.rotateX(-Math.PI / 2);
+  groundGeometry.setAttribute('paperDepth', paperAttribute);
+  blendTypeIntoPaper(groundMaterial, paperUniforms);
+  const ground = new THREE.InstancedMesh(groundGeometry, groundMaterial, count);
+  ground.frustumCulled = false;
   ground.receiveShadow = true;
   scene.add(ground);
-  resources.push(groundGeometry, groundMaterial);
+  resources.push(groundGeometry, groundMaterial, ground);
   scene.add(new THREE.HemisphereLight('#fff1d5', '#48382b', 2.7));
   const sun = new THREE.DirectionalLight('#f0d4ad', 2.6);
   sun.position.set(-12, 24, 12);
@@ -225,9 +239,8 @@ export async function createTypeFieldScene(
     for (let i = 0; i < count; i++) {
       const p = position(i),
         distance = Math.hypot(p.x - hit.x, p.z - hit.z);
-      const border = i % rows < 2 ? 0 : Math.min(1, ((i % rows) - 1) / 2);
-      const influence = locked[i] ? 0 : Math.max(0, 1 - distance / TYPE_MOTION.radius);
-      targets[i] = Math.max(base[i], Math.pow(influence, 1.5) * TYPE_MOTION.maxLift * border);
+      const influence = limits[i] ? Math.max(0, 1 - distance / TYPE_MOTION.radius) : 0;
+      targets[i] = Math.max(base[i], Math.pow(influence, 1.5) * limits[i]);
     }
     resume();
   }
@@ -239,7 +252,7 @@ export async function createTypeFieldScene(
       draw();
     } else resume();
   }
-  const resize = new ResizeObserver(() => {
+  function relayout() {
     if (disposed) return;
     const rect = canvas.getBoundingClientRect();
     renderer.setSize(Math.max(1, rect.width), Math.max(1, rect.height), false);
@@ -247,19 +260,53 @@ export async function createTypeFieldScene(
     camera.fov = innerWidth <= 700 ? 61 : 47;
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
+    const paperRect = canvas.closest('.book-contents')!.getBoundingClientRect();
+    paperUniforms.uPaperFrame.value.set(
+      rect.top - paperRect.top,
+      rect.height,
+      paperRect.height,
+      canvas.height,
+    );
+    visibleIndices.length = 0;
     for (let i = 0; i < count; i++) {
       const p = position(i);
-      const upper = new THREE.Vector3(p.x, TYPE_MOTION.maxLift, p.z - 1.16).project(camera);
-      const x = (upper.x + 1) / 2,
-        y = (1 - upper.y) / 2;
-      locked[i] = y < boundaryAt(x) ? 1 : 0;
-      base[i] = locked[i] ? 0 : restPose[i];
+      const center = new THREE.Vector3(p.x, 0, p.z).project(camera);
+      const nextRow = new THREE.Vector3(p.x, 0, p.z + 1.16).project(camera);
+      const x = (center.x + 1) / 2,
+        y = (1 - center.y) / 2;
+      const rowHeight = Math.max(0.002, Math.abs(nextRow.y - center.y) / 2);
+      const depth = (y - boundaryAt(x)) / rowHeight;
+      const response = edgeResponse(depth);
+      depths[i] = depth;
+      projected[i] = { x, y };
+      limits[i] = response.maxLift;
+      base[i] = response.visible ? Math.min(restPose[i], limits[i] * 0.55) : 0;
       targets[i] = lifts[i] = base[i];
+      if (!response.visible) continue;
+      const slot = visibleIndices.length;
+      visibleIndices.push(i);
+      paperDepths[slot] = depth;
+      tiles[slot * 2] = i % 32;
+      tiles[slot * 2 + 1] = 31 - Math.floor(i / 32);
+      color.setHSL(0.085, 0.18, 0.67 + ((i * 37) % 11) / 70);
+      bodies.setColorAt(slot, color);
+      dummy.position.set(p.x, -1.6, p.z);
+      dummy.rotation.set(0, 0, 0);
+      dummy.updateMatrix();
+      ground.setMatrixAt(slot, dummy.matrix);
     }
+    bodies.count = faces.count = ground.count = visibleIndices.length;
+    paperAttribute.needsUpdate =
+      tileAttribute.needsUpdate =
+      ground.instanceMatrix.needsUpdate =
+        true;
+    if (bodies.instanceColor) bodies.instanceColor.needsUpdate = true;
 
     draw();
-  });
+  }
+  const resize = new ResizeObserver(relayout);
   resize.observe(canvas);
+  relayout();
   const intersection = new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
     if (visible) resume();
@@ -296,7 +343,25 @@ export async function createTypeFieldScene(
     inspect() {
       return {
         count,
-        active: Array.from(lifts).filter((h, i) => Math.abs(h - base[i]) > 0.005).length,
+        active: visibleIndices.filter((i) => Math.abs(lifts[i] - base[i]) > 0.005).length,
+        visible: visibleIndices.length,
+        edgeActive: visibleIndices.filter(
+          (i) => depths[i] < 1 && Math.abs(lifts[i] - base[i]) > 0.005,
+        ).length,
+        maxEdgeLift: Math.max(
+          0,
+          ...visibleIndices.filter((i) => depths[i] < 1).map((i) => lifts[i] - base[i]),
+        ),
+        edgeSamples: visibleIndices
+          .filter(
+            (i) =>
+              depths[i] < 1 &&
+              projected[i].x >= 0 &&
+              projected[i].x <= 1 &&
+              projected[i].y >= 0 &&
+              projected[i].y <= 1,
+          )
+          .map((i) => ({ index: i, ...projected[i], lift: lifts[i] - base[i], limit: limits[i] })),
         maxLift: Math.max(...lifts),
         paused,
         framePending: !!frame,

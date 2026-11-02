@@ -1,11 +1,17 @@
 import { Link } from 'react-router-dom';
 import { BOOK_CHAPTERS } from './chapters';
 import { BookTypeField } from './BookTypeField';
+import { TYPE_PAPER_GRADIENT } from './typePaper';
 import './type-home.css';
 
 export default function BookContents() {
   return (
-    <section className="book-contents" aria-label="社科通识总目录" data-book-scene>
+    <section
+      className="book-contents"
+      aria-label="社科通识总目录"
+      data-book-scene
+      style={{ backgroundImage: TYPE_PAPER_GRADIENT }}
+    >
       <div className="book-contents-ink">
         <h1 className="book-masthead book-floating-type" data-book-letter aria-label="社科通识">
           {Array.from('社科通识').map((character, index) => (

@@ -73,6 +73,7 @@ export function BookTypeField() {
         (element as HTMLCanvasElement & { typeScene?: TypeFieldScene }).typeScene = scene;
         element.dataset.bookMistState = 'ready';
         element.classList.add('has-type-scene');
+        element.parentElement?.classList.add('has-live-type-scene');
         unregister = registerMistSnapshot(element, () => scene.capture());
       })
       .catch(() => {
@@ -82,6 +83,8 @@ export function BookTypeField() {
       cancelled = true;
       clearTimeout(timer);
       unregister();
+      element.classList.remove('has-type-scene');
+      element.parentElement?.classList.remove('has-live-type-scene');
       owner.current?.dispose();
       owner.current = null;
       delete (element as HTMLCanvasElement & { typeScene?: TypeFieldScene }).typeScene;
@@ -95,11 +98,17 @@ export function BookTypeField() {
   return (
     <>
       <div className="book-landscape book-type-landscape" aria-hidden="true">
-        <img
-          className="book-type-poster"
-          src="/type-study/materials/type-home-static.webp"
-          alt=""
-        />
+        <picture className="book-type-picture">
+          <source
+            media="(max-width: 700px)"
+            srcSet="/type-study/materials/type-home-static-mobile.webp"
+          />
+          <img
+            className="book-type-poster"
+            src="/type-study/materials/type-home-static.webp"
+            alt=""
+          />
+        </picture>
         <canvas
           className="book-mist book-type-canvas"
           ref={canvas}

@@ -50,5 +50,5 @@ atlas.save(out/'qianziwen-type-atlas.webp',quality=88)
 height.save(out/'qianziwen-type-height.webp',quality=85)
 from type_boundary import build_boundary
 build_boundary(root)
-(root/'design/type-study/source/type-field-atlas.json').write_text(json.dumps({'source':'https://zh.wikisource.org/wiki/千字文','characters':text,'count':1000,'layout':'source vertical columns, reflected as one forme; column 0 at left after reflection','atlasSize':4096,'cell':128,'grid':[40,25],'glyphsMirrored':True,'wood':'Poly Haven Wood Table 001, CC0','boundary':'actual Jinshanling photo trace; home-wall-trace.json owns relief, feather and opacity ramp'},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+(root/'design/type-study/source/type-field-atlas.json').write_text(json.dumps({'source':'https://zh.wikisource.org/wiki/千字文','characters':text,'count':1000,'layout':'source vertical columns, reflected as one forme; column 0 at left after reflection','atlasSize':4096,'cell':128,'grid':[40,25],'glyphsMirrored':True,'wood':'Poly Haven Wood Table 001, CC0','boundary':'real Jinshanling photo trace selects complete sorts at rest; original PNG retained as source study, not a runtime clip'},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print('Built 1000 real mirrored glyphs, relief atlas and feathered real-wall boundary.')

@@ -21,3 +21,5 @@
 2026-11-01用户回复“这张质感可以，作为取材备选”。来源：https://unsplash.com/photos/close-up-of-antique-wooden-letterpress-type-blocks-JzcEdsEy1hg ，摄影Declan Sun；页面列出SONY ILCE-7RM5，2026-04-16发布；使用Unsplash License：https://unsplash.com/license ，不是CC0，也不是纪录片截帧。
 
 取材原件为2000px下载版本，保存在design/type-study/source/old-type-photo-reference.jpg；原图坐标、透视四边形与细边裁切在old-type-edge-source.json。只取真实磨损边缘的窄条与积墨明暗，转换为深木色，不复制源照片中的旧字形。字身摄影木纹仍来自Poly Haven；新字面仍由Noto真实字体排成。派生纹理不冒称整张古活字照片，也不把Unsplash照片混标为CC0或软件MIT。
+## 2026-11-02 实体边缘
+原金山岭照片与描边归属及许可保持不变，当前只用描边决定完整字模的静止排布；PNG蒙版退役，不再作为运行时裁切。桌面和手机WebP是现有真实字形、授权纹理与该排布的透明截图，未更换来源或生成长城照片。材质备选仍为试用，不等同最终视觉确认。

@@ -9,14 +9,7 @@
 :is(.book-site-home, .type-home-ghost) .book-contents {
   min-height: 100svh;
   height: 100svh;
-  background: linear-gradient(
-    to bottom,
-    #f8f4ec 0%,
-    #f3ecde 32%,
-    #e8dbc4 53%,
-    #cdb594 77%,
-    #aa8a65 100%
-  );
+  background: var(--paper);
   color: var(--paper-ink);
 }
 :is(.book-site-home, .type-home-ghost) .book-contents-ink {
@@ -96,9 +89,7 @@
   inset: 36% 0 0;
   z-index: 0;
   pointer-events: none;
-  mask-image: url('/type-study/materials/type-field-wall-mask.png');
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
+  mask: none;
   transform: none !important;
 }
 :is(.book-site-home, .type-home-ghost) .book-type-canvas.book-mist {
@@ -114,6 +105,14 @@
 }
 :is(.book-site-home, .type-home-ghost) .book-type-canvas.has-type-scene {
   opacity: 1;
+}
+.has-live-type-scene > .book-type-picture {
+  visibility: hidden;
+}
+.book-type-picture {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .book-type-poster {
   width: 100%;
@@ -209,4 +208,17 @@
     transparent 87%,
     #0007 100%
   );
+}
+
+/* Short windows and browser zoom keep the masthead above the intact type edge. */
+@media (max-height: 650px) and (min-width: 701px) {
+  :is(.book-site-home, .type-home-ghost) .book-masthead {
+    font-size: clamp(32px, 9vh, 58px);
+  }
+  :is(.book-site-home, .type-home-ghost) .book-contents-nav {
+    top: 7.5%;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-chapter-link {
+    font-size: clamp(18px, 4vh, 25px);
+  }
 }
