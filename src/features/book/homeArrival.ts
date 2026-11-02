@@ -15,7 +15,7 @@ export function homeArrival(
   const main = root.querySelector<HTMLElement>('main')!;
   const bounds = source.getBoundingClientRect();
   const ghost = source.cloneNode(true) as HTMLElement;
-  ghost.classList.add('book-home-ghost');
+  ghost.classList.add('book-home-ghost', 'type-home-ghost');
   ghost.inert = true;
   ghost.removeAttribute('id');
   ghost.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));

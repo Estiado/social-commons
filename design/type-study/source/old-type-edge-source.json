@@ -1,0 +1,23 @@
+{
+  "source": "https://unsplash.com/photos/close-up-of-antique-wooden-letterpress-type-blocks-JzcEdsEy1hg",
+  "author": "Declan Sun",
+  "license": "Unsplash License",
+  "quad": [
+    1020,
+    761,
+    1100,
+    875,
+    1220,
+    810,
+    1140,
+    700
+  ],
+  "strip": [
+    18,
+    443,
+    438,
+    455
+  ],
+  "use": "Only physical edge pixels and ink wear; no source glyph shape",
+  "userDecision": "Accepted as material candidate, 2026-11-01"
+}

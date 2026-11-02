@@ -1,0 +1,224 @@
+:is(.book-site-home, .type-home-ghost) {
+  --paper: #f7f2e8;
+  --paper-ink: #402f25;
+  background: var(--paper);
+}
+:is(.book-site-home, .type-home-ghost) .book-header {
+  display: none;
+}
+:is(.book-site-home, .type-home-ghost) .book-contents {
+  min-height: 100svh;
+  height: 100svh;
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+:is(.book-site-home, .type-home-ghost) .book-contents-ink {
+  display: block;
+  padding: 0;
+  position: relative;
+  height: 100svh;
+  z-index: 2;
+  pointer-events: none;
+}
+:is(.book-site-home, .type-home-ghost) .book-contents-ink a {
+  pointer-events: auto;
+}
+:is(.book-site-home, .type-home-ghost) .book-masthead {
+  position: absolute;
+  right: 14%;
+  top: 6%;
+  font-size: clamp(60px, 6.65vw, 106px);
+  font-weight: 600;
+  letter-spacing: 0.105em;
+  line-height: 1.08;
+  text-shadow: none;
+}
+:is(.book-site-home, .type-home-ghost) .book-contents-nav {
+  position: absolute;
+  top: 9%;
+  left: 5.7%;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 34px;
+  align-items: flex-start;
+}
+:is(.book-site-home, .type-home-ghost) .book-directory-heading {
+  writing-mode: horizontal-tb;
+  font-size: clamp(19px, 1.5vw, 25px);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding-top: 0;
+  line-height: 1.4;
+  text-shadow: none;
+}
+:is(.book-site-home, .type-home-ghost) .book-chapter-columns {
+  display: flex;
+  flex-direction: row;
+  direction: ltr;
+  gap: 0;
+}
+:is(.book-site-home, .type-home-ghost) .book-chapter-link {
+  font-size: clamp(24px, 1.9vw, 32px);
+  font-weight: 500;
+  color: #4b382a;
+  letter-spacing: 0.13em;
+  line-height: 1.25;
+  min-height: 0;
+  min-width: 64px;
+  width: clamp(70px, 8.2vw, 140px);
+  padding: 0 20px 14px;
+  align-items: flex-start;
+  text-shadow: none;
+}
+:is(.book-site-home, .type-home-ghost) .book-chapter-link:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 52px;
+  border-left: 1px solid #a99c874d;
+}
+:is(.book-site-home, .type-home-ghost) .book-chapter-link[href='/essay'] {
+  font-weight: 600;
+}
+:is(.book-site-home, .type-home-ghost) .book-link-mark {
+  display: none;
+}
+:is(.book-site-home, .type-home-ghost) .book-type-landscape {
+  inset: 36% 0 0;
+  z-index: 0;
+  pointer-events: none;
+  mask: none;
+  transform: none !important;
+}
+:is(.book-site-home, .type-home-ghost) .book-type-canvas.book-mist {
+  inset: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  opacity: 0;
+  mask: none;
+  filter: none;
+  background: none;
+}
+:is(.book-site-home, .type-home-ghost) .book-type-canvas.has-type-scene {
+  opacity: 1;
+}
+.has-live-type-scene > .book-type-picture {
+  visibility: hidden;
+}
+.book-type-picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.book-type-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+:is(.book-site-home, .type-home-ghost) .type-motion-control {
+  right: 24px;
+  bottom: 14px;
+  color: #e9d5b0;
+  background: #30221670;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid #e9d5b03d;
+  z-index: 5;
+  font-size: 12px;
+}
+:is(.book-site-home, .type-home-ghost) .book-footer {
+  font-size: 12px;
+}
+:is(.book-site-home, .type-home-ghost) .book-footer [data-home-paper-source] {
+  display: none;
+}
+@media (max-width: 1000px) {
+  :is(.book-site-home, .type-home-ghost) .book-masthead {
+    right: 9%;
+    font-size: clamp(56px, 8.3vw, 80px);
+  }
+  :is(.book-site-home, .type-home-ghost) .book-contents-nav {
+    left: 5%;
+    gap: 16px;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-chapter-link {
+    width: 8vw;
+    min-width: 54px;
+    padding: 0 12px 12px;
+    font-size: 25px;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-directory-heading {
+    font-size: 18px;
+  }
+}
+@media (max-width: 700px) {
+  :is(.book-site-home, .type-home-ghost) .book-masthead {
+    top: 7%;
+    right: 9%;
+    font-size: clamp(43px, 9.4vw, 58px);
+  }
+  :is(.book-site-home, .type-home-ghost) .book-contents-nav {
+    top: 9%;
+    left: 4%;
+    gap: 12px;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-directory-heading {
+    writing-mode: vertical-rl;
+    font-size: 15px;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-chapter-link {
+    width: 8vw;
+    min-width: 29px;
+    padding: 0 5px 12px;
+    font-size: clamp(17px, 4vw, 24px);
+    letter-spacing: 0.15em;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-chapter-link:before {
+    height: 36px;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-type-landscape {
+    top: 42%;
+  }
+  :is(.book-site-home, .type-home-ghost) .type-motion-control {
+    right: 12px;
+    bottom: 12px;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-footer {
+    padding-inline: 20px;
+  }
+}
+
+/* Keep the same photographic focus falloff as the supplied homepage reference. */
+:is(.book-site-home, .type-home-ghost) .book-type-landscape::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  backdrop-filter: blur(1.2px);
+  mask-image: linear-gradient(
+    to bottom,
+    #0008 0%,
+    #0005 22%,
+    transparent 52%,
+    transparent 87%,
+    #0007 100%
+  );
+}
+
+/* Short windows and browser zoom keep the masthead above the intact type edge. */
+@media (max-height: 650px) and (min-width: 701px) {
+  :is(.book-site-home, .type-home-ghost) .book-masthead {
+    font-size: clamp(32px, 9vh, 58px);
+  }
+  :is(.book-site-home, .type-home-ghost) .book-contents-nav {
+    top: 7.5%;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-chapter-link {
+    font-size: clamp(18px, 4vh, 25px);
+  }
+}
