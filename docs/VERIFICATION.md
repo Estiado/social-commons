@@ -8,6 +8,7 @@
 - 群鉴搜索“洛伦兹”命中细案例，完整目录按Enter展开16条、再按Enter收起；调查组依次关联霍乱、日食观测和洛伦兹。390×844、768×1024、1440×1000抽查无页面横向溢出。截图`daily-paths-mobile.png`、`history-paths-mobile.png`、`history-paths-desktop.png`存于D盘`.artifacts`，未提交。
 - 本轮使用Frontend Design、Taste的既有界面收敛原则、Impeccable distill/craft-floor和humanizer-zh；Impeccable上下文程序此前无法加载，依据PRODUCT.md和现有源码继续，没有冒称引擎评分。未新增字体、动效库、数据库或账号配置，未操作复制站。
 - 本段为发布前记录，正式推送与部署状态待GitHub和Cloudflare确认后补记。
+- 发布后补记：功能提交`7422b953f55c3489e35c9e7d03cc2ba530fbaed2`已正常推送main。[GitHub检查](https://github.com/Estiado/social-commons/actions/runs/41374101949/job/125050527110)completed/success；[Cloudflare](https://github.com/Estiado/social-commons/runs/125050701999)明确`Deployed successfully`，部署预览`f344fb8c.social-commons.pages.dev`。正式站`/daily`抽查显示本周“做了选择以后，怎样面对没走的路”三篇短读，完整目录147条。验收临时5194服务已关闭，原5180服务未操作。
 
 ## 正式站内容扩充 · 2026-11-02
 
