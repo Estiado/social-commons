@@ -1,5 +1,14 @@
 # 验证记录 · 2026-10-20—11-02
 
+## 日新与群鉴的串联阅读 · 2026-11-02
+
+- 在独立生产工作区的`codex/reading-paths-20261102`实现，基于`0fbf752`。日新六组、群鉴四组，每组两三篇；保留147条概念与16条事件、稳定ID、原始阅读块和既有保存导出模型。新增57处导读由统一编辑稿生成，现65组1665字段。
+- 一次完整`scripts/dev.ps1 check`退出0，106/106测试通过，类型、ESLint、生产构建、函数打包与Word/PDF生成通过，日志`.artifacts/reading-paths-check.log`。新增回归覆盖引用有效性、北京周一换组、跨年与非法日期、URL上下文不匹配。不是对学习效果的验证。
+- 真实浏览器发现details手动展开会回收状态，改为summary的键盘／点击统一切换；修复后补类型、ESLint和生产构建，未重复完整检查。日新手动展开18条、再显示36条、按Enter收起均已实测；搜索“反事实”自动打开目录、找到2条，按Enter焦点进入结果。清空恢复阅读线，切换标签组后URL与三条链接正确；进入d144后可继续d145、d146并返回该组。
+- 群鉴搜索“洛伦兹”命中细案例，完整目录按Enter展开16条、再按Enter收起；调查组依次关联霍乱、日食观测和洛伦兹。390×844、768×1024、1440×1000抽查无页面横向溢出。截图`daily-paths-mobile.png`、`history-paths-mobile.png`、`history-paths-desktop.png`存于D盘`.artifacts`，未提交。
+- 本轮使用Frontend Design、Taste的既有界面收敛原则、Impeccable distill/craft-floor和humanizer-zh；Impeccable上下文程序此前无法加载，依据PRODUCT.md和现有源码继续，没有冒称引擎评分。未新增字体、动效库、数据库或账号配置，未操作复制站。
+- 本段为发布前记录，正式推送与部署状态待GitHub和Cloudflare确认后补记。
+
 ## 正式站内容扩充 · 2026-11-02
 
 - 在独立工作区、分支`codex/production-content-20261102`从生产main的`bdf9a1d`开始；发布前GitHub API再次确认main仍为该SHA。未切换或写入书本／活字预览工作区，未运行生产数据库操作。示例SQL仅重新生成96条，未在Supabase执行。

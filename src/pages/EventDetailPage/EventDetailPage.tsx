@@ -1,10 +1,17 @@
-import { useParams, Link } from 'react-router-dom';
-import { getEventById } from '@/data/events';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { getEventById, EVENTS } from '@/data/events';
 import { ContentReader } from '@/features/reading/ContentReader';
+import { HISTORY_READING_PATHS } from '@/data/readingPaths';
+import { readingPathForItem } from '@/features/discovery/selection';
+import { ReadingPathNavigation } from '@/features/discovery/ReadingPathSection';
+
+const itemsById = new Map(EVENTS.map((item) => [item.id, item]));
 
 export default function EventDetailPage() {
   const { id = '' } = useParams();
+  const [params] = useSearchParams();
   const event = getEventById(id);
+  const path = readingPathForItem(HISTORY_READING_PATHS, id, params.get('path'));
   return (
     <article className="mx-auto max-w-4xl px-6 py-12">
       <Link to="/events" className="mb-7 inline-block text-sm text-accent underline">
@@ -15,6 +22,9 @@ export default function EventDetailPage() {
           <p className="mb-3 text-sm text-muted-foreground">{event.category}</p>
           <h1 className="mb-8 font-serif text-3xl font-semibold leading-relaxed">{event.title}</h1>
           <ContentReader kind="event" id={id} />
+          {path && (
+            <ReadingPathNavigation path={path} id={id} basePath="/events" items={itemsById} />
+          )}
           {event.academicPapers.length > 0 && (
             <section className="mt-10 border-t pt-6" aria-label="文献检索">
               <h2 className="mb-4 font-serif text-xl">核对文献出处</h2>
