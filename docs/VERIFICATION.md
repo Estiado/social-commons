@@ -7,6 +7,7 @@
 - 本地真实浏览器：`/essay?id=e114`能显示《被命名的世界》选段和朝文道cwd署名；新手欢迎可跳过。`/guanlan/events/kakeya-proof`显示新正文和两份有标题的本站PDF入口。`/world/weather-prediction`显示五章主文与各补充层级；390×844抽查无横向溢出，目录默认收起。截图`.artifacts/content-weather-mobile.png`仅在D盘，不提交。
 - 两份PDF解析为127页、49页，字节数与SHA-256写入公开manifest，许可与原始署名随文件保留。未独立复核完整数学证明。微信原帖未能独立读取，选段只依据用户提供文本；不称已经核读原帖。研究摘要与全文的核读范围见本轮扩容记录。
 - 本段于发布前写入。GitHub推送、CI、Cloudflare部署及正式站抽查结果将在确认后补记；以上本地检查不能证明已经上线。
+- 发布后补记：内容提交`f370b52f9e08625bb9530232e99a2d0917fe0659`正常推送main。[GitHub检查](https://github.com/Estiado/social-commons/actions/runs/41372092751/job/125044532357)completed/success；[Cloudflare Pages](https://github.com/Estiado/social-commons/runs/125044723898)明确`Deployed successfully`，部署预览`a55bc59b.social-commons.pages.dev`。正式站`/essay?id=e114`已显示《被命名的世界》选段及if著／乘桴修／朝文道cwd署名，不是完整下水作文。复制站仍为`codex/book-preview`、原5项雾稿修改未变；仅关闭本轮5194临时服务，未动原5180服务。
 
 ## 全站精修与分类层级 · 2026-10-29
 
