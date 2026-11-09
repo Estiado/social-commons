@@ -1,6 +1,17 @@
 # 内容维护与本轮来源
 
-更新：2026-11-02。具体条目中的出处链接是维护入口，不能用本文件代替原文。
+更新：2026-11-09。具体条目中的出处链接是维护入口，不能用本文件代替原文。
+
+## 2026-11-09 增补
+
+- 观澜新增 Swift 再入、冷门绝学学院、COP31 三篇事件阅读，附 12 份署名来源提要。Swift 以 NASA 通告的 11 月 4 日更新为准。古文字条目区分仪式、教学安排、研究者访谈和媒体评论。气候条目区分 ERA5 单月观测、年度预测、长期目标及会议安排。[NASA 再入通告](https://science.nasa.gov/blogs/swift/2026/11/02/nasas-swift-observatory-to-re-enter-atmosphere/) · [人民网现场报道](https://ent.people.com.cn/n1/2026/1107/c1012-40829684.html) · [哥白尼十月月报](https://climate.copernicus.eu/surface-air-temperature-october-2026)
+- 媒体目录保留此前 50 篇，增补澎湃评论、Carbon Brief、ING THINK 和 NASA Science 各一篇。站内存推荐语和出处，原文在发布者页面阅读。
+- 知天下新增 COP31 五章七书签，更新巴以人道近况与红海航运。加沙区分 11 月 6 日发布日期和主要统计期。红海条目将马士基季报作为该公司的运营证据。[联合国人道报告](https://www.ochaopt.org/content/humanitarian-situation-report-5-november-2026) · [马士基第三季度报告](https://investor.maersk.com/static-files/d2b58e5f-0772-4ec3-8a62-49533c45d4d1)
+- 撷英新增《赠刘景文》《观书有感·其一》《秋词·其一》《夜泊牛渚怀古》，按选定版本收录全篇。各篇附公开赏析出处，苏轼、李白两篇注明异文。日新及议论文素材共用多波段接力、文献校勘、气温距平三条释读。群鉴沿用旧印刷史条目编号，补入毕昇泥活字与瑞安木活字。[沈括《梦溪笔谈》卷十八](https://www.shidianguji.com/book/NGJ892411999012226120370/chapter/1lv20f05d6uca) · [UNESCO 木活字印刷术](https://ich.unesco.org/en/RL/dragon-dance-00322)
+
+站内编辑文字仍由 `content/站内编辑稿.md` 生成。更新公共条目及种子文件时保留旧条目编号，种子只用于构建和本地测试。
+
+## 2026-11-02 增补
 
 本轮“选择、命名与复杂世界”的来源、核读范围、来稿选段及电子原件许可见[2026-11-02扩容记录](CONTENT_EXPANSION_2026-11-02.md)。不修改复制站，不收录题干，不完整转载下水作文。
 

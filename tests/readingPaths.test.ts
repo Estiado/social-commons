@@ -26,7 +26,7 @@ test('短读线只引用既有条目，每组两三篇且主目录与原始事�
       }
     }
   }
-  assert.equal(DAILY_KNOWLEDGE.length, 147);
+  assert.equal(DAILY_KNOWLEDGE.length, 150);
   assert.equal(EVENTS.length, 16);
   for (const id of HISTORY_MAIN_IDS) assert.ok(EVENTS.some((item) => item.id === id));
 });

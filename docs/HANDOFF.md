@@ -1,5 +1,11 @@
 # 接手记录
 
+## 2026-11-09 活字首页与内容增补
+
+- 正式站候选从 `f0fa659` 集成活字首页，保留已有导读、正文路由、下方首页内容、阅读空间、反馈及环境配置。独立预览的页间过场、摄影书页及预览服务隔离不纳入正式站。完整比较见[审计与点评](TYPE_HOME_AUDIT_2026-11-09.md)。
+- 本次使用新日新 ID `d148`–`d150`、撷英 ID `q115`–`q118` 与素材 ID `e118`–`e120`，避开正式站 11 月 2 日的条目。[内容与来源](CONTENT_SOURCES.md)
+- 已确认[正式站旧版备份分支](https://github.com/Estiado/social-commons/tree/backup/main-before-type-2026-11-09)指向 `f0fa659451beb5f14733c1e170bf01a0424daa68`。
+
 更新：2026-11-02。仓库 `Estiado/social-commons`，生产分支 main，Cloudflare Pages。
 
 ## 2026-11-02 日新与群鉴阅读整理

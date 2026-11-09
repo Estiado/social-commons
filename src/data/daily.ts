@@ -7,10 +7,12 @@ import { SOCIAL_KNOWLEDGE } from './knowledge/socialEvidence.ts';
 import { LEARNING_KNOWLEDGE } from './knowledge/learningAndCulture.ts';
 import { EXPERIENCE_KNOWLEDGE } from './knowledge/socialExperience.ts';
 import { YOUTH_KNOWLEDGE } from './knowledge/youthStudies.ts';
+import { NOVEMBER_KNOWLEDGE } from './knowledge/november.ts';
 
 // EXPORTS: DAILY_KNOWLEDGE, getTodayKnowledge
 
 export const DAILY_KNOWLEDGE: IDailyKnowledge[] = [
+  ...NOVEMBER_KNOWLEDGE,
   ...CHOICE_KNOWLEDGE,
   ...ATTENTION_KNOWLEDGE,
   ...EXPERIENCE_KNOWLEDGE,

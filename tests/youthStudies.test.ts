@@ -44,7 +44,7 @@ test('青年研究共用题名与出处，旧目录、近期时评及专题关�
     assert.ok(DAILY_KNOWLEDGE.some((item) => item.id === `d${number}`));
   for (let number = 1; number <= 70; number++)
     assert.ok(ESSAY_MATERIALS.some((item) => item.id === `e${number}`));
-  assert.equal(CURATED_COMMENTARIES.length, 50);
+  assert.equal(CURATED_COMMENTARIES.length, 54);
   assert.ok(
     !CURATED_COMMENTARIES.some((item) => YOUTH_STUDIES.some((study) => study.id === item.id)),
   );

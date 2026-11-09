@@ -1,21 +1,41 @@
 import { EDITORIAL } from '../../../.artifacts/editorial/history/publicLife.ts';
 import type { IEvent } from '../types';
 
+const dreamPool = 'https://www.shidianguji.com/book/NGJ892411999012226120370/chapter/1lv20f05d6uca';
+const woodenType = 'https://ich.unesco.org/en/RL/dragon-dance-00322';
+
 export const PUBLIC_LIFE_EVENTS: IEvent[] = [
   {
     id: 'printing-connections',
     title: '从《金刚经》到古登堡：印刷史的多条线索',
-    date: '7世纪起；868年、1377年与约1455年是重要实物节点',
+    date: '7世纪起；868年、北宋庆历年间、1377年、约1455年及2010年',
     location: '东亚与欧洲',
     category: '技术与文化',
     summary: EDITORIAL['PUBLIC_LIFE_EVENTS.printing-connections.summary'],
     summarySources: [
+      { title: '沈括《梦溪笔谈》卷十八〈技艺〉', url: dreamPool },
+      { title: '联合国教科文组织：中国木活字印刷术', url: woodenType },
       {
         title: 'Jacob Nadal、Dan Paterson：From Jikji to Gutenberg',
         url: 'https://blogs.loc.gov/preservation/2023/05/jikji-gutenberg/',
       },
     ],
     perspectives: [
+      {
+        id: 'printing-bi-sheng',
+        role: '沈括的工序记录',
+        title: '同一枚字模如何反复排用',
+        description:
+          EDITORIAL[
+            'PUBLIC_LIFE_EVENTS.printing-connections.perspectives.printing-bi-sheng.description'
+          ],
+        quote: '每字为一印，火烧令坚。',
+        original: '每字为一印，火烧令坚。',
+        source: '沈括《梦溪笔谈》卷十八〈技艺〉',
+        sourceType: '史料记载',
+        sourceUrl: dreamPool,
+        locator: '以“板印书籍”起首的条目',
+      },
       {
         id: 'printing-scholarship',
         role: 'Jacob Nadal 的学术会议致辞',
@@ -70,7 +90,7 @@ export const PUBLIC_LIFE_EVENTS: IEvent[] = [
       },
     ],
     academicPapers: [],
-    references: [],
+    references: [{ title: 'UNESCO：瑞安木活字印刷术与修谱', url: woodenType }],
   },
   {
     id: 'seneca-falls-1848',

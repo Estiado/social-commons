@@ -8,6 +8,7 @@ import { SOCIAL_EXAMPLES } from './essay/socialEvidence.ts';
 import { LEARNING_EXAMPLES } from './essay/learningAndCulture.ts';
 import { EXPERIENCE_EXAMPLES } from './essay/socialExperience.ts';
 import { YOUTH_EXAMPLES } from './essay/youthStudies.ts';
+import { NOVEMBER_EXAMPLES } from './knowledge/november.ts';
 
 export interface EssayExample extends MaterialFields {
   id: string;
@@ -17,6 +18,7 @@ export interface EssayExample extends MaterialFields {
 // Site examples are source-based summaries, not unattributed copied passages.
 // The same reviewed data can seed Supabase; visitors cannot edit these entries.
 export const ESSAY_EXAMPLES: EssayExample[] = [
+  ...NOVEMBER_EXAMPLES,
   ...CONTRIBUTED_READINGS,
   ...CHOICE_EXAMPLES,
   ...ATTENTION_EXAMPLES,

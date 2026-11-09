@@ -1,6 +1,9 @@
 import type { GuanlanEvent } from './types';
 
 const loaders: Record<string, () => Promise<{ default: GuanlanEvent }>> = {
+  'swift-reentry-2026': () => import('./swiftReentry.ts'),
+  'rare-disciplines-2026': () => import('./rareDisciplines.ts'),
+  'cop31-november-2026': () => import('./cop31.ts'),
   'kakeya-proof': () => import('./kakeya.ts'),
   'resume-label-audit': () => import('./resumeAudit.ts'),
   'short-drama-overseas': () => import('./shortDrama.ts'),

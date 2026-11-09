@@ -9,6 +9,7 @@ import { GUANLAN_EVENTS } from '@/data/guanlan/catalogue';
 import type { IQuote } from '@/data/types';
 import { nameCatalogueReferences } from '@/features/reading/references';
 import { readingTextSegments } from '@/features/reading/textSegments';
+import BookContents from '@/features/book/BookContents';
 // Keep the home preview short as the full event catalogue grows.
 const latestEvents = [...GUANLAN_EVENTS]
   .sort((a, b) => b.sortDate.localeCompare(a.sortDate))
@@ -26,6 +27,7 @@ export default function HomePage() {
   });
   return (
     <div>
+      <BookContents />
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 pt-6 text-sm">
         <Link to="/briefing" className="min-h-11 py-3 text-accent underline underline-offset-4">
           阅读今日简报
@@ -38,7 +40,7 @@ export default function HomePage() {
       <section data-page-enter="section" className="relative overflow-hidden">
         <div className="relative mx-auto max-w-6xl px-6 py-10 md:py-16">
           <div className="max-w-3xl">
-            <h1 className="mb-3 font-serif text-2xl font-semibold">今日摘读</h1>
+            <h2 className="mb-3 font-serif text-2xl font-semibold">今日摘读</h2>
             <p className="mb-8 text-sm text-muted-foreground">
               {new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
             </p>

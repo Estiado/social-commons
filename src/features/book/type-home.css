@@ -1,0 +1,291 @@
+.type-home {
+  --paper: #f7f2e8;
+  --paper-ink: #402f25;
+  --paper-accent: #80513e;
+  --type-chapter-size: clamp(24px, 1.9vw, 32px);
+  --type-chapter-top: 9%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: max(300px, calc(100svh - 64px));
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+.type-home :focus-visible {
+  outline: 2px solid var(--paper-accent);
+  outline-offset: 4px;
+}
+.type-home .book-contents-ink {
+  position: relative;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+.type-home .book-contents-ink :is(a, button) {
+  pointer-events: auto;
+}
+.type-home .book-masthead {
+  position: absolute;
+  right: 14%;
+  top: 6%;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(60px, 6.65vw, 106px);
+  font-weight: 600;
+  letter-spacing: 0.105em;
+  line-height: 1.08;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  white-space: nowrap;
+}
+.type-home .book-contents-nav {
+  position: absolute;
+  top: var(--type-chapter-top);
+  left: 5.7%;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 34px;
+  align-items: flex-start;
+}
+.type-home .book-directory-heading {
+  writing-mode: horizontal-tb;
+  font-size: clamp(19px, 1.5vw, 25px);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding-top: 0;
+  line-height: 1.4;
+  text-shadow: none;
+}
+.type-home .book-chapter-columns {
+  display: flex;
+  flex-direction: row;
+  direction: ltr;
+  gap: 0;
+}
+.type-home .book-chapter-link {
+  position: relative;
+  display: flex;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-family: var(--font-serif);
+  font-size: var(--type-chapter-size);
+  font-weight: 500;
+  color: #4b382a;
+  letter-spacing: 0.13em;
+  line-height: 1.25;
+  min-height: 44px;
+  min-width: 64px;
+  width: clamp(70px, 8.2vw, 140px);
+  padding: 0 20px 14px;
+  align-items: center;
+  text-shadow: none;
+}
+.type-home .book-chapter-link:is(:hover, :focus-visible) {
+  color: var(--paper-accent);
+}
+.type-home .book-chapter-link:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 52px;
+  border-left: 1px solid #a99c874d;
+}
+.type-home .book-chapter-link[href='/essay'] {
+  font-weight: 600;
+}
+.type-home-tools {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 12px 0 0 16px;
+  font-size: 14px;
+}
+.type-home-tools :is(a, button) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--paper-ink);
+  text-decoration: underline;
+  text-decoration-color: #80513e80;
+  text-underline-offset: 4px;
+}
+.type-home-tools :is(a, button):is(:hover, :focus-visible) {
+  color: var(--paper-accent);
+}
+.type-home .book-type-landscape {
+  position: absolute;
+  /* Five vertical glyphs, their tracking, and the tools below the longest chapter. */
+  inset: max(36%, calc(var(--type-chapter-top) + 5.65 * var(--type-chapter-size) + 80px)) 0 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.type-home .book-type-canvas {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  opacity: 0;
+}
+.type-home .book-type-canvas.has-type-scene {
+  opacity: 1;
+}
+.has-live-type-scene > .book-type-picture {
+  visibility: hidden;
+}
+.book-type-picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.book-type-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.type-home :is(.type-motion-control, .type-home-credit) {
+  position: absolute;
+  bottom: 14px;
+  color: #f7f2e8;
+  background: #402f25;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border: 1px solid #e9d5b03d;
+  z-index: 5;
+  font-size: 14px;
+}
+.type-home .type-motion-control {
+  right: 24px;
+}
+.type-home .type-home-credit {
+  left: 24px;
+}
+.type-home :is(.type-motion-control, .type-home-credit):focus-visible {
+  outline-color: #f7f2e8;
+}
+@media (max-width: 1000px) {
+  .type-home {
+    --type-chapter-size: 25px;
+  }
+  .type-home .book-masthead {
+    right: 9%;
+    font-size: clamp(56px, 8.3vw, 80px);
+  }
+  .type-home .book-contents-nav {
+    left: 5%;
+    gap: 16px;
+  }
+  .type-home .book-chapter-link {
+    width: 8vw;
+    min-width: 54px;
+    padding: 0 12px 12px;
+  }
+  .type-home .book-directory-heading {
+    font-size: 18px;
+  }
+}
+@media (max-width: 700px) {
+  .type-home .book-masthead {
+    top: 7%;
+    right: 9%;
+    font-size: clamp(43px, 9.4vw, 58px);
+  }
+  .type-home .book-contents-nav {
+    top: 7%;
+    left: 5%;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .type-home .book-directory-heading {
+    font-size: 15px;
+  }
+  .type-home .book-chapter-link {
+    width: 8vw;
+    min-width: 44px;
+    padding: 0 5px 8px;
+    font-size: clamp(17px, 4vw, 24px);
+    letter-spacing: 0.15em;
+  }
+  .type-home .book-chapter-link:before {
+    height: 36px;
+  }
+  .type-home .book-type-landscape {
+    top: 42%;
+  }
+  .type-home .type-motion-control {
+    right: 12px;
+    bottom: 12px;
+  }
+  .type-home .type-home-credit {
+    left: 12px;
+    bottom: 12px;
+  }
+  .type-home-tools {
+    margin: 6px 0 0 0;
+  }
+}
+
+/* Readable chapter labels when six vertical columns cannot fit beside the title. */
+@media (max-width: 379px), (max-width: 700px) and (max-height: 500px) {
+  .type-home .book-chapter-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(60px, max-content));
+    gap: 0 5px;
+  }
+  .type-home .book-chapter-link {
+    writing-mode: horizontal-tb;
+    justify-content: flex-start;
+    width: auto;
+    padding: 0 3px;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  .type-home .book-chapter-link:before {
+    inset: auto 5px 2px 3px;
+    height: 0;
+    border: 0;
+    border-bottom: 1px solid #a99c874d;
+  }
+}
+
+@media (max-width: 700px) and (max-height: 564px) {
+  .type-home .book-masthead {
+    font-size: clamp(25px, 7vh, 39px);
+  }
+  .type-home .book-type-landscape {
+    top: max(199px, 48%);
+  }
+}
+
+/* Keep the same photographic focus falloff as the supplied homepage reference. */
+.type-home .book-type-landscape::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  backdrop-filter: blur(1.2px);
+  mask-image: linear-gradient(
+    to bottom,
+    #0008 0%,
+    #0005 22%,
+    transparent 52%,
+    transparent 87%,
+    #0007 100%
+  );
+}
+
+/* Short windows and browser zoom keep the masthead above the intact type edge. */
+@media (max-height: 650px) and (min-width: 701px) {
+  .type-home {
+    --type-chapter-top: 7.5%;
+    --type-chapter-size: clamp(18px, 4vh, 25px);
+  }
+  .type-home .book-masthead {
+    font-size: clamp(32px, 9vh, 58px);
+  }
+}
