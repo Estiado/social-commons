@@ -38,7 +38,7 @@ import {
 } from '../src/features/reading/backup.ts';
 
 test('观澜事件保留三层视角、真实署名及有效关联，未知路径不能命中对象原型', async () => {
-  assert.equal(new Set(GUANLAN_EVENTS.map((item) => item.id)).size, 15);
+  assert.equal(new Set(GUANLAN_EVENTS.map((item) => item.id)).size, GUANLAN_EVENTS.length);
   const topics = new Set(TOPIC_SPECIALS.map((item) => item.id));
   for (const summary of GUANLAN_EVENTS) {
     const event = (await getGuanlanEvent(summary.id))!;

@@ -1,6 +1,7 @@
 import { EDITORIAL } from '../../.artifacts/editorial/curatedCommentaries.ts';
 import { AUTUMN_COMMENTARIES } from './commentaries/autumn.ts';
 import { CULTURE_AND_TECHNOLOGY } from './commentaries/cultureAndTechnology.ts';
+import { NOVEMBER_COMMENTARIES } from './commentaries/november.ts';
 
 export interface CuratedCommentary {
   id: string;
@@ -533,9 +534,9 @@ const PREVIOUS_COMMENTARIES: CuratedCommentary[] = [
   },
 ];
 
-// Preserve the source ledger while keeping the public selection within 50.
-// Explicit rotation retains all new selections, including older overseas reads.
+// Keep the previous 50 selections available alongside the new edition.
 export const CURATED_COMMENTARIES: CuratedCommentary[] = [
+  ...NOVEMBER_COMMENTARIES,
   ...CULTURE_AND_TECHNOLOGY,
   ...PREVIOUS_COMMENTARIES.slice(0, 50 - CULTURE_AND_TECHNOLOGY.length),
 ];

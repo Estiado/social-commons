@@ -75,7 +75,7 @@ export function BookMotion({ children }: { children: ReactNode }) {
             ease: 'power3.out',
             clearProps: 'transform,opacity,filter',
           });
-        if (photo) {
+        if (photo && !photo.classList.contains('book-type-landscape')) {
           gsap.from(photo, { scale: 1.025, duration: 1.2, ease: 'power3.out' });
           gsap.to(photo, {
             y: -20,
@@ -88,7 +88,11 @@ export function BookMotion({ children }: { children: ReactNode }) {
             },
           });
         }
-        if (photo && window.matchMedia('(pointer: fine)').matches) {
+        if (
+          photo &&
+          !photo.classList.contains('book-type-landscape') &&
+          window.matchMedia('(pointer: fine)').matches
+        ) {
           const xTo = gsap.quickTo(photo, 'x', { duration: 0.8, ease: 'power3.out' });
           const move = (event: PointerEvent) => xTo((event.clientX / window.innerWidth - 0.5) * 9);
           const leave = () => xTo(0);

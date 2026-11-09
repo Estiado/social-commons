@@ -31,7 +31,7 @@ const story: WorldStory = {
           '国际海事组织“红海地区”专题页开篇，中文短句；对应英文为“Seafarer safety is paramount.”。',
       },
     ],
-    latest: [EDITORIAL['latest.0'], EDITORIAL['latest.1']],
+    latest: [EDITORIAL['latest.november'], EDITORIAL['latest.0'], EDITORIAL['latest.1']],
     terms: [
       { term: EDITORIAL['terms.0.term'], definition: EDITORIAL['terms.0.definition'] },
       { term: EDITORIAL['terms.1.term'], definition: EDITORIAL['terms.1.definition'] },
@@ -103,6 +103,13 @@ const story: WorldStory = {
         title: EDITORIAL['timeline.8.title'],
         sourceIds: ['caixin-return'],
       },
+      {
+        id: 'maersk-q3-2026',
+        date: '2026-11-05',
+        dateLabel: '2026年11月5日',
+        title: EDITORIAL['timeline.november.title'],
+        sourceIds: ['maersk-q3'],
+      },
     ],
     narrative: [
       {
@@ -166,9 +173,10 @@ const story: WorldStory = {
           EDITORIAL['narrative.4.paragraphs.2'],
           EDITORIAL['narrative.4.paragraphs.3'],
           EDITORIAL['narrative.4.paragraphs.4'],
+          EDITORIAL['narrative.4.paragraphs.november'],
         ],
-        sourceIds: ['maersk-mecl', 'caixin-return', 'imo-attack'],
-        timelineIds: ['mecl2026', 'attack2026', 'return2026'],
+        sourceIds: ['maersk-mecl', 'caixin-return', 'imo-attack', 'maersk-q3'],
+        timelineIds: ['mecl2026', 'attack2026', 'return2026', 'maersk-q3-2026'],
       },
       {
         id: 'what-changes-the-outlook',
@@ -218,6 +226,13 @@ const story: WorldStory = {
     ],
     watch: [EDITORIAL['watch.0'], EDITORIAL['watch.1'], EDITORIAL['watch.2']],
     sources: [
+      {
+        id: 'maersk-q3',
+        title: 'A.P. Moller – Maersk Interim Report Q3 2026',
+        publication: '马士基季度报告',
+        date: '2026-11-05',
+        url: 'https://investor.maersk.com/static-files/d2b58e5f-0772-4ec3-8a62-49533c45d4d1',
+      },
       {
         id: 'houthi-history',
         title: '“封锁红海”的也门胡塞武装，什么来头？',

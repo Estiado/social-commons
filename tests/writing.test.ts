@@ -212,7 +212,7 @@ test('跨标签页文稿修订冲突拒绝覆盖；旧包迁移幂等并保留�
 });
 
 test('大类覆盖全部细学科；精选条目日期、URL、专题关联有效', () => {
-  assert.equal(KNOWLEDGE_GROUPS.length, 5);
+  assert.equal(KNOWLEDGE_GROUPS.length, 6);
   for (const item of DAILY_KNOWLEDGE) assert.notEqual(knowledgeGroup(item.category), '其他');
   const topics = new Set(TOPIC_SPECIALS.map((item) => item.id));
   assert.equal(
@@ -224,7 +224,7 @@ test('大类覆盖全部细学科；精选条目日期、URL、专题关联有�
     CURATED_COMMENTARIES.length,
   );
   for (const item of CURATED_COMMENTARIES) {
-    assert.match(item.publishedAt, /^2026-(07|08|09|10)-\d\d$/);
+    assert.match(item.publishedAt, /^2026-(07|08|09|10|11)-\d\d$/);
     assert.ok(item.publishedAt <= item.checkedAt);
     assert.ok(commentaryTopics(item).every((id) => topics.has(id)));
   }

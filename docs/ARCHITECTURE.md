@@ -2,6 +2,8 @@
 
 已确认的受众、产品定位与约束见根目录[PRODUCT.md](../PRODUCT.md)。Impeccable流程默认保存在`.impeccable/config.json`，它属于开发流程配置，不是页面实现；记录为暂停的待办不能自动实施。
 
+活字独立预览补充（2026-11-02）：`typeFieldEdge`以实拍描边筛选完整字模，提供连续升降上限；`typeFieldScene`拥有三个实例网格、占用字床、按需渲染及清理。`typePaper/typePaperMaterial`共享HTML和WebGL纸色，按静止深度混色；运行时不再全层裁切。`BookTypeField`负责指针、触控、透明截图注册与同场景静态回退。本文旧书页试验段落不覆盖本分支的首页实现，正文及公共数据边界不变。
+
 ## 分层
 
 目录内导航：`quoteDirectory.ts`只持有编目元数据及纯函数，生成撷英中外/时期/作者树，不改公共文章模型或旧ID。`catalogueArrival.ts`只处理左页内临时文字与清理，`BookCatalogue`拥有层级、检索、分页和焦点。其他章节保留原业务分类，临时层不追加到body，也不进入跨章节截图。

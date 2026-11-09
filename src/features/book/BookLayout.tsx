@@ -162,7 +162,7 @@ export function Layout() {
             {catalogue && chapter ? (
               <BookCatalogue key={chapter.id} chapter={chapter} />
             ) : (
-              <Outlet />
+              <Outlet context={{ openSearch: () => changeSearch(true) }} />
             )}
           </Suspense>
         </main>
@@ -171,12 +171,12 @@ export function Layout() {
           <div>
             {home && (
               <a
-                href="https://commons.wikimedia.org/wiki/File:NLC892-312002092935-327932_千字文_清道光二十六年刻本.pdf"
+                href="/type-study/licenses/MATERIALS.md"
                 target="_blank"
                 rel="noopener noreferrer"
                 data-no-book-turn
               >
-                纸面出处
+                材质出处
               </a>
             )}
             <button onClick={openBrief} type="button" data-tour="book-briefing">
