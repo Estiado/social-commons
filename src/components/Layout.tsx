@@ -88,7 +88,7 @@ export function Layout() {
         data-tour-shell
         className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md"
       >
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-6">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
           <NavLink to="/" className="group flex shrink-0 items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary font-serif text-lg font-bold text-primary-foreground group-hover:bg-accent">
               通
@@ -97,7 +97,7 @@ export function Layout() {
               <span className="font-serif text-lg font-semibold leading-none tracking-wide">
                 社科通识
               </span>
-              <span className="mt-1 text-[10px] tracking-[0.2em] text-muted-foreground">
+              <span className="mt-1 text-[10px] tracking-[0.2em] text-muted-foreground max-[379px]:hidden">
                 SOCIAL · HUMANITIES
               </span>
             </span>
@@ -148,14 +148,14 @@ export function Layout() {
             <NavLink
               aria-label="我的阅读空间"
               to="/reading"
-              className="shrink-0 p-2 text-muted-foreground"
+              className="inline-flex size-11 shrink-0 items-center justify-center text-muted-foreground"
             >
               <User className="h-5 w-5" />
             </NavLink>
             <button
               aria-label="搜索全站"
               data-tour="nav-search"
-              className="shrink-0 p-2"
+              className="inline-flex size-11 shrink-0 items-center justify-center"
               onClick={() => changeSearch(true)}
             >
               <Search className="h-5 w-5" />
@@ -164,7 +164,7 @@ export function Layout() {
               aria-label="网站栏目"
               aria-expanded={mobileOpen}
               aria-controls="mobile-sections"
-              className="p-2"
+              className="inline-flex size-11 items-center justify-center"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
               <Menu className="h-5 w-5" />
@@ -219,27 +219,6 @@ export function Layout() {
           </nav>
         )}
       </header>
-      {location.pathname === '/' && (
-        <div data-tour-shell className="mx-auto w-full max-w-7xl px-6 pt-6 sm:pt-8">
-          <button
-            type="button"
-            aria-label="打开全站搜索"
-            onClick={() => changeSearch(true)}
-            className="flex min-h-14 w-full items-center gap-3 rounded-sm border border-border bg-card px-4 text-left text-foreground/75 hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:min-h-16 sm:px-5"
-          >
-            <Search className="h-5 w-5 shrink-0" />
-            <span className="min-w-0 flex-1 text-sm sm:text-base">
-              搜索事件、名句、概念与写作素材
-            </span>
-            <span className="hidden text-xs text-foreground/75 md:inline">
-              支持栏目、标签与来源筛选
-            </span>
-            <kbd className="hidden shrink-0 rounded-sm border px-1.5 py-1 text-xs text-foreground/75 lg:inline">
-              Ctrl / ⌘ K
-            </kbd>
-          </button>
-        </div>
-      )}
       <main
         ref={main}
         id="main-content"
@@ -254,7 +233,7 @@ export function Layout() {
             </p>
           }
         >
-          <Outlet />
+          <Outlet context={{ openSearch: () => changeSearch(true) }} />
         </Suspense>
       </main>
       <ErrorBoundary fallback={null}>

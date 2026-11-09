@@ -24,21 +24,38 @@ const news = [
   })),
 ].sort((a, b) => b.date.localeCompare(a.date));
 // Complete, sourced classical works; no clipping a long poem into a single slogan.
-const poems = QUOTE_CATALOGUE.filter((item) => /^q1(?:0\d|1[0-4])$/u.test(item.id));
-const concepts = DAILY_KNOWLEDGE.filter((item) => /^d1(?:1[5-9]|[23]\d|4[0-7])$/u.test(item.id));
+const poems = QUOTE_CATALOGUE.filter((item) => /^q1(?:0\d|1[0-8])$/u.test(item.id));
+const concepts = DAILY_KNOWLEDGE.filter((item) => /^d1(?:1[5-9]|[234]\d|50)$/u.test(item.id));
+const newsDates = [...new Set(news.map((item) => item.date))].sort();
+
+function newsForDay(day: string, dayIndex: number) {
+  let available: typeof news = [];
+  let anchor = 0;
+  let offset = 0;
+  for (const date of newsDates) {
+    if (date > day) break;
+    const start = dayNumber(date);
+    const previous = available.length
+      ? available[(start - anchor - 1 + offset) % available.length]
+      : undefined;
+    available = news.filter((item) => item.date <= date).slice(0, 5);
+    anchor = start;
+    // Start each updated pool with its newest story unless readers saw it yesterday.
+    offset = available.length > 1 && available[0].id === previous?.id ? 1 : 0;
+  }
+  return available.length ? available[(dayIndex - anchor + offset) % available.length] : undefined;
+}
 
 export function briefingEdition(day = chinaDay()) {
   const number = dayNumber(day);
   // Keep the digest tied to the newest editorial material. Older July stories
   // remain in Guanlan, rather than filling today's news slot merely by rotation.
-  const available = news.filter((item) => item.date <= day).slice(0, 5);
-  if (!available.length || !poems.length || !concepts.length)
-    throw new Error('这个日期尚无简报内容');
+  const article = newsForDay(day, number);
+  if (!article || !poems.length || !concepts.length) throw new Error('这个日期尚无简报内容');
   const pick = <T>(items: T[]) => items[((number % items.length) + items.length) % items.length];
-  const newsIndex = number - dayNumber('2026-10-27');
   return {
     day,
-    news: available[((newsIndex % available.length) + available.length) % available.length],
+    news: article,
     quote: pick(poems),
     concept: pick(concepts),
   };

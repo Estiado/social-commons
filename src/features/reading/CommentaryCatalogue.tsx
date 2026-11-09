@@ -17,6 +17,7 @@ export function CommentaryCatalogue({ topicId }: { topicId?: string }) {
     [topicId],
   );
   const sources = [...new Set(catalogue.map((item) => item.source))];
+  const months = [...new Set(catalogue.map((item) => item.publishedAt.slice(0, 7)))];
   const query = search.trim().toLocaleLowerCase();
   const visible = catalogue.filter(
     (item) =>
@@ -39,7 +40,7 @@ export function CommentaryCatalogue({ topicId }: { topicId?: string }) {
         <span className="text-sm text-muted-foreground">{visible.length} 篇</span>
       </div>
       <p className="text-sm leading-relaxed text-muted-foreground">
-        2026 年 7—10 月精选文章，按媒体和主题检索。海外文章提供原站阅读入口。
+        按媒体、月份和主题检索时评与报道。每篇均可回到原站阅读。
       </p>
       <Input
         aria-label="搜索时评"
@@ -70,10 +71,10 @@ export function CommentaryCatalogue({ topicId }: { topicId?: string }) {
             value={month}
             onChange={(event) => setMonth(event.target.value)}
           >
-            <option value="">7—10 月</option>
-            {['07', '08', '09', '10'].map((value) => (
-              <option key={value} value={'2026-' + value}>
-                {Number(value)} 月
+            <option value="">全部月份</option>
+            {months.map((value) => (
+              <option key={value} value={value}>
+                {value.slice(0, 4)} 年 {Number(value.slice(5))} 月
               </option>
             ))}
           </select>

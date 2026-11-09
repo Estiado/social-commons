@@ -7,10 +7,12 @@ import { SOCIAL_ESSAYS } from './essay/socialEvidence.ts';
 import { LEARNING_ESSAYS } from './essay/learningAndCulture.ts';
 import { EXPERIENCE_ESSAYS } from './essay/socialExperience.ts';
 import { YOUTH_ESSAYS } from './essay/youthStudies.ts';
+import { NOVEMBER_ESSAYS } from './knowledge/november.ts';
 
 // 内置概念目录。读者素材在本浏览器保存，站方示例独立维护于 essayExamples.ts。
 
 export const ESSAY_MATERIALS: IEssayMaterial[] = [
+  ...NOVEMBER_ESSAYS,
   ...CHOICE_ESSAYS,
   ...ATTENTION_ESSAYS,
   ...EXPERIENCE_ESSAYS,

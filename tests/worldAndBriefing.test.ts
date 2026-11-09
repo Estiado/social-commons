@@ -36,8 +36,8 @@ test('简报跨年及北京时间午夜换版，同一日稳定且连续日三�
   }
 });
 
-test('七条长期事件以连贯长读为主，时间书签关联正文，引用可保存导出', async () => {
-  assert.equal(WORLD_STORIES.length, 7);
+test('八条长期事件以连贯长读为主，时间书签关联正文，引用可保存导出', async () => {
+  assert.equal(WORLD_STORIES.length, 8);
   let nodes = 0;
   for (const summary of WORLD_STORIES) {
     const story = (await getWorldStory(summary.id))!;
@@ -117,7 +117,7 @@ test('七条长期事件以连贯长读为主，时间书签关联正文，引�
       ),
     );
   }
-  assert.equal(nodes, 66);
+  assert.equal(nodes, 75);
   assert.equal(await getWorldStory('__proto__'), undefined);
   assert.equal(await getWorldStory('constructor'), undefined);
 });

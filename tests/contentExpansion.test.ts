@@ -21,6 +21,9 @@ import {
 import { materialFieldsSchema } from '../src/features/essay/materials.ts';
 import { LEARNING_AND_CULTURE } from '../src/data/knowledge/learningAndCulture.ts';
 import { CULTURE_AND_TECHNOLOGY } from '../src/data/commentaries/cultureAndTechnology.ts';
+import { getGuanlanEvent } from '../src/data/guanlan/index.ts';
+import { GUANLAN_EVENTS } from '../src/data/guanlan/catalogue.ts';
+import { getWorldStory } from '../src/data/world/index.ts';
 
 test('扩容后旧 ID 保留，目录不重复推荐同一作品，新增内容具有来源和有效专题关系', () => {
   assert.ok(DAILY_KNOWLEDGE.length >= 100);
@@ -28,7 +31,7 @@ test('扩容后旧 ID 保留，目录不重复推荐同一作品，新增内容�
   assert.ok(ESSAY_MATERIALS.length >= 70);
   assert.ok(ESSAY_EXAMPLES.length >= 47);
   assert.ok(QUOTE_CATALOGUE.length >= 88);
-  assert.equal(CURATED_COMMENTARIES.length, 50);
+  assert.ok(CURATED_COMMENTARIES.length >= 54);
   for (const collection of [
     QUOTES,
     DAILY_KNOWLEDGE,
@@ -58,10 +61,39 @@ test('扩容后旧 ID 保留，目录不重复推荐同一作品，新增内容�
       assert.ok(QUOTE_CATALOGUE.some((item) => item.id === id));
   }
   for (const article of CURATED_COMMENTARIES) {
-    assert.match(article.publishedAt, /^2026-(07|08|09|10)-\d{2}$/);
+    assert.match(article.publishedAt, /^2026-(07|08|09|10|11)-\d{2}$/);
+    assert.ok(article.publishedAt <= article.checkedAt);
     for (const id of article.topicIds || [])
       assert.ok(TOPIC_SPECIALS.some((topic) => topic.id === id));
   }
+});
+
+test('十一月事件、长读和诗文由现有目录进入正文，关联来源可追溯', async () => {
+  for (const id of ['swift-reentry-2026', 'rare-disciplines-2026', 'cop31-november-2026']) {
+    const summary = GUANLAN_EVENTS.find((event) => event.id === id);
+    assert.ok(summary && summary.sortDate.startsWith('2026-11-'), id);
+    const event = await getGuanlanEvent(id);
+    assert.equal(event?.title, summary.title);
+    assert.ok(event.perspectives.length >= 3);
+    for (const section of [
+      event.recap,
+      event.background,
+      ...event.perspectives,
+      ...event.reconsiderations,
+    ]) {
+      assert.ok(section.paragraphs.length >= 2);
+      for (const sourceId of section.sourceIds)
+        assert.ok(event.sources.some((source) => source.id === sourceId));
+    }
+    for (const quoteId of event.relatedQuoteIds) assert.ok(getQuoteById(quoteId));
+    for (const dailyId of event.relatedDailyIds)
+      assert.ok(DAILY_KNOWLEDGE.some((item) => item.id === dailyId));
+  }
+  const story = await getWorldStory('cop31-climate-gap');
+  assert.equal(story?.updatedAt, '2026-11-09');
+  assert.ok(story.narrative.length >= 4);
+  assert.ok(story.relatedEventIds.includes('cop31-november-2026'));
+  assert.ok(QUOTE_CATALOGUE.length >= 104);
 });
 
 test('新来源在通识与素材中一致，完整作品及海外目录进入正确阅读路径', () => {

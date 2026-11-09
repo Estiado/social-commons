@@ -34,9 +34,19 @@ export const KNOWLEDGE_GROUPS = [
   },
   {
     name: '文学与传播',
-    subjects: ['文学理论', '中国文学', '媒介研究', '媒介哲学', '传播学', '文学批评', '美学'],
+    subjects: [
+      '文学理论',
+      '中国文学',
+      '媒介研究',
+      '媒介哲学',
+      '传播学',
+      '文学批评',
+      '美学',
+      '文献学',
+    ],
   },
   { name: '历史与世界', subjects: ['国际关系', '政治学', '历史学'] },
+  { name: '科学与技术', subjects: ['天文学', '气候科学'] },
 ] as const;
 export function knowledgeGroup(subject: string) {
   const primary = subject.split('·')[0].trim();
