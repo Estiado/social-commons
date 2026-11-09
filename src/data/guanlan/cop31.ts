@@ -1,0 +1,112 @@
+import { EDITORIAL, paragraphCopy } from '../../../.artifacts/editorial/guanlan/cop31.ts';
+import { GUANLAN_EVENTS } from './catalogue.ts';
+import type { GuanlanEvent } from './types';
+
+const event: GuanlanEvent = {
+  ...GUANLAN_EVENTS.find((item) => item.id === 'cop31-november-2026')!,
+  recap: {
+    title: EDITORIAL['recap.title'],
+    paragraphs: paragraphCopy('recap.paragraphs'),
+    sourceIds: ['c3s', 'unfccc', 'xinhua'],
+  },
+  background: {
+    title: EDITORIAL['background.title'],
+    paragraphs: paragraphCopy('background.paragraphs'),
+    sourceIds: ['c3s', 'unep'],
+  },
+  perspectives: [
+    {
+      title: EDITORIAL['views.0.title'],
+      paragraphs: paragraphCopy('views.0.paragraphs'),
+      sourceIds: ['c3s', 'unep'],
+      level: '现象',
+      keywords: ['基线', '预测', '气候情景'],
+    },
+    {
+      title: EDITORIAL['views.1.title'],
+      paragraphs: paragraphCopy('views.1.paragraphs'),
+      sourceIds: ['wmo'],
+      level: '社会',
+      keywords: ['预警', '风险传播'],
+    },
+    {
+      title: EDITORIAL['views.2.title'],
+      paragraphs: paragraphCopy('views.2.paragraphs'),
+      sourceIds: ['xinhua', 'unep', 'wmo'],
+      level: '思想',
+      keywords: ['执行', '核验'],
+    },
+  ],
+  reconsiderations: [
+    {
+      title: EDITORIAL['rethink.title'],
+      paragraphs: paragraphCopy('rethink.paragraphs'),
+      sourceIds: ['unfccc', 'xinhua', 'wmo'],
+    },
+  ],
+  sources: [
+    {
+      id: 'c3s',
+      title: 'Surface air temperature for October 2026',
+      author: 'Copernicus Climate Change Service',
+      publication: '哥白尼气候变化服务',
+      date: '2026-11-05',
+      kind: '研究',
+      url: 'https://climate.copernicus.eu/surface-air-temperature-october-2026',
+      description: EDITORIAL['sources.c3s.description'],
+      digest: paragraphCopy('sources.c3s.digest'),
+      importMode: 'paste',
+    },
+    {
+      id: 'unfccc',
+      title: 'Arrangements for the Opening of COP 31',
+      author: 'UNFCCC 秘书处',
+      publication: '联合国气候变化框架公约',
+      date: '2026-11-05',
+      kind: '自述',
+      url: 'https://unfccc.int/cop31/observer-organizations',
+      description: EDITORIAL['sources.unfccc.description'],
+      digest: paragraphCopy('sources.unfccc.digest'),
+      importMode: 'paste',
+    },
+    {
+      id: 'xinhua',
+      title: '新华社安塔利亚 COP31 会前报道',
+      author: '新华社',
+      publication: '新华社',
+      date: '2026-11-09',
+      kind: '报道',
+      url: 'https://www.news.cn/world/20261109/51dfc0e9e3b042a0bb50d39ec3e8b661/c.html',
+      description: EDITORIAL['sources.xinhua.description'],
+      digest: paragraphCopy('sources.xinhua.digest'),
+      importMode: 'paste',
+    },
+    {
+      id: 'wmo',
+      title: 'World Meteorological Organization activities during COP31',
+      author: 'WMO',
+      publication: '世界气象组织',
+      date: '2026-11-03',
+      kind: '自述',
+      url: 'https://wmo.int/media/announcement/world-meteorological-organization-activities-during-cop31',
+      description: EDITORIAL['sources.wmo.description'],
+      digest: paragraphCopy('sources.wmo.digest'),
+      importMode: 'paste',
+    },
+    {
+      id: 'unep',
+      title: 'Emissions Gap Report 2026',
+      author: 'UNEP',
+      publication: '联合国环境规划署',
+      date: '2026-10-21',
+      kind: '研究',
+      url: 'https://www.unep.org/en/publications/report/emissions-gap-report-2026',
+      description: EDITORIAL['sources.unep.description'],
+      digest: paragraphCopy('sources.unep.digest'),
+      importMode: 'paste',
+    },
+  ],
+  relatedDailyIds: ['d150'],
+  relatedQuoteIds: ['q115'],
+};
+export default event;

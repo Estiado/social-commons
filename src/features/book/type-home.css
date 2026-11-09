@@ -20,7 +20,7 @@
   z-index: 2;
   pointer-events: none;
 }
-:is(.book-site-home, .type-home-ghost) .book-contents-ink a {
+:is(.book-site-home, .type-home-ghost) .book-contents-ink :is(a, button) {
   pointer-events: auto;
 }
 :is(.book-site-home, .type-home-ghost) .book-masthead {
@@ -64,12 +64,17 @@
   color: #4b382a;
   letter-spacing: 0.13em;
   line-height: 1.25;
-  min-height: 0;
+  min-height: 44px;
   min-width: 64px;
   width: clamp(70px, 8.2vw, 140px);
   padding: 0 20px 14px;
-  align-items: flex-start;
+  align-items: center;
   text-shadow: none;
+}
+:is(.book-site-home, .type-home-ghost) .book-chapter-link:is(:hover, :focus-visible) {
+  color: var(--paper-accent);
+  text-shadow: none;
+  transform: none;
 }
 :is(.book-site-home, .type-home-ghost) .book-chapter-link:before {
   content: '';
@@ -82,8 +87,24 @@
 :is(.book-site-home, .type-home-ghost) .book-chapter-link[href='/essay'] {
   font-weight: 600;
 }
-:is(.book-site-home, .type-home-ghost) .book-link-mark {
-  display: none;
+.type-home-tools {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 12px 0 0 16px;
+  font-size: 14px;
+}
+.type-home-tools :is(a, button) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--paper-ink);
+  text-decoration: underline;
+  text-decoration-color: #80513e80;
+  text-underline-offset: 4px;
+}
+.type-home-tools :is(a, button):is(:hover, :focus-visible) {
+  color: var(--paper-accent);
 }
 :is(.book-site-home, .type-home-ghost) .book-type-landscape {
   inset: 36% 0 0;
@@ -123,19 +144,21 @@
 :is(.book-site-home, .type-home-ghost) .type-motion-control {
   right: 24px;
   bottom: 14px;
-  color: #e9d5b0;
-  background: #30221670;
+  color: #f7f2e8;
+  background: #402f25;
   min-height: 44px;
   padding: 8px 14px;
   border: 1px solid #e9d5b03d;
   z-index: 5;
-  font-size: 12px;
+  font-size: 14px;
 }
-:is(.book-site-home, .type-home-ghost) .book-footer {
-  font-size: 12px;
+.book-site-home .type-motion-control:focus-visible {
+  outline-color: #f7f2e8;
 }
-:is(.book-site-home, .type-home-ghost) .book-footer [data-home-paper-source] {
-  display: none;
+.book-site-home .book-footer :is(a, button) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 @media (max-width: 1000px) {
   :is(.book-site-home, .type-home-ghost) .book-masthead {
@@ -163,18 +186,18 @@
     font-size: clamp(43px, 9.4vw, 58px);
   }
   :is(.book-site-home, .type-home-ghost) .book-contents-nav {
-    top: 9%;
-    left: 4%;
-    gap: 12px;
+    top: 7%;
+    left: 5%;
+    flex-direction: column;
+    gap: 8px;
   }
   :is(.book-site-home, .type-home-ghost) .book-directory-heading {
-    writing-mode: vertical-rl;
     font-size: 15px;
   }
   :is(.book-site-home, .type-home-ghost) .book-chapter-link {
     width: 8vw;
-    min-width: 29px;
-    padding: 0 5px 12px;
+    min-width: 44px;
+    padding: 0 5px 8px;
     font-size: clamp(17px, 4vw, 24px);
     letter-spacing: 0.15em;
   }
@@ -190,6 +213,41 @@
   }
   :is(.book-site-home, .type-home-ghost) .book-footer {
     padding-inline: 20px;
+  }
+  .type-home-tools {
+    margin: 6px 0 0 0;
+  }
+}
+
+/* Readable chapter labels when six vertical columns cannot fit beside the title. */
+@media (max-width: 379px), (max-width: 700px) and (max-height: 500px) {
+  :is(.book-site-home, .type-home-ghost) .book-chapter-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(60px, max-content));
+    gap: 0 5px;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-chapter-link {
+    writing-mode: horizontal-tb;
+    justify-content: flex-start;
+    width: auto;
+    padding: 0 3px;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  :is(.book-site-home, .type-home-ghost) .book-chapter-link:before {
+    inset: auto 5px 2px 3px;
+    height: 0;
+    border: 0;
+    border-bottom: 1px solid #a99c874d;
+  }
+}
+
+@media (max-width: 700px) and (max-height: 500px) {
+  :is(.book-site-home, .type-home-ghost) .book-masthead {
+    font-size: clamp(25px, 7vh, 39px);
+  }
+  :is(.book-site-home, .type-home-ghost) .book-type-landscape {
+    top: max(210px, 48%);
   }
 }
 

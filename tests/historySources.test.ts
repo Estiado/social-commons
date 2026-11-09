@@ -19,7 +19,7 @@ test('群鉴每条先有背景再有可定位的著述摘读，没有自拟课�
   assert.equal(EVENTS.length, 14);
   assert.equal(
     EVENTS.reduce((sum, event) => sum + event.perspectives.length, 0),
-    42,
+    43,
   );
   for (const event of EVENTS) {
     assert.ok(event.summary.length >= 180, event.id);

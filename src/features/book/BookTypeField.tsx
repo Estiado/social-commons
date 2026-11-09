@@ -2,11 +2,27 @@ import { useEffect, useRef, useState } from 'react';
 import { registerMistSnapshot } from './mistSnapshot';
 import type { TypeFieldScene } from './typeFieldScene';
 
+const reducedMotion = '(prefers-reduced-motion: reduce)';
+
 export function BookTypeField() {
-  const canvas = useRef<HTMLCanvasElement>(null),
-    owner = useRef<TypeFieldScene | null>(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const poster = useRef<HTMLImageElement>(null);
+  const owner = useRef<TypeFieldScene | null>(null);
   const [paused, setPaused] = useState(false);
+  const [status, setStatus] = useState<'pending' | 'ready' | 'fallback'>('pending');
+  const [reduced, setReduced] = useState(() => matchMedia(reducedMotion).matches);
   const pausedRef = useRef(false);
+
+  useEffect(() => {
+    const preference = matchMedia(reducedMotion);
+    const update = () => {
+      if (preference.matches) setStatus('pending');
+      setReduced(preference.matches);
+    };
+    update();
+    preference.addEventListener('change', update);
+    return () => preference.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     pausedRef.current = paused;
@@ -14,6 +30,7 @@ export function BookTypeField() {
     else owner.current?.resume();
   }, [paused]);
   useEffect(() => {
+    if (reduced) return;
     const element = canvas.current!,
       root = element.closest<HTMLElement>('.book-contents')!;
     let cancelled = false,
@@ -58,12 +75,14 @@ export function BookTypeField() {
     root.addEventListener('pointerdown', down, { passive: true });
     root.addEventListener('pointerup', up, { passive: true });
     root.addEventListener('pointercancel', cancel);
-    void import('./typeFieldScene')
+    const posterReady = poster.current?.decode().catch(() => {}) ?? Promise.resolve();
+    void posterReady
+      .then(() => (cancelled ? undefined : import('./typeFieldScene')))
       .then((m) => {
-        if (cancelled) throw new Error('Cancelled scene');
-        return m.createTypeFieldScene(element, () => !cancelled);
+        if (m && !cancelled) return m.createTypeFieldScene(element, () => !cancelled);
       })
       .then((scene) => {
+        if (!scene) return;
         if (cancelled) {
           scene.dispose();
           return;
@@ -71,13 +90,13 @@ export function BookTypeField() {
         owner.current = scene;
         if (pausedRef.current) scene.pause();
         (element as HTMLCanvasElement & { typeScene?: TypeFieldScene }).typeScene = scene;
-        element.dataset.bookMistState = 'ready';
         element.classList.add('has-type-scene');
         element.parentElement?.classList.add('has-live-type-scene');
         unregister = registerMistSnapshot(element, () => scene.capture());
+        setStatus('ready');
       })
       .catch(() => {
-        if (!cancelled) element.dataset.bookMistState = 'fallback';
+        if (!cancelled) setStatus('fallback');
       });
     return () => {
       cancelled = true;
@@ -94,17 +113,19 @@ export function BookTypeField() {
       root.removeEventListener('pointerup', up);
       root.removeEventListener('pointercancel', cancel);
     };
-  }, []);
+  }, [reduced]);
   return (
     <>
       <div className="book-landscape book-type-landscape" aria-hidden="true">
         <picture className="book-type-picture">
           <source
-            media="(max-width: 700px)"
+            media="(max-width: 700px) and (orientation: portrait)"
             srcSet="/type-study/materials/type-home-static-mobile.webp"
           />
           <img
             className="book-type-poster"
+            ref={poster}
+            fetchPriority="high"
             src="/type-study/materials/type-home-static.webp"
             alt=""
           />
@@ -112,17 +133,18 @@ export function BookTypeField() {
         <canvas
           className="book-mist book-type-canvas"
           ref={canvas}
-          data-book-mist-state="pending"
+          data-book-mist-state={reduced ? 'static' : status}
         />
       </div>
-      <button
-        className="book-mist-control type-motion-control"
-        type="button"
-        aria-pressed={paused}
-        onClick={() => setPaused((v) => !v)}
-      >
-        {paused ? '继续动效' : '暂停动效'}
-      </button>
+      {!reduced && status === 'ready' && (
+        <button
+          className="book-mist-control type-motion-control"
+          type="button"
+          onClick={() => setPaused((value) => !value)}
+        >
+          {paused ? '继续动效' : '暂停动效'}
+        </button>
+      )}
     </>
   );
 }

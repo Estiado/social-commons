@@ -8,6 +8,7 @@ import { EXTENDED_CLASSICS, EXTENDED_COMMENTARIES } from './quotes/extendedClass
 import { DWELLING_AND_TIME } from './quotes/dwellingAndTime.ts';
 import { TIME_AND_ATTENTION } from './quotes/timeAndAttention.ts';
 import { FRIENDSHIP_READINGS, FRIENDSHIP_COMMENTARIES } from './quotes/friendshipAndNature.ts';
+import { EARLY_WINTER_READINGS } from './quotes/earlyWinter.ts';
 
 // IDs remain stable for existing links. Unverified legacy commentary was
 // withdrawn; only specifically sourced, reviewed summaries are published.
@@ -318,6 +319,7 @@ const QUOTE_TEXTS: Omit<IQuote, 'commentary'>[] = [
 ];
 
 const readingTexts: IQuote[] = [
+  ...EARLY_WINTER_READINGS,
   ...QUOTE_TEXTS,
   ...CLASSICAL_PASSAGES,
   ...EXTENDED_CLASSICS,

@@ -6,7 +6,7 @@ const story: WorldStory = {
   ...WORLD_STORIES.find((item) => item.id === 'palestine')!,
   ...{
     intro: [EDITORIAL['intro.0'], EDITORIAL['intro.1']],
-    latest: [EDITORIAL['latest.0'], EDITORIAL['latest.1']],
+    latest: [EDITORIAL['latest.november'], EDITORIAL['latest.0'], EDITORIAL['latest.1']],
     terms: [
       { term: EDITORIAL['terms.0.term'], definition: EDITORIAL['terms.0.definition'] },
       { term: EDITORIAL['terms.1.term'], definition: EDITORIAL['terms.1.definition'] },
@@ -79,6 +79,13 @@ const story: WorldStory = {
         title: EDITORIAL['timeline.8.title'],
         sourceIds: ['un-current', 'cri-current'],
       },
+      {
+        id: 'ocha-november',
+        date: '2026-11-06',
+        dateLabel: '2026年11月6日发布',
+        title: EDITORIAL['timeline.november.title'],
+        sourceIds: ['ocha-november'],
+      },
     ],
     perspectives: [
       {
@@ -108,6 +115,13 @@ const story: WorldStory = {
     ],
     watch: [EDITORIAL['watch.0'], EDITORIAL['watch.1'], EDITORIAL['watch.2']],
     sources: [
+      {
+        id: 'ocha-november',
+        title: 'Humanitarian Situation Report | 5 November 2026',
+        publication: '联合国人道主义事务协调厅',
+        date: '2026-11-06 发布；主要统计期为10月27日至11月2日',
+        url: 'https://www.ochaopt.org/content/humanitarian-situation-report-5-november-2026',
+      },
       {
         id: 'un-timeline',
         title: '巴勒斯坦问题：历史时间线',
@@ -313,6 +327,7 @@ const story: WorldStory = {
           EDITORIAL['narrative.4.paragraphs.3'],
           EDITORIAL['narrative.4.paragraphs.4'],
           EDITORIAL['narrative.4.paragraphs.5'],
+          EDITORIAL['narrative.4.paragraphs.november'],
         ],
         sourceIds: [
           'ceasefire',
@@ -320,8 +335,9 @@ const story: WorldStory = {
           'un-current',
           'reconstruction-news',
           'reconstruction-data',
+          'ocha-november',
         ],
-        timelineIds: ['ceasefire2025', 'one-year'],
+        timelineIds: ['ceasefire2025', 'one-year', 'ocha-november'],
       },
     ],
   },

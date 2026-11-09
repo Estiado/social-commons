@@ -1,10 +1,12 @@
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { BOOK_CHAPTERS } from './chapters';
 import { BookTypeField } from './BookTypeField';
 import { TYPE_PAPER_GRADIENT } from './typePaper';
 import './type-home.css';
 
 export default function BookContents() {
+  const { openSearch } = useOutletContext<{ openSearch: () => void }>();
+
   return (
     <section
       className="book-contents"
@@ -37,26 +39,35 @@ export default function BookContents() {
               </span>
             ))}
           </h2>
-          <div className="book-chapter-columns">
-            {BOOK_CHAPTERS.map((chapter) => (
-              <Link
-                key={chapter.id}
-                to={chapter.path}
-                className="book-chapter-link book-floating-type"
-                data-book-letter
-                aria-label={chapter.label}
-                data-tour={'home-' + (chapter.id === 'guanlan' ? 'topics' : chapter.id)}
-              >
-                <span aria-hidden="true">
-                  {Array.from(chapter.label).map((character, index) => (
-                    <span key={index} data-book-glyph>
-                      {character}
-                    </span>
-                  ))}
-                </span>
-                <span className="book-link-mark" aria-hidden="true" />
+          <div>
+            <div className="book-chapter-columns">
+              {BOOK_CHAPTERS.map((chapter) => (
+                <Link
+                  key={chapter.id}
+                  to={chapter.path}
+                  className="book-chapter-link book-floating-type"
+                  data-book-letter
+                  aria-label={chapter.label}
+                  data-tour={'home-' + (chapter.id === 'guanlan' ? 'topics' : chapter.id)}
+                >
+                  <span aria-hidden="true">
+                    {Array.from(chapter.label).map((character, index) => (
+                      <span key={index} data-book-glyph>
+                        {character}
+                      </span>
+                    ))}
+                  </span>
+                </Link>
+              ))}
+            </div>
+            <div className="type-home-tools">
+              <button type="button" onClick={openSearch} data-tour="home-search">
+                全站搜索
+              </button>
+              <Link to="/reading" data-no-book-turn>
+                阅读空间
               </Link>
-            ))}
+            </div>
           </div>
         </nav>
       </div>

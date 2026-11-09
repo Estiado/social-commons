@@ -18,7 +18,7 @@ import {
 test('新增事件有完整经过和不同来源，全部正文与提要均可进入同一文稿', async () => {
   const previous = new Set(['heritage-short-video', 'ai-at-work', 'academic-bars']);
   const added = GUANLAN_EVENTS.filter((item) => !previous.has(item.id));
-  assert.equal(added.length, 12);
+  assert.equal(added.length, 15);
   for (const summary of added) {
     const event = (await getGuanlanEvent(summary.id))!;
     assert.ok(event.recap.paragraphs.length >= 3, summary.id);
@@ -48,9 +48,9 @@ test('新增事件有完整经过和不同来源，全部正文与提要均可�
 
 test('日新与素材共用同一份研究文字，原有条目保留，专著定位不会误排成页码', () => {
   assert.equal(SOCIAL_EXPERIENCES.length, 18);
-  assert.equal(DAILY_KNOWLEDGE.length, 139);
-  assert.equal(ESSAY_MATERIALS.length, 109);
-  assert.equal(ESSAY_EXAMPLES.length, 86);
+  assert.equal(DAILY_KNOWLEDGE.length, 142);
+  assert.equal(ESSAY_MATERIALS.length, 112);
+  assert.equal(ESSAY_EXAMPLES.length, 89);
   for (const study of [...SOCIAL_EXPERIENCES, ...ATTENTION_STUDIES]) {
     const daily = DAILY_KNOWLEDGE.find((item) => item.id === study.id)!;
     const material = ESSAY_MATERIALS.find((item) => item.id === study.conceptId)!;
@@ -67,8 +67,8 @@ test('日新与素材共用同一份研究文字，原有条目保留，专著�
 });
 
 test('新增古典摘读保留完整作品和具体赏析出处，不改变旧作品别名', () => {
-  assert.equal(QUOTES.length, 110);
-  assert.equal(QUOTE_CATALOGUE.length, 100);
+  assert.equal(QUOTES.length, 114);
+  assert.equal(QUOTE_CATALOGUE.length, 104);
   for (let number = 99; number <= 110; number++) {
     const quote = getQuoteById(`q${number}`)!;
     assert.ok(quote.text.includes('\n'), quote.id);

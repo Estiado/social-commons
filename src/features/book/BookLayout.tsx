@@ -162,7 +162,7 @@ export function Layout() {
             {catalogue && chapter ? (
               <BookCatalogue key={chapter.id} chapter={chapter} />
             ) : (
-              <Outlet />
+              <Outlet context={{ openSearch: () => changeSearch(true) }} />
             )}
           </Suspense>
         </main>

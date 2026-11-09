@@ -36,6 +36,14 @@ export async function createTypeFieldScene(
   camera.position.set(0, 9, 11);
   camera.lookAt(0, 0, 4);
   const resources: Array<{ dispose(): void }> = [];
+  const context = canvas.getContext('webgl2', {
+    antialias: true,
+    alpha: true,
+    preserveDrawingBuffer: true,
+    powerPreference: 'high-performance',
+  });
+  if (!context) throw new Error('WebGL 2 unavailable');
+  const renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true });
   const loader = new THREE.TextureLoader();
   const results = await Promise.allSettled([
     loader.loadAsync('/type-study/materials/wood-matte.webp'),
@@ -45,16 +53,9 @@ export async function createTypeFieldScene(
   ]);
   if (!active() || results.some((r) => r.status === 'rejected')) {
     for (const r of results) if (r.status === 'fulfilled') r.value.dispose();
-
+    renderer.dispose();
     throw new Error('Type field material unavailable');
   }
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: true,
-    preserveDrawingBuffer: true,
-    powerPreference: 'high-performance',
-  });
   renderer.setClearColor(0x000000, 0);
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.35));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
