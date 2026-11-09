@@ -36,7 +36,7 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
     <div
       role="toolbar"
       aria-label="文稿格式"
-      className="sticky top-16 z-10 flex flex-wrap items-center gap-1 border-y bg-background/95 py-2 backdrop-blur"
+      className="sticky top-16 z-10 flex flex-wrap items-center gap-1 bg-background py-2"
     >
       <select
         aria-label="段落样式"

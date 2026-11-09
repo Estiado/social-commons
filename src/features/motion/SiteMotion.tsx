@@ -39,9 +39,9 @@ export default function SiteMotion({
           }
           for (const [kind, targets] of groups) {
             gsap.from(targets, {
-              y: kind === 'heading' ? 12 : 8,
-              opacity: 0.78,
-              duration: kind === 'heading' ? 0.42 : 0.3,
+              y: kind === 'heading' ? 10 : 5,
+              opacity: 0.85,
+              duration: kind === 'heading' ? 0.4 : 0.26,
               stagger: { amount: Math.min(0.12, (targets.length - 1) * 0.035) },
               ease: 'power3.out',
               overwrite: 'auto',

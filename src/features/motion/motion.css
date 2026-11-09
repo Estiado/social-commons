@@ -32,7 +32,7 @@ main [role='status'],
 }
 #mobile-sections {
   transform-origin: top;
-  animation: reading-menu 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: reading-menu 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes reading-confirm {
   from {
@@ -44,7 +44,7 @@ main [role='status'],
 }
 @keyframes reading-menu {
   from {
-    opacity: 0.7;
+    opacity: 0.83;
     transform: translateY(-6px);
   }
   to {

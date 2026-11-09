@@ -29,9 +29,8 @@
   margin: 1.2em 0 0.5em;
 }
 .writing-editor .tiptap blockquote {
-  border-left: 3px solid #aa4940;
-  padding-left: 1em;
-  margin: 1em 0;
+  margin-block: 1em;
+  margin-inline-start: 1em;
   color: #655b54;
 }
 .writing-editor .tiptap ul {

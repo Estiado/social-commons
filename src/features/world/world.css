@@ -48,9 +48,8 @@
 .world-list-heading input {
   padding: 12px;
   min-width: 240px;
-  background: var(--background);
-  border: 1px solid var(--input);
-  border-radius: 2px;
+  background: var(--paper-field);
+  border-radius: 0.35rem;
   color: var(--foreground);
 }
 .world-list-heading input::placeholder {
@@ -221,9 +220,7 @@
   width: 100%;
   margin-top: 10px;
   padding: 12px 8px;
-  border: 1px solid var(--input);
   color: var(--foreground);
-  background: var(--card);
 }
 .world-reading {
   min-width: 0;

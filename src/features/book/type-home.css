@@ -85,14 +85,6 @@
 .type-home .book-chapter-link:is(:hover, :focus-visible) {
   color: var(--paper-accent);
 }
-.type-home .book-chapter-link:before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 52px;
-  border-left: 1px solid #a99c874d;
-}
 .type-home .book-chapter-link[href='/essay'] {
   font-weight: 600;
 }
@@ -155,7 +147,6 @@
   display: inline-flex;
   align-items: center;
   padding: 8px 14px;
-  border: 1px solid #e9d5b03d;
   z-index: 5;
   font-size: 14px;
 }
@@ -244,12 +235,6 @@
     padding: 0 3px;
     font-size: 15px;
     letter-spacing: 0.02em;
-  }
-  .type-home .book-chapter-link:before {
-    inset: auto 5px 2px 3px;
-    height: 0;
-    border: 0;
-    border-bottom: 1px solid #a99c874d;
   }
 }
 
