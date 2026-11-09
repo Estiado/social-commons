@@ -76,14 +76,6 @@ export default function ReadingLibraryPage() {
       .then((matches) => {
         if (operation.signal.aborted) return;
         setSearchResult({ key: searchKey, matches, error: '' });
-        requestAnimationFrame(() => {
-          if (operation.signal.aborted) return;
-          resultsRef.current?.scrollIntoView({
-            block: 'center',
-            behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-          });
-          resultsRef.current?.focus({ preventScroll: true });
-        });
       })
       .catch((error) => {
         if (!operation.signal.aborted) {
@@ -96,6 +88,15 @@ export default function ReadingLibraryPage() {
       });
     return () => operation.abort();
   }, [query, searchKey, loading]);
+  useEffect(() => {
+    const heading = resultsRef.current;
+    if (!currentResult || currentResult.error || !heading) return;
+    heading.scrollIntoView({
+      block: 'center',
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+    });
+    heading.focus({ preventScroll: true });
+  }, [currentResult]);
   useEffect(() => {
     if (authLoading) return;
     let active = true;
