@@ -24,7 +24,7 @@ const sectionLabels = new Map(SECTIONS.map((section) => [section.type, section.l
 const SUGGESTIONS = ['AI 学习', '时间', '苏轼', '青年', '公平', '旅行'];
 const PAGE_SIZE = 30;
 const controlClass =
-  'min-h-11 rounded-sm border border-border bg-background px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
+  'min-h-11 rounded-sm px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
 
 function Highlight({ text, query }: { text: string; query: string }) {
   const ranges = searchHighlights(text, query);
@@ -117,7 +117,7 @@ export function GlobalSearch({
           shouldFilter={false}
           className="min-h-0 flex-1 rounded-none bg-background text-foreground"
         >
-          <div className="relative mx-4 shrink-0 rounded-sm border border-border bg-card focus-within:border-accent sm:mx-6 [&_[data-slot=command-input-wrapper]]:h-14 [&_[data-slot=command-input-wrapper]]:border-0 [&_[data-slot=command-input-wrapper]]:px-4">
+          <div className="paper-field relative mx-4 shrink-0 sm:mx-6 [&_[data-slot=command-input-wrapper]]:h-14 [&_[data-slot=command-input-wrapper]]:border-0 [&_[data-slot=command-input-wrapper]]:px-4">
             <CommandInput
               autoFocus
               aria-label="搜索关键词"
@@ -214,7 +214,7 @@ export function GlobalSearch({
                       onChange={(event) =>
                         updateFilters({ ...filters, [key]: event.target.value || undefined })
                       }
-                      className={`${controlClass} w-full min-w-0 max-w-full`}
+                      className={`${controlClass} paper-field w-full min-w-0 max-w-full`}
                     >
                       <option value="">不限</option>
                       {filters[key] && !values.includes(filters[key]!) && (
@@ -291,7 +291,7 @@ export function GlobalSearch({
                     navigate(result.path);
                     onOpenChange(false);
                   }}
-                  className="mb-1 block cursor-pointer rounded-sm border-b border-border/50 px-3 py-4 data-[selected=true]:bg-muted data-[selected=true]:text-foreground sm:px-3 sm:py-5"
+                  className="mb-1 block cursor-pointer rounded-sm px-3 py-4 data-[selected=true]:bg-muted data-[selected=true]:text-foreground sm:py-5"
                 >
                   <div className="flex items-start justify-between gap-3 text-xs leading-5 text-foreground/70">
                     <span className="min-w-0 break-words">

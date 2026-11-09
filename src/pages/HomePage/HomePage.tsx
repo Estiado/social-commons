@@ -64,7 +64,7 @@ export default function HomePage() {
               </div>
             </div>
             {heroQuote.context && (
-              <p className="mt-6 text-sm text-muted-foreground max-w-xl leading-relaxed border-l-2 border-accent/30 pl-4">
+              <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground">
                 {heroQuote.context}
               </p>
             )}
@@ -88,10 +88,10 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="group border border-border/60 bg-card p-8 md:p-10 rounded-sm hover:border-accent/30 transition-all duration-300 hover:shadow-md">
+        <div className="group max-w-3xl">
           <Link to={`/daily/${todayKnowledge.id}`} className="block">
             <div className="flex items-start justify-between mb-4">
-              <span className="inline-block px-3 py-1 text-xs font-medium bg-accent/10 text-accent rounded-sm">
+              <span className="paper-kicker">
                 {todayKnowledge.category}
               </span>
               <span className="text-xs text-muted-foreground">{todayKnowledge.date}</span>
@@ -144,12 +144,12 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid gap-x-10 gap-y-8 md:grid-cols-2">
           {latestEvents.map((event) => (
             <Link
               key={event.id}
               to={'/guanlan/events/' + event.id}
-              className="group block border border-border/60 bg-card p-6 rounded-sm hover:border-accent/30 hover:shadow-md transition-all duration-300"
+              className="group block"
             >
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-xs leading-relaxed text-muted-foreground">
@@ -206,7 +206,7 @@ export default function HomePage() {
             <Link
               key={topic.id}
               to={'/guanlan?group=' + topic.id}
-              className="group block border border-border/60 px-3 py-2 rounded-sm hover:border-accent/30 hover:bg-accent/5 transition-all duration-300 text-center"
+              className="group block px-3 py-2 text-center hover:text-accent"
             >
               <p className="font-serif text-base font-medium group-hover:text-accent transition-colors">
                 {topic.name}
@@ -235,16 +235,16 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid gap-x-10 gap-y-8 md:grid-cols-2">
           {EVENTS.slice(0, 3).map((event) => (
             <Link
               key={event.id}
               to={`/events/${event.id}`}
-              className="group block border border-border/60 bg-card rounded-sm overflow-hidden hover:border-accent/30 transition-all duration-300 hover:shadow-md"
+              className="group block"
             >
-              <div className="p-8">
+              <div>
                 <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xs px-2 py-0.5 bg-muted text-muted-foreground rounded-sm">
+                  <span className="paper-kicker">
                     {event.category}
                   </span>
                   <span className="text-xs text-muted-foreground">{event.date}</span>
@@ -262,9 +262,9 @@ export default function HomePage() {
                   </span>
                 </div>
               </div>
-              <div className="px-8 py-3 bg-muted/30 border-t border-border/40 flex items-center justify-between">
+              <div className="mt-3 flex items-center justify-between gap-3">
                 <span className="text-xs text-muted-foreground">{event.location}</span>
-                <span className="flex items-center gap-1 text-xs text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="flex items-center gap-1 text-xs text-accent group-hover:underline">
                   进入精读 <ArrowRight className="h-3 w-3" />
                 </span>
               </div>
@@ -275,25 +275,25 @@ export default function HomePage() {
 
       <section
         aria-label="个人阅读与素材"
-        className="mx-auto grid max-w-6xl gap-5 border-t border-border/40 px-6 py-16 md:grid-cols-2"
+        className="mx-auto grid max-w-6xl gap-8 px-6 py-16 md:grid-cols-2 md:gap-10"
       >
         <Link
           data-tour="home-reading"
           to="/reading"
-          className="rounded-sm border bg-card p-7 transition-colors hover:border-accent/50"
+          className="group"
         >
           <h2 className="my-3 font-serif text-2xl font-semibold">把读过的文字，整理成自己的文稿</h2>
           <p className="text-sm leading-relaxed text-muted-foreground">
             保存文章与划线，选择需要的材料，编辑后下载 Word 或 PDF。
           </p>
-          <span className="mt-5 inline-flex items-center gap-2 text-sm text-accent">
+          <span className="mt-5 inline-flex items-center gap-2 text-sm text-accent group-hover:underline">
             打开阅读空间 <ArrowRight size={16} />
           </span>
         </Link>
         <Link
           data-tour="home-essay"
           to="/essay"
-          className="rounded-sm border bg-card p-7 transition-colors hover:border-accent/50"
+          className="group"
         >
           <h2 className="my-3 font-serif text-2xl font-semibold">
             从一个概念出发，积累有出处的材料
@@ -301,40 +301,36 @@ export default function HomePage() {
           <p className="text-sm leading-relaxed text-muted-foreground">
             阅读概念与推荐示例，也可以添加自己的词条、标签和个人素材。
           </p>
-          <span className="mt-5 inline-flex items-center gap-2 text-sm text-accent">
+          <span className="mt-5 inline-flex items-center gap-2 text-sm text-accent group-hover:underline">
             进入素材页 <ArrowRight size={16} />
           </span>
         </Link>
       </section>
       {/* 引导区 */}
       <section data-page-enter="section" className="mx-auto max-w-6xl px-6 py-16">
-        <div className="border border-border/60 bg-card p-10 md:p-14 rounded-sm text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-accent/5 rounded-full translate-y-1/2 -translate-x-1/2" />
-          <div className="relative">
-            <h2 className="font-serif text-2xl md:text-3xl font-semibold mb-4">
-              读史使人明智，读诗使人灵秀
-            </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed">
-              在这里，每一个历史事件都不止一种叙述。我们汇集各方史料、学者论文与不同文明的视角，
-              让你在比较中学会思考，在阅读中拓宽视野。
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                to="/events"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-sm text-sm font-medium hover:bg-accent transition-colors"
-              >
-                <Landmark className="h-4 w-4" />
-                进入群鉴
-              </Link>
-              <Link
-                to="/quotes"
-                className="inline-flex items-center gap-2 px-6 py-3 border border-border rounded-sm text-sm font-medium hover:border-accent hover:text-accent transition-colors"
-              >
-                <Feather className="h-4 w-4" />
-                浏览撷英
-              </Link>
-            </div>
+        <div className="text-center">
+          <h2 className="font-serif text-2xl md:text-3xl font-semibold mb-4">
+            读史使人明智，读诗使人灵秀
+          </h2>
+          <p className="text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed">
+            在这里，每一个历史事件都不止一种叙述。我们汇集各方史料、学者论文与不同文明的视角，
+            让你在比较中学会思考，在阅读中拓宽视野。
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              to="/events"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-sm text-sm font-medium hover:bg-accent transition-colors"
+            >
+              <Landmark className="h-4 w-4" />
+              进入群鉴
+            </Link>
+            <Link
+              to="/quotes"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-accent hover:underline"
+            >
+              <Feather className="h-4 w-4" />
+              浏览撷英
+            </Link>
           </div>
         </div>
       </section>

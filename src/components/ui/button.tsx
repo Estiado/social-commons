@@ -12,21 +12,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          // Solid primary button with computed border for depth
-          "bg-primary text-primary-foreground border border-primary-border",
-        destructive:
-          // Destructive action button with matching border
-          "bg-destructive text-destructive-foreground border border-destructive-border",
-        outline:
-          // Shows the background color of whatever card / sidebar / accent background it is inside of.
-          // Inherits the current text color.
-          "border [border-color:var(--button-outline)] shadow-xs active:shadow-none",
-        secondary:
-          // Subtle filled button for secondary actions
-          "bg-secondary text-secondary-foreground border border-secondary-border",
-        // Add a transparent border so that when someone toggles a border on later, it doesn't shift layout/size.
-        ghost: "border border-transparent",
+        default: "bg-primary text-primary-foreground",
+        destructive: "bg-destructive text-destructive-foreground",
+        outline: "hover:text-accent hover:underline",
+        secondary: "bg-secondary text-secondary-foreground",
+        ghost: "",
       },
       // Heights are set as "min" heights, because sometimes AI will place large amount of content
       // inside buttons. With a min-height they will look appropriate with small amounts of content,

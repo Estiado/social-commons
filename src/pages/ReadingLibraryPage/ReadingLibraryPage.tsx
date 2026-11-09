@@ -77,7 +77,11 @@ export default function ReadingLibraryPage() {
         if (operation.signal.aborted) return;
         setSearchResult({ key: searchKey, matches, error: '' });
         requestAnimationFrame(() => {
-          resultsRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+          if (operation.signal.aborted) return;
+          resultsRef.current?.scrollIntoView({
+            block: 'center',
+            behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+          });
           resultsRef.current?.focus({ preventScroll: true });
         });
       })
@@ -244,7 +248,7 @@ export default function ReadingLibraryPage() {
     }
   };
   return (
-    <div className="mx-auto max-w-5xl px-5 py-10 md:px-6">
+    <div className="paper-page mx-auto max-w-5xl">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 data-tour="reading-intro" className="font-serif text-3xl font-semibold">
@@ -260,7 +264,7 @@ export default function ReadingLibraryPage() {
           </Button>
         </div>
       </div>
-      <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+      <p className="paper-intro mb-6">
         文章、段落、语句都在这里。勾选需要的内容，合成一份文稿，在网站内编辑后下载 Word 或
         PDF。保存在当前浏览器，无需登录。
       </p>
@@ -277,7 +281,7 @@ export default function ReadingLibraryPage() {
           正在为已打开的文稿继续选材，选好后将追加到原文稿末尾。
         </p>
       )}
-      <div className="mb-5 flex flex-wrap gap-2" aria-label="内容类型">
+      <div className="paper-tabs mb-5 flex flex-wrap gap-x-4" role="group" aria-label="内容类型">
         {[
           ['all', '全部'],
           ['article', '文章'],
@@ -287,7 +291,7 @@ export default function ReadingLibraryPage() {
           <Button
             key={key}
             size="sm"
-            variant={kind === key ? 'default' : 'outline'}
+            variant="ghost"
             aria-pressed={kind === key}
             onClick={() => setKind(key)}
           >
@@ -318,7 +322,7 @@ export default function ReadingLibraryPage() {
       <section
         aria-label="选材与编排"
         data-tour="reading-selection"
-        className="sticky top-16 z-10 my-5 space-y-3 rounded-sm border bg-background/95 p-4 backdrop-blur"
+        className={`my-5 space-y-3 bg-background py-3 ${selected.length ? 'sticky top-16 z-10 [&:has(details[open])]:static' : ''}`}
       >
         <div className="flex flex-wrap items-center gap-3">
           <strong className="text-sm">已选 {selected.length} 条</strong>
@@ -385,11 +389,11 @@ export default function ReadingLibraryPage() {
           {searching ? '正在检索正文…' : '正在读取内容…'}
         </p>
       ) : (
-        <div className="space-y-4">
+        <div className="paper-list">
           <h2
             ref={resultsRef}
             tabIndex={-1}
-            className="scroll-mt-24 text-sm text-muted-foreground"
+            className="text-sm text-muted-foreground"
             role="status"
           >
             {query ? `“${query}”找到 ${visible.length} 条结果` : `共 ${visible.length} 条内容`}
@@ -404,7 +408,7 @@ export default function ReadingLibraryPage() {
               <article
                 key={item.key}
                 data-page-enter="item"
-                className="rounded-sm border bg-card p-5"
+                className="paper-entry"
               >
                 <label className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
                   <input
@@ -417,14 +421,14 @@ export default function ReadingLibraryPage() {
                   · {item.source || '来源待核对'}
                 </label>
                 <Link
-                  className="font-serif text-lg font-semibold hover:text-accent"
+                  className="paper-entry-title hover:text-accent"
                   to={href}
                   state={{ readingQuery: query }}
                 >
                   <SearchText text={item.title} query={query} />
                 </Link>
                 {(match?.snippet || item.preview) && (
-                  <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                  <p className="paper-entry-copy mt-2 whitespace-pre-wrap">
                     <SearchText
                       text={match?.snippet || item.preview!.slice(0, 240)}
                       query={query}
@@ -444,7 +448,7 @@ export default function ReadingLibraryPage() {
       )}
       <details
         id="reading-backup"
-        className="mt-10 scroll-mt-20 rounded-sm border p-4"
+        className="mt-10 scroll-mt-20"
         open={params.get('tab') === 'legacy'}
       >
         <summary className="cursor-pointer text-sm">数据与备份</summary>

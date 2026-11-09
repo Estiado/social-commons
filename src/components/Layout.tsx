@@ -46,6 +46,7 @@ export function Layout() {
     if (!open) requestAnimationFrame(() => searchOpener.current?.focus({ preventScroll: true }));
   };
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileToggle = useRef<HTMLButtonElement>(null);
   const [briefOpen, setBriefOpen] = useState(true);
   const day = useChinaDay();
   const [tourOpen, setTourOpen] = useState(() => {
@@ -79,14 +80,22 @@ export function Layout() {
     setTourOpen(true);
   };
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div data-site-shell className="flex min-h-screen flex-col bg-background text-foreground">
       <RouteArrival paused={tourOpen} />
       <a data-tour-shell className="skip-link" href="#main-content">
         跳到正文
       </a>
       <header
         data-tour-shell
-        className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md"
+        className="sticky top-0 z-50 bg-background"
+        onKeyDown={(event) => {
+          if (event.defaultPrevented || event.key !== 'Escape' || !mobileOpen) return;
+          const toggle = mobileToggle.current;
+          if (!toggle?.getClientRects().length) return;
+          event.preventDefault();
+          setMobileOpen(false);
+          toggle.focus();
+        }}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
           <NavLink to="/" className="group flex shrink-0 items-center gap-3">
@@ -110,7 +119,7 @@ export function Layout() {
                 to={item.path}
                 end={item.end}
                 className={({ isActive }) =>
-                  `flex min-h-11 items-center whitespace-nowrap rounded-sm px-2 py-2 text-sm ${isActive ? 'bg-accent/5 text-accent' : 'text-muted-foreground hover:text-foreground'}`
+                  `flex min-h-11 items-center whitespace-nowrap px-2 py-2 text-sm ${isActive ? 'font-semibold text-accent' : 'text-muted-foreground hover:text-foreground'}`
                 }
               >
                 {item.label}
@@ -136,9 +145,7 @@ export function Layout() {
             <NavLink
               to={feedbackPath}
               data-tour="nav-feedback"
-              className={({ isActive }) =>
-                `ml-1 flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm border border-accent/30 px-2 py-2 text-sm text-accent hover:bg-accent/5 ${isActive ? 'bg-accent/5' : ''}`
-              }
+              className="ml-1 flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap px-2 py-2 text-sm text-accent hover:underline"
             >
               <MessageSquare className="h-4 w-4" />
               内测反馈
@@ -161,6 +168,7 @@ export function Layout() {
               <Search className="h-5 w-5" />
             </button>
             <button
+              ref={mobileToggle}
               aria-label="网站栏目"
               aria-expanded={mobileOpen}
               aria-controls="mobile-sections"
@@ -175,7 +183,7 @@ export function Layout() {
           <nav
             id="mobile-sections"
             aria-label="网站栏目菜单"
-            className="grid grid-cols-3 gap-2 border-t px-5 py-4 xl:hidden"
+            className="paper-menu xl:hidden"
           >
             {NAV_ITEMS.map((item) => (
               <NavLink
@@ -184,9 +192,7 @@ export function Layout() {
                 to={item.path}
                 end={item.end}
                 onClick={() => setMobileOpen(false)}
-                className={({ isActive }) =>
-                  `rounded-sm border p-3 text-center text-sm ${isActive ? 'text-accent border-accent' : 'text-muted-foreground'}`
-                }
+                className="paper-menu-item"
               >
                 {item.label}
               </NavLink>
@@ -195,7 +201,7 @@ export function Layout() {
               type="button"
               data-tour="nav-briefing"
               onClick={openBrief}
-              className="rounded-sm border p-3 text-center text-sm text-accent"
+              className="paper-menu-item text-accent"
             >
               今日简报
             </button>
@@ -203,13 +209,13 @@ export function Layout() {
               to={feedbackPath}
               data-tour="nav-feedback"
               onClick={() => setMobileOpen(false)}
-              className="rounded-sm border p-3 text-center text-sm text-muted-foreground"
+              className="paper-menu-item"
             >
               内测反馈
             </Link>
             <button
               type="button"
-              className="rounded-sm border p-3 text-center text-sm text-muted-foreground"
+              className="paper-menu-item"
               onClick={() => {
                 openTour();
               }}

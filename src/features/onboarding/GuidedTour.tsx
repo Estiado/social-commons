@@ -242,7 +242,7 @@ export default function GuidedTour({
         aria-modal="true"
         aria-labelledby="tour-title"
         aria-describedby="tour-description"
-        className={`tour-panel absolute max-h-[calc(100dvh-32px)] overflow-auto rounded-xl border bg-background p-5 shadow-2xl sm:p-6 ${index < 0 ? 'tour-welcome' : 'tour-tip'}`}
+        className={`tour-panel absolute max-h-[calc(100dvh-32px)] overflow-auto rounded-xl bg-background p-5 shadow-2xl sm:p-6 ${index < 0 ? 'tour-welcome' : 'tour-tip'}`}
       >
         <div className="mb-4 flex items-center justify-between gap-4">
           <span className="text-xs font-medium tracking-wide text-accent">
@@ -299,7 +299,7 @@ export default function GuidedTour({
                 type="button"
                 aria-pressed={mode === value}
                 onClick={() => setMode(value)}
-                className={`rounded-sm border p-3 text-left ${mode === value ? 'border-accent bg-accent/5' : 'border-border'}`}
+                className={`rounded-sm p-3 text-left ${mode === value ? 'bg-accent/5 text-accent' : 'hover:bg-muted'}`}
               >
                 <span className="block text-sm font-medium">{title}</span>
                 <span className="mt-1 block text-xs text-muted-foreground">{detail}</span>

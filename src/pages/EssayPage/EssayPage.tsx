@@ -1,17 +1,7 @@
 import { useState, useMemo, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useItemLocation } from '@/hooks/useItemLocation';
-import {
-  PenTool,
-  Tag,
-  Lightbulb,
-  ChevronDown,
-  ChevronUp,
-  Search,
-  Plus,
-  X,
-  Trash2,
-} from 'lucide-react';
+import { PenTool, Tag, ChevronDown, Search, Plus, X, Trash2 } from 'lucide-react';
 import { ESSAY_MATERIALS } from '@/data/essay';
 import { knowledgeGroup } from '@/data/knowledgeCategories';
 import { ConceptMaterials } from '@/features/essay/ConceptMaterials';
@@ -19,7 +9,6 @@ import { ContentReader } from '@/features/reading/ContentReader';
 import { essayDocument } from '@/features/reading/contentDocuments';
 import type { IEssayMaterial } from '@/data/types';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -182,11 +171,11 @@ export default function EssayPage() {
   const isCustom = (id: string) => id.startsWith('custom-');
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
+    <div className="paper-page mx-auto max-w-4xl">
       {/* 页头 */}
       <div className="mb-8">
         <h1 className="font-serif text-3xl md:text-4xl font-semibold mb-3">议论文素材</h1>
-        <p className="text-muted-foreground max-w-2xl leading-relaxed">
+        <p className="paper-intro">
           每个通识概念都可以成为议论文的优质素材。你可以从网上摘抄优秀文段填入，也可以添加自己的词条和分类，积累属于自己的素材库。
         </p>
       </div>
@@ -207,7 +196,7 @@ export default function EssayPage() {
           resultsRef.current?.focus({ preventScroll: true });
         }}
       >
-        <div className="relative flex-1">
+        <div className="relative min-w-0 flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="搜索概念、素材、适用话题..."
@@ -246,7 +235,7 @@ export default function EssayPage() {
 
       {/* 添加词条表单 */}
       {showAddForm && (
-        <div className="mb-6 p-5 border border-accent/30 bg-accent/5 rounded-sm">
+        <div className="paper-reveal mb-6 bg-accent/5 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-serif text-lg font-semibold">添加自定义词条</h3>
             <button
@@ -356,7 +345,7 @@ export default function EssayPage() {
 
       {/* 添加标签表单 */}
       {showTagForm && (
-        <div className="mb-6 p-5 border border-accent/30 bg-accent/5 rounded-sm">
+        <div className="paper-reveal mb-6 bg-accent/5 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-serif text-lg font-semibold">添加自定义分类标签</h3>
             <button
@@ -404,7 +393,7 @@ export default function EssayPage() {
         <label className="flex min-w-0 flex-1 flex-col gap-1 text-xs text-muted-foreground">
           所属领域
           <select
-            className="w-full rounded-sm border bg-background p-2 text-sm text-foreground"
+            className="w-full px-3 text-sm text-foreground"
             value={activePrimary}
             onChange={(event) => handlePrimaryChange(event.target.value)}
           >
@@ -417,7 +406,7 @@ export default function EssayPage() {
           <label className="flex min-w-0 flex-1 flex-col gap-1 text-xs text-muted-foreground">
             细分学科
             <select
-              className="w-full rounded-sm border bg-background p-2 text-sm text-foreground"
+              className="w-full px-3 text-sm text-foreground"
               value={activeSub}
               onChange={(event) => setActiveSub(event.target.value)}
             >
@@ -433,7 +422,7 @@ export default function EssayPage() {
       <div
         ref={resultsRef}
         tabIndex={-1}
-        className="scroll-mt-20 space-y-4 outline-none"
+        className="paper-list scroll-mt-20 outline-none"
         aria-label="素材搜索结果"
       >
         <p role="status" aria-live="polite" className="text-sm text-muted-foreground">
@@ -446,20 +435,19 @@ export default function EssayPage() {
               data-page-enter="item"
               key={item.id}
               id={`essay-${item.id}`}
-              className="scroll-mt-24 border border-border/60 bg-card rounded-sm overflow-hidden"
+              className="paper-entry scroll-mt-24"
             >
               <button
                 aria-expanded={isExpanded}
                 onClick={() => setExpandedId(isExpanded ? null : item.id)}
-                className="w-full text-left p-6 hover:bg-muted/20 transition-colors"
+                className="paper-entry-toggle w-full text-left"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <Badge variant="outline" className="border-accent/30 text-accent">
-                        <Tag className="h-3 w-3 mr-1" />
+                    <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <span className="paper-kicker">
                         {item.category}
-                      </Badge>
+                      </span>
                       <span className="text-xs text-muted-foreground">可添加个人素材</span>
                       {isCustom(item.id) && (
                         <span className="text-xs px-1.5 py-0.5 bg-accent/10 text-accent rounded-sm">
@@ -467,35 +455,28 @@ export default function EssayPage() {
                         </span>
                       )}
                     </div>
-                    <h2 className="font-serif text-xl font-semibold mb-2">{item.concept}</h2>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <h2 className="paper-entry-title">{item.concept}</h2>
+                    <p className="paper-entry-copy">
                       {item.description}
                     </p>
-                    <div className="flex flex-wrap gap-2 mt-3">
+                    <div className="paper-tags mt-3">
                       {item.applicableTopics.map((topic) => (
                         <span
                           key={topic}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-muted/60 text-muted-foreground rounded-sm"
+                          className="text-sm"
                         >
-                          <Lightbulb className="h-3 w-3" />
                           {topic}
                         </span>
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0 mt-1">
-                    {isExpanded ? (
-                      <ChevronUp className="h-5 w-5 text-muted-foreground" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                    )}
-                  </div>
+                  <ChevronDown aria-hidden="true" className="paper-chevron mt-1 size-5 shrink-0" />
                 </div>
               </button>
               {isCustom(item.id) && (
                 <button
                   onClick={() => handleDeleteCustom(item.id)}
-                  className="mx-6 mb-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive"
+                  className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-destructive"
                   aria-label={`删除词条：${item.concept}`}
                 >
                   <Trash2 className="h-4 w-4" />
@@ -505,7 +486,7 @@ export default function EssayPage() {
 
               {/* 展开的素材列表 */}
               {isExpanded && (
-                <div className="px-6 pb-6 border-t border-border/40 pt-5">
+                <div className="paper-reveal py-5">
                   <EssayReading item={item} />
                   <ConceptMaterials
                     conceptId={item.id}
@@ -535,7 +516,7 @@ export default function EssayPage() {
       )}
 
       {/* 底部说明 */}
-      <div className="mt-12 p-6 bg-muted/30 border border-border/40 rounded-sm">
+      <div className="mt-12 max-w-2xl">
         <p className="text-xs text-muted-foreground leading-relaxed">
           自定义词条、素材和标签保存在当前浏览器中，换设备或清除浏览器数据会丢失。 可在
           <Link to="/reading?tab=legacy" className="text-accent underline">
